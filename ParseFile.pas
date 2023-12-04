@@ -1,0 +1,92 @@
+program ParseFile;
+
+{$mode objfpc}
+{$longstrings on}
+
+uses
+    sysutils, ParserContext, Symbols, Token, Anchors,
+    Block in 'Statements/Block.pas',
+    ConstDecl in 'Declarations/ConstDecl.pas',
+    ConstSection in 'Declarations/ConstSection.pas',
+    ConstValue in 'Declarations/ConstValue.pas',
+    UsesClause in 'Declarations/UsesClause.pas',
+    ProgramFile in 'File/ProgramFile.pas';
+
+procedure Parse(fileName: string);
+var
+    i, j: integer;
+    len: integer;
+    f: file;
+    fres: Text;
+    contents: string;
+    ctx: TParserContext;
+    cur: TToken;
+    progFile: TProgramFile;
+    inserts: array of string;
+begin
+    WriteLn(fileName);
+    Assign(f, fileName);
+    Reset(f, 1);
+    len := FileSize(f);
+    SetLength(contents, len);
+    BlockRead(f, contents[1], len);
+    Close(f);
+
+    ctx := TParserContext.Create(contents);
+
+    progFile := TProgramFile.Create(ctx);
+
+    SetLength(inserts, len + 1);
+    for i := 0 to len do
+        inserts[i] := '';
+
+    for i := 0 to ctx.tokensLen - 1 do
+    begin
+        cur := ctx.Tokens[i];
+        j := cur.start - PChar(contents);
+        if j > len then continue;
+        if cur.state = tsMissing then inserts[j] := inserts[j] + '{' + cur.tokenName + ' MISSING /}'
+        else if cur.state = tsSkipped then inserts[j] := inserts[j] + '{' + cur.tokenName + ' SKIPPED}'
+        else if cur.state = tsError then inserts[j] := inserts[j] + '{' + cur.tokenName + ' ERROR}'
+        else inserts[j] := inserts[j] + '{' + cur.tokenName + '}';
+
+        if cur.state <> tsMissing then
+        begin
+            j := cur.start - PChar(contents) + cur.len;
+            if j > len then
+            begin
+                WriteLn('j=', j, ' i=',i, ' cur.tokenName=', cur.tokenName, ' cur.start=', cur.start - PChar(contents), ' cur.len=', cur.len, ' len=', len);
+                j := len;
+            end;
+            inserts[j] := '{/' + cur.tokenName + '}' + inserts[j];
+        end;
+    end;
+
+    Assign(fres, StringReplace(fileName, '.pas', '.res', []));
+    Rewrite(fres);
+    for i := 1 to len do
+    begin
+        if length(inserts[i - 1]) <> 0 then Write(fres, inserts[i - 1]);
+        Write(fres, contents[i]);
+    end;
+    if length(inserts[len]) <> 0 then Write(fres, inserts[len]);
+    Close(fres);
+
+    progFile.Free;
+    SymbolsList.Clear;
+
+end;
+
+var
+    i: integer;
+begin
+    if paramCount = 0 then
+    begin
+        WriteLn('Usage: ParseFile.exe <file1> ... <fileN>');
+        exit;
+    end;
+
+    for i := 1 to ParamCount do
+        Parse(ParamStr(i));
+
+end.

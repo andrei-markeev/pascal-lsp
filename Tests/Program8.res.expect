@@ -1,0 +1,9 @@
+{ProgramFile}{RW}program{/RW} {Ident}Program7{/Ident}{RW};{/RW}
+
+{$mode tp}
+
+{ConstSection}{RW}const{/RW}
+    {ConstDecl}{RW SKIPPED}class{/RW}{Ident MISSING /} {RW}={/RW} {ConstValue}{Num}100{/Num}{/ConstValue}{/ConstDecl}{RW};{/RW}{/ConstSection}
+
+{Block}{RW}begin{/RW}
+{RW}end{/RW}{/Block}{RW}.{/RW}{/ProgramFile}

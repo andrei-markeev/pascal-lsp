@@ -1,0 +1,45 @@
+unit ConstValue;
+
+{$mode objfpc}
+{$longstrings on}
+
+interface
+
+uses
+    ParserContext, Anchors, Token, Identifier, Number, StringToken;
+
+type
+    TConstValue = class(TToken)
+    public
+        valueToken: TToken;
+        valueType: TPrimitiveKind;
+        constructor Create(ctx: TParserContext; tokenKind: TTokenKind);
+        destructor Destroy; override;
+    end;
+
+implementation
+
+constructor TConstValue.Create(ctx: TParserContext; tokenKind: TTokenKind);
+begin
+    ctx.Add(Self);
+    tokenName := 'ConstValue';
+    start := ctx.Cursor;
+    state := tsCorrect;
+
+    case tokenKind.primitiveKind of
+        pkNumber: valueToken := TNumber.Create(ctx);
+        pkString: valueToken := TStringToken.Create(ctx);
+        pkIdentifier: valueToken := TIdentifier.Create(ctx);
+    else
+        state := tsMissing;
+    end;
+    valueType := tokenKind.primitiveKind;
+
+    len := ctx.Cursor - start;
+end;
+
+destructor TConstValue.Destroy;
+begin
+end;
+
+end.

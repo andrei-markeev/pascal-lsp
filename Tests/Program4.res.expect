@@ -1,0 +1,6 @@
+{ProgramFile}{RW}program{/RW} {Ident}Program4{/Ident}{RW};{/RW}
+
+{ConstSection}{RW}const{/RW}{RW ';' MISSING /}
+
+{/ConstSection}{ConstDecl MISSING /}{Block}{RW}begin{/RW}
+{RW}end{/RW}{/Block}{RW}.{/RW}{/ProgramFile}

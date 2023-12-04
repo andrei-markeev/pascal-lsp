@@ -1,0 +1,4 @@
+backup/
+build/
+lib/
+Tests/*.res
