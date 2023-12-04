@@ -2,6 +2,7 @@
 
 1. Solve "skipped token" problem
     - still cumbersome and unclear when to use
+    - very verbose and makes code complicated - need to find a better solution!
 2. Incremental parsing
 3. Preprocessor
     - defines?

@@ -18,6 +18,7 @@ implementation
 constructor TInvalidSymbol.Create(ctx: TParserContext);
 begin
     tokenName := 'Invalid';
+    isPrimitive := true;
     start := ctx.Cursor;
     repeat
         inc(ctx.Cursor);

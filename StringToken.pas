@@ -20,6 +20,7 @@ implementation
 constructor TStringToken.Create(ctx: TParserContext);
 begin
     tokenName := 'Str';
+    isPrimitive := true;
     ctx.SkipTrivia;
 
     start := ctx.Cursor;

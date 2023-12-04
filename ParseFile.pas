@@ -45,12 +45,14 @@ begin
         cur := ctx.Tokens[i];
         j := cur.start - PChar(contents);
         if j > len then continue;
+
         if cur.state = tsMissing then inserts[j] := inserts[j] + '{' + cur.tokenName + ' MISSING /}'
         else if cur.state = tsSkipped then inserts[j] := inserts[j] + '{' + cur.tokenName + ' SKIPPED}'
-        else if cur.state = tsError then inserts[j] := inserts[j] + '{' + cur.tokenName + ' ERROR}'
+        else if cur.state = tsError then inserts[j] := inserts[j] + '{' + cur.tokenName + ' ERROR "' + cur.errorMessage + '"}'
+        else if cur.state = tsEndOf then inserts[j] := inserts[j] + '{/' + cur.tokenName + '}'
         else inserts[j] := inserts[j] + '{' + cur.tokenName + '}';
 
-        if cur.state <> tsMissing then
+        if cur.isPrimitive and (cur.state <> tsMissing) then
         begin
             j := cur.start - PChar(contents) + cur.len;
             if j > len then

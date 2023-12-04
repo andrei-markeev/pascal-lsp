@@ -295,12 +295,25 @@ begin
                         'l','L': if ctx.IsSeparator(ctx.Cursor[3]) then found := rwShl;
                         'r','R': if ctx.IsSeparator(ctx.Cursor[3]) then found := rwShr;
                     end;
+                't','T': maybe := rwString;
             end;
         't','T':
             case ctx.Cursor[1] of
                 'h','H': maybe := rwThreadvar;
                 'r','R': maybe := rwTry;
             end;
+        'u','U':
+            case ctx.Cursor[1] of
+                'n','N': if ctx.Cursor[2] in ['i','I'] then maybe := rwUnit else maybe := rwUntil;
+                's','S': maybe := rwUses;
+            end;
+        'v','V': maybe := rwVar;
+        'w','W':
+            case ctx.Cursor[1] of
+                'h','H': maybe := rwWhile;
+                'i','I': maybe := rwWith;
+            end;
+        'x','X': maybe := rwXor;
     end;
 
     if (ctx.mode < cmTurboPascal) and IsTurboPascalReservedWord(maybe) then
@@ -323,6 +336,7 @@ begin
     kind := expectedKind;
     expected := ReservedWords[ord(kind)];
     tokenName := 'RW';
+    isPrimitive := true;
 
     if not peeked then
     begin

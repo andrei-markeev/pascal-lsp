@@ -26,16 +26,21 @@ begin
     start := ctx.Cursor;
     state := tsCorrect;
 
+    // todo: support cmTurboPascal and up constant expressions
+
     case tokenKind.primitiveKind of
         pkNumber: valueToken := TNumber.Create(ctx);
         pkString: valueToken := TStringToken.Create(ctx);
         pkIdentifier: valueToken := TIdentifier.Create(ctx);
     else
+        start := ctx.cursorBeforeTrivia;
         state := tsMissing;
+        len := 0;
+        exit;
     end;
-    valueType := tokenKind.primitiveKind;
 
-    len := ctx.Cursor - start;
+    valueType := tokenKind.primitiveKind;
+    ctx.MarkEndOfToken(Self);
 end;
 
 destructor TConstValue.Destroy;

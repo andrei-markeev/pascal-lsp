@@ -27,7 +27,7 @@ begin
     TReservedWord.Create(ctx, rwBegin, false);
     TReservedWord.Create(ctx, rwEnd, false);
 
-    len := ctx.Cursor - start;
+    ctx.MarkEndOfToken(Self);
 end;
 
 destructor TBlock.Destroy;

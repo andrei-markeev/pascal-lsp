@@ -27,6 +27,8 @@ var
     SymbolsList: TFPHashList;
 
 function RegisterSymbol(declaredAt: TIdentifier; symbolKind: TSymbolKind; scopeToken: TToken; cursor: PChar): TSymbol;
+function FindSymbol(findName: shortstring): TSymbol; inline;
+function FindSymbol(ident: TIdentifier): TSymbol;
 
 implementation
 
@@ -51,6 +53,13 @@ begin
 
     SetString(name, ident.start, Min(255, ident.len));
     FindSymbol := TSymbol(SymbolsList.Find(name));
+end;
+
+function FindSymbol(findName: shortstring): TSymbol; inline;
+var
+    name: shortstring;
+begin
+    FindSymbol := TSymbol(SymbolsList.Find(findName));
 end;
 
 constructor TSymbol.Create(symbolName: string; symbolKind: TSymbolKind; declaredAt: TIdentifier; scope: TToken; cursor: PChar);

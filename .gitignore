@@ -1,4 +1,7 @@
 backup/
 build/
 lib/
-Tests/*.res
+Tests/**/*.res
+*.exe
+test.pas
+TokenTemplate.pas

@@ -24,23 +24,25 @@ implementation
 
 constructor TConstDecl.Create(ctx: TParserContext);
 var
-    nextReservedWord: TReservedWordKind;
     nextTokenKind: TTokenKind;
     symbolKind: TSymbolKind;
 begin
     tokenName := 'ConstDecl';
     ctx.Add(Self);
 
-    ctx.SkipTrivia;
     start := ctx.Cursor;
 
-    nextReservedWord := DetermineReservedWord(ctx);
-    if nextReservedWord <> rwUnknown then
+    AddAnchor(pkIdentifier);
+    nextTokenKind := SkipUntilAnchor(ctx);
+    RemoveAnchor(pkIdentifier);
+
+    if nextTokenKind.primitiveKind <> pkIdentifier then
     begin
         len := 0;
         state := tsMissing;
         exit;
     end;
+    start := ctx.Cursor;
     ident := TIdentifier.Create(ctx);
     symbolKind := skConstant;
 
@@ -69,7 +71,7 @@ begin
 
     value := TConstValue.Create(ctx, nextTokenKind);
 
-    len := ctx.Cursor - start;
+    ctx.MarkEndOfToken(Self);
     RegisterSymbol(ident, symbolKind, ctx.parseUnit, ctx.Cursor);
 end;
 

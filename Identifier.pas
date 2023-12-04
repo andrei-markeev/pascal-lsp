@@ -6,7 +6,7 @@ unit Identifier;
 interface
 
 uses
-    ParserContext, Token;
+    math, ParserContext, Token;
 
 type
     TIdentifier = class(TToken)
@@ -16,11 +16,35 @@ type
         destructor Destroy; override;
     end;
 
+function PeekIdentifier(ctx: TParserContext): shortstring;
+
 implementation
+
+function PeekIdentifier(ctx: TParserContext): shortstring;
+var
+    cursor: PChar;
+    len: integer;
+begin
+    cursor := ctx.Cursor;
+
+    if cursor[0] in ['a'..'z', 'A'..'Z', '_'] then
+    begin
+        inc(cursor);
+        while cursor[0] in ['a'..'z', 'A'..'Z', '_', '0'..'9'] do
+            inc(cursor);
+
+        len := Cursor - ctx.Cursor;
+
+        SetString(PeekIdentifier, ctx.Cursor, Min(255, len));
+    end
+    else
+        PeekIdentifier := ''
+end;
 
 constructor TIdentifier.Create(ctx: TParserContext);
 begin
     tokenName := 'Ident';
+    isPrimitive := true;
     ctx.SkipTrivia;
     if ctx.Cursor[0] in ['a'..'z', 'A'..'Z', '_'] then
     begin

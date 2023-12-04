@@ -38,6 +38,7 @@ begin
     until nextReservedWord <> rwComma;
 
     len := ctx.Cursor - start;
+    ctx.MarkEndOfToken(Self);
 end;
 
 destructor TUsesClause.Destroy;

@@ -1,4 +1,4 @@
-unit ConstSection;
+unit VarSection;
 
 {$mode objfpc}
 {$longstrings on}
@@ -7,35 +7,35 @@ interface
 
 uses
     ParserContext, Token, ReservedWord,
-    ConstDecl in 'Declarations/ConstDecl.pas';
+    VarDecl in 'Declarations/VarDecl.pas';
 
 type
-    TConstSection = class(TToken)
+    TVarSection = class(TToken)
     public
-        decls: array of TConstDecl;
+        decls: array of TVarDecl;
         constructor Create(ctx: TParserContext);
         destructor Destroy; override;
     end;
 
 implementation
 
-constructor TConstSection.Create(ctx: TParserContext);
+constructor TVarSection.Create(ctx: TParserContext);
 var
     l: integer;
     nextReservedWord: TReservedWordKind;
 begin
-    tokenName := 'ConstSection';
+    tokenName := 'VarSection';
     ctx.Add(Self);
 
     ctx.SkipTrivia;
     start := ctx.Cursor;
 
-    TReservedWord.Create(ctx, rwConst, true);
+    TReservedWord.Create(ctx, rwVar, true);
 
     repeat
         l := length(decls);
         SetLength(decls, l + 1);
-        decls[l] := TConstDecl.Create(ctx);
+        decls[l] := TVarDecl.Create(ctx);
 
         TReservedWord.Create(ctx, rwSemicolon, false);
         nextReservedWord := DetermineReservedWord(ctx);
@@ -44,7 +44,7 @@ begin
     ctx.MarkEndOfToken(Self);
 end;
 
-destructor TConstSection.Destroy;
+destructor TVarSection.Destroy;
 begin
 end;
 

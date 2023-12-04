@@ -31,6 +31,7 @@ type
         function IsEOF: boolean; inline;
         procedure SkipTrivia;
         procedure Add(token: TToken);
+        procedure MarkEndOfToken(token: TToken);
     end;
 
 implementation
@@ -131,6 +132,25 @@ begin
 
     token.line := line;
     token.position := Cursor - lineStart;
+end;
+
+procedure TParserContext.MarkEndOfToken(token: TToken);
+var
+    endOf: TToken;
+    endCursor: PChar;
+begin
+    if triviaSkippedUntil = Cursor then
+        endCursor := cursorBeforeTrivia
+    else
+        endCursor := Cursor;
+
+    token.len := endCursor - token.start;
+    endOf := TToken.Create;
+    endOf.tokenName := token.tokenName;
+    endOf.start := endCursor;
+    endOf.len := 0;
+    endOf.state := tsEndOf;
+    Add(endOf);
 end;
 
 function TParserContext.IsEOF: boolean; inline;

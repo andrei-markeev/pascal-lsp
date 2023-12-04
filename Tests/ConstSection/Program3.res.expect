@@ -1,7 +1,7 @@
 {ProgramFile}{RW}program{/RW} {Ident}Program3{/Ident}{RW};{/RW}
 
 {ConstSection}{RW}const{/RW}
-    {ConstDecl}{SymbDecl}a{/SymbDecl} {RW}={/RW}{RW ';' MISSING /} 
+    {ConstDecl}{SymbDecl}a{/SymbDecl} {RW}={/RW}{ConstValue MISSING /}{/ConstDecl}{RW ';' MISSING /}{/ConstSection} 
 
-{/ConstDecl}{/ConstSection}{ConstValue MISSING /}{Block}{RW}begin{/RW}
+{Block}{RW}begin{/RW}
 {RW}end{/RW}{/Block}{RW}.{/RW}{/ProgramFile}

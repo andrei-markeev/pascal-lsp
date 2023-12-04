@@ -9,6 +9,7 @@ uses
     ParserContext, Anchors, Token, ReservedWord, Identifier,
     UsesClause in 'Declarations/UsesClause.pas',
     ConstSection in 'Declarations/ConstSection.pas',
+    VarSection in 'Declarations/VarSection.pas',
     Block in 'Statements/Block.pas';
 
 type
@@ -70,6 +71,7 @@ begin
     AddAnchor(rwProcedure);
     AddAnchor(rwFunction);
     AddAnchor(rwBegin);
+    AddAnchor(rwEnd);
 
     nextTokenKind := SkipUntilAnchor(ctx);
     while nextTokenKind.reservedWordKind in [rwConst, rwType, rwVar, rwProcedure, rwFunction] do
@@ -79,7 +81,7 @@ begin
         case nextTokenKind.reservedWordKind of
             rwConst: implementations[len] := TConstSection.Create(ctx);
             //rwType: implementations[len] := TTypeSection.Create(ctx);
-            //rwVar: implementations[len] := TVarSection.Create(ctx);
+            rwVar: implementations[len] := TVarSection.Create(ctx);
             //rwProcedure: implementations[len] := TProcedureImpl.Create(ctx);
             //rwFunction: implementations[len] := TFunctionImpl.Create(ctx);
         end;
@@ -92,12 +94,13 @@ begin
     RemoveAnchor(rwProcedure);
     RemoveAnchor(rwFunction);
     RemoveAnchor(rwBegin);
+    RemoveAnchor(rwEnd);
 
     initSection := TBlock.Create(ctx);
 
     TReservedWord.Create(ctx, rwDot, false);
 
-    len := ctx.Cursor - start;
+    ctx.MarkEndOfToken(Self);
 end;
 
 destructor TProgramFile.Destroy;

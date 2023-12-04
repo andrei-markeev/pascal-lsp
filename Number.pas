@@ -24,6 +24,7 @@ var
     numberBase: byte;
 begin
     tokenName := 'Num';
+    isPrimitive := true;
     ctx.SkipTrivia;
 
     start := ctx.Cursor;
