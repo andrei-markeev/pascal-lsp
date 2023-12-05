@@ -6,7 +6,7 @@ unit Anchors;
 interface
 
 uses
-    ParserContext, Token, InvalidSymbol, ReservedWord, Number, Identifier, StringToken;
+    CompilationMode, ParserContext, Token, InvalidSymbol, ReservedWord, Number, Identifier, StringToken;
 
 const
     NUM_OF_PRIMITIVES = 4;
@@ -63,6 +63,8 @@ begin
         isEOF := false;
         ctx.SkipTrivia;
         case ctx.Cursor[0] of
+            '$': if (ctx.mode >= cmTurboPascal) and (ctx.Cursor[1] in ['0'..'9', 'a'..'z', 'A'..'Z']) then primitiveKind := pkNumber;
+            '&': if (ctx.mode >= cmFreePascal) and (ctx.Cursor[1] in ['0'..'7']) then primitiveKind := pkNumber;
             '0'..'9': primitiveKind := pkNumber;
             '_': primitiveKind := pkIdentifier;
             '''', '#': primitiveKind := pkString;

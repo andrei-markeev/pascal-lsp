@@ -6,7 +6,7 @@ unit ReservedWord;
 interface
 
 uses
-    strings, ParserContext, Token;
+    strings, CompilationMode, ParserContext, Token;
 
 const
     NUM_OF_RESERVED_WORDS = 93;
@@ -133,10 +133,12 @@ begin
 end;
 
 function PeekReservedWord(ctx: TParserContext; expected: string): boolean; inline;
+var
+    separated: boolean;
 begin
     ctx.SkipTrivia;
-    PeekReservedWord := (strlicomp(ctx.Cursor, PChar(expected), length(expected)) = 0)
-        and ctx.IsSeparator(ctx.Cursor[length(expected)]);
+    separated := not (expected[1] in ['a'..'z']) or ctx.IsSeparator(ctx.Cursor[length(expected)]);
+    PeekReservedWord := (strlicomp(ctx.Cursor, PChar(expected), length(expected)) = 0) and separated;
 end;
 
 function PeekReservedWord(ctx: TParserContext; kind: TReservedWordKind): boolean;
@@ -299,8 +301,10 @@ begin
             end;
         't','T':
             case ctx.Cursor[1] of
-                'h','H': maybe := rwThreadvar;
+                'h','H': if ctx.Cursor[2] in ['r','R'] then maybe := rwThreadvar else maybe := rwThen;
+                'o','O': if ctx.IsSeparator(ctx.Cursor[2]) then found := rwTo;
                 'r','R': maybe := rwTry;
+                'y','Y': maybe := rwType;
             end;
         'u','U':
             case ctx.Cursor[1] of
@@ -340,7 +344,6 @@ begin
 
     if not peeked then
     begin
-        ctx.SkipTrivia;
         if not PeekReservedWord(ctx, expected) then
         begin
             state := tsMissing;

@@ -6,11 +6,9 @@ unit ParserContext;
 interface
 
 uses
-    strings, Token;
+    strings, Token, CompilationMode, TypeDefs;
 
 type
-    TCompilationMode = (cmStandardPascal, cmTurboPascal, cmFreePascal, cmObjectFreePascal, cmDelphi);
-
     TParserContext = class
     private
         triviaSkippedUntil: PChar;
@@ -45,6 +43,7 @@ begin
     SetLength(Tokens, tokensCapacity);
     line := 0;
     mode := cmFreePascal;
+    InitPredefinedTypes(mode);
 end;
 
 destructor TParserContext.Destroy;
@@ -86,6 +85,7 @@ begin
                     else if (strlicomp(Cursor, PChar('delphi'), 6) = 0) and (Cursor[6] in [' ',#9,'}']) then
                         mode := cmDelphi;
 
+                    InitPredefinedTypes(mode);
                 end;
             end;
             repeat

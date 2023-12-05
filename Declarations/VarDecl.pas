@@ -11,7 +11,7 @@ uses
 type
     TVarDecl = class(TToken)
     public
-        ident: TIdentifier;
+        idents: array of TIdentifier;
         varType: TTypeSpec;
         typeDef: PTypeDef;
         constructor Create(ctx: TParserContext);
@@ -23,6 +23,8 @@ implementation
 constructor TVarDecl.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
+    i, l: integer;
+    hasMoreMembers: boolean;
 begin
     tokenName := 'VarDecl';
     ctx.Add(Self);
@@ -35,12 +37,22 @@ begin
 
     if nextTokenKind.primitiveKind <> pkIdentifier then
     begin
+        SetLength(idents, 0);
         len := 0;
         state := tsMissing;
         exit;
     end;
     start := ctx.Cursor;
-    ident := TIdentifier.Create(ctx);
+    l := 0;
+    repeat
+        SetLength(idents, l + 1);
+        idents[l] := TIdentifier.Create(ctx);
+        inc(l);
+        ctx.SkipTrivia;
+        hasMoreMembers := PeekReservedWord(ctx, rwComma);
+        if hasMoreMembers then
+           TReservedWord.Create(ctx, rwComma, true);
+    until hasMoreMembers = false;
 
     AddAnchor(rwColon);
     nextTokenKind := SkipUntilAnchor(ctx);
@@ -49,10 +61,11 @@ begin
     TReservedWord.Create(ctx, rwColon, nextTokenKind.reservedWordKind = rwColon);
     varType := TTypeSpec.Create(ctx);
 
-    // todo: variable initialization
+    // TODO: variable initialization
 
     ctx.MarkEndOfToken(Self);
-    RegisterSymbol(ident, skVariable, ctx.parseUnit, varType.typeDef, ctx.Cursor);
+    for i := 0 to l - 1 do
+        RegisterSymbol(idents[i], skVariable, ctx.parseUnit, varType.typeDef, ctx.Cursor);
 end;
 
 destructor TVarDecl.Destroy;

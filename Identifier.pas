@@ -14,6 +14,7 @@ type
         symbol: pointer;
         constructor Create(ctx: TParserContext);
         destructor Destroy; override;
+        function GetName: shortstring;
     end;
 
 function PeekIdentifier(ctx: TParserContext): shortstring;
@@ -67,6 +68,11 @@ end;
 
 destructor TIdentifier.Destroy;
 begin
+end;
+
+function TIdentifier.GetName: shortstring;
+begin
+    SetString(GetName, start, len);
 end;
 
 end.

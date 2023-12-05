@@ -9,7 +9,7 @@ uses
     math, contnrs, Token, Identifier, TypeDefs;
 
 type
-    TSymbolKind = (skUnknown, skConstant, skTypedConstant, skTypeName, skVariable, skSubroutine);
+    TSymbolKind = (skUnknown, skConstant, skTypedConstant, skTypeName, skVariable, skProcedure, skFunction);
     TSymbol = class
     public
         kind: TSymbolKind;
@@ -23,6 +23,12 @@ type
         destructor Destroy; override;
         procedure AddReference(ident: TIdentifier);
     end;
+
+const
+    NUM_OF_SYMBOL_KINDS = 7;
+    SymbolKindStr: array [0..NUM_OF_SYMBOL_KINDS-1] of shortstring = (
+        '', 'constant', 'typed constant', 'type', 'variable', 'procedure', 'function'
+    );
 
 var
     SymbolsList: TFPHashList;

@@ -101,6 +101,14 @@
         <Filename Value="Types\TypeDefs.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
+      <Unit>
+        <Filename Value="Types\EnumSpec.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Types\RangeSpec.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -110,7 +118,8 @@
       <Filename Value="ParseFile"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="Declarations;Statements;Types"/>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="Declarations;Statements;Types;File"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

@@ -7,7 +7,7 @@ interface
 
 uses
     ParserContext, Anchors, Token, ReservedWord, Identifier,
-    UsesClause, ConstSection, VarSection,
+    UsesClause, ConstSection, TypeSection, VarSection,
     Block;
 
 type
@@ -78,7 +78,7 @@ begin
         SetLength(implementations, len + 1);
         case nextTokenKind.reservedWordKind of
             rwConst: implementations[len] := TConstSection.Create(ctx);
-            //rwType: implementations[len] := TTypeSection.Create(ctx);
+            rwType: implementations[len] := TTypeSection.Create(ctx);
             rwVar: implementations[len] := TVarSection.Create(ctx);
             //rwProcedure: implementations[len] := TProcedureImpl.Create(ctx);
             //rwFunction: implementations[len] := TFunctionImpl.Create(ctx);

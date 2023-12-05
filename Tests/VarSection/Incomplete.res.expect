@@ -1,8 +1,8 @@
 {ProgramFile}{RW}program{/RW} {Ident}Incomplete{/Ident}{RW};{/RW}
 
 {VarSection}{RW}var{/RW}
-    {VarDecl}{SymbDecl}hello{/SymbDecl}{RW}:{/RW} {TypeSpec ERROR "Type identifier is undefined!"}{Ident}UndefinedType{/Ident}{/TypeSpec}{/VarDecl}{RW};{/RW}
-    {VarDecl}{SymbDecl}world{/SymbDecl}{RW}:{/RW}{TypeSpec MISSING /} {Str SKIPPED}'not a type'{/Str}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}hello{/SymbDecl}{RW}:{/RW} {TypeSpec ERROR "Identifier has not been declared!"}{Ident}UndefinedType{/Ident}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}world{/SymbDecl}{RW}:{/RW} {TypeSpec}{RangeSpec ERROR "Strings cannot be used in subrange declarations. Only character strings are allowed, e.g. 'A', #13, etc."}{Str}'not a type'{/Str}{RW '..' MISSING /}{/RangeSpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
     {VarDecl}{SymbDecl}goodOne{/SymbDecl}{RW}:{/RW} {TypeSpec}{Ident}integer{/Ident}{/TypeSpec}{/VarDecl}{RW};{/RW}
     {VarDecl}{SymbDecl}noType{/SymbDecl}{RW ':' MISSING /}{TypeSpec MISSING /}{/VarDecl}{RW};{/RW}
     {VarDecl}{SymbDecl}goodOne2{/SymbDecl}{RW}:{/RW} {TypeSpec}{Ident}integer{/Ident}{/TypeSpec}{/VarDecl}{RW};{/RW}

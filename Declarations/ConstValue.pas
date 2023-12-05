@@ -31,39 +31,42 @@ begin
 
     case tokenKind.primitiveKind of
         pkNumber:
-          begin
-              valueToken := TNumber.Create(ctx);
-              case TNumber(valueToken).kind of
-                  ntInteger: valueType := tkInteger;
-                  ntReal: valueType := tkReal;
-              end;
-          end;
+            begin
+                valueToken := TNumber.Create(ctx);
+                if TNumber(valueToken).kind = ntInteger then
+                    valueType := tkInteger
+                else
+                    valueType := tkReal;
+            end;
         pkString:
-          begin
-              valueToken := TStringToken.Create(ctx);
-              valueType := tkString;
-          end;
+            begin
+                valueToken := TStringToken.Create(ctx);
+                if TStringToken(valueToken).stringLen = 1 then
+                    valueType := tkChar
+                else
+                    valueType := tkString;
+            end;
         pkIdentifier:
-          begin
-            valueToken := TIdentifier.Create(ctx);
-            symbol := FindSymbol(TIdentifier(valueToken));
-            if symbol = nil then
             begin
-                state := tsError;
-                errorMessage := 'Constant has not been defined!';
-                ctx.MarkEndOfToken(Self);
-                exit;
-            end;
-            if symbol.kind <> skConstant then
-            begin
-                state := tsError;
-                errorMessage := 'Only constants can be used when defining other constants!';
-                ctx.MarkEndOfToken(Self);
-                exit;
-            end;
+                valueToken := TIdentifier.Create(ctx);
+                symbol := FindSymbol(TIdentifier(valueToken));
+                if symbol = nil then
+                begin
+                    state := tsError;
+                    errorMessage := 'Constant has not been defined!';
+                    ctx.MarkEndOfToken(Self);
+                    exit;
+                end;
+                if symbol.kind <> skConstant then
+                begin
+                    state := tsError;
+                    errorMessage := 'Only constants can be used when defining other constants!';
+                    ctx.MarkEndOfToken(Self);
+                    exit;
+                end;
 
-            valueType := symbol.typeDef.kind;
-          end
+                valueType := symbol.typeDef.kind;
+            end
     else
         start := ctx.cursorBeforeTrivia;
         state := tsMissing;
