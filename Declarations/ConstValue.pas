@@ -6,13 +6,13 @@ unit ConstValue;
 interface
 
 uses
-    ParserContext, Anchors, Token, Identifier, Number, StringToken;
+    ParserContext, Anchors, Symbols, TypeDefs, Token, Identifier, Number, StringToken;
 
 type
     TConstValue = class(TToken)
     public
         valueToken: TToken;
-        valueType: TPrimitiveKind;
+        valueType: TTypeKind;
         constructor Create(ctx: TParserContext; tokenKind: TTokenKind);
         destructor Destroy; override;
     end;
@@ -20,18 +20,50 @@ type
 implementation
 
 constructor TConstValue.Create(ctx: TParserContext; tokenKind: TTokenKind);
+var
+    symbol: TSymbol;
 begin
     ctx.Add(Self);
     tokenName := 'ConstValue';
     start := ctx.Cursor;
-    state := tsCorrect;
 
-    // todo: support cmTurboPascal and up constant expressions
+    // TODO: support turbo pascal constant expressions
 
     case tokenKind.primitiveKind of
-        pkNumber: valueToken := TNumber.Create(ctx);
-        pkString: valueToken := TStringToken.Create(ctx);
-        pkIdentifier: valueToken := TIdentifier.Create(ctx);
+        pkNumber:
+          begin
+              valueToken := TNumber.Create(ctx);
+              case TNumber(valueToken).kind of
+                  ntInteger: valueType := tkInteger;
+                  ntReal: valueType := tkReal;
+              end;
+          end;
+        pkString:
+          begin
+              valueToken := TStringToken.Create(ctx);
+              valueType := tkString;
+          end;
+        pkIdentifier:
+          begin
+            valueToken := TIdentifier.Create(ctx);
+            symbol := FindSymbol(TIdentifier(valueToken));
+            if symbol = nil then
+            begin
+                state := tsError;
+                errorMessage := 'Constant has not been defined!';
+                ctx.MarkEndOfToken(Self);
+                exit;
+            end;
+            if symbol.kind <> skConstant then
+            begin
+                state := tsError;
+                errorMessage := 'Only constants can be used when defining other constants!';
+                ctx.MarkEndOfToken(Self);
+                exit;
+            end;
+
+            valueType := symbol.typeDef.kind;
+          end
     else
         start := ctx.cursorBeforeTrivia;
         state := tsMissing;
@@ -39,7 +71,7 @@ begin
         exit;
     end;
 
-    valueType := tokenKind.primitiveKind;
+    state := tsCorrect;
     ctx.MarkEndOfToken(Self);
 end;
 

@@ -6,13 +6,14 @@ unit VarDecl;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, Token, ReservedWord, Identifier, TypeSpec;
+    ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord, Identifier, TypeSpec;
 
 type
     TVarDecl = class(TToken)
     public
         ident: TIdentifier;
         varType: TTypeSpec;
+        typeDef: PTypeDef;
         constructor Create(ctx: TParserContext);
         destructor Destroy; override;
     end;
@@ -51,11 +52,12 @@ begin
     // todo: variable initialization
 
     ctx.MarkEndOfToken(Self);
-    RegisterSymbol(ident, skVariable, ctx.parseUnit, ctx.Cursor);
+    RegisterSymbol(ident, skVariable, ctx.parseUnit, varType.typeDef, ctx.Cursor);
 end;
 
 destructor TVarDecl.Destroy;
 begin
+    inherited;
 end;
 
 end.

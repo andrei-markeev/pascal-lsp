@@ -6,7 +6,7 @@ unit UsesClause;
 interface
 
 uses
-    ParserContext, Anchors, Token, ReservedWord, Identifier;
+    ParserContext, Token, ReservedWord, Identifier;
 
 type
     TUsesClause = class(TToken)

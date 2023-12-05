@@ -1,4 +1,4 @@
-program VarSection1;
+program PredefinedTypes;
 
 var
     hello: string;

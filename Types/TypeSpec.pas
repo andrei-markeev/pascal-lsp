@@ -6,15 +6,12 @@ unit TypeSpec;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, TypeRef in 'Types/TypeRef.pas', Token, ReservedWord, Identifier;
+    ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord, Identifier;
 
 type
-    TTypeKind = (tkUnknown, tkInteger, tkBoolean, tkChar, tkEnum, tkSubrange, tkReal, tkString, tkPointer, tkArray, tkRecord, tkObject, tkClass, tkSet, tkFile);
-
     TTypeSpec = class(TToken)
     public
-        kind: TTypeKind;
-        typeReference: TTypeRef;
+        typeDef: TTypeDef;
         typeToken: TToken;
         constructor Create(ctx: TParserContext);
         destructor Destroy; override;
@@ -58,54 +55,54 @@ begin
     RemoveAnchor(rwMinus);
     RemoveAnchor(rwPlus);
 
-    kind := tkUnknown;
+    typeDef.kind := tkUnknown;
     case nextTokenKind.primitiveKind of
-        pkNumber: kind := tkSubrange;
+        pkNumber: typeDef.kind := tkInteger;
         pkIdentifier:
             begin
                 start := ctx.Cursor;
                 typeName := PeekIdentifier(ctx);
                 case LowerCase(typeName) of
                     { standard pascal predefined types }
-                    'integer': kind := tkInteger;
-                    'boolean': kind := tkBoolean;
-                    'char': kind := tkChar;
-                    'real': kind := tkReal;
+                    'integer': typeDef.kind := tkInteger;
+                    'boolean': typeDef.kind := tkBoolean;
+                    'char': typeDef.kind := tkChar;
+                    'real': typeDef.kind := tkReal;
                     { turbo pascal predefined types }
-                    'shortint': kind := tkInteger; // TODO: sizes and ranges
-                    'longint': kind := tkInteger;
-                    'byte': kind := tkInteger;
-                    'word': kind := tkInteger;
-                    'bytebool': kind := tkBoolean;
-                    'wordbool': kind := tkBoolean;
-                    'longbool': kind := tkBoolean;
-                    'single': kind := tkReal;
-                    'double': kind := tkReal;
-                    'extended': kind := tkReal;
-                    'comp': kind := tkReal;
-                    'pointer': kind := tkPointer;
+                    'shortint': typeDef.kind := tkInteger; // TODO: sizes and ranges
+                    'longint': typeDef.kind := tkInteger;
+                    'byte': typeDef.kind := tkInteger;
+                    'word': typeDef.kind := tkInteger;
+                    'bytebool': typeDef.kind := tkBoolean;
+                    'wordbool': typeDef.kind := tkBoolean;
+                    'longbool': typeDef.kind := tkBoolean;
+                    'single': typeDef.kind := tkReal;
+                    'double': typeDef.kind := tkReal;
+                    'extended': typeDef.kind := tkReal;
+                    'comp': typeDef.kind := tkReal;
+                    'pointer': typeDef.kind := tkPointer;
                     { object pascal predefined types }
                     // TODO
                 else
-                  symbol := FindSymbol(typeName);
+                    symbol := FindSymbol(typeName);
 
-                  if symbol = nil then
-                  begin
-                      typeToken := TIdentifier.Create(ctx);
-                      state := tsError;
-                      errorMessage := 'Type identifier is undefined!';
-                      ctx.MarkEndOfToken(Self);
-                      exit;
-                  end;
+                    if symbol = nil then
+                    begin
+                        typeToken := TIdentifier.Create(ctx);
+                        state := tsError;
+                        errorMessage := 'Type identifier is undefined!';
+                        ctx.MarkEndOfToken(Self);
+                        exit;
+                    end;
 
-                  // TODO
-                  // if symbol is of type skTypeName then assign type from symbol, add reference, etc.
-                  // if symbol is of type skConstant and is integer, then it's a subrange
-                  // if symbol is of type 'ordinal identifier', then it's a subrange
+                    // TODO
+                    // if symbol is of type skTypeName then assign type from symbol, add reference, etc.
+                    // if symbol is of type skConstant and is integer, then it's a subrange
+                    // if symbol is of type 'ordinal identifier', then it's a subrange
 
                 end;
 
-                if kind <> tkUnknown then
+                if typeDef.kind <> tkUnknown then
                 begin
                     typeToken := TIdentifier.Create(ctx);
                     state := tsCorrect;
@@ -116,13 +113,13 @@ begin
             end;
         pkUnknown:
             case nextTokenKind.reservedWordKind of
-                rwArray: kind := tkArray;
-                rwClass: kind := tkClass;
-                rwObject: kind := tkObject;
-                rwRecord: kind := tkRecord;
-                rwSet: kind := tkSet;
-                rwFile: kind := tkFile;
-                rwString: kind := tkString;
+                rwArray: typeDef.kind := tkArray;
+                rwClass: typeDef.kind := tkClass;
+                rwObject: typeDef.kind := tkObject;
+                rwRecord: typeDef.kind := tkRecord;
+                rwSet: typeDef.kind := tkSet;
+                rwFile: typeDef.kind := tkFile;
+                rwString: typeDef.kind := tkString;
                 rwPlus:
                     begin
                         TReservedWord.Create(ctx, rwPlus, true);
@@ -131,7 +128,8 @@ begin
                         nextTokenKind := SkipUntilAnchor(ctx);
                         RemoveAnchor(pkIdentifier);
                         RemoveAnchor(pkNumber);
-                        kind := tkSubrange;
+                        typeDef.kind := tkInteger;
+                        // TODO: start end range
                     end;
                 rwMinus:
                     begin
@@ -141,12 +139,19 @@ begin
                         nextTokenKind := SkipUntilAnchor(ctx);
                         RemoveAnchor(pkIdentifier);
                         RemoveAnchor(pkNumber);
-                        kind := tkSubrange;
+                        typeDef.kind := tkInteger;
+                        // TODO: start end range
+                    end;
+                rwOpenParenthesis:
+                    begin
+                        TReservedWord.Create(ctx, rwOpenParenthesis, true);
+                        typeDef.kind := tkEnum;
+                        // TODO: parse enum identifiers
                     end;
             end;
     end;
 
-    if kind = tkUnknown then
+    if typeDef.kind = tkUnknown then
     begin
         state := tsMissing;
         len := 0;
@@ -155,7 +160,7 @@ begin
 
     start := ctx.Cursor;
     state := tsCorrect;
-    case kind of
+    case typeDef.kind of
         tkString: TReservedWord.Create(ctx, rwString, true);
     else
         WriteLn('Not implemented!');

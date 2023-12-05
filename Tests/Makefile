@@ -1,13 +1,15 @@
 PAS := $(sort $(wildcard *.pas) $(wildcard */*.pas))
 RES = $(PAS:.pas=.res)
 
-.PHONY: all clean
+.PHONY: all parse clean
 
 %.res: %.pas
-	../build/ParseFile $<
 	diff --color $@.expect $@
 
-all: $(RES)
+all: parse $(RES)
+
+parse: $(PAS)
+	../build/ParseFile $(PAS)
 
 clean:
 	rm -f **/*.res

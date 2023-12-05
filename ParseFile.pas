@@ -4,13 +4,7 @@ program ParseFile;
 {$longstrings on}
 
 uses
-    sysutils, ParserContext, Symbols, Token, Anchors,
-    Block in 'Statements/Block.pas',
-    ConstDecl in 'Declarations/ConstDecl.pas',
-    ConstSection in 'Declarations/ConstSection.pas',
-    ConstValue in 'Declarations/ConstValue.pas',
-    UsesClause in 'Declarations/UsesClause.pas',
-    ProgramFile in 'File/ProgramFile.pas';
+    sysutils, ParserContext, Token, Symbols, TypeDefs, ProgramFile;
 
 procedure Parse(fileName: string);
 var
@@ -76,6 +70,7 @@ begin
 
     progFile.Free;
     SymbolsList.Clear;
+    TypesList.Clear;
 
 end;
 

@@ -6,7 +6,7 @@ unit Symbols;
 interface
 
 uses
-    math, contnrs, Token, Identifier;
+    math, contnrs, Token, Identifier, TypeDefs;
 
 type
     TSymbolKind = (skUnknown, skConstant, skTypedConstant, skTypeName, skVariable, skSubroutine);
@@ -15,10 +15,11 @@ type
         kind: TSymbolKind;
         name: shortstring;
         scopeStart: PChar;
-        scopeToken: TToken;
+        scope: TToken;
         declaration: TIdentifier;
+        typeDef: TTypeDef;
         references: array of TIdentifier;
-        constructor Create(symbolName: string; symbolKind: TSymbolKind; declaredAt: TIdentifier; scope: TToken; cursor: PChar);
+        constructor Create;
         destructor Destroy; override;
         procedure AddReference(ident: TIdentifier);
     end;
@@ -26,22 +27,35 @@ type
 var
     SymbolsList: TFPHashList;
 
-function RegisterSymbol(declaredAt: TIdentifier; symbolKind: TSymbolKind; scopeToken: TToken; cursor: PChar): TSymbol;
+function RegisterSymbol(declaredAt: TIdentifier; symbolKind: TSymbolKind; scopeToken: TToken; symbolType: TTypeDef; cursor: PChar): TSymbol;
 function FindSymbol(findName: shortstring): TSymbol; inline;
 function FindSymbol(ident: TIdentifier): TSymbol;
 
 implementation
 
-function RegisterSymbol(declaredAt: TIdentifier; symbolKind: TSymbolKind; scopeToken: TToken; cursor: PChar): TSymbol;
+function RegisterSymbol(declaredAt: TIdentifier; symbolKind: TSymbolKind; scopeToken: TToken; symbolType: TTypeDef; cursor: PChar): TSymbol;
 var
-    name: shortstring;
+    symbolName: shortstring;
 begin
     if declaredAt.len > 255 then
         WriteLn('ERROR: identifier of more than 255 symbols found! Only first 255 will be used for indexing.');
 
-    SetString(name, declaredAt.start, Min(255, declaredAt.len));
-    RegisterSymbol := TSymbol.Create(name, symbolKind, declaredAt, scopeToken, Cursor);
-    SymbolsList.Add(name, RegisterSymbol);
+    SetString(symbolName, declaredAt.start, Min(255, declaredAt.len));
+    RegisterSymbol := TSymbol.Create;
+    with RegisterSymbol do
+    begin
+        name := symbolName;
+        kind := symbolKind;
+        declaration := declaredAt;
+        SetLength(references, 1);
+        references[0] := declaredAt;
+        scopeStart := cursor;
+        scope := scopeToken;
+        typeDef := symbolType;
+        declaration.symbol := RegisterSymbol;
+        declaration.tokenName := 'SymbDecl';
+    end;
+    SymbolsList.Add(symbolName, RegisterSymbol);
 end;
 
 function FindSymbol(ident: TIdentifier): TSymbol;
@@ -56,23 +70,12 @@ begin
 end;
 
 function FindSymbol(findName: shortstring): TSymbol; inline;
-var
-    name: shortstring;
 begin
     FindSymbol := TSymbol(SymbolsList.Find(findName));
 end;
 
-constructor TSymbol.Create(symbolName: string; symbolKind: TSymbolKind; declaredAt: TIdentifier; scope: TToken; cursor: PChar);
+constructor TSymbol.Create;
 begin
-    name := symbolName;
-    kind := symbolKind;
-    declaration := declaredAt;
-    SetLength(references, 1);
-    references[0] := declaredAt;
-    scopeStart := cursor;
-    scopeToken := scope;
-    declaration.symbol := Self;
-    declaration.tokenName := 'SymbDecl';
 end;
 
 destructor TSymbol.Destroy;

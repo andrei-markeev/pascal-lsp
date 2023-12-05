@@ -6,8 +6,7 @@ unit VarSection;
 interface
 
 uses
-    ParserContext, Token, ReservedWord,
-    VarDecl in 'Declarations/VarDecl.pas';
+    ParserContext, Token, Anchors, ReservedWord, VarDecl;
 
 type
     TVarSection = class(TToken)
@@ -32,14 +31,17 @@ begin
 
     TReservedWord.Create(ctx, rwVar, true);
 
+    AddAnchor(rwSemiColon);
     repeat
+
         l := length(decls);
         SetLength(decls, l + 1);
         decls[l] := TVarDecl.Create(ctx);
 
         TReservedWord.Create(ctx, rwSemicolon, false);
         nextReservedWord := DetermineReservedWord(ctx);
-    until nextReservedWord <> rwUnknown;
+    until ctx.IsEOF or (nextReservedWord <> rwUnknown);
+    RemoveAnchor(rwSemiColon);
 
     ctx.MarkEndOfToken(Self);
 end;

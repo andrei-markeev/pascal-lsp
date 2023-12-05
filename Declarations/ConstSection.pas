@@ -6,8 +6,7 @@ unit ConstSection;
 interface
 
 uses
-    ParserContext, Token, ReservedWord,
-    ConstDecl in 'Declarations/ConstDecl.pas';
+    ParserContext, Token, ReservedWord, ConstDecl;
 
 type
     TConstSection = class(TToken)

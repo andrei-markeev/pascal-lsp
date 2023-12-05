@@ -6,9 +6,7 @@ unit ConstDecl;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, Token, ReservedWord, Identifier,
-    ConstValue in 'Declarations/ConstValue.pas',
-    TypeSpec in 'Types/TypeSpec.pas';
+    ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord, Identifier, ConstValue, TypeSpec;
 
 type
     TConstDecl = class(TToken)
@@ -26,6 +24,7 @@ constructor TConstDecl.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
     symbolKind: TSymbolKind;
+    typeDef: TTypeDef;
 begin
     tokenName := 'ConstDecl';
     ctx.Add(Self);
@@ -72,7 +71,12 @@ begin
     value := TConstValue.Create(ctx, nextTokenKind);
 
     ctx.MarkEndOfToken(Self);
-    RegisterSymbol(ident, symbolKind, ctx.parseUnit, ctx.Cursor);
+
+    if symbolKind = skConstant then
+        typeDef.kind := value.valueType
+    else
+        typeDef := constType.typeDef;
+    RegisterSymbol(ident, symbolKind, ctx.parseUnit, typeDef, ctx.Cursor);
 end;
 
 destructor TConstDecl.Destroy;

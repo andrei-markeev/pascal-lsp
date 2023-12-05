@@ -1,8 +1,9 @@
 #!/bin/bash
 
+rm build/*
+
 set -e
 
-rm build/*
-fpc -FEbuild/ -gl ParseFile.pas
+fpc -FEbuild/ -FuDeclarations\;Statements\;Types\;File -gl ParseFile.pas
 cd Tests
 make -B

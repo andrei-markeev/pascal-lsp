@@ -7,10 +7,8 @@ interface
 
 uses
     ParserContext, Anchors, Token, ReservedWord, Identifier,
-    UsesClause in 'Declarations/UsesClause.pas',
-    ConstSection in 'Declarations/ConstSection.pas',
-    VarSection in 'Declarations/VarSection.pas',
-    Block in 'Statements/Block.pas';
+    UsesClause, ConstSection, VarSection,
+    Block;
 
 type
     TProgramFile = class(TToken)
