@@ -21,7 +21,7 @@ var
     ident: TIdentifier;
 begin
     ctx.Add(Self);
-    tokenName := 'AssignmentStatement';
+    tokenName := 'Assignment';
     start := ctx.Cursor;
 
     ident := TIdentifier.Create(ctx);

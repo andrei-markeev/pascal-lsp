@@ -1,4 +1,4 @@
-{ProgramFile}{RW}program{/RW} {Ident}Incomplete{/Ident}{RW};{/RW}
+{ProgramFile}{RW}program{/RW} {SymbDecl}Incomplete{/SymbDecl}{RW};{/RW}
 
 {VarSection}{RW}var{/RW}
     {VarDecl}{SymbDecl}hello{/SymbDecl}{RW}:{/RW} {TypeSpec ERROR "Identifier has not been declared!"}{Ident}UndefinedType{/Ident}{/TypeSpec}{/VarDecl}{RW};{/RW}

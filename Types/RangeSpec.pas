@@ -82,6 +82,7 @@ begin
             exit;
         end;
 
+        symbol.AddReference(TIdentifier(outToken));
         if symbol.kind <> skConstant then
         begin
             state := tsError;

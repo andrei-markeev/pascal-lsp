@@ -1,4 +1,4 @@
-{ProgramFile}{RW}program{/RW} {Ident}PredefinedTypes{/Ident}{RW};{/RW}
+{ProgramFile}{RW}program{/RW} {SymbDecl}PredefinedTypes{/SymbDecl}{RW};{/RW}
 
 {VarSection}{RW}var{/RW}
     {VarDecl}{SymbDecl}hello{/SymbDecl}{RW}:{/RW} {TypeSpec}{RW}string{/RW}{/TypeSpec}{/VarDecl}{RW};{/RW}

@@ -1,4 +1,4 @@
-{ProgramFile}{RW}program{/RW} {Ident}Program8{/Ident}{RW};{/RW}
+{ProgramFile}{RW}program{/RW} {SymbDecl}Program8{/SymbDecl}{RW};{/RW}
 
 {$mode delphi}
 

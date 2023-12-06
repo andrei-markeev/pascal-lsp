@@ -1,4 +1,4 @@
-{ProgramFile}{RW}program{/RW} {Ident}Program10{/Ident}{RW};{/RW}
+{ProgramFile}{RW}program{/RW} {SymbDecl}Program10{/SymbDecl}{RW};{/RW}
 
 {ConstSection}{RW}const{/RW}
     {ConstDecl}{SymbDecl}test{/SymbDecl} {RW}={/RW} {ConstValue}{Num}10{/Num}{/ConstValue}{/ConstDecl}{RW};{/RW}

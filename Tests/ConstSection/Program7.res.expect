@@ -1,4 +1,4 @@
-{ProgramFile}{RW}program{/RW} {Ident}Program7{/Ident}{RW};{/RW}
+{ProgramFile}{RW}program{/RW} {SymbDecl}Program7{/SymbDecl}{RW};{/RW}
 
 {$mode tp}
 

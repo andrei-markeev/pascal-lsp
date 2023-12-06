@@ -1,4 +1,4 @@
-{ProgramFile}{RW}program{/RW} {Ident}UserTypes{/Ident}{RW};{/RW}
+{ProgramFile}{RW}program{/RW} {SymbDecl}UserTypes{/SymbDecl}{RW};{/RW}
 
 {TypeSection}{RW}type{/RW}
     {TypeDecl}{SymbDecl}myType{/SymbDecl} {RW}={/RW} {TypeSpec}{Ident}integer{/Ident}{/TypeSpec}{/TypeDecl}{RW};{/RW}

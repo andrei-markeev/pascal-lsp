@@ -117,7 +117,8 @@ begin
                         end;
                 end;
 
-                TIdentifier.Create(ctx);
+                ident := TIdentifier.Create(ctx);
+                symbol.AddReference(ident);
                 state := tsError;
                 errorMessage := 'Type expected!';
                 ctx.MarkEndOfToken(Self);

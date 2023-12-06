@@ -1,4 +1,4 @@
-{ProgramFile}{RW}program{/RW} {Ident}Program3{/Ident}{RW};{/RW}
+{ProgramFile}{RW}program{/RW} {SymbDecl}Program3{/SymbDecl}{RW};{/RW}
 
 {ConstSection}{RW}const{/RW}
     {ConstDecl}{SymbDecl}a{/SymbDecl} {RW}={/RW}{ConstValue MISSING /}{/ConstDecl}{RW ';' MISSING /}{/ConstSection} 
