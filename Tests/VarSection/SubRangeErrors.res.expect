@@ -1,0 +1,29 @@
+{ProgramFile}{RW}program{/RW} {SymbDecl}Subranges{/SymbDecl}{RW};{/RW}
+
+{ConstSection}{RW}const{/RW}
+    {ConstDecl}{SymbDecl}MIN{/SymbDecl} {RW}={/RW} {ConstValue}{Num}0{/Num}{/ConstValue}{/ConstDecl}{RW};{/RW}
+    {ConstDecl}{SymbDecl}MAX{/SymbDecl} {RW}={/RW} {ConstValue}{Num}10000{/Num}{/ConstValue}{/ConstDecl}{RW};{/RW}
+    {ConstDecl}{SymbDecl}CHAR_S{/SymbDecl} {RW}={/RW} {ConstValue}{Str}'S'{/Str}{/ConstValue}{/ConstDecl}{RW};{/RW}
+    {ConstDecl}{SymbDecl}CHAR_Y{/SymbDecl} {RW}={/RW} {ConstValue}{Str}'Y'{/Str}{/ConstValue}{/ConstDecl}{RW};{/RW}{/ConstSection}
+
+{TypeSection}{RW}type{/RW}
+    {TypeDecl}{SymbDecl}myRangeType{/SymbDecl} {RW}={/RW} {TypeSpec}{RangeSpec ERROR "Strings cannot be used in subrange declarations. Only character strings are allowed, e.g. 'A', #13, etc."}{Str}'ab'{/Str}{RW}..{/RW}{Str}'z'{/Str}{/RangeSpec}{/TypeSpec}{/TypeDecl}{RW};{/RW}
+    {TypeDecl}{SymbDecl}myEnumType{/SymbDecl} {RW}={/RW} {TypeSpec}{EnumSpec}{RW}({/RW}{SymbDecl}apple{/SymbDecl}{RW},{/RW} {SymbDecl}orange{/SymbDecl}{RW},{/RW} {SymbDecl}banana{/SymbDecl}{RW}){/RW}{/EnumSpec}{/TypeSpec}{/TypeDecl}{RW};{/RW}
+    {TypeDecl}{SymbDecl}myEnumType2{/SymbDecl} {RW}={/RW} {TypeSpec}{EnumSpec}{RW}({/RW}{SymbDecl}bicycle{/SymbDecl}{RW},{/RW} {SymbDecl}bike{/SymbDecl}{RW},{/RW} {SymbDecl}car{/SymbDecl}{RW},{/RW} {SymbDecl}truck{/SymbDecl}{RW}){/RW}{/EnumSpec}{/TypeSpec}{/TypeDecl}{RW};{/RW}{/TypeSection}
+
+{VarSection}{RW}var{/RW}
+    {VarDecl}{SymbDecl}intConstWithEnum{/SymbDecl}{RW}:{/RW} {TypeSpec}{RangeSpec ERROR "The type of orange (enum value) is not compatible with the inferred type of the subrange declaration (integer)!"}{SymbRef}MIN{/SymbRef}{RW}..{/RW}{SymbRef}orange{/SymbRef}{/RangeSpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}charWithConstInt{/SymbDecl}{RW}:{/RW} {TypeSpec}{RangeSpec ERROR "The type of MAX (integer) is not compatible with the inferred type of the subrange declaration (char range)!"}{Str}'a'{/Str}{RW}..{/RW}{SymbRef}MAX{/SymbRef}{/RangeSpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}constIntWithConstChar{/SymbDecl}{RW}:{/RW} {TypeSpec}{RangeSpec ERROR "The type of CHAR_S (char) is not compatible with the inferred type of the subrange declaration (integer)!"}{SymbRef}MIN{/SymbRef}{RW}..{/RW}{SymbRef}CHAR_S{/SymbRef}{/RangeSpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}typeSubrange{/SymbDecl}{RW}:{/RW} {TypeSpec}{SymbRef}myRangeType{/SymbRef}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}minusWithConstChar{/SymbDecl}{RW}:{/RW} {TypeSpec}{RangeSpec ERROR "Sign "-" cannot be applied to CHAR_S (char)!"}{RW}-{/RW}{SymbRef}CHAR_S{/SymbRef}{RW}..{/RW}{SymbRef}CHAR_Y{/SymbRef}{/RangeSpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}minusWithConstChar2{/SymbDecl}{RW}:{/RW} {TypeSpec}{RangeSpec ERROR "Sign "-" cannot be applied to CHAR_Y (char)!"}{SymbRef}CHAR_S{/SymbRef}{RW}..{/RW}{RW}-{/RW}{SymbRef}CHAR_Y{/SymbRef}{/RangeSpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}minusWithChar{/SymbDecl}{RW}:{/RW} {TypeSpec}{RangeSpec ERROR "Sign "-" cannot be applied to a char!"}{RW}-{/RW}{Str}'a'{/Str}{RW}..{/RW}{SymbRef}CHAR_S{/SymbRef}{/RangeSpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}minusWithChar2{/SymbDecl}{RW}:{/RW} {TypeSpec}{RangeSpec ERROR "Sign "-" cannot be applied to a char!"}{RW}-{/RW}{Str}'0'{/Str}{RW}..{/RW}{RW}-{/RW}{Str}'9'{/Str}{/RangeSpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}minusWithChar3{/SymbDecl}{RW}:{/RW} {TypeSpec}{RangeSpec ERROR "Sign "-" cannot be applied to a char!"}{RW}-{/RW}{Str}'a'{/Str}{RW}..{/RW}{Str}'d'{/Str}{/RangeSpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}minusWithChar4{/SymbDecl}{RW}:{/RW} {TypeSpec}{RangeSpec ERROR "Sign "-" cannot be applied to a char!"}{Str}'d'{/Str}{RW}..{/RW}{RW}-{/RW}{Str}'z'{/Str}{/RangeSpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}goodOne{/SymbDecl}{RW}:{/RW} {TypeSpec}{RangeSpec}{Num}5{/Num}{RW}..{/RW}{Num}&123{/Num}{/RangeSpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}incompatibleEnums{/SymbDecl}{RW}:{/RW} {TypeSpec}{RangeSpec ERROR "Using values from different enums in the same subrange declaration is not supported!"}{SymbRef}orange{/SymbRef}{RW}..{/RW}{SymbRef}truck{/SymbRef}{/RangeSpec}{/TypeSpec}{/VarDecl}{RW};{/RW}{/VarSection}
+
+{Block}{RW}begin{/RW}
+{RW}end{/RW}{/Block}{RW}.{/RW}{/ProgramFile}

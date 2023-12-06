@@ -9,7 +9,11 @@ uses
     contnrs, CompilationMode;
 
 type
-    TTypeKind = (tkUnknown, tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum, tkEnumMember, tkReal, tkString, tkPointer, tkArray, tkDynamicArray, tkRecord, tkObject, tkClass, tkSet, tkFile, tkSubroutine, tkUnitName);
+    TTypeKind = (
+        tkUnknown, tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum, tkEnumMember,
+        tkReal, tkString, tkPointer, tkArray, tkDynamicArray,
+        tkRecord, tkObject, tkClass, tkSet, tkFile, tkProcedure, tkFunction, tkUnitName
+    );
 
     PTypeDef = ^TTypeDef;
     TTypeDef = record
@@ -25,9 +29,11 @@ type
     end;
 
 const
-    NUM_OF_TYPE_KINDS = 16;
+    NUM_OF_TYPE_KINDS = 20;
     TypeKindStr: array[0..NUM_OF_TYPE_KINDS - 1] of shortstring = (
-        '', 'integer', 'boolean', 'char', 'char range', 'enumeration', 'real', 'string', 'pointer', 'array', 'dynamic array', 'record', 'object', 'class', 'set', 'file'
+        '', 'integer', 'boolean', 'char', 'char range', 'enumeration', 'enum value',
+        'real', 'string', 'pointer', 'array', 'dynamic array',
+        'record', 'object', 'class', 'set', 'file', 'procedure', 'function', 'unit name'
     );
 
 var

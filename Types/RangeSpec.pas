@@ -11,8 +11,6 @@ uses
 type
     TRangeSpec = class(TToken)
     private
-        procedure AddBoundaryAnchor;
-        procedure RemoveBoundaryAnchor;
         procedure ParseBoundary(ctx: TParserContext; nextTokenKind: TTokenKind; var outToken: TToken);
     public
         fromToken: TToken;
@@ -23,51 +21,19 @@ type
 
 implementation
 
-procedure TRangeSpec.AddBoundaryAnchor;
-begin
-    AddAnchor(pkIdentifier);
-    case typeDef.kind of
-        tkInteger:
-            begin
-                AddAnchor(rwMinus);
-                AddAnchor(rwPlus);
-                AddAnchor(pkNumber);
-            end;
-        tkChar, tkCharRange: AddAnchor(pkString);
-    end;
-end;
-
-procedure TRangeSpec.RemoveBoundaryAnchor;
-begin
-    AddAnchor(pkIdentifier);
-    case typeDef.kind of
-        tkInteger:
-            begin
-                RemoveAnchor(rwMinus);
-                RemoveAnchor(rwPlus);
-                RemoveAnchor(pkNumber);
-            end;
-        tkChar, tkCharRange: RemoveAnchor(pkString);
-    end;
-end;
-
 procedure TRangeSpec.ParseBoundary(ctx: TParserContext; nextTokenKind: TTokenKind; var outToken: TToken);
 var
     identName: shortstring;
     symbol: TSymbol;
     typesAreCompatible: boolean;
+    sign: TReservedWordKind;
 begin
+    sign := rwUnknown;
     if nextTokenKind.reservedWordKind in [rwMinus, rwPlus] then
     begin
+        sign := nextTokenKind.reservedWordKind;
         TReservedWord.Create(ctx, nextTokenKind.reservedWordKind, true);
-        AddAnchor(pkIdentifier);
-        AddAnchor(pkNumber);
-        nextTokenKind := SkipUntilAnchor(ctx);
-        RemoveAnchor(pkIdentifier);
-        RemoveAnchor(pkNumber);
-        typeDef.kind := tkInteger;
-        if nextTokenKind.reservedWordKind = rwMinus then
-            typeDef.isSigned := true;
+        nextTokenKind := DetermineNextTokenKind(ctx);
     end;
 
     if nextTokenKind.primitiveKind = pkIdentifier then
@@ -102,7 +68,17 @@ begin
         if not typesAreCompatible then
         begin
             state := tsError;
-            errorMessage := 'The type of ' + identName + ' (' + TypeKindStr[ord(symbol.typeDef.kind)] + ') is not compatible with the inferred type of the subrange declaration (' + TypeKindStr[ord(typeDef.kind)] + ')!';
+            if typeDef.kind = symbol.typeDef.kind then
+                errorMessage := 'Using values from different enums in the same subrange declaration is not supported!'
+            else
+                errorMessage := 'The type of ' + identName + ' (' + TypeKindStr[ord(symbol.typeDef.kind)] + ') is not compatible with the inferred type of the subrange declaration (' + TypeKindStr[ord(typeDef.kind)] + ')!';
+            exit;
+        end;
+
+        if (sign <> rwUnknown) and not (symbol.typeDef.kind in [tkInteger, tkReal]) then
+        begin
+            state := tsError;
+            errorMessage := 'Sign "' + ReservedWordStr[ord(sign)] + '" cannot be applied to ' + identName + ' (' + TypeKindStr[ord(symbol.typeDef.kind)] + ')!';
             exit;
         end;
 
@@ -123,6 +99,13 @@ begin
         begin
             state := tsError;
             errorMessage := 'Strings cannot be used in subrange declarations. Only character strings are allowed, e.g. ''A'', #13, etc.';
+            exit;
+        end;
+
+        if sign <> rwUnknown then
+        begin
+            state := tsError;
+            errorMessage := 'Sign "' + ReservedWordStr[ord(sign)] + '" cannot be applied to a char!';
             exit;
         end;
 
@@ -149,9 +132,19 @@ begin
 
     TReservedWord.Create(ctx, rwRange, false);
 
-    AddBoundaryAnchor;
+    AddAnchor(pkIdentifier);
+    AddAnchor(rwMinus);
+    AddAnchor(rwPlus);
+    AddAnchor(pkNumber);
+    AddAnchor(pkString);
+
     nextTokenKind := SkipUntilAnchor(ctx);
-    RemoveBoundaryAnchor;
+
+    RemoveAnchor(pkIdentifier);
+    RemoveAnchor(rwMinus);
+    RemoveAnchor(rwPlus);
+    RemoveAnchor(pkNumber);
+    RemoveAnchor(pkString);
 
     ParseBoundary(ctx, nextTokenKind, toToken);
 

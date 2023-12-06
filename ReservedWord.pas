@@ -59,14 +59,12 @@ type
         constructor Create(ctx: TParserContext; expectedKind: TReservedWordKind; peeked: boolean);
     end;
 
-    function DetermineReservedWord(ctx: TParserContext): TReservedWordKind;
-    function PeekReservedWord(ctx: TParserContext; kind: TReservedWordKind): boolean;
-    function PeekReservedWord(ctx: TParserContext; expected: string): boolean; inline;
-
-implementation
+function DetermineReservedWord(ctx: TParserContext): TReservedWordKind;
+function PeekReservedWord(ctx: TParserContext; kind: TReservedWordKind): boolean;
+function PeekReservedWord(ctx: TParserContext; expected: string): boolean; inline;
 
 const
-    ReservedWords: array [0..NUM_OF_RESERVED_WORDS - 1] of shortstring = (
+    ReservedWordStr: array [0..NUM_OF_RESERVED_WORDS - 1] of shortstring = (
         '', '',
         { standard pascal reserved words }
         'and', 'array',
@@ -108,6 +106,8 @@ const
         '.', ',', ':', ';', '..', '@'
     );
 
+implementation
+
 function IsTurboPascalReservedWord(rwKind: TReservedWordKind): boolean; inline;
 begin
     IsTurboPascalReservedWord := rwKind in [
@@ -142,7 +142,7 @@ end;
 
 function PeekReservedWord(ctx: TParserContext; kind: TReservedWordKind): boolean;
 begin
-    PeekReservedWord := PeekReservedWord(ctx, ReservedWords[ord(kind)]);
+    PeekReservedWord := PeekReservedWord(ctx, ReservedWordStr[ord(kind)]);
 end;
 
 function DetermineReservedWord(ctx: TParserContext): TReservedWordKind;
@@ -326,7 +326,7 @@ begin
     if (ctx.mode < cmObjectFreePascal) and IsObjectPascalReservedWord(maybe) then
         maybe := rwUnknown;
 
-    if (maybe <> rwUnknown) and PeekReservedWord(ctx, ReservedWords[ord(maybe)]) then
+    if (maybe <> rwUnknown) and PeekReservedWord(ctx, ReservedWordStr[ord(maybe)]) then
         found := maybe;
 
     DetermineReservedWord := found;
@@ -338,7 +338,7 @@ var
     expected: shortstring;
 begin
     kind := expectedKind;
-    expected := ReservedWords[ord(kind)];
+    expected := ReservedWordStr[ord(kind)];
     tokenName := 'RW';
     isPrimitive := true;
 
