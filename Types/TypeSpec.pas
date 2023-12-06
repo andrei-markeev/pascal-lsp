@@ -12,9 +12,7 @@ type
     TTypeSpec = class(TToken)
     public
         typeDef: TTypeDef;
-        typeToken: TToken;
         constructor Create(ctx: TParserContext);
-        destructor Destroy; override;
     end;
 
 implementation
@@ -22,6 +20,9 @@ implementation
 constructor TTypeSpec.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
+    rangeSpecToken: TRangeSpec;
+    enumSpecToken: TEnumSpec;
+    ident: TIdentifier;
     identName: shortstring;
     symbol: TSymbol;
     found: pointer;
@@ -65,8 +66,8 @@ begin
         pkNumber, pkString:
             begin
                 start := ctx.Cursor;
-                typeToken := TRangeSpec.Create(ctx, nextTokenKind);
-                typeDef := TRangeSpec(typeToken).typeDef;
+                rangeSpecToken := TRangeSpec.Create(ctx, nextTokenKind);
+                typeDef := rangeSpecToken.typeDef;
                 state := tsCorrect;
                 ctx.MarkEndOfToken(Self);
                 exit;
@@ -81,7 +82,7 @@ begin
                     found := TypesList.Find(identName);
                     if found = nil then
                     begin
-                        typeToken := TIdentifier.Create(ctx);
+                        TIdentifier.Create(ctx);
                         state := tsError;
                         errorMessage := 'Identifier has not been declared!';
                         ctx.MarkEndOfToken(Self);
@@ -89,7 +90,7 @@ begin
                     end;
 
                     typeDef := PTypeDef(found)^;
-                    typeToken := TIdentifier.Create(ctx);
+                    TIdentifier.Create(ctx);
                     state := tsCorrect;
                     ctx.MarkEndOfToken(Self);
                     exit;
@@ -99,8 +100,8 @@ begin
                     skTypeName:
                         begin
                             typeDef := symbol.typeDef;
-                            typeToken := TIdentifier.Create(ctx);
-                            symbol.AddReference(TIdentifier(typeToken));
+                            ident := TIdentifier.Create(ctx);
+                            symbol.AddReference(ident);
                             state := tsCorrect;
                             ctx.MarkEndOfToken(Self);
                             exit;
@@ -108,15 +109,15 @@ begin
                     skConstant:
                         begin
                             start := ctx.Cursor;
-                            typeToken := TRangeSpec.Create(ctx, nextTokenKind);
-                            typeDef := TRangeSpec(typeToken).typeDef;
+                            rangeSpecToken := TRangeSpec.Create(ctx, nextTokenKind);
+                            typeDef := rangeSpecToken.typeDef;
                             state := tsCorrect;
                             ctx.MarkEndOfToken(Self);
                             exit;
                         end;
                 end;
 
-                typeToken := TIdentifier.Create(ctx);
+                TIdentifier.Create(ctx);
                 state := tsError;
                 errorMessage := 'Type expected!';
                 ctx.MarkEndOfToken(Self);
@@ -135,8 +136,8 @@ begin
                 rwPlus, rwMinus:
                     begin
                         start := ctx.Cursor;
-                        typeToken := TRangeSpec.Create(ctx, nextTokenKind);
-                        typeDef := TRangeSpec(typeToken).typeDef;
+                        rangeSpecToken := TRangeSpec.Create(ctx, nextTokenKind);
+                        typeDef := rangeSpecToken.typeDef;
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
                         exit;
@@ -144,8 +145,8 @@ begin
                 rwOpenParenthesis:
                     begin
                         start := ctx.Cursor;
-                        typeToken := TEnumSpec.Create(ctx);
-                        typeDef := TEnumSpec(typeToken).typeDef;
+                        enumSpecToken := TEnumSpec.Create(ctx);
+                        typeDef := enumSpecToken.typeDef;
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
                         exit;
@@ -163,16 +164,13 @@ begin
     start := ctx.Cursor;
     state := tsCorrect;
     case typeDef.kind of
-        tkString: typeToken := TReservedWord.Create(ctx, rwString, true);
+        tkString: TReservedWord.Create(ctx, rwString, true);
     else
+        // TODO: implement more types
         WriteLn('Not implemented!');
     end;
 
     ctx.MarkEndOfToken(Self);
-end;
-
-destructor TTypeSpec.Destroy;
-begin
 end;
 
 end.

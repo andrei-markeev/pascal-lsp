@@ -15,7 +15,6 @@ type
         varType: TTypeSpec;
         typeDef: PTypeDef;
         constructor Create(ctx: TParserContext);
-        destructor Destroy; override;
     end;
 
 implementation
@@ -66,11 +65,6 @@ begin
     ctx.MarkEndOfToken(Self);
     for i := 0 to l - 1 do
         RegisterSymbol(idents[i], skVariable, ctx.parseUnit, varType.typeDef, ctx.Cursor);
-end;
-
-destructor TVarDecl.Destroy;
-begin
-    inherited;
 end;
 
 end.

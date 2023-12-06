@@ -9,7 +9,7 @@ uses
     math, contnrs, Token, Identifier, TypeDefs;
 
 type
-    TSymbolKind = (skUnknown, skConstant, skTypedConstant, skTypeName, skVariable, skProcedure, skFunction);
+    TSymbolKind = (skUnknown, skConstant, skTypedConstant, skTypeName, skVariable, skProcedure, skFunction, skUnitName);
     TSymbol = class
     public
         kind: TSymbolKind;
@@ -59,6 +59,7 @@ begin
         scope := scopeToken;
         typeDef := symbolType;
         declaration.symbol := RegisterSymbol;
+        declaration.typeDef := symbolType;
         declaration.tokenName := 'SymbDecl';
     end;
     SymbolsList.Add(symbolName, RegisterSymbol);
@@ -96,6 +97,8 @@ begin
     l := length(references);
     SetLength(references, l + 1);
     references[l] := ident;
+    ident.symbol := Self;
+    ident.typeDef := typeDef;
     ident.tokenName := 'SymbRef';
 end;
 

@@ -6,10 +6,10 @@ unit StringToken;
 interface
 
 uses
-    CompilationMode, ParserContext, Token;
+    CompilationMode, TypeDefs, ParserContext, Token, TypedToken;
 
 type
-    TStringToken = class(TToken)
+    TStringToken = class(TTypedToken)
     public
         stringLen: integer;
         charValue: char;
@@ -94,6 +94,10 @@ begin
 
     len := ctx.Cursor - start;
     state := tsCorrect;
+    if stringLen = 1 then
+        typeDef := charType
+    else
+        typeDef := stringType;
 
     ctx.Add(Self);
 end;

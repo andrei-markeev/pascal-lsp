@@ -6,7 +6,7 @@ unit ParserContext;
 interface
 
 uses
-    strings, Token, CompilationMode, TypeDefs;
+    strings, Token, TypedToken, CompilationMode, TypeDefs;
 
 type
     TParserContext = class
@@ -31,6 +31,7 @@ type
         procedure Add(token: TToken);
         procedure MarkEndOfToken(token: TToken);
     end;
+    TCreateTokenFunc = function(ctx: TParserContext): TTypedToken;
 
 implementation
 
@@ -47,7 +48,10 @@ begin
 end;
 
 destructor TParserContext.Destroy;
+var i: integer;
 begin
+    for i := 0 to length(Tokens) - 1 do
+        Tokens[i].Free;
     SetLength(Tokens, 0);
 end;
 
@@ -150,6 +154,7 @@ begin
     endOf.start := endCursor;
     endOf.len := 0;
     endOf.state := tsEndOf;
+    token.endMarker := endOf;
     Add(endOf);
 end;
 

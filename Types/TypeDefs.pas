@@ -9,7 +9,7 @@ uses
     contnrs, CompilationMode;
 
 type
-    TTypeKind = (tkUnknown, tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum, tkEnumMember, tkReal, tkString, tkPointer, tkArray, tkDynamicArray, tkRecord, tkObject, tkClass, tkSet, tkFile);
+    TTypeKind = (tkUnknown, tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum, tkEnumMember, tkReal, tkString, tkPointer, tkArray, tkDynamicArray, tkRecord, tkObject, tkClass, tkSet, tkFile, tkSubroutine, tkUnitName);
 
     PTypeDef = ^TTypeDef;
     TTypeDef = record
@@ -18,8 +18,7 @@ type
         tkReal: (realSize: integer);
         tkBoolean: (boolSize: integer);
         tkCharRange: (charRangeStart: char; charRangeEnd: char);
-        tkEnum: (values: TFPHashList);
-        tkEnumMember: (enumSpec: Pointer);
+        tkEnum, tkEnumMember: (enumSpec: Pointer);
         tkPointer: (isTyped: boolean; toType: PTypeDef);
         tkArray: (startIndex: integer; endIndex: integer; arrayOfType: PTypeDef);
         tkDynamicArray: (dynArrayOfType: PTypeDef);
@@ -34,11 +33,6 @@ const
 var
     TypesList: TFPHashList;
 
-procedure InitPredefinedTypes(mode: TCompilationMode);
-
-implementation
-
-var
     byteType: TTypeDef = (kind: tkInteger; intSize: 1; isSigned: false; rangeStart: 0; rangeEnd: 255);
     shortintType: TTypeDef = (kind: tkInteger; intSize: 1; isSigned: true; rangeStart: -128; rangeEnd: 127);
     wordType: TTypeDef = (kind: tkInteger; intSize: 2; isSigned: false; rangeStart: 0; rangeEnd: 65535);
@@ -62,6 +56,11 @@ var
     currencyType: TTypeDef = (kind: tkReal; realSize: 8);
 
     pointerType: TTypeDef = (kind: tkPointer);
+    stringType: TTypeDef = (kind: tkString);
+
+procedure InitPredefinedTypes(mode: TCompilationMode);
+
+implementation
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
 begin

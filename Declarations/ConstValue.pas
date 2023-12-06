@@ -14,7 +14,6 @@ type
         valueToken: TToken;
         valueType: TTypeKind;
         constructor Create(ctx: TParserContext; tokenKind: TTokenKind);
-        destructor Destroy; override;
     end;
 
 implementation
@@ -33,7 +32,7 @@ begin
         pkNumber:
             begin
                 valueToken := TNumber.Create(ctx);
-                if TNumber(valueToken).kind = ntInteger then
+                if TNumber(valueToken).typeDef.kind = tkInteger then
                     valueType := tkInteger
                 else
                     valueType := tkReal;
@@ -76,10 +75,6 @@ begin
 
     state := tsCorrect;
     ctx.MarkEndOfToken(Self);
-end;
-
-destructor TConstValue.Destroy;
-begin
 end;
 
 end.

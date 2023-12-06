@@ -4,8 +4,8 @@ program ParseFile;
 {$longstrings on}
 
 uses
-    sysutils, ParserContext, Token, Symbols, TypeDefs, EnumSpec, RangeSpec,
-    ProgramFile;
+    sysutils, ParserContext, Token, Symbols, Expression, Factor,
+    SimpleExpression, Term, TypeDefs, EnumSpec, RangeSpec, ProgramFile;
 
 procedure Parse(fileName: string);
 var
@@ -40,6 +40,9 @@ begin
         cur := ctx.Tokens[i];
         j := cur.start - PChar(contents);
         if j > len then continue;
+
+        if cur.state = tsInvisible then
+            continue;
 
         if cur.state = tsMissing then inserts[j] := inserts[j] + '{' + cur.tokenName + ' MISSING /}'
         else if cur.state = tsSkipped then inserts[j] := inserts[j] + '{' + cur.tokenName + ' SKIPPED}'

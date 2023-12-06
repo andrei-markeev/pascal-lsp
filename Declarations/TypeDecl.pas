@@ -12,10 +12,8 @@ type
     TTypeDecl = class(TToken)
     public
         ident: TIdentifier;
-        varType: TTypeSpec;
-        typeDef: PTypeDef;
+        declType: TTypeSpec;
         constructor Create(ctx: TParserContext);
-        destructor Destroy; override;
     end;
 
 implementation
@@ -47,15 +45,10 @@ begin
     RemoveAnchor(rwEquals);
 
     TReservedWord.Create(ctx, rwEquals, nextTokenKind.reservedWordKind = rwEquals);
-    varType := TTypeSpec.Create(ctx);
+    declType := TTypeSpec.Create(ctx);
 
     ctx.MarkEndOfToken(Self);
-    RegisterSymbol(ident, skTypeName, ctx.parseUnit, varType.typeDef, ctx.Cursor);
-end;
-
-destructor TTypeDecl.Destroy;
-begin
-    inherited;
+    RegisterSymbol(ident, skTypeName, ctx.parseUnit, declType.typeDef, ctx.Cursor);
 end;
 
 end.

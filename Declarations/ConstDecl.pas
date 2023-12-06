@@ -15,7 +15,6 @@ type
         constType: TTypeSpec;
         value: TConstValue;
         constructor Create(ctx: TParserContext);
-        destructor Destroy; override;
     end;
 
 implementation
@@ -77,12 +76,6 @@ begin
     else
         typeDef := constType.typeDef;
     RegisterSymbol(ident, symbolKind, ctx.parseUnit, typeDef, ctx.Cursor);
-end;
-
-destructor TConstDecl.Destroy;
-begin
-    ident.Free;
-    value.Free;
 end;
 
 end.

@@ -13,7 +13,6 @@ type
     public
         decls: array of TConstDecl;
         constructor Create(ctx: TParserContext);
-        destructor Destroy; override;
     end;
 
 implementation
@@ -41,10 +40,6 @@ begin
     until nextReservedWord <> rwUnknown;
 
     ctx.MarkEndOfToken(Self);
-end;
-
-destructor TConstSection.Destroy;
-begin
 end;
 
 end.

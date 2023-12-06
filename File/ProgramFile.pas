@@ -6,19 +6,14 @@ unit ProgramFile;
 interface
 
 uses
-    ParserContext, Anchors, Token, ReservedWord, Identifier,
+    ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord, Identifier,
     UsesClause, ConstSection, TypeSection, VarSection,
     Block;
 
 type
     TProgramFile = class(TToken)
     public
-        name: TIdentifier;
-        usesClause: TUsesClause;
-        implementations: array of TToken;
-        initSection: TToken;
         constructor Create(ctx: TParserContext);
-        destructor Destroy; override;
     end;
 
 
@@ -28,6 +23,8 @@ constructor TProgramFile.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
     nextIsComma: boolean;
+    ident: TIdentifier;
+    programTypeDef: TTypeDef;
 begin
     tokenName := 'ProgramFile';
     ctx.parseUnit := Self;
@@ -36,7 +33,9 @@ begin
     start := ctx.Cursor;
     TReservedWord.Create(ctx, rwProgram, false);
 
-    name := TIdentifier.Create(ctx);
+    ident := TIdentifier.Create(ctx);
+    programTypeDef.kind := tkUnitName;
+    RegisterSymbol(ident, skUnitName, Self, programTypeDef, ctx.Cursor);
 
     // programs parameters are ignored by FPC so we also ignore them
     ctx.SkipTrivia;
@@ -61,7 +60,7 @@ begin
     TReservedWord.Create(ctx, rwSemiColon, false);
 
     if PeekReservedWord(ctx, rwUses) then
-        usesClause := TUsesClause.Create(ctx);
+        TUsesClause.Create(ctx);
 
     AddAnchor(rwConst);
     AddAnchor(rwType);
@@ -74,14 +73,12 @@ begin
     nextTokenKind := SkipUntilAnchor(ctx);
     while nextTokenKind.reservedWordKind in [rwConst, rwType, rwVar, rwProcedure, rwFunction] do
     begin
-        len := length(implementations);
-        SetLength(implementations, len + 1);
         case nextTokenKind.reservedWordKind of
-            rwConst: implementations[len] := TConstSection.Create(ctx);
-            rwType: implementations[len] := TTypeSection.Create(ctx);
-            rwVar: implementations[len] := TVarSection.Create(ctx);
-            //rwProcedure: implementations[len] := TProcedureImpl.Create(ctx);
-            //rwFunction: implementations[len] := TFunctionImpl.Create(ctx);
+            rwConst: TConstSection.Create(ctx);
+            rwType: TTypeSection.Create(ctx);
+            rwVar: TVarSection.Create(ctx);
+            //rwProcedure: TProcedureImpl.Create(ctx);
+            //rwFunction: TFunctionImpl.Create(ctx);
         end;
         nextTokenKind := SkipUntilAnchor(ctx);
     end;
@@ -94,22 +91,10 @@ begin
     RemoveAnchor(rwBegin);
     RemoveAnchor(rwEnd);
 
-    initSection := TBlock.Create(ctx);
-
+    TBlock.Create(ctx);
     TReservedWord.Create(ctx, rwDot, false);
 
     ctx.MarkEndOfToken(Self);
-end;
-
-destructor TProgramFile.Destroy;
-var
-    i: integer;
-begin
-    if usesClause <> nil then
-        usesClause.Free;
-    for i := 0 to length(implementations) - 1 do
-        implementations[i].Free;
-    initSection.Free;
 end;
 
 end.

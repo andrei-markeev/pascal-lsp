@@ -9,7 +9,7 @@ uses
     strings, CompilationMode, ParserContext, Token;
 
 const
-    NUM_OF_RESERVED_WORDS = 93;
+    NUM_OF_RESERVED_WORDS = 94;
 
 type
     TReservedWordKind = (
@@ -51,13 +51,12 @@ type
         rwAssign, rwPlus, rwMinus, rwMultiply, rwDivide, rwHat,
         rwEquals, rwNotEqual, rwLess, rwMore, rwLessOrEqual, rwMoreOrEqual,
         rwOpenParenthesis, rwCloseParenthesis, rwOpenSquareBracket, rwCloseSquareBracket,
-        rwDot, rwComma, rwColon, rwSemiColon, rwRange
+        rwDot, rwComma, rwColon, rwSemiColon, rwRange, rwAt
     );
     TReservedWord = class(TToken)
     public
         kind: TReservedWordKind;
         constructor Create(ctx: TParserContext; expectedKind: TReservedWordKind; peeked: boolean);
-        destructor Destroy; override;
     end;
 
     function DetermineReservedWord(ctx: TParserContext): TReservedWordKind;
@@ -106,7 +105,7 @@ const
         ':=', '+', '-', '*', '/', '^',
         '=', '<>', '<', '>', '<=', '>=',
         '(', ')', '[', ']',
-        '.', ',', ':', ';', '..'
+        '.', ',', ':', ';', '..', '@'
     );
 
 function IsTurboPascalReservedWord(rwKind: TReservedWordKind): boolean; inline;
@@ -178,6 +177,7 @@ begin
                 else found := rwDot;
             ',': found := rwComma;
             ';': found := rwSemiColon;
+            '@': if ctx.mode >= cmTurboPascal then found := rwAt;
         else
             found := rwInvalid;
         end;
@@ -361,10 +361,6 @@ begin
     inc(ctx.Cursor, len);
     ctx.Add(Self);
 
-end;
-
-destructor TReservedWord.Destroy;
-begin
 end;
 
 end.

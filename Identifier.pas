@@ -6,10 +6,10 @@ unit Identifier;
 interface
 
 uses
-    math, ParserContext, Token;
+    math, ParserContext, Token, TypedToken;
 
 type
-    TIdentifier = class(TToken)
+    TIdentifier = class(TTypedToken)
     public
         symbol: pointer;
         constructor Create(ctx: TParserContext);

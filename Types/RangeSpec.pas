@@ -19,7 +19,6 @@ type
         toToken: TToken;
         typeDef: TTypeDef;
         constructor Create(ctx: TParserContext; nextTokenKind: TTokenKind);
-        destructor Destroy; override;
     end;
 
 implementation
@@ -156,12 +155,6 @@ begin
     ParseBoundary(ctx, nextTokenKind, toToken);
 
     ctx.MarkEndOfToken(Self);
-end;
-
-destructor TRangeSpec.Destroy;
-begin
-    if typeDef.values <> nil then
-        typeDef.values.Free;
 end;
 
 end.

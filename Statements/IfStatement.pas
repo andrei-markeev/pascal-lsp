@@ -1,25 +1,17 @@
 unit IfStatement;
 
 {$mode objfpc}
+{$longstrings on}
 
 interface
 
 uses
-    classes, Parser, ParserContext, Statement, Expression, ReservedWord;
+    ParserContext, Token, Statement, Expression, ReservedWord;
 
 type
-    TIfStatement = class(TStatement)
-    private
-        context: TParserContext;
+    TIfStatement = class(TToken)
     public
-        ifToken: TReservedWord;
-        condition: TExpression;
-        thenToken: TReservedWord;
-        statement: TStatement;
-        elseToken: TReservedToken;
-        elseStatement: TStatement;
         constructor Create(ctx: ParserContext)
-        destructor Destroy; override;
     end;
 
 implementation
@@ -28,28 +20,23 @@ constructor TIfStatement.Create(ctx: TParserContext);
 var
     hasElse: boolean;
 begin
-    ifToken := TReservedWord.Create(ctx, 'if');
-    condition := TExpression.Create(ctx);
-    thenToken := TReservedWord.Create(ctx, 'then');
-    statement := TStatement.Create(ctx);
-    hasElse := ctx.Peek('else');
+    ctx.Add(Self);
+    tokenName := 'If';
+    if not PeekReservedWord(ctx, rwIf) then
+    begin
+        state := tsMissing;
+        len := 0;
+        exit;
+    end;
+    TReservedWord.Create(ctx, rwIf, true);
+    TExpression.Create(ctx);
+    TReservedWord.Create(ctx, rwThen, false);
+    TStatement.Create(ctx);
+    hasElse := PeekReservedWord(ctx, rwElse);
     if hasElse then
     begin
-        elseToken := TReservedWord.Create(ctx, 'else');
-        elseStatement := TStatement.Create(ctx);
-    end;
-end;
-
-destructor TIfStatement.Destroy;
-begin
-    ifToken.Free;
-    condition.Free;
-    thenToken.Free;
-    statement.Free;
-    if elseToken <> nil then
-    begin
-        elseToken.Free;
-        elseStatement.Free;
+        TReservedWord.Create(ctx, rwElse, true);
+        TStatement.Create(ctx);
     end;
 end;
 

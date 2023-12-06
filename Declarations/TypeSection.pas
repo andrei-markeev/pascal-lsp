@@ -11,16 +11,13 @@ uses
 type
     TTypeSection = class(TToken)
     public
-        decls: array of TTypeDecl;
         constructor Create(ctx: TParserContext);
-        destructor Destroy; override;
     end;
 
 implementation
 
 constructor TTypeSection.Create(ctx: TParserContext);
 var
-    l: integer;
     nextReservedWord: TReservedWordKind;
 begin
     tokenName := 'TypeSection';
@@ -34,9 +31,7 @@ begin
     AddAnchor(rwSemiColon);
     repeat
 
-        l := length(decls);
-        SetLength(decls, l + 1);
-        decls[l] := TTypeDecl.Create(ctx);
+        TTypeDecl.Create(ctx);
 
         TReservedWord.Create(ctx, rwSemicolon, false);
         nextReservedWord := DetermineReservedWord(ctx);
@@ -44,10 +39,6 @@ begin
     RemoveAnchor(rwSemiColon);
 
     ctx.MarkEndOfToken(Self);
-end;
-
-destructor TTypeSection.Destroy;
-begin
 end;
 
 end.

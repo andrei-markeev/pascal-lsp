@@ -6,7 +6,7 @@ unit Token;
 interface
 
 type
-    TTokenState = (tsCorrect, tsError, tsMissing, tsSkipped, tsEndOf);
+    TTokenState = (tsCorrect, tsError, tsMissing, tsSkipped, tsEndOf, tsInvisible);
     TToken = class
     public
         state: TTokenState;
@@ -17,6 +17,7 @@ type
         position: integer;
         errorMessage: string;
         isPrimitive: boolean;
+        endMarker: TToken;
     end;
 
 implementation

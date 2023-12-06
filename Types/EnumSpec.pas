@@ -6,24 +6,22 @@ unit EnumSpec;
 interface
 
 uses
-    contnrs, ParserContext, Symbols, TypeDefs, Token, ReservedWord, Identifier;
+    ParserContext, Symbols, TypeDefs, Token, ReservedWord, Identifier;
 
 type
     TEnumSpec = class(TToken)
     public
         typeDef: TTypeDef;
-        memberTypeDef: TTypeDef;
         constructor Create(ctx: TParserContext);
-        destructor Destroy; override;
     end;
 
 implementation
 
 constructor TEnumSpec.Create(ctx: TParserContext);
 var
-    ident: TIdentifier;
-    symbol: TSymbol;
+    memberTypeDef: TTypeDef;
     hasMoreMembers: boolean;
+    ident: TIdentifier;
 begin
     ctx.Add(Self);
     tokenName := 'EnumSpec';
@@ -32,30 +30,24 @@ begin
     TReservedWord.Create(ctx, rwOpenParenthesis, true);
 
     typeDef.kind := tkEnum;
-    typeDef.values := TFPHashList.Create;
+    typeDef.enumSpec := Self;
     memberTypeDef.kind := tkEnumMember;
     memberTypeDef.enumSpec := Self;
     repeat
         ident := TIdentifier.Create(ctx);
-        symbol := RegisterSymbol(ident, skConstant, ctx.parseUnit, memberTypeDef, ctx.Cursor);
-        typeDef.values.Add(ident.GetName, symbol);
+        RegisterSymbol(ident, skConstant, ctx.parseUnit, memberTypeDef, ctx.Cursor);
+
         ctx.SkipTrivia;
-        // TODO: handle assignments
+        // TODO: support number assignments
         hasMoreMembers := PeekReservedWord(ctx, rwComma);
         if hasMoreMembers then
-           TReservedWord.Create(ctx, rwComma, true);
+            TReservedWord.Create(ctx, rwComma, true);
     until hasMoreMembers = false;
 
     TReservedWord.Create(ctx, rwCloseParenthesis, false);
 
     state := tsCorrect;
     ctx.MarkEndOfToken(Self);
-end;
-
-destructor TEnumSpec.Destroy;
-begin
-    if typeDef.values <> nil then
-        typeDef.values.Free;
 end;
 
 end.

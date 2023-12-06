@@ -11,9 +11,7 @@ uses
 type
     TUsesClause = class(TToken)
     public
-        units: array of TIdentifier;
         constructor Create(ctx: TParserContext);
-        destructor Destroy; override;
     end;
 
 implementation
@@ -21,17 +19,14 @@ implementation
 constructor TUsesClause.Create(ctx: TParserContext);
 var
     nextReservedWord: TReservedWordKind;
-    l: integer;
 begin
     tokenName := 'TUsesClause';
     ctx.Add(Self);
     start := ctx.Cursor;
 
-    l := 0;
     repeat
-        SetLength(units, l + 1);
-        units[l] := TIdentifier.Create(ctx);
-        inc(l);
+        TIdentifier.Create(ctx);
+        // TODO: load and parse unit
         nextReservedWord := DetermineReservedWord(ctx);
         if nextReservedWord = rwComma then
             TReservedWord.Create(ctx, rwComma, true);
@@ -39,10 +34,6 @@ begin
 
     len := ctx.Cursor - start;
     ctx.MarkEndOfToken(Self);
-end;
-
-destructor TUsesClause.Destroy;
-begin
 end;
 
 end.

@@ -23,6 +23,7 @@ procedure AddAnchor(kind: TPrimitiveKind);
 procedure AddAnchor(kind: TReservedWordKind);
 procedure RemoveAnchor(kind: TPrimitiveKind);
 procedure RemoveAnchor(kind: TReservedWordKind);
+function DetermineNextTokenKind(ctx: TParserContext): TTokenKind;
 function SkipUntilAnchor(ctx: TParserContext): TTokenKind;
 
 implementation
@@ -51,13 +52,10 @@ begin
     dec(ReservedWordAnchors[ord(kind)]);
 end;
 
-function SkipUntilAnchor(ctx: TParserContext): TTokenKind;
-var
-    skippedToken: TToken;
+function DetermineNextTokenKind(ctx: TParserContext): TTokenKind;
 begin
-
-    with SkipUntilAnchor do
-    repeat
+    with DetermineNextTokenKind do
+    begin
         reservedWordKind := rwUnknown;
         primitiveKind := pkUnknown;
         isEOF := false;
@@ -68,7 +66,7 @@ begin
             '0'..'9': primitiveKind := pkNumber;
             '_': primitiveKind := pkIdentifier;
             '''', '#': primitiveKind := pkString;
-            'A'..'Z', 'a'..'z', '+', '-', '*', '/', '^', '=', '<', '>', '(', ')', '[', ']', '{', '}', '.', ',', ':', ';':
+            'A'..'Z', 'a'..'z', '+', '-', '*', '/', '^', '=', '<', '>', '(', ')', '[', ']', '{', '}', '.', ',', ':', ';', '@':
                 begin
                     reservedWordKind := DetermineReservedWord(ctx);
                     if reservedWordKind = rwUnknown then
@@ -78,28 +76,40 @@ begin
                 isEOF := true;
                 exit;
             end;
-        else
-            TInvalidSymbol.Create(ctx);
-            continue;
         end;
+    end;
+end;
 
-        if reservedWordKind <> rwUnknown then
+function SkipUntilAnchor(ctx: TParserContext): TTokenKind;
+var
+    skippedToken: TToken;
+begin
+    repeat
+        SkipUntilAnchor := DetermineNextTokenKind(ctx);
+        with SkipUntilAnchor do
         begin
-            if ReservedWordAnchors[ord(reservedWordKind)] > 0 then exit;
-            skippedToken := TReservedWord.Create(ctx, reservedWordKind, true);
-            skippedToken.state := tsSkipped;
-        end
-        else if PrimitiveKindAnchors[ord(primitiveKind)] > 0 then exit
-        else
-        begin
-            case primitiveKind of
-                pkNumber: skippedToken := TNumber.Create(ctx);
-                pkString: skippedToken := TStringToken.Create(ctx);
-                pkIdentifier: skippedToken := TIdentifier.Create(ctx);
-            end;
-            skippedToken.state := tsSkipped;
+            if reservedWordKind <> rwUnknown then
+            begin
+                if ReservedWordAnchors[ord(reservedWordKind)] > 0 then exit;
+                skippedToken := TReservedWord.Create(ctx, reservedWordKind, true);
+                skippedToken.state := tsSkipped;
+            end
+            else if primitiveKind <> pkUnknown then
+            begin
+                if PrimitiveKindAnchors[ord(primitiveKind)] > 0 then exit
+                else
+                begin
+                    case primitiveKind of
+                        pkNumber: skippedToken := TNumber.Create(ctx);
+                        pkString: skippedToken := TStringToken.Create(ctx);
+                        pkIdentifier: skippedToken := TIdentifier.Create(ctx);
+                    end;
+                    skippedToken.state := tsSkipped;
+                end;
+            end
+            else
+                TInvalidSymbol.Create(ctx);
         end;
-
     until false;
 
 end;
