@@ -6,7 +6,7 @@ unit WithStatement;
 interface
 
 uses
-    ParserContext, TypeDefs, Symbols, CommonFuncs, Token, ReservedWord, Identifier;
+    ParserContext, TypeDefs, Symbols, Token, ReservedWord, Identifier;
 
 type
     TWithStatement = class(TToken)
@@ -15,6 +15,8 @@ type
     end;
 
 implementation
+
+uses Statement;
 
 constructor TWithStatement.Create(ctx: TParserContext);
 var
@@ -41,7 +43,7 @@ begin
     TReservedWord.Create(ctx, rwDo, false);
 
     // TODO: add members of the `symbol` to the scope of the statement
-    CommonFunctions.createStatement(ctx);
+    CreateStatement(ctx);
 
     ctx.MarkEndOfToken(Self);
 end;

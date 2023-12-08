@@ -6,7 +6,7 @@ unit Factor;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, TypeDefs, CommonFuncs,
+    ParserContext, Anchors, Symbols, TypeDefs,
     Token, TypedToken, ReservedWord, Identifier, Number, StringToken;
 
 type
@@ -20,6 +20,8 @@ type
 function CreateFactor(ctx: TParserContext; nextTokenKind: TTokenKind): TTypedToken;
 
 implementation
+
+uses Expression;
 
 function CreateFactor(ctx: TParserContext; nextTokenKind: TTokenKind): TTypedToken;
 var
@@ -133,7 +135,7 @@ begin
                     begin
                         TReservedWord.Create(ctx, rwOpenParenthesis, true);
                         unaryOp := rwOpenParenthesis;
-                        factorToken := CommonFunctions.createExpression(ctx);
+                        factorToken := CreateExpression(ctx);
                         TReservedWord.Create(ctx, rwOpenParenthesis, false);
                     end;
             else

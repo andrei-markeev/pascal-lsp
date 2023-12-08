@@ -6,7 +6,7 @@ unit IfStatement;
 interface
 
 uses
-    ParserContext, TypeDefs, CommonFuncs, Token, TypedToken, ReservedWord;
+    ParserContext, TypeDefs, Token, TypedToken, ReservedWord;
 
 type
     TIfStatement = class(TToken)
@@ -15,6 +15,9 @@ type
     end;
 
 implementation
+
+uses
+    Expression, Statement;
 
 constructor TIfStatement.Create(ctx: TParserContext);
 var
@@ -33,19 +36,19 @@ begin
     end;
     start := ctx.Cursor;
     TReservedWord.Create(ctx, rwIf, true);
-    expr := CommonFunctions.createExpression(ctx);
+    expr := CreateExpression(ctx);
     if (expr.state <> tsMissing) and (expr.typeDef.kind <> tkBoolean) then
     begin
         state := tsError;
         errorMessage := 'Condition expression returns ' + TypeKindStr[ord(expr.typeDef.kind)] + ' but must return a boolean value!';
     end;
     TReservedWord.Create(ctx, rwThen, false);
-    CommonFunctions.createStatement(ctx);
+    CreateStatement(ctx);
     hasElse := PeekReservedWord(ctx, rwElse);
     if hasElse then
     begin
         TReservedWord.Create(ctx, rwElse, true);
-        CommonFunctions.createStatement(ctx);
+        CreateStatement(ctx);
     end;
 
     ctx.MarkEndOfToken(Self);

@@ -4,8 +4,7 @@ program ParseFile;
 {$longstrings on}
 
 uses
-    sysutils, ParserContext, Token, Symbols, TypeDefs, ProgramFile,
-    CommonFuncs, Expression, Block, Statement, AssignmentStatement;
+    sysutils, ParserContext, Token, Symbols, TypeDefs, ProgramFile;
 
 procedure Parse(fileName: string);
 var
@@ -28,10 +27,6 @@ begin
     Close(f);
 
     ctx := TParserContext.Create(contents);
-    CommonFunctions.createExpression := @CreateExpression;
-    CommonFunctions.createBlock := @CreateBlock;
-    CommonFunctions.createStatement := @CreateStatement;
-    CommonFunctions.findSymbol := @SymbolsList.Find;
 
     progFile := TProgramFile.Create(ctx);
 

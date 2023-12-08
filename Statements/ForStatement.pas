@@ -6,7 +6,7 @@ unit ForStatement;
 interface
 
 uses
-    ParserContext, TypeDefs, CommonFuncs, Symbols, Token, TypedToken, ReservedWord, Identifier;
+    ParserContext, TypeDefs, Symbols, Token, TypedToken, ReservedWord, Identifier;
 
 type
     TForStatement = class(TToken)
@@ -15,6 +15,9 @@ type
     end;
 
 implementation
+
+uses
+    Expression, Statement;
 
 constructor TForStatement.Create(ctx: TParserContext);
 var
@@ -46,7 +49,7 @@ begin
 
     TReservedWord.Create(ctx, rwAssign, false);
 
-    expr := CommonFunctions.createExpression(ctx);
+    expr := CreateExpression(ctx);
     if expr.typeDef.kind <> tkInteger then
     begin
         state := tsError;
@@ -59,10 +62,10 @@ begin
     else
         TReservedWord.Create(ctx, rwTo, false);
 
-    expr := CommonFunctions.createExpression(ctx);
+    expr := CreateExpression(ctx);
 
     TReservedWord.Create(ctx, rwDo, false);
-    CommonFunctions.createStatement(ctx);
+    CreateStatement(ctx);
 
     ctx.MarkEndOfToken(Self);
 end;
