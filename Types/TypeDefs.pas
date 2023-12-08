@@ -48,10 +48,10 @@ var
     qwordType: TTypeDef = (kind: tkInteger; intSize: 8; isSigned: false);
     int64Type: TTypeDef = (kind: tkInteger; intSize: 8; isSigned: true);
 
-    booleanType: TTypeDef = (kind: tkInteger; boolSize: 1);
-    boolean16Type: TTypeDef = (kind: tkInteger; boolSize: 2);
-    boolean32Type: TTypeDef = (kind: tkInteger; boolSize: 4);
-    boolean64Type: TTypeDef = (kind: tkInteger; boolSize: 8);
+    booleanType: TTypeDef = (kind: tkBoolean; boolSize: 1);
+    boolean16Type: TTypeDef = (kind: tkBoolean; boolSize: 2);
+    boolean32Type: TTypeDef = (kind: tkBoolean; boolSize: 4);
+    boolean64Type: TTypeDef = (kind: tkBoolean; boolSize: 8);
 
     charType: TTypeDef = (kind: tkChar);
     realType: TTypeDef = (kind: tkReal; realSize: 4);

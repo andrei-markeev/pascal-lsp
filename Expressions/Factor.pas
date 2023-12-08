@@ -6,25 +6,26 @@ unit Factor;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, TypeDefs, Token, TypedToken, ReservedWord, Identifier, Number, StringToken;
+    ParserContext, Anchors, Symbols, TypeDefs, CommonFuncs,
+    Token, TypedToken, ReservedWord, Identifier, Number, StringToken;
 
 type
     TFactor = class(TTypedToken)
     public
         unaryOp: TReservedWordKind;
         factorToken: TTypedToken;
-        constructor Create(ctx: TParserContext; nextTokenKind: TTokenKind; createExpression: TCreateTokenFunc);
+        constructor Create(ctx: TParserContext; nextTokenKind: TTokenKind);
     end;
 
-function CreateFactor(ctx: TParserContext; nextTokenKind: TTokenKind; createExpression: TCreateTokenFunc): TTypedToken;
+function CreateFactor(ctx: TParserContext; nextTokenKind: TTokenKind): TTypedToken;
 
 implementation
 
-function CreateFactor(ctx: TParserContext; nextTokenKind: TTokenKind; createExpression: TCreateTokenFunc): TTypedToken;
+function CreateFactor(ctx: TParserContext; nextTokenKind: TTokenKind): TTypedToken;
 var
     newFactor: TFactor;
 begin
-    newFactor := TFactor.Create(ctx, nextTokenKind, createExpression);
+    newFactor := TFactor.Create(ctx, nextTokenKind);
     if (newFactor.unaryOp = rwUnknown) and (newFactor.factorToken <> nil) then
     begin
         CreateFactor := newFactor.factorToken;
@@ -36,7 +37,7 @@ begin
         CreateFactor := newFactor;
 end;
 
-constructor TFactor.Create(ctx: TParserContext; nextTokenKind: TTokenKind; createExpression: TCreateTokenFunc);
+constructor TFactor.Create(ctx: TParserContext; nextTokenKind: TTokenKind);
 var
     ident: TIdentifier;
     identName: shortstring;
@@ -116,7 +117,7 @@ begin
                         TReservedWord.Create(ctx, nextTokenKind.reservedWordKind, true);
                         unaryOp := nextTokenKind.reservedWordKind;
                         nextTokenKind := DetermineNextTokenKind(ctx);
-                        factorToken := TFactor.Create(ctx, nextTokenKind, createExpression);
+                        factorToken := TFactor.Create(ctx, nextTokenKind);
                         // TODO: validate if factor's type can be used with current operator
                         // and change typeDef if needed
                         typeDef := TFactor(factorToken).typeDef;
@@ -134,10 +135,11 @@ begin
                     begin
                         TReservedWord.Create(ctx, rwOpenParenthesis, true);
                         unaryOp := rwOpenParenthesis;
-                        factorToken := createExpression(ctx);
+                        factorToken := CommonFunctions.createExpression(ctx);
                         TReservedWord.Create(ctx, rwOpenParenthesis, false);
                     end;
             else
+                start := ctx.GetCursorBeforeTrivia;
                 state := tsMissing;
                 len := 0;
                 exit;

@@ -13,18 +13,18 @@ type
     public
         leftOperand: TTypedToken;
         lastMultiplyOp: TReservedWordKind;
-        constructor Create(ctx: TParserContext; createExpression: TCreateTokenFunc);
+        constructor Create(ctx: TParserContext);
     end;
 
-function CreateTerm(ctx: TParserContext; createExpression: TCreateTokenFunc): TTypedToken;
+function CreateTerm(ctx: TParserContext): TTypedToken;
 
 implementation
 
-function CreateTerm(ctx: TParserContext; createExpression: TCreateTokenFunc): TTypedToken;
+function CreateTerm(ctx: TParserContext): TTypedToken;
 var
     newTerm: TTerm;
 begin
-    newTerm := TTerm.Create(ctx, createExpression);
+    newTerm := TTerm.Create(ctx);
     if newTerm.lastMultiplyOp = rwUnknown then
     begin
         CreateTerm := newTerm.leftOperand;
@@ -36,7 +36,7 @@ begin
         CreateTerm := newTerm;
 end;
 
-constructor TTerm.Create(ctx: TParserContext; createExpression: TCreateTokenFunc);
+constructor TTerm.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
 begin
@@ -47,16 +47,16 @@ begin
 
     nextTokenKind := DetermineNextTokenKind(ctx);
     start := ctx.Cursor;
-    leftOperand := CreateFactor(ctx, nextTokenKind, createExpression);
+    leftOperand := CreateFactor(ctx, nextTokenKind);
     typeDef := leftOperand.typeDef;
 
     nextTokenKind := DetermineNextTokenKind(ctx);
-    while nextTokenKind.reservedWordKind in [rwMultiply, rwDivide, rwDiv, rwMod, rwAnd, rwShl, rwShr] do
+    while nextTokenKind.reservedWordKind in [rwMultiply, rwDivide, rwDiv, rwMod, rwAnd, rwShl, rwShr, rwShl2, rwShr2] do
     begin
         TReservedWord.Create(ctx, nextTokenKind.reservedWordKind, true);
         lastMultiplyOp := nextTokenKind.reservedWordKind;
         nextTokenKind := DetermineNextTokenKind(ctx);
-        CreateFactor(ctx, nextTokenKind, createExpression);
+        CreateFactor(ctx, nextTokenKind);
         // TODO: determine type
 
         nextTokenKind := DetermineNextTokenKind(ctx);

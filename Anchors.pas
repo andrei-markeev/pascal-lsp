@@ -110,7 +110,7 @@ begin
             else
                 TInvalidSymbol.Create(ctx);
         end;
-    until false;
+    until ctx.IsEOF;
 
 end;
 

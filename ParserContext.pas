@@ -27,11 +27,11 @@ type
         destructor Destroy; override;
         function IsSeparator(ch: char): boolean; inline;
         function IsEOF: boolean; inline;
+        function GetCursorBeforeTrivia: PChar; inline;
         procedure SkipTrivia;
         procedure Add(token: TToken);
         procedure MarkEndOfToken(token: TToken);
     end;
-    TCreateTokenFunc = function(ctx: TParserContext): TTypedToken;
 
 implementation
 
@@ -53,6 +53,14 @@ begin
     for i := 0 to length(Tokens) - 1 do
         Tokens[i].Free;
     SetLength(Tokens, 0);
+end;
+
+function TParserContext.GetCursorBeforeTrivia: PChar; inline;
+begin
+    if triviaSkippedUntil = Cursor then
+        GetCursorBeforeTrivia := cursorBeforeTrivia
+    else
+        GetCursorBeforeTrivia := Cursor;
 end;
 
 procedure TParserContext.SkipTrivia;

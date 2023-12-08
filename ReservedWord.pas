@@ -9,7 +9,7 @@ uses
     strings, CompilationMode, ParserContext, Token;
 
 const
-    NUM_OF_RESERVED_WORDS = 94;
+    NUM_OF_RESERVED_WORDS = 98;
 
 type
     TReservedWordKind = (
@@ -48,10 +48,10 @@ type
         rwAs, rwClass, rwDispinterface, rwExcept, rwExports, rwFinalization, rwFinally, rwInitialization,
         rwIs, rwLibrary, rwOn, rwOut, rwProperty, rwRaise, rwResourcestring, rwThreadvar, rwTry,
         { special symbols }
-        rwAssign, rwPlus, rwMinus, rwMultiply, rwDivide, rwHat,
+        rwAssign, rwPlus, rwMinus, rwMultiply, rwExponentiation, rwDivide, rwHat,
         rwEquals, rwNotEqual, rwLess, rwMore, rwLessOrEqual, rwMoreOrEqual,
         rwOpenParenthesis, rwCloseParenthesis, rwOpenSquareBracket, rwCloseSquareBracket,
-        rwDot, rwComma, rwColon, rwSemiColon, rwRange, rwAt
+        rwDot, rwComma, rwColon, rwSemiColon, rwRange, rwAt, rwShl2, rwShr2, rwSymmetricDifference
     );
     TReservedWord = class(TToken)
     public
@@ -100,10 +100,10 @@ const
         'as', 'class', 'dispinterface', 'except', 'exports', 'finalization', 'finally', 'initialization',
         'is', 'library', 'on', 'out', 'property', 'raise', 'resourcestring', 'threadvar', 'try',
         { special symbols }
-        ':=', '+', '-', '*', '/', '^',
+        ':=', '+', '-', '*', '**', '/', '^',
         '=', '<>', '<', '>', '<=', '>=',
         '(', ')', '[', ']',
-        '.', ',', ':', ';', '..', '@'
+        '.', ',', ':', ';', '..', '@', '<<', '>>', '><'
     );
 
 implementation
@@ -158,15 +158,21 @@ begin
                 else found := rwColon;
             '+': found := rwPlus;
             '-': found := rwMinus;
-            '*': found := rwMultiply;
+            '*':
+                if (ctx.mode >= cmFreePascal) and (ctx.Cursor[1] = '*') then found := rwExponentiation
+                else found := rwMultiply;
             '/': found := rwDivide;
             '^': found := rwHat;
             '=': found := rwEquals;
             '<':
                 if ctx.Cursor[1] = '=' then found := rwLessOrEqual
+                else if ctx.Cursor[1] = '>' then found := rwNotEqual
+                else if (ctx.mode >= cmFreePascal) and (ctx.Cursor[1] = '<') then found := rwShl2
                 else found := rwLess;
             '>':
                 if ctx.Cursor[1] = '=' then found := rwMoreOrEqual
+                else if (ctx.mode >= cmFreePascal) and (ctx.Cursor[1] = '>') then found := rwShr2
+                else if (ctx.mode >= cmFreePascal) and (ctx.Cursor[1] = '<') then found := rwSymmetricDifference
                 else found := rwMore;
             '(': found := rwOpenParenthesis;
             ')': found := rwCloseParenthesis;

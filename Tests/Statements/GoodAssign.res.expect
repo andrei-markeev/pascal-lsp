@@ -1,0 +1,14 @@
+{ProgramFile}{RW}program{/RW} {SymbDecl}GoodAssign{/SymbDecl}{RW};{/RW}
+
+{VarSection}{RW}var{/RW}
+    {VarDecl}{SymbDecl}a{/SymbDecl}{RW},{/RW} {SymbDecl}b{/SymbDecl}{RW}:{/RW} {TypeSpec}{Ident}integer{/Ident}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}s{/SymbDecl}{RW}:{/RW} {TypeSpec}{RW}string{/RW}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}fruits{/SymbDecl}{RW}:{/RW} {TypeSpec}{EnumSpec}{RW}({/RW}{SymbDecl}bananas{/SymbDecl}{RW},{/RW} {SymbDecl}oranges{/SymbDecl}{RW},{/RW} {SymbDecl}apples{/SymbDecl}{RW},{/RW} {SymbDecl}grapes{/SymbDecl}{RW}){/RW}{/EnumSpec}{/TypeSpec}{/VarDecl}{RW};{/RW}{/VarSection}
+{Block}{RW}begin{/RW}
+    {Assignment}{SymbRef}a{/SymbRef} {RW}:={/RW} {Num}1{/Num}{/Assignment}{RW};{/RW}
+    {Assignment}{SymbRef}a{/SymbRef} {RW}:={/RW} {SimpleExpression}{SymbRef}a{/SymbRef} {RW}+{/RW} {Num}1{/Num}{/SimpleExpression}{/Assignment}{RW};{/RW}
+    {Assignment}{SymbRef}b{/SymbRef} {RW}:={/RW} {SimpleExpression}{Num}10{/Num} {RW}+{/RW} {Num}20{/Num} {RW}+{/RW} {SymbRef}a{/SymbRef}{/SimpleExpression}{/Assignment}{RW};{/RW}
+    {Assignment}{SymbRef}s{/SymbRef} {RW}:={/RW} {Str}''{/Str}{/Assignment}{RW};{/RW}
+    {Assignment}{SymbRef}s{/SymbRef} {RW}:={/RW} {SimpleExpression}{SymbRef}s{/SymbRef} {RW}+{/RW} {Str}'something else'{/Str} {RW}+{/RW} {Str}#13{/Str} {RW}+{/RW} {Str}#$0a{/Str}{/SimpleExpression}{/Assignment}{RW};{/RW}
+    {Assignment}{SymbRef}fruits{/SymbRef} {RW}:={/RW} {SymbRef}oranges{/SymbRef}{/Assignment}{RW};{/RW}
+{RW}end{/RW}{/Block}{RW}.{/RW}{/ProgramFile}

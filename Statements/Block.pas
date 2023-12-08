@@ -6,7 +6,7 @@ unit Block;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, Token, ReservedWord, Identifier, AssignmentStatement;
+    ParserContext, Anchors, Symbols, Token, ReservedWord, Identifier, Statement;
 
 type
     TBlock = class(TToken)
@@ -14,13 +14,18 @@ type
         constructor Create(ctx: TParserContext);
     end;
 
+function CreateBlock(ctx: TParserContext): TToken;
+
 implementation
+
+function CreateBlock(ctx: TParserContext): TToken;
+begin
+    CreateBlock := TBlock.Create(ctx);
+end;
 
 constructor TBlock.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
-    identName: shortstring;
-    symbol: TSymbol;
 begin
     tokenName := 'Block';
     ctx.Add(Self);
@@ -36,39 +41,15 @@ begin
     AddAnchor(rwWhile);
     AddAnchor(rwRepeat);
     AddAnchor(rwGoto);
+    AddAnchor(rwBegin);
     AddAnchor(pkIdentifier);
 
     nextTokenKind := SkipUntilAnchor(ctx);
-    while (nextTokenKind.reservedWordKind in [rwWith, rwFor, rwIf, rwWhile, rwRepeat, rwGoto])
+    while (nextTokenKind.reservedWordKind in [rwWith, rwFor, rwIf, rwWhile, rwRepeat, rwGoto, rwBegin])
           or (nextTokenKind.primitiveKind = pkIdentifier)
     do
     begin
-        case nextTokenKind.primitiveKind of
-            pkIdentifier:
-                begin
-                    identName := PeekIdentifier(ctx);
-                    symbol := FindSymbol(identName);
-                    if symbol.kind in [skProcedure, skFunction] then
-                    begin
-                        break;//TProcedureCallStatement.Create(ctx)
-                    end
-                    else if symbol.kind = skVariable then
-                    begin
-                        TAssignmentStatement.Create(ctx, symbol);
-                    end
-                    else
-                        break; // not a valid statement, exiting block
-                end;
-            pkUnknown:
-                case nextTokenKind.reservedWordKind of
-                    rwWith: break;//TWithStatement.Create(ctx);
-                    rwFor: break;//TForStatement.Create(ctx);
-                    rwIf: break;//TIfStatement.Create(ctx);
-                    rwWhile: break;//TWhileStatement.Create(ctx);
-                    rwRepeat: break;//TRepeatStatement.Create(ctx);
-                    rwGoto: break;//TGotoStatement.Create(ctx);
-                end;
-        end;
+        CreateStatement(ctx);
         AddAnchor(rwSemiColon);
         nextTokenKind := SkipUntilAnchor(ctx);
         RemoveAnchor(rwSemiColon);
@@ -84,6 +65,7 @@ begin
     RemoveAnchor(rwWhile);
     RemoveAnchor(rwRepeat);
     RemoveAnchor(rwGoto);
+    RemoveAnchor(rwBegin);
     RemoveAnchor(pkIdentifier);
 
     TReservedWord.Create(ctx, rwEnd, false);

@@ -17,6 +17,8 @@ type
         constructor Create(ctx: TParserContext);
     end;
 
+function CreateExpression(ctx: TParserContext): TTypedToken;
+
 implementation
 
 function CreateExpression(ctx: TParserContext): TTypedToken;
@@ -33,7 +35,6 @@ begin
     end
     else
         CreateExpression := expr;
-    CreateExpression := TExpression.Create(ctx);
 end;
 
 constructor TExpression.Create(ctx: TParserContext);
@@ -47,18 +48,20 @@ begin
     ctx.SkipTrivia;
     start := ctx.Cursor;
 
-    leftOperand := CreateSimpleExpression(ctx, @CreateExpression);
+    leftOperand := CreateSimpleExpression(ctx);
     nextTokenKind := DetermineNextTokenKind(ctx);
-    if nextTokenKind.reservedWordKind in [rwEquals, rwNotEqual, rwMore, rwMoreOrEqual, rwLess, rwLessOrEqual, rwIn] then
+    if nextTokenKind.reservedWordKind in [rwEquals, rwNotEqual, rwMore, rwMoreOrEqual, rwLess, rwLessOrEqual, rwIn, rwIs] then
     begin
         TReservedWord.Create(ctx, nextTokenKind.reservedWordKind, true);
         relationalOp := nextTokenKind.reservedWordKind;
-        rightOperand := CreateSimpleExpression(ctx, @CreateExpression);
+        rightOperand := CreateSimpleExpression(ctx);
+        typeDef := booleanType;
     end
     else
     begin
         relationalOp := rwUnknown;
-        rightOperand := nil
+        rightOperand := nil;
+        typeDef := leftOperand.typeDef;
     end;
 
     state := tsCorrect;

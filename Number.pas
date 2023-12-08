@@ -112,8 +112,6 @@ begin
 end;
 
 constructor TNumber.Create(ctx: TParserContext);
-var
-    numberSet: set of char;
 begin
     tokenName := 'Num';
     ctx.Add(Self);

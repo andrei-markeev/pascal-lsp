@@ -18,8 +18,17 @@ implementation
 constructor TInvalidSymbol.Create(ctx: TParserContext);
 begin
     tokenName := 'Invalid';
-    isPrimitive := true;
+    ctx.Add(Self);
     start := ctx.Cursor;
+    if ctx.Cursor[0] = #0 then
+    begin
+        len := 0;
+        state := tsError;
+        errorMessage := 'Unexpected end of file!';
+        ctx.MarkEndOfToken(Self);
+        exit;
+    end;
+
     repeat
         inc(ctx.Cursor);
     until ctx.Cursor[0] in [
@@ -27,9 +36,8 @@ begin
         '+', '-', '*', '/', '^', '=', '<', '>', '(', ')', '[', ']', '{', '}',
         '.', ',', ':', ';', #0
     ];
-    len := ctx.Cursor - start;
     state := tsSkipped;
-    ctx.Add(Self);
+    ctx.MarkEndOfToken(Self);
 end;
 
 end.
