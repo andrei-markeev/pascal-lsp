@@ -25,7 +25,7 @@ begin
     start := ctx.Cursor;
 
     repeat
-        TIdentifier.Create(ctx);
+        TIdentifier.Create(ctx, false);
         // TODO: load and parse unit
         nextReservedWord := DetermineReservedWord(ctx);
         if nextReservedWord = rwComma then

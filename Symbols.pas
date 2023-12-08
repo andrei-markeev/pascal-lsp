@@ -59,6 +59,7 @@ begin
         scope := scopeToken;
         typeDef := symbolType;
         declaration.symbol := RegisterSymbol;
+        declaration.name := symbolName;
         declaration.typeDef := symbolType;
         declaration.tokenName := 'SymbDecl';
     end;
@@ -98,6 +99,7 @@ begin
     SetLength(references, l + 1);
     references[l] := ident;
     ident.symbol := Self;
+    ident.name := name;
     ident.typeDef := typeDef;
     ident.tokenName := 'SymbRef';
 end;

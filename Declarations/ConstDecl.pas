@@ -41,7 +41,7 @@ begin
         exit;
     end;
     start := ctx.Cursor;
-    ident := TIdentifier.Create(ctx);
+    ident := TIdentifier.Create(ctx, false);
     symbolKind := skConstant;
 
     AddAnchor(rwEquals);

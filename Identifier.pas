@@ -11,15 +11,18 @@ uses
 type
     TIdentifier = class(TTypedToken)
     public
+        name: shortstring;
         symbol: pointer;
-        constructor Create(ctx: TParserContext);
+        constructor Create(ctx: TParserContext; expectDeclared: boolean);
         destructor Destroy; override;
-        function GetName: shortstring;
     end;
 
 function PeekIdentifier(ctx: TParserContext): shortstring;
 
 implementation
+
+uses
+    Symbols;
 
 function PeekIdentifier(ctx: TParserContext): shortstring;
 var
@@ -42,7 +45,7 @@ begin
         PeekIdentifier := ''
 end;
 
-constructor TIdentifier.Create(ctx: TParserContext);
+constructor TIdentifier.Create(ctx: TParserContext; expectDeclared: boolean);
 begin
     tokenName := 'Ident';
     isPrimitive := true;
@@ -63,16 +66,26 @@ begin
         state := tsMissing;
     end;
 
+    if (len > 0) and expectDeclared then
+    begin
+        SetString(name, start, len);
+
+        symbol := FindSymbol(name);
+        if symbol = nil then
+        begin
+            state := tsError;
+            errorMessage := 'Identifier has not been declared!';
+        end
+        else
+            TSymbol(symbol).AddReference(Self);
+
+    end;
+
     ctx.Add(Self);
 end;
 
 destructor TIdentifier.Destroy;
 begin
-end;
-
-function TIdentifier.GetName: shortstring;
-begin
-    SetString(GetName, start, len);
 end;
 
 end.

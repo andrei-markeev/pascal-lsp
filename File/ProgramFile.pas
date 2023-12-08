@@ -33,28 +33,25 @@ begin
     start := ctx.Cursor;
     TReservedWord.Create(ctx, rwProgram, false);
 
-    ident := TIdentifier.Create(ctx);
+    ident := TIdentifier.Create(ctx, false);
     programTypeDef.kind := tkUnitName;
     RegisterSymbol(ident, skUnitName, Self, programTypeDef, ctx.Cursor);
 
     // programs parameters are ignored by FPC so we also ignore them
-    ctx.SkipTrivia;
-    if ctx.Cursor[0] = '(' then
+    if PeekReservedWord(ctx, rwOpenParenthesis) then
     begin
+        TReservedWord.Create(ctx, rwOpenParenthesis, true);
         repeat
-            TIdentifier.Create(ctx);
+            TIdentifier.Create(ctx, false);
 
-            ctx.SkipTrivia;
-            if ctx.Cursor[0] = ')' then
-            begin
-                TReservedWord.Create(ctx, rwCloseParenthesis, true);
+            if PeekReservedWord(ctx, rwCloseParenthesis) then
                 break;
-            end;
 
             nextIsComma := PeekReservedWord(ctx, rwComma);
             if nextIsComma then
                 TReservedWord.Create(ctx, rwComma, true);
         until not nextIsComma;
+        TReservedWord.Create(ctx, rwCloseParenthesis, not nextIsComma);
     end;
 
     TReservedWord.Create(ctx, rwSemiColon, false);

@@ -31,6 +31,7 @@ begin
     CommonFunctions.createExpression := @CreateExpression;
     CommonFunctions.createBlock := @CreateBlock;
     CommonFunctions.createStatement := @CreateStatement;
+    CommonFunctions.findSymbol := @SymbolsList.Find;
 
     progFile := TProgramFile.Create(ctx);
 

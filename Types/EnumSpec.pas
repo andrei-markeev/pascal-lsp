@@ -34,7 +34,7 @@ begin
     memberTypeDef.kind := tkEnumMember;
     memberTypeDef.enumSpec := Self;
     repeat
-        ident := TIdentifier.Create(ctx);
+        ident := TIdentifier.Create(ctx, false);
         RegisterSymbol(ident, skConstant, ctx.parseUnit, memberTypeDef, ctx.Cursor);
 
         ctx.SkipTrivia;

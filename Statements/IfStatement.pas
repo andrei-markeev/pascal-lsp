@@ -23,6 +23,7 @@ var
 begin
     ctx.Add(Self);
     tokenName := 'If';
+    start := ctx.Cursor;
 
     if not PeekReservedWord(ctx, rwIf) then
     begin

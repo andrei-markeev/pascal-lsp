@@ -6,7 +6,7 @@ unit SimpleExpression;
 interface
 
 uses
-    ParserContext, Anchors, TypeDefs, CommonFuncs, Token, TypedToken, ReservedWord, Term;
+    ParserContext, Anchors, TypeDefs, Token, TypedToken, ReservedWord, Term;
 
 type
     TSimpleExpression = class(TTypedToken)

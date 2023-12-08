@@ -19,7 +19,6 @@ implementation
 constructor TWithStatement.Create(ctx: TParserContext);
 var
     ident: TIdentifier;
-    identName: shortstring;
     symbol: TSymbol;
 begin
     ctx.Add(Self);
@@ -32,16 +31,9 @@ begin
     end;
     start := ctx.Cursor;
     TReservedWord.Create(ctx, rwWith, true);
-    ident := TIdentifier.Create(ctx);
-    identName := ident.GetName;
-    symbol := FindSymbol(identName);
-    if symbol = nil then
-    begin
-        state := tsError;
-        errorMessage := 'Identifier has not been declared!';
-    end;
-    symbol.AddReference(ident);
-    if not (symbol.typeDef.kind in [tkRecord, tkObject, tkClass]) then
+    ident := TIdentifier.Create(ctx, true);
+    symbol := TSymbol(ident.symbol);
+    if (symbol <> nil) and not (symbol.typeDef.kind in [tkRecord, tkObject, tkClass]) then
     begin
         state := tsError;
         errorMessage := 'Operator "with" cannot be applied to a variable of type ' + TypeKindStr[ord(symbol.typeDef.kind)] + '!';

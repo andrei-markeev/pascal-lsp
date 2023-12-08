@@ -6,7 +6,7 @@ unit Block;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, Token, ReservedWord, Identifier, Statement;
+    ParserContext, Anchors, Symbols, Token, ReservedWord, Statement;
 
 type
     TBlock = class(TToken)

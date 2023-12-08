@@ -38,7 +38,7 @@ begin
         exit;
     end;
     start := ctx.Cursor;
-    ident := TIdentifier.Create(ctx);
+    ident := TIdentifier.Create(ctx, false);
 
     AddAnchor(rwEquals);
     nextTokenKind := SkipUntilAnchor(ctx);

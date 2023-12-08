@@ -45,7 +45,7 @@ begin
     l := 0;
     repeat
         SetLength(idents, l + 1);
-        idents[l] := TIdentifier.Create(ctx);
+        idents[l] := TIdentifier.Create(ctx, false);
         inc(l);
         ctx.SkipTrivia;
         hasMoreMembers := PeekReservedWord(ctx, rwComma);

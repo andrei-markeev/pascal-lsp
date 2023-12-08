@@ -102,7 +102,7 @@ begin
                     case primitiveKind of
                         pkNumber: skippedToken := TNumber.Create(ctx);
                         pkString: skippedToken := TStringToken.Create(ctx);
-                        pkIdentifier: skippedToken := TIdentifier.Create(ctx);
+                        pkIdentifier: skippedToken := TIdentifier.Create(ctx, false);
                     end;
                     skippedToken.state := tsSkipped;
                 end;

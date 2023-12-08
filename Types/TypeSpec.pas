@@ -82,7 +82,7 @@ begin
                     found := TypesList.Find(identName);
                     if found = nil then
                     begin
-                        TIdentifier.Create(ctx);
+                        TIdentifier.Create(ctx, false);
                         state := tsError;
                         errorMessage := 'Identifier has not been declared!';
                         ctx.MarkEndOfToken(Self);
@@ -90,7 +90,7 @@ begin
                     end;
 
                     typeDef := PTypeDef(found)^;
-                    TIdentifier.Create(ctx);
+                    TIdentifier.Create(ctx, false);
                     state := tsCorrect;
                     ctx.MarkEndOfToken(Self);
                     exit;
@@ -100,7 +100,7 @@ begin
                     skTypeName:
                         begin
                             typeDef := symbol.typeDef;
-                            ident := TIdentifier.Create(ctx);
+                            ident := TIdentifier.Create(ctx, false);
                             symbol.AddReference(ident);
                             state := tsCorrect;
                             ctx.MarkEndOfToken(Self);
@@ -117,7 +117,7 @@ begin
                         end;
                 end;
 
-                ident := TIdentifier.Create(ctx);
+                ident := TIdentifier.Create(ctx, false);
                 symbol.AddReference(ident);
                 state := tsError;
                 errorMessage := 'Type expected!';

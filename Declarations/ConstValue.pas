@@ -25,6 +25,7 @@ begin
     ctx.Add(Self);
     tokenName := 'ConstValue';
     start := ctx.Cursor;
+    valueType := tkUnknown;
 
     // TODO: support turbo pascal constant expressions
 
@@ -47,24 +48,21 @@ begin
             end;
         pkIdentifier:
             begin
-                valueToken := TIdentifier.Create(ctx);
-                symbol := FindSymbol(TIdentifier(valueToken));
-                if symbol = nil then
-                begin
-                    state := tsError;
-                    errorMessage := 'Constant has not been defined!';
-                    ctx.MarkEndOfToken(Self);
-                    exit;
-                end;
-                if symbol.kind <> skConstant then
-                begin
-                    state := tsError;
-                    errorMessage := 'Only constants can be used when defining other constants!';
-                    ctx.MarkEndOfToken(Self);
-                    exit;
-                end;
+                valueToken := TIdentifier.Create(ctx, true);
+                symbol := TSymbol(TIdentifier(valueToken).symbol);
 
-                valueType := symbol.typeDef.kind;
+                if symbol <> nil then
+                begin
+                    if symbol.kind <> skConstant then
+                    begin
+                        state := tsError;
+                        errorMessage := 'Only constants can be used when defining other constants!';
+                        ctx.MarkEndOfToken(Self);
+                        exit;
+                    end;
+
+                    valueType := symbol.typeDef.kind;
+                end;
             end
     else
         start := ctx.cursorBeforeTrivia;

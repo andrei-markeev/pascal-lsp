@@ -40,7 +40,6 @@ end;
 constructor TFactor.Create(ctx: TParserContext; nextTokenKind: TTokenKind);
 var
     ident: TIdentifier;
-    identName: shortstring;
     symbol: TSymbol;
 begin
     ctx.Add(Self);
@@ -49,6 +48,7 @@ begin
     state := tsCorrect;
     unaryOp := rwUnknown;
     factorToken := nil;
+    typeDef.kind := tkUnknown;
 
     case nextTokenKind.primitiveKind of
         pkNumber:
@@ -63,51 +63,49 @@ begin
             end;
         pkIdentifier:
             begin
-                ident := TIdentifier.Create(ctx);
-                identName := ident.GetName;
-                symbol := FindSymbol(identName);
+                ident := TIdentifier.Create(ctx, true);
+                symbol := TSymbol(ident.symbol);
                 if symbol <> nil then
-                    symbol.AddReference(ident);
-                if symbol = nil then
                 begin
-                    state := tsError;
-                    errorMessage := 'Identifier has not been declared!';
-                end
-                else if symbol.kind = skUnitName then
-                begin
-                    state := tsError;
-                    errorMessage := 'Unit name cannot be used in expressions!';
-                end
-                else if symbol.kind = skTypeName then
-                begin
-                    state := tsError;
-                    errorMessage := 'Type identifier cannot be used in expressions!';
-                end
-                else if symbol.kind = skProcedure then
-                begin
-                    state := tsError;
-                    errorMessage := 'Procedure calls cannot be used in expressions because they don''t have a return type!';
-                end
-                else if symbol.kind = skFunction then
-                begin
-                    // TODO: handle optional parameter list
-                    // TODO: check function return type
-                    WriteLn('Not implemented!');
-                end
-                else if symbol.typeDef.kind in [tkArray, tkDynamicArray] then
-                begin
-                    // TODO: handle index expression
-                    WriteLn('Not implemented!');
-                end
-                else if symbol.typeDef.kind in [tkRecord, tkObject, tkClass] then
-                begin
-                    // TODO: handle member access
-                    WriteLn('Not implemented!');
-                end
-                else
-                begin
-                    typeDef := symbol.typeDef;
-                    factorToken := ident;
+                    case symbol.kind of
+                        skUnitName:
+                            begin
+                                state := tsError;
+                                errorMessage := 'Unit name cannot be used in expressions!';
+                            end;
+                        skTypeName:
+                            begin
+                                state := tsError;
+                                errorMessage := 'Type identifier cannot be used in expressions!';
+                            end;
+                        skProcedure:
+                            begin
+                                state := tsError;
+                                errorMessage := 'Procedure calls cannot be used in expressions because they don''t have a return type!';
+                            end;
+                        skFunction:
+                            begin
+                                // TODO: handle optional parameter list
+                                // TODO: check function return type
+                                WriteLn('Not implemented!');
+                            end;
+                        skVariable, skConstant, skTypedConstant:
+                            case symbol.typeDef.kind of
+                                tkArray, tkDynamicArray:
+                                    begin
+                                        // TODO: handle index expression
+                                        WriteLn('Not implemented!');
+                                    end;
+                                tkRecord, tkObject, tkClass:
+                                    begin
+                                        // TODO: handle member access
+                                        WriteLn('Not implemented!');
+                                    end;
+                            else
+                                factorToken := ident;
+                                typeDef := symbol.typeDef;
+                            end
+                    end;
                 end;
             end;
         pkUnknown:

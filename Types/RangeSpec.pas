@@ -23,7 +23,7 @@ implementation
 
 procedure TRangeSpec.ParseBoundary(ctx: TParserContext; nextTokenKind: TTokenKind; var outToken: TToken);
 var
-    identName: shortstring;
+    ident: TIdentifier;
     symbol: TSymbol;
     typesAreCompatible: boolean;
     sign: TReservedWordKind;
@@ -38,21 +38,14 @@ begin
 
     if nextTokenKind.primitiveKind = pkIdentifier then
     begin
-        outToken := TIdentifier.Create(ctx);
-        identName := TIdentifier(outToken).GetName;
-        symbol := FindSymbol(identName);
-        if symbol = nil then
-        begin
-            state := tsError;
-            errorMessage := 'Identifier "' + identName + '" has not been declared!';
-            exit;
-        end;
+        ident := TIdentifier.Create(ctx, true);
+        outToken := ident;
 
-        symbol.AddReference(TIdentifier(outToken));
+        symbol := TSymbol(ident.symbol);
         if symbol.kind <> skConstant then
         begin
             state := tsError;
-            errorMessage := 'Cannot use ' + identName + ' (' + SymbolKindStr[ord(symbol.kind)] + ') in a subrange declaration! Only constants are allowed.';
+            errorMessage := 'Cannot use ' + ident.name + ' (' + SymbolKindStr[ord(symbol.kind)] + ') in a subrange declaration! Only constants are allowed.';
             exit;
         end;
 
@@ -71,14 +64,14 @@ begin
             if typeDef.kind = symbol.typeDef.kind then
                 errorMessage := 'Using values from different enums in the same subrange declaration is not supported!'
             else
-                errorMessage := 'The type of ' + identName + ' (' + TypeKindStr[ord(symbol.typeDef.kind)] + ') is not compatible with the inferred type of the subrange declaration (' + TypeKindStr[ord(typeDef.kind)] + ')!';
+                errorMessage := 'The type of ' + ident.name + ' (' + TypeKindStr[ord(symbol.typeDef.kind)] + ') is not compatible with the inferred type of the subrange declaration (' + TypeKindStr[ord(typeDef.kind)] + ')!';
             exit;
         end;
 
         if (sign <> rwUnknown) and not (symbol.typeDef.kind in [tkInteger, tkReal]) then
         begin
             state := tsError;
-            errorMessage := 'Sign "' + ReservedWordStr[ord(sign)] + '" cannot be applied to ' + identName + ' (' + TypeKindStr[ord(symbol.typeDef.kind)] + ')!';
+            errorMessage := 'Sign "' + ReservedWordStr[ord(sign)] + '" cannot be applied to ' + ident.name + ' (' + TypeKindStr[ord(symbol.typeDef.kind)] + ')!';
             exit;
         end;
 

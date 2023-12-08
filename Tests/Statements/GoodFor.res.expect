@@ -1,0 +1,11 @@
+{ProgramFile}{RW}program{/RW} {SymbDecl}GoodFor{/SymbDecl}{RW};{/RW}
+
+{VarSection}{RW}var{/RW}
+    {VarDecl}{SymbDecl}i{/SymbDecl}{RW},{/RW} {SymbDecl}j{/SymbDecl}{RW}:{/RW} {TypeSpec}{Ident}integer{/Ident}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}s{/SymbDecl}{RW}:{/RW} {TypeSpec}{RW}string{/RW}{/TypeSpec}{/VarDecl}{RW};{/RW}{/VarSection}
+{Block}{RW}begin{/RW}
+    {Assignment}{SymbRef}s{/SymbRef} {RW}:={/RW} {Str}''{/Str}{/Assignment}{RW};{/RW}
+    {For}{RW}for{/RW} {SymbRef}i{/SymbRef} {RW}:={/RW} {Num}0{/Num} {RW}to{/RW} {Num}10{/Num} {RW}do{/RW}
+        {For}{RW}for{/RW} {SymbRef}j{/SymbRef} {RW}:={/RW} {Num}2{/Num} {RW}downto{/RW} {Num}3{/Num} {RW}do{/RW}
+            {Assignment}{SymbRef}s{/SymbRef} {RW}:={/RW} {SimpleExpression}{SymbRef}s{/SymbRef} {RW}+{/RW} {Str}'O'{/Str}{/SimpleExpression}{/Assignment}{/For}{/For}{RW};{/RW}
+{RW}end{/RW}{/Block}{RW}.{/RW}{/ProgramFile}

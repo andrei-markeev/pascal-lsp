@@ -7,7 +7,7 @@ interface
 
 uses
     ParserContext, Anchors, Symbols, CommonFuncs, Token, InvalidSymbol, ReservedWord, Identifier,
-    AssignmentStatement, IfStatement, WithStatement;
+    AssignmentStatement, IfStatement, WithStatement, ForStatement;
 
 function CreateStatement(ctx: TParserContext): TToken; inline;
 function CreateStatement(ctx: TParserContext; nextTokenKind: TTokenKind): TToken;
@@ -31,7 +31,7 @@ begin
                 symbol := FindSymbol(identName);
                 if symbol = nil then
                 begin
-                    CreateStatement := TIdentifier.Create(ctx);
+                    CreateStatement := TIdentifier.Create(ctx, true);
                     CreateStatement.state := tsMissing;
                 end
                 else if symbol.kind in [skProcedure, skFunction] then
@@ -43,8 +43,8 @@ begin
             end;
         pkUnknown:
             case nextTokenKind.reservedWordKind of
-                rwWith: exit(nil);//TWithStatement.Create(ctx);
-                rwFor: exit(nil);//TForStatement.Create(ctx);
+                rwWith: TWithStatement.Create(ctx);
+                rwFor: TForStatement.Create(ctx);
                 rwIf: CreateStatement := TIfStatement.Create(ctx);
                 rwWhile: exit(nil);//TWhileStatement.Create(ctx);
                 rwRepeat: exit(nil);//TRepeatStatement.Create(ctx);

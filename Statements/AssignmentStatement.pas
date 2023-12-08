@@ -27,7 +27,7 @@ begin
     start := ctx.Cursor;
 
     // TODO: support member access
-    ident := TIdentifier.Create(ctx);
+    ident := TIdentifier.Create(ctx, false);
     varSymbol.AddReference(ident);
     TReservedWord.Create(ctx, rwAssign, false);
     expr := CreateExpression(ctx);
