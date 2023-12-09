@@ -56,7 +56,7 @@
       <Unit>
         <Filename Value="Statements\Block.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="2"/>
         <TopLine Value="36"/>
         <CursorPos Y="52"/>
         <UsageCount Value="132"/>
@@ -65,7 +65,7 @@
       <Unit>
         <Filename Value="ParserContext.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <CursorPos X="21" Y="9"/>
         <UsageCount Value="132"/>
         <Loaded Value="True"/>
@@ -151,7 +151,7 @@
       <Unit>
         <Filename Value="Types\TypeDefs.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="4"/>
         <TopLine Value="34"/>
         <CursorPos X="43" Y="65"/>
         <UsageCount Value="128"/>
@@ -184,10 +184,12 @@
       <Unit>
         <Filename Value="Expressions\Factor.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="76"/>
-        <CursorPos X="34" Y="106"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="46"/>
+        <CursorPos Y="54"/>
         <UsageCount Value="50"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="Expressions\Term.pas"/>
@@ -234,6 +236,14 @@
         <TopLine Value="5"/>
         <CursorPos X="5" Y="22"/>
         <UsageCount Value="27"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Types\ArraySpec.pas"/>
+        <IsPartOfProject Value="True"/>
+        <TopLine Value="9"/>
+        <CursorPos X="5" Y="20"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="Types\IntegerType.pas"/>
@@ -302,25 +312,8 @@
         <CursorPos X="85" Y="44"/>
         <UsageCount Value="10"/>
       </Unit>
-      <Unit>
-        <Filename Value="Types\ArraySpec.pas"/>
-        <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="40"/>
-        <CursorPos Y="49"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
-      </Unit>
     </Units>
-    <JumpHistory HistoryIndex="25">
-      <Position>
-        <Filename Value="Types\ArraySpec.pas"/>
-        <Caret Line="66" TopLine="38"/>
-      </Position>
-      <Position>
-        <Filename Value="Statements\Block.pas"/>
-        <Caret Line="52" TopLine="36"/>
-      </Position>
+    <JumpHistory HistoryIndex="29">
       <Position>
         <Filename Value="ParserContext.pas"/>
         <Caret Line="9" Column="21"/>
@@ -417,13 +410,37 @@
         <Filename Value="Types\ArraySpec.pas"/>
         <Caret Line="68" TopLine="45"/>
       </Position>
+      <Position>
+        <Filename Value="Expressions\Factor.pas"/>
+        <Caret Line="99" TopLine="79"/>
+      </Position>
+      <Position>
+        <Filename Value="Expressions\Factor.pas"/>
+        <Caret Line="96" TopLine="82"/>
+      </Position>
+      <Position>
+        <Filename Value="Expressions\Factor.pas"/>
+        <Caret Line="127" TopLine="89"/>
+      </Position>
+      <Position>
+        <Filename Value="Expressions\Factor.pas"/>
+        <Caret Line="96" Column="36" TopLine="89"/>
+      </Position>
+      <Position>
+        <Filename Value="Expressions\Factor.pas"/>
+        <Caret Line="70" TopLine="64"/>
+      </Position>
+      <Position>
+        <Filename Value="Expressions\Factor.pas"/>
+        <Caret Line="96" TopLine="68"/>
+      </Position>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes ActiveMode="default">
         <Mode Name="default">
           <local>
-            <CommandLineParams Value="Tests/VarSection/ArrayTypes.pas"/>
+            <CommandLineParams Value="Tests/Statements/GoodAssign.pas"/>
           </local>
         </Mode>
       </Modes>
@@ -432,19 +449,46 @@
       <List Name="LaunchingApplication" Type="File" Count="1">
         <Item1 Value="C:\WINDOWS\system32\cmd.exe /C ${TargetCmdLine}"/>
       </List>
-      <List Name="CommandLineParameters" Count="10">
-        <Item1 Value="Tests/VarSection/ArrayTypes.pas"/>
-        <Item2 Value="Tests/Statements/IfThenElse.pas"/>
-        <Item3 Value="Tests/VarSection/SubrangeErrors.pas"/>
-        <Item4 Value="Tests/VarSection/Subranges.pas"/>
-        <Item5 Value="Tests/Assignments/Assign1.pas"/>
-        <Item6 Value="Tests/VarSection/UserTypes.pas"/>
-        <Item7 Value="Tests/VarSection/Incomplete.pas"/>
-        <Item8 Value="Tests/VarSection/VarSection1.pas"/>
-        <Item9 Value="Tests/Program3.pas"/>
-        <Item10 Value="Tests/Program8.pas"/>
+      <List Name="CommandLineParameters" Count="12">
+        <Item1 Value="Tests/Statements/GoodAssign.pas"/>
+        <Item2 Value="Tests/Statements/GoodAssign1.pas"/>
+        <Item3 Value="Tests/VarSection/ArrayTypes.pas"/>
+        <Item4 Value="Tests/Statements/IfThenElse.pas"/>
+        <Item5 Value="Tests/VarSection/SubrangeErrors.pas"/>
+        <Item6 Value="Tests/VarSection/Subranges.pas"/>
+        <Item7 Value="Tests/Assignments/Assign1.pas"/>
+        <Item8 Value="Tests/VarSection/UserTypes.pas"/>
+        <Item9 Value="Tests/VarSection/Incomplete.pas"/>
+        <Item10 Value="Tests/VarSection/VarSection1.pas"/>
+        <Item11 Value="Tests/Program3.pas"/>
+        <Item12 Value="Tests/Program8.pas"/>
       </List>
       <List Name="WorkingDirectory" Type="File" Count="1"/>
     </HistoryLists>
   </ProjectSession>
+  <Debugging>
+    <BreakPoints>
+      <Item>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="Expressions\Factor.pas"/>
+        <Line Value="99"/>
+      </Item>
+      <Item>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="Expressions\Factor.pas"/>
+        <Line Value="70"/>
+      </Item>
+      <Item>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="Expressions\Factor.pas"/>
+        <Line Value="54"/>
+      </Item>
+    </BreakPoints>
+  </Debugging>
 </CONFIG>

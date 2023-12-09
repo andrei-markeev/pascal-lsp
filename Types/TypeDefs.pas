@@ -31,7 +31,7 @@ type
 const
     NUM_OF_TYPE_KINDS = 20;
     TypeKindStr: array[0..NUM_OF_TYPE_KINDS - 1] of shortstring = (
-        '', 'integer', 'boolean', 'char', 'char range', 'enumeration', 'enum value',
+        '(unknown)', 'integer', 'boolean', 'char', 'char range', 'enumeration', 'enum value',
         'real', 'string', 'pointer', 'array', 'dynamic array',
         'record', 'object', 'class', 'set', 'file', 'procedure', 'function', 'unit name'
     );
@@ -65,6 +65,7 @@ var
     stringType: TTypeDef = (kind: tkString);
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
+function TypesAreAssignable(left, right: TTypeDef; var errorMessage: string): boolean;
 
 implementation
 
@@ -112,6 +113,27 @@ begin
 
         TypesList.Add('currency', @currencyType);
     end;
+end;
+
+function TypesAreAssignable(left, right: TTypeDef; var errorMessage: string): boolean;
+begin
+    TypesAreAssignable := left.kind = right.kind;
+    if (left.kind = tkUnknown) or (right.kind = tkUnknown) then
+        TypesAreAssignable := true;
+    if (left.kind = tkChar) and (right.kind = tkCharRange) then
+        TypesAreAssignable := true;
+    if (left.kind = tkCharRange) and (right.kind = tkChar) then
+        TypesAreAssignable := true;
+    if (left.kind = tkEnumMember) and (right.kind = tkEnumMember) then
+        TypesAreAssignable := left.enumSpec = right.enumSpec;
+    if (left.kind = tkEnum) and (right.kind = tkEnumMember) then
+        TypesAreAssignable := left.enumSpec = right.enumSpec;
+
+    if not TypesAreAssignable then
+        if left.kind = right.kind then
+            errorMessage := 'different enums!'
+        else
+            errorMessage := 'expected ' + TypeKindStr[ord(left.kind)] + ' or assignment-compatible, but found ' + TypeKindStr[ord(right.kind)] + '!';
 end;
 
 initialization

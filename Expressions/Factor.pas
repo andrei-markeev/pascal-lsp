@@ -43,6 +43,7 @@ constructor TFactor.Create(ctx: TParserContext; nextTokenKind: TTokenKind);
 var
     ident: TIdentifier;
     symbol: TSymbol;
+    expr: TTypedToken;
 begin
     ctx.Add(Self);
     tokenName := 'Factor';
@@ -93,10 +94,29 @@ begin
                             end;
                         skVariable, skConstant, skTypedConstant:
                             case symbol.typeDef.kind of
-                                tkArray, tkDynamicArray:
+                                tkArray:
                                     begin
-                                        // TODO: handle index expression
-                                        WriteLn('Not implemented!');
+                                        TReservedWord.Create(ctx, rwOpenSquareBracket, false);
+                                        expr := CreateExpression(ctx);
+                                        if not TypesAreAssignable(symbol.typeDef.typeOfIndex^, expr.typeDef, errorMessage) then
+                                        begin
+                                            state := tsError;
+                                            errorMessage := 'Invalid array index expression: ' + errorMessage;
+                                        end;
+                                        typeDef := symbol.typeDef.typeOfValues^;
+                                        TReservedWord.Create(ctx, rwCloseSquareBracket, false);
+                                    end;
+                                tkDynamicArray:
+                                    begin
+                                        TReservedWord.Create(ctx, rwOpenSquareBracket, false);
+                                        expr := CreateExpression(ctx);
+                                        if expr.typeDef.kind <> tkInteger then
+                                        begin
+                                            state := tsError;
+                                            errorMessage := 'Dynamic array index access expression should be of an integer type, but it is ' + TypeKindStr[ord(expr.typeDef.kind)];
+                                        end;
+                                        typeDef := symbol.typeDef.typeOfDynValues^;
+                                        TReservedWord.Create(ctx, rwCloseSquareBracket, false);
                                     end;
                                 tkRecord, tkObject, tkClass:
                                     begin

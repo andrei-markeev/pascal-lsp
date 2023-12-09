@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    Anchors, TypeDefs, Token, ReservedWord, TypeSpec;
+    TypeDefs, Token, ReservedWord, TypeSpec;
 
 constructor TArraySpec.Create(ctx: TParserContext);
 var
