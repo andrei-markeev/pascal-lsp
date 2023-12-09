@@ -6,22 +6,25 @@ unit TypeSpec;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord, Identifier, EnumSpec, RangeSpec;
+    ParserContext, TypedToken, TypeDefs;
 
 type
-    TTypeSpec = class(TToken)
+    TTypeSpec = class(TTypedToken)
     public
-        typeDef: TTypeDef;
         constructor Create(ctx: TParserContext);
     end;
 
 implementation
+
+uses
+    Anchors, Symbols, Token, ReservedWord, Identifier, EnumSpec, RangeSpec, ArraySpec;
 
 constructor TTypeSpec.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
     rangeSpecToken: TRangeSpec;
     enumSpecToken: TEnumSpec;
+    arraySpecToken: TArraySpec;
     ident: TIdentifier;
     identName: shortstring;
     symbol: TSymbol;
@@ -31,37 +34,8 @@ begin
     tokenName := 'TypeSpec';
     start := ctx.Cursor;
 
-    AddAnchor(pkNumber);
-    AddAnchor(pkIdentifier);
-    AddAnchor(pkString);
-    AddAnchor(rwArray);
-    AddAnchor(rwClass);
-    AddAnchor(rwObject);
-    AddAnchor(rwRecord);
-    AddAnchor(rwSet);
-    AddAnchor(rwFile);
-    AddAnchor(rwString);
-    AddAnchor(rwMinus);
-    AddAnchor(rwPlus);
-    AddAnchor(rwOpenParenthesis);
+    nextTokenKind := DetermineNextTokenKind(ctx);
 
-    nextTokenKind := SkipUntilAnchor(ctx);
-
-    RemoveAnchor(pkNumber);
-    RemoveAnchor(pkIdentifier);
-    RemoveAnchor(pkString);
-    RemoveAnchor(rwArray);
-    RemoveAnchor(rwClass);
-    RemoveAnchor(rwObject);
-    RemoveAnchor(rwRecord);
-    RemoveAnchor(rwSet);
-    RemoveAnchor(rwFile);
-    RemoveAnchor(rwString);
-    RemoveAnchor(rwMinus);
-    RemoveAnchor(rwPlus);
-    RemoveAnchor(rwOpenParenthesis);
-
-    typeDef.kind := tkUnknown;
     case nextTokenKind.primitiveKind of
         pkNumber, pkString:
             begin
@@ -127,13 +101,29 @@ begin
             end;
         pkUnknown:
             case nextTokenKind.reservedWordKind of
-                rwArray: typeDef.kind := tkArray;
-                rwClass: typeDef.kind := tkClass;
-                rwObject: typeDef.kind := tkObject;
-                rwRecord: typeDef.kind := tkRecord;
-                rwSet: typeDef.kind := tkSet;
-                rwFile: typeDef.kind := tkFile;
-                rwString: typeDef.kind := tkString;
+                rwClass: typeDef.kind := tkClass; // TODO: implement ClassSpec
+                rwObject: typeDef.kind := tkObject; // TODO: implement ObjectSpec
+                rwRecord: typeDef.kind := tkRecord; // TODO: implement RecordSpec
+                rwSet: typeDef.kind := tkSet; // TODO: implement SetSpec
+                rwFile: typeDef.kind := tkFile; // TODO: implement FileSpec
+                rwString:
+                    begin
+                        start := ctx.Cursor;
+                        TReservedWord.Create(ctx, rwString, true);
+                        typeDef.kind := tkString;
+                        state := tsCorrect;
+                        ctx.MarkEndOfToken(Self);
+                        exit;
+                    end;
+                rwArray:
+                    begin
+                        start := ctx.Cursor;
+                        arraySpecToken := TArraySpec.Create(ctx);
+                        typeDef := arraySpecToken.typeDef;
+                        state := tsCorrect;
+                        ctx.MarkEndOfToken(Self);
+                        exit;
+                    end;
                 rwPlus, rwMinus:
                     begin
                         start := ctx.Cursor;
@@ -155,23 +145,9 @@ begin
             end;
     end;
 
-    if typeDef.kind = tkUnknown then
-    begin
-        state := tsMissing;
-        len := 0;
-        exit;
-    end;
-
-    start := ctx.Cursor;
-    state := tsCorrect;
-    case typeDef.kind of
-        tkString: TReservedWord.Create(ctx, rwString, true);
-    else
-        // TODO: implement more types
-        WriteLn('Not implemented!');
-    end;
-
-    ctx.MarkEndOfToken(Self);
+    typeDef.kind := tkUnknown;
+    state := tsMissing;
+    len := 0;
 end;
 
 end.

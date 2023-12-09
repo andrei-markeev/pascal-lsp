@@ -22,7 +22,6 @@ uses
 constructor TForStatement.Create(ctx: TParserContext);
 var
     ident: TIdentifier;
-    identName: shortstring;
     symbol: TSymbol;
     nextReservedWord: TReservedWordKind;
     expr: TTypedToken;

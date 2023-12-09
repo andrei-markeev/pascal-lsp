@@ -1,0 +1,12 @@
+{ProgramFile}{RW}program{/RW} {SymbDecl}ArrayTypes{/SymbDecl}{RW};{/RW}
+
+{VarSection}{RW}var{/RW}
+    {VarDecl}{SymbDecl}arr{/SymbDecl}{RW}:{/RW} {TypeSpec}{ArraySpec}{RW}array{/RW} {RW}[{/RW}{TypeSpec}{Ident}boolean{/Ident}{/TypeSpec}{RW}]{/RW} {RW}of{/RW} {TypeSpec}{RangeSpec}{Str}'a'{/Str}{RW}..{/RW}{Str}'o'{/Str}{/RangeSpec}{/TypeSpec}{/ArraySpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}votes{/SymbDecl}{RW}:{/RW} {TypeSpec}{ArraySpec}{RW}array{/RW} {RW}[{/RW}{TypeSpec}{EnumSpec}{RW}({/RW}{SymbDecl}doNothing{/SymbDecl}{RW},{/RW} {SymbDecl}doSports{/SymbDecl}{RW},{/RW} {SymbDecl}doHomework{/SymbDecl}{RW},{/RW} {SymbDecl}doWork{/SymbDecl}{RW}){/RW}{/EnumSpec}{/TypeSpec}{RW}]{/RW} {RW}of{/RW} {TypeSpec}{Ident}longword{/Ident}{/TypeSpec}{/ArraySpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}numbers{/SymbDecl}{RW}:{/RW} {TypeSpec}{ArraySpec}{RW}array{/RW}{RW}[{/RW}{TypeSpec}{RangeSpec}{Num}0{/Num}{RW}..{/RW}{Num}9{/Num}{/RangeSpec}{/TypeSpec}{RW}]{/RW} {RW}of{/RW} {TypeSpec}{Ident}integer{/Ident}{/TypeSpec}{/ArraySpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}ticTacToe{/SymbDecl}{RW}:{/RW} {TypeSpec}{ArraySpec}{RW}array{/RW}{RW}[{/RW}{TypeSpec}{RangeSpec}{Num}0{/Num}{RW}..{/RW}{Num}2{/Num}{/RangeSpec}{/TypeSpec}{RW}]{/RW} {RW}of{/RW} {TypeSpec}{ArraySpec}{RW}array{/RW}{RW}[{/RW}{TypeSpec}{RangeSpec}{Num}0{/Num}{RW}..{/RW}{Num}2{/Num}{/RangeSpec}{/TypeSpec}{RW}]{/RW} {RW}of{/RW} {TypeSpec}{EnumSpec}{RW}({/RW}{SymbDecl}X{/SymbDecl}{RW},{/RW} {SymbDecl}O{/SymbDecl}{RW}){/RW}{/EnumSpec}{/TypeSpec}{/ArraySpec}{/TypeSpec}{/ArraySpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}ticTacToe2{/SymbDecl}{RW}:{/RW} {TypeSpec}{ArraySpec}{RW}array{/RW}{RW}[{/RW}{TypeSpec}{RangeSpec}{Num}0{/Num}{RW}..{/RW}{Num}2{/Num}{/RangeSpec}{/TypeSpec}{RW},{/RW} {TypeSpec}{RangeSpec}{Num}0{/Num}{RW}..{/RW}{Num}2{/Num}{/RangeSpec}{/TypeSpec}{RW}]{/RW} {RW}of{/RW} {TypeSpec}{EnumSpec}{RW}({/RW}{SymbDecl}X{/SymbDecl}{RW},{/RW} {SymbDecl}O{/SymbDecl}{RW}){/RW}{/EnumSpec}{/TypeSpec}{/ArraySpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}strings{/SymbDecl}{RW}:{/RW} {TypeSpec}{ArraySpec}{RW}array{/RW} {RW}of{/RW} {TypeSpec}{RW}string{/RW}{/TypeSpec}{/ArraySpec}{/TypeSpec}{/VarDecl}{RW};{/RW}{/VarSection}
+
+{Block}{RW}begin{/RW}
+{RW}end{/RW}{/Block}{RW}.{/RW}{/ProgramFile}

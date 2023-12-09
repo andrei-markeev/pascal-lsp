@@ -23,9 +23,9 @@ type
         tkBoolean: (boolSize: integer);
         tkCharRange: (charRangeStart: char; charRangeEnd: char);
         tkEnum, tkEnumMember: (enumSpec: Pointer);
-        tkPointer: (isTyped: boolean; toType: PTypeDef);
-        tkArray: (startIndex: integer; endIndex: integer; arrayOfType: PTypeDef);
-        tkDynamicArray: (dynArrayOfType: PTypeDef);
+        tkPointer: (isTyped: boolean; pointerToType: PTypeDef);
+        tkArray: (typeOfIndex: PTypeDef; typeOfValues: PTypeDef);
+        tkDynamicArray: (typeOfDynValues: PTypeDef);
     end;
 
 const
@@ -45,8 +45,8 @@ var
     smallintType: TTypeDef = (kind: tkInteger; intSize: 2; isSigned: true; rangeStart: -32768; rangeEnd: 32767);
     longwordType: TTypeDef = (kind: tkInteger; intSize: 4; isSigned: false; rangeStart: 0; rangeEnd: 4294967295);
     longintType: TTypeDef = (kind: tkInteger; intSize: 4; isSigned: true; rangeStart: -2147483648; rangeEnd: 2147483647);
-    qwordType: TTypeDef = (kind: tkInteger; intSize: 8; isSigned: false);
-    int64Type: TTypeDef = (kind: tkInteger; intSize: 8; isSigned: true);
+    qwordType: TTypeDef = (kind: tkInteger; intSize: 8; isSigned: false; rangeStart: 0; rangeEnd: 0);
+    int64Type: TTypeDef = (kind: tkInteger; intSize: 8; isSigned: true; rangeStart: 0; rangeEnd: 0);
 
     booleanType: TTypeDef = (kind: tkBoolean; boolSize: 1);
     boolean16Type: TTypeDef = (kind: tkBoolean; boolSize: 2);
@@ -61,7 +61,7 @@ var
     compType: TTypeDef = (kind: tkReal; realSize: 8);
     currencyType: TTypeDef = (kind: tkReal; realSize: 8);
 
-    pointerType: TTypeDef = (kind: tkPointer);
+    pointerType: TTypeDef = (kind: tkPointer; isTyped: false; pointerToType: nil);
     stringType: TTypeDef = (kind: tkString);
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
