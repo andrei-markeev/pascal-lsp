@@ -37,20 +37,20 @@ begin
     if PeekReservedWord(ctx, rwOpenSquareBracket) then
     begin
         TReservedWord.Create(ctx, rwOpenSquareBracket, true);
+        curTypeDef := @typeDef;
+        curTypeDef^.kind := tkArray;
         repeat
             spec := TTypeSpec.Create(ctx);
-            curTypeDef := new(PTypeDef);
-            curTypeDef^.kind := tkArray;
             curTypeDef^.typeOfIndex := @spec.typeDef;
 
             nextIsComma := PeekReservedWord(ctx, rwComma);
             if nextIsComma then
             begin
                 TReservedWord.Create(ctx, rwComma, true);
-                nextTypeDef := new(PTypeDef);
+                nextTypeDef := new(PTypeDef); // TODO: free memory
                 nextTypeDef^.kind := tkArray;
                 curTypeDef^.typeOfValues := nextTypeDef;
-                nextTypeDef := curTypeDef;
+                curTypeDef := nextTypeDef;
             end;
         until not nextIsComma;
         TReservedWord.Create(ctx, rwCloseSquareBracket, false);
@@ -59,7 +59,6 @@ begin
 
         spec := TTypeSpec.Create(ctx);
         curTypeDef^.typeOfValues := @spec.typeDef;
-        typeDef := curTypeDef^;
     end
     else
     begin
@@ -67,6 +66,7 @@ begin
         TReservedWord.Create(ctx, rwOf, false);
 
         spec := TTypeSpec.Create(ctx);
+        typeDef.size := 8; // TODO: detect arch size
         typeDef.kind := tkDynamicArray;
         typeDef.typeOfDynValues := @spec.typeDef;
 

@@ -6,46 +6,49 @@ unit AssignmentStatement;
 interface
 
 uses
-    ParserContext, Symbols, TypeDefs, Token, TypedToken, ReservedWord, Identifier, Expression;
+    ParserContext, Symbols, Token;
 
 type
     TAssignmentStatement = class(TToken)
     public
-        constructor Create(ctx: TParserContext; varSymbol: TSymbol);
+        constructor Create(ctx: TParserContext);
     end;
 
 implementation
 
-constructor TAssignmentStatement.Create(ctx: TParserContext; varSymbol: TSymbol);
+uses
+    TypeDefs, TypedToken, ReservedWord, Identifier, Expression, VarRef;
+
+constructor TAssignmentStatement.Create(ctx: TParserContext);
 var
-    ident: TIdentifier;
     expr: TTypedToken;
+    ref: TTypedToken;
     typesAreCompatible: boolean;
 begin
     ctx.Add(Self);
     tokenName := 'Assignment';
     start := ctx.Cursor;
 
-    // TODO: support member access
-    ident := TIdentifier.Create(ctx, false);
-    varSymbol.AddReference(ident);
+    ref := CreateVarRef(ctx);
+    
     TReservedWord.Create(ctx, rwAssign, false);
+
     expr := CreateExpression(ctx);
 
-    typesAreCompatible := varSymbol.typeDef.kind = expr.typeDef.kind;
-    if (varSymbol.typeDef.kind = tkEnum) and (expr.typeDef.kind in [tkEnum, tkEnumMember]) then
-        typesAreCompatible := varSymbol.typeDef.enumSpec = expr.typeDef.enumSpec;
-    if (varSymbol.typeDef.kind = tkString) and (expr.typeDef.kind in [tkChar, tkCharRange]) then
+    typesAreCompatible := ref.typeDef.kind = expr.typeDef.kind;
+    if (ref.typeDef.kind = tkEnum) and (expr.typeDef.kind in [tkEnum, tkEnumMember]) then
+        typesAreCompatible := ref.typeDef.enumSpec = expr.typeDef.enumSpec;
+    if (ref.typeDef.kind = tkString) and (expr.typeDef.kind in [tkChar, tkCharRange]) then
         typesAreCompatible := true;
     // TODO: more type compatibility checks
 
     if not typesAreCompatible then
     begin
         state := tsError;
-        if (varSymbol.typeDef.kind = tkEnum) and (varSymbol.typeDef.kind = expr.typeDef.kind) then
+        if (ref.typeDef.kind = tkEnum) and (ref.typeDef.kind = expr.typeDef.kind) then
             errorMessage := 'Assigning values between different enums is not supported!'
         else
-            errorMessage := 'Cannot assign value of type ' + TypeKindStr[ord(expr.typeDef.kind)] + ' to a variable of type ' + TypeKindStr[ord(varSymbol.typeDef.kind)] + '!';
+            errorMessage := 'Cannot assign value of type ' + TypeKindStr[ord(expr.typeDef.kind)] + ' to a variable of type ' + TypeKindStr[ord(ref.typeDef.kind)] + '!';
     end
     else
         state := tsCorrect;

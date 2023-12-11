@@ -6,17 +6,19 @@ unit ConstValue;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, TypeDefs, Token, Identifier, Number, StringToken;
+    ParserContext, Anchors, TypedToken;
 
 type
-    TConstValue = class(TToken)
+    TConstValue = class(TTypedToken)
     public
-        valueToken: TToken;
-        valueType: TTypeKind;
+        valueToken: TTypedToken;
         constructor Create(ctx: TParserContext; tokenKind: TTokenKind);
     end;
 
 implementation
+
+uses
+    Symbols, TypeDefs, Token, Identifier, Number, StringToken;
 
 constructor TConstValue.Create(ctx: TParserContext; tokenKind: TTokenKind);
 var
@@ -25,7 +27,7 @@ begin
     ctx.Add(Self);
     tokenName := 'ConstValue';
     start := ctx.Cursor;
-    valueType := tkUnknown;
+    typeDef := default(TTypeDef);
 
     // TODO: support turbo pascal constant expressions
 
@@ -33,35 +35,25 @@ begin
         pkNumber:
             begin
                 valueToken := TNumber.Create(ctx);
-                if TNumber(valueToken).typeDef.kind = tkInteger then
-                    valueType := tkInteger
-                else
-                    valueType := tkReal;
+                typeDef := valueToken.typeDef;
             end;
         pkString:
             begin
                 valueToken := TStringToken.Create(ctx);
-                if TStringToken(valueToken).stringLen = 1 then
-                    valueType := tkChar
-                else
-                    valueType := tkString;
+                typeDef := valueToken.typeDef;
             end;
         pkIdentifier:
             begin
                 valueToken := TIdentifier.Create(ctx, true);
+                typeDef := valueToken.typeDef;
+
                 symbol := TSymbol(TIdentifier(valueToken).symbol);
-
-                if symbol <> nil then
+                if (symbol <> nil) and (symbol.kind <> skConstant) then
                 begin
-                    if symbol.kind <> skConstant then
-                    begin
-                        state := tsError;
-                        errorMessage := 'Only constants can be used when defining other constants!';
-                        ctx.MarkEndOfToken(Self);
-                        exit;
-                    end;
-
-                    valueType := symbol.typeDef.kind;
+                    state := tsError;
+                    errorMessage := 'Only constants can be used when defining other constants!';
+                    ctx.MarkEndOfToken(Self);
+                    exit;
                 end;
             end
     else

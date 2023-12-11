@@ -30,28 +30,23 @@ begin
     case nextTokenKind.primitiveKind of
         pkIdentifier:
             begin
+                // 1. VarRef -> always starts with identifier, can be TypeName or Variable
+                // 2. ProcedureCall -> always starts with identifier, can be Procedure or Function name
                 identName := PeekIdentifier(ctx);
                 symbol := FindSymbol(identName);
-                if symbol = nil then
-                begin
-                    CreateStatement := TIdentifier.Create(ctx, true);
-                    CreateStatement.state := tsMissing;
-                end
-                else if symbol.kind in [skProcedure, skFunction] then
-                    exit(nil)//TProcedureCallStatement.Create(ctx)
-                else if symbol.kind = skVariable then
-                    CreateStatement := TAssignmentStatement.Create(ctx, symbol)
+                if (symbol <> nil) and (symbol.kind in [skProcedure, skFunction]) then
+                    exit(nil)//CreateStatement := TProcedureCallStatement.Create(ctx)
                 else
-                    CreateStatement := TInvalidSymbol.Create(ctx);
+                    CreateStatement := TAssignmentStatement.Create(ctx);
             end;
         pkUnknown:
             case nextTokenKind.reservedWordKind of
-                rwWith: TWithStatement.Create(ctx);
-                rwFor: TForStatement.Create(ctx);
+                rwWith: CreateStatement := TWithStatement.Create(ctx);
+                rwFor: CreateStatement := TForStatement.Create(ctx);
                 rwIf: CreateStatement := TIfStatement.Create(ctx);
-                rwWhile: exit(nil);//TWhileStatement.Create(ctx);
-                rwRepeat: exit(nil);//TRepeatStatement.Create(ctx);
-                rwGoto: exit(nil);//TGotoStatement.Create(ctx);
+                rwWhile: exit(nil);//CreateStatement := TWhileStatement.Create(ctx);
+                rwRepeat: exit(nil);//CreateStatement := TRepeatStatement.Create(ctx);
+                rwGoto: exit(nil);//CreateStatement := TGotoStatement.Create(ctx);
                 rwBegin: CreateStatement := CreateBlock(ctx);
             end;
     end;

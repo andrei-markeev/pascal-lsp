@@ -118,7 +118,7 @@ begin
     ctx.Add(Self);
     tokenName := 'RangeSpec';
     start := ctx.Cursor;
-    typeDef.kind := tkUnknown;
+    typeDef := default(TTypeDef);
     state := tsCorrect;
 
     ParseBoundary(ctx, nextTokenKind, fromToken);

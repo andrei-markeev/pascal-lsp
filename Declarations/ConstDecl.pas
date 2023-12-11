@@ -69,12 +69,19 @@ begin
 
     value := TConstValue.Create(ctx, nextTokenKind);
 
-    ctx.MarkEndOfToken(Self);
-
     if symbolKind = skConstant then
-        typeDef.kind := value.valueType
+        typeDef := value.typeDef
     else
+    begin
+        if not TypesAreAssignable(constType.typeDef, value.typeDef, errorMessage) then
+        begin
+            state := tsError;
+            errorMessage := 'Constant value cannot be assigned to the specified type: ' + errorMessage;
+        end;
         typeDef := constType.typeDef;
+    end;
+
+    ctx.MarkEndOfToken(Self);
     RegisterSymbol(ident, symbolKind, ctx.parseUnit, typeDef, ctx.Cursor);
 end;
 

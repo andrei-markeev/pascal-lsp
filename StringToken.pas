@@ -97,7 +97,10 @@ begin
     if stringLen = 1 then
         typeDef := charType
     else
-        typeDef := stringType;
+    begin
+        typeDef.size := stringLen;
+        typeDef.kind := tkString;
+    end;
 
     ctx.Add(Self);
 end;

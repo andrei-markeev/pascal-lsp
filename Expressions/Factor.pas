@@ -7,7 +7,7 @@ interface
 
 uses
     ParserContext, Anchors, Symbols, TypeDefs,
-    Token, TypedToken, ReservedWord, Identifier, Number, StringToken;
+    Token, TypedToken, ReservedWord, Identifier, Number, StringToken, VarRef;
 
 type
     TFactor = class(TTypedToken)
@@ -41,9 +41,8 @@ end;
 
 constructor TFactor.Create(ctx: TParserContext; nextTokenKind: TTokenKind);
 var
-    ident: TIdentifier;
+    identName: shortstring;
     symbol: TSymbol;
-    expr: TTypedToken;
 begin
     ctx.Add(Self);
     tokenName := 'Factor';
@@ -51,7 +50,7 @@ begin
     state := tsCorrect;
     unaryOp := rwUnknown;
     factorToken := nil;
-    typeDef.kind := tkUnknown;
+    typeDef := Default(TTypeDef);
 
     case nextTokenKind.primitiveKind of
         pkNumber:
@@ -66,8 +65,8 @@ begin
             end;
         pkIdentifier:
             begin
-                ident := TIdentifier.Create(ctx, true);
-                symbol := TSymbol(ident.symbol);
+                identName := PeekIdentifier(ctx);
+                symbol := FindSymbol(identName);
                 if symbol <> nil then
                 begin
                     case symbol.kind of
@@ -93,40 +92,10 @@ begin
                                 WriteLn('Not implemented!');
                             end;
                         skVariable, skConstant, skTypedConstant:
-                            case symbol.typeDef.kind of
-                                tkArray:
-                                    begin
-                                        TReservedWord.Create(ctx, rwOpenSquareBracket, false);
-                                        expr := CreateExpression(ctx);
-                                        if not TypesAreAssignable(symbol.typeDef.typeOfIndex^, expr.typeDef, errorMessage) then
-                                        begin
-                                            state := tsError;
-                                            errorMessage := 'Invalid array index expression: ' + errorMessage;
-                                        end;
-                                        typeDef := symbol.typeDef.typeOfValues^;
-                                        TReservedWord.Create(ctx, rwCloseSquareBracket, false);
-                                    end;
-                                tkDynamicArray:
-                                    begin
-                                        TReservedWord.Create(ctx, rwOpenSquareBracket, false);
-                                        expr := CreateExpression(ctx);
-                                        if expr.typeDef.kind <> tkInteger then
-                                        begin
-                                            state := tsError;
-                                            errorMessage := 'Dynamic array index access expression should be of an integer type, but it is ' + TypeKindStr[ord(expr.typeDef.kind)];
-                                        end;
-                                        typeDef := symbol.typeDef.typeOfDynValues^;
-                                        TReservedWord.Create(ctx, rwCloseSquareBracket, false);
-                                    end;
-                                tkRecord, tkObject, tkClass:
-                                    begin
-                                        // TODO: handle member access
-                                        WriteLn('Not implemented!');
-                                    end;
-                            else
-                                factorToken := ident;
-                                typeDef := symbol.typeDef;
-                            end
+                            begin
+                                factorToken := CreateVarRef(ctx);
+                                typeDef := factorToken.typeDef;
+                            end;
                     end;
                 end;
             end;
@@ -145,7 +114,7 @@ begin
                 rwNil:
                     begin
                         TReservedWord.Create(ctx, rwNil, true);
-                        typeDef := pointerType;
+                        typeDef := pointer64Type;
                     end;
                 rwOpenSquareBracket:
                     begin

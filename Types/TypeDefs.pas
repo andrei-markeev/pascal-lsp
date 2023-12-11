@@ -17,15 +17,15 @@ type
 
     PTypeDef = ^TTypeDef;
     TTypeDef = record
+        size: longword;
     case kind: TTypeKind of
-        tkInteger: (intSize: integer; isSigned: boolean; rangeStart: int64; rangeEnd: int64);
-        tkReal: (realSize: integer);
-        tkBoolean: (boolSize: integer);
+        tkInteger: (isSigned: boolean; rangeStart: int64; rangeEnd: int64);
         tkCharRange: (charRangeStart: char; charRangeEnd: char);
         tkEnum, tkEnumMember: (enumSpec: Pointer);
         tkPointer: (isTyped: boolean; pointerToType: PTypeDef);
         tkArray: (typeOfIndex: PTypeDef; typeOfValues: PTypeDef);
         tkDynamicArray: (typeOfDynValues: PTypeDef);
+        tkBoolean, tkChar, tkReal, tkUnitName: ();
     end;
 
 const
@@ -39,30 +39,35 @@ const
 var
     TypesList: TFPHashList;
 
-    byteType: TTypeDef = (kind: tkInteger; intSize: 1; isSigned: false; rangeStart: 0; rangeEnd: 255);
-    shortintType: TTypeDef = (kind: tkInteger; intSize: 1; isSigned: true; rangeStart: -128; rangeEnd: 127);
-    wordType: TTypeDef = (kind: tkInteger; intSize: 2; isSigned: false; rangeStart: 0; rangeEnd: 65535);
-    smallintType: TTypeDef = (kind: tkInteger; intSize: 2; isSigned: true; rangeStart: -32768; rangeEnd: 32767);
-    longwordType: TTypeDef = (kind: tkInteger; intSize: 4; isSigned: false; rangeStart: 0; rangeEnd: 4294967295);
-    longintType: TTypeDef = (kind: tkInteger; intSize: 4; isSigned: true; rangeStart: -2147483648; rangeEnd: 2147483647);
-    qwordType: TTypeDef = (kind: tkInteger; intSize: 8; isSigned: false; rangeStart: 0; rangeEnd: 0);
-    int64Type: TTypeDef = (kind: tkInteger; intSize: 8; isSigned: true; rangeStart: 0; rangeEnd: 0);
+    byteType: TTypeDef = (size: 1; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 255);
+    shortintType: TTypeDef = (size: 1; kind: tkInteger; isSigned: true; rangeStart: -128; rangeEnd: 127);
+    wordType: TTypeDef = (size: 2; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 65535);
+    smallintType: TTypeDef = (size: 2; kind: tkInteger; isSigned: true; rangeStart: -32768; rangeEnd: 32767);
+    longwordType: TTypeDef = (size: 4; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 4294967295);
+    longintType: TTypeDef = (size: 4; kind: tkInteger; isSigned: true; rangeStart: -2147483648; rangeEnd: 2147483647);
+    qwordType: TTypeDef = (size: 8; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 0);
+    int64Type: TTypeDef = (size: 8; kind: tkInteger; isSigned: true; rangeStart: 0; rangeEnd: 0);
 
-    booleanType: TTypeDef = (kind: tkBoolean; boolSize: 1);
-    boolean16Type: TTypeDef = (kind: tkBoolean; boolSize: 2);
-    boolean32Type: TTypeDef = (kind: tkBoolean; boolSize: 4);
-    boolean64Type: TTypeDef = (kind: tkBoolean; boolSize: 8);
+    booleanType: TTypeDef = (size: 1; kind: tkBoolean);
+    boolean16Type: TTypeDef = (size: 2; kind: tkBoolean);
+    boolean32Type: TTypeDef = (size: 4; kind: tkBoolean);
+    boolean64Type: TTypeDef = (size: 8; kind: tkBoolean);
 
-    charType: TTypeDef = (kind: tkChar);
-    realType: TTypeDef = (kind: tkReal; realSize: 4);
-    singleType: TTypeDef = (kind: tkReal; realSize: 4);
-    doubleType: TTypeDef = (kind: tkReal; realSize: 8);
-    extendedType: TTypeDef = (kind: tkReal; realSize: 10);
-    compType: TTypeDef = (kind: tkReal; realSize: 8);
-    currencyType: TTypeDef = (kind: tkReal; realSize: 8);
+    charType: TTypeDef = (size: 1; kind: tkChar);
+    realType: TTypeDef = (size: 4; kind: tkReal);
+    singleType: TTypeDef = (size: 4; kind: tkReal);
+    doubleType: TTypeDef = (size: 4; kind: tkReal);
+    extendedType: TTypeDef = (size: 4; kind: tkReal);
+    compType: TTypeDef = (size: 8; kind: tkReal);
+    currencyType: TTypeDef = (size: 8; kind: tkReal);
 
-    pointerType: TTypeDef = (kind: tkPointer; isTyped: false; pointerToType: nil);
-    stringType: TTypeDef = (kind: tkString);
+    pointer32Type: TTypeDef = (size: 4; kind: tkPointer; isTyped: false; pointerToType: nil);
+    pointer64Type: TTypeDef = (size: 8; kind: tkPointer; isTyped: false; pointerToType: nil);
+
+    shortstringType: TTypeDef = (size: 255; kind: tkString);
+
+    ansiString32Type: TTypeDef = (size: 4; kind: tkString);
+    ansiString64Type: TTypeDef = (size: 8; kind: tkString);
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
 function TypesAreAssignable(left, right: TTypeDef; var errorMessage: string): boolean;
@@ -95,7 +100,8 @@ begin
         TypesList.Add('extended', @extendedType);
         TypesList.Add('comp', @compType);
 
-        TypesList.Add('pointer', @pointerType);
+        TypesList.Add('pointer', @pointer64Type);
+        TypesList.Add('string', @shortstringType);
     end;
 
     if mode >= cmFreePascal then
@@ -112,6 +118,8 @@ begin
         TypesList.Add('qwordbool', @boolean64Type);
 
         TypesList.Add('currency', @currencyType);
+
+        TypesList.Add('ansistring', @ansiString64Type);
     end;
 end;
 

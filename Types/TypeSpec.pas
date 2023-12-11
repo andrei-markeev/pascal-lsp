@@ -145,7 +145,7 @@ begin
             end;
     end;
 
-    typeDef.kind := tkUnknown;
+    typeDef := default(TTypeDef);
     state := tsMissing;
     len := 0;
 end;

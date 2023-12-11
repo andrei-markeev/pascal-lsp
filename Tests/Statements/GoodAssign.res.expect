@@ -19,16 +19,16 @@
     {Assignment}{SymbRef}s{/SymbRef} {RW}:={/RW} {SimpleExpression}{SymbRef}s{/SymbRef} {RW}+{/RW} {Str}'something else'{/Str} {RW}+{/RW} {Str}#13{/Str} {RW}+{/RW} {Str}#$0a{/Str}{/SimpleExpression}{/Assignment}{RW};{/RW}
 
     {Assignment}{SymbRef}fruits{/SymbRef} {RW}:={/RW} {SymbRef}oranges{/SymbRef}{/Assignment}{RW};{/RW}
-//    fruitStorage[fruits] := 10;
-//    fruitStorage[bananas] := 5;
+    {Assignment}{VarRef}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{SymbRef}fruits{/SymbRef}{RW}]{/RW}{/VarRef} {RW}:={/RW} {Num}10{/Num}{/Assignment}{RW};{/RW}
+    {Assignment}{VarRef}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{SymbRef}bananas{/SymbRef}{RW}]{/RW}{/VarRef} {RW}:={/RW} {Num}5{/Num}{/Assignment}{RW};{/RW}
 
-    {Assignment}{SymbRef}a{/SymbRef} {RW}:={/RW} {Factor}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{SymbRef}apples{/SymbRef}{RW}]{/RW}{/Factor}{/Assignment}{RW};{/RW}
-    {Assignment}{SymbRef}b{/SymbRef} {RW}:={/RW} {Factor}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{SymbRef}fruits{/SymbRef}{RW}]{/RW}{/Factor}{/Assignment}{RW};{/RW}
+    {Assignment}{SymbRef}a{/SymbRef} {RW}:={/RW} {VarRef}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{SymbRef}apples{/SymbRef}{RW}]{/RW}{/VarRef}{/Assignment}{RW};{/RW}
+    {Assignment}{SymbRef}b{/SymbRef} {RW}:={/RW} {VarRef}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{SymbRef}fruits{/SymbRef}{RW}]{/RW}{/VarRef}{/Assignment}{RW};{/RW}
 
-//    ticTacToe[0, 0] := markX;
-//    ticTacToe[1][1] := markO;
+    {Assignment}{VarRef}{SymbRef}ticTacToe{/SymbRef}{RW}[{/RW}{Num}0{/Num}{RW},{/RW} {Num}0{/Num}{RW}]{/RW}{/VarRef} {RW}:={/RW} {SymbRef}markX{/SymbRef}{/Assignment}{RW};{/RW}
+    {Assignment}{VarRef}{SymbRef}ticTacToe{/SymbRef}{RW}[{/RW}{Num}1{/Num}{RW}]{/RW}{RW}[{/RW}{Num}1{/Num}{RW}]{/RW}{/VarRef} {RW}:={/RW} {SymbRef}markO{/SymbRef}{/Assignment}{RW};{/RW}
 
-//    dynArr[0] := 'hello';
-//    dynArr[1] := 'world';
-    {Assignment}{SymbRef}s{/SymbRef} {RW}:={/RW} {Factor}{SymbRef}dynArr{/SymbRef}{RW}[{/RW}{Num}12{/Num}{RW}]{/RW}{/Factor}{/Assignment}{RW};{/RW}
+    {Assignment}{VarRef}{SymbRef}dynArr{/SymbRef}{RW}[{/RW}{Num}0{/Num}{RW}]{/RW}{/VarRef} {RW}:={/RW} {Str}'hello'{/Str}{/Assignment}{RW};{/RW}
+    {Assignment}{VarRef}{SymbRef}dynArr{/SymbRef}{RW}[{/RW}{Num}1{/Num}{RW}]{/RW}{/VarRef} {RW}:={/RW} {Str}'world'{/Str}{/Assignment}{RW};{/RW}
+    {Assignment}{SymbRef}s{/SymbRef} {RW}:={/RW} {VarRef}{SymbRef}dynArr{/SymbRef}{RW}[{/RW}{Num}12{/Num}{RW}]{/RW}{/VarRef}{/Assignment}{RW};{/RW}
 {RW}end{/RW}{/Block}{RW}.{/RW}{/ProgramFile}

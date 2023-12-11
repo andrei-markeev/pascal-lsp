@@ -22,7 +22,7 @@ function PeekIdentifier(ctx: TParserContext): shortstring;
 implementation
 
 uses
-    Symbols;
+    Symbols, TypeDefs;
 
 function PeekIdentifier(ctx: TParserContext): shortstring;
 var
@@ -48,6 +48,8 @@ end;
 constructor TIdentifier.Create(ctx: TParserContext; expectDeclared: boolean);
 begin
     tokenName := 'Ident';
+    typeDef := Default(TTypeDef);
+
     isPrimitive := true;
     ctx.SkipTrivia;
     if ctx.Cursor[0] in ['a'..'z', 'A'..'Z', '_'] then

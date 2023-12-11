@@ -19,16 +19,16 @@ begin
     s := s + 'something else' + #13 + #$0a;
 
     fruits := oranges;
-//    fruitStorage[fruits] := 10;
-//    fruitStorage[bananas] := 5;
+    fruitStorage[fruits] := 10;
+    fruitStorage[bananas] := 5;
 
     a := fruitStorage[apples];
     b := fruitStorage[fruits];
 
-//    ticTacToe[0, 0] := markX;
-//    ticTacToe[1][1] := markO;
+    ticTacToe[0, 0] := markX;
+    ticTacToe[1][1] := markO;
 
-//    dynArr[0] := 'hello';
-//    dynArr[1] := 'world';
+    dynArr[0] := 'hello';
+    dynArr[1] := 'world';
     s := dynArr[12];
 end.
