@@ -21,7 +21,7 @@ function CreateVarRef(ctx: TParserContext): TTypedToken;
 implementation
 
 uses
-    sysutils, Anchors, Symbols, TypeDefs, CompilationMode, Token, ReservedWord, Expression;
+    sysutils, Symbols, TypeDefs, CompilationMode, Token, ReservedWord, Expression;
 
 function CreateVarRef(ctx: TParserContext): TTypedToken;
 var
@@ -116,8 +116,9 @@ begin
                         begin
                             expr.state := tsError;
                             expr.errorMessage := 'Index expression is not compatible with the array type: ' + error;
-                        end
-                        else if typeDef.kind = tkArray then
+                        end;
+
+                        if typeDef.kind = tkArray then
                             typeDef := typeDef.typeOfValues^
                         else if typeDef.kind = tkDynamicArray then
                             typeDef := typeDef.typeOfDynValues^;

@@ -70,7 +70,7 @@ var
     ansiString64Type: TTypeDef = (size: 8; kind: tkString);
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
-function TypesAreAssignable(left, right: TTypeDef; var errorMessage: string): boolean;
+function TypesAreAssignable(left, right: TTypeDef; out errorMessage: string): boolean;
 
 implementation
 
@@ -123,7 +123,7 @@ begin
     end;
 end;
 
-function TypesAreAssignable(left, right: TTypeDef; var errorMessage: string): boolean;
+function TypesAreAssignable(left, right: TTypeDef; out errorMessage: string): boolean;
 begin
     TypesAreAssignable := left.kind = right.kind;
     if (left.kind = tkUnknown) or (right.kind = tkUnknown) then
@@ -138,7 +138,7 @@ begin
         TypesAreAssignable := left.enumSpec = right.enumSpec;
 
     if not TypesAreAssignable then
-        if left.kind = right.kind then
+        if (left.kind in [tkEnum, tkEnumMember]) and (right.kind in [tkEnum, tkEnumMember]) then
             errorMessage := 'different enums!'
         else
             errorMessage := 'expected ' + TypeKindStr[ord(left.kind)] + ' or assignment-compatible, but found ' + TypeKindStr[ord(right.kind)] + '!';

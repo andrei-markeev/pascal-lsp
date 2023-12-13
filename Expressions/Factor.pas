@@ -83,7 +83,7 @@ begin
                         skProcedure:
                             begin
                                 state := tsError;
-                                errorMessage := 'Procedure calls cannot be used in expressions because they don''t have a return type!';
+                                errorMessage := 'Invalid call to ' + identName + ': procedure calls cannot be used in expressions because they don''t have a return value!';
                             end;
                         skFunction:
                             begin

@@ -39,6 +39,8 @@ end;
 constructor TSimpleExpression.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
+    nextOperand: TTypedToken;
+    str: string;
 begin
     ctx.Add(Self);
     tokenName := 'SimpleExpression';
@@ -46,6 +48,7 @@ begin
     ctx.SkipTrivia;
     start := ctx.Cursor;
 
+    state := tsCorrect;
     lastAddOp := rwUnknown;
     leftOperand := CreateTerm(ctx);
     typeDef := leftOperand.typeDef;
@@ -55,13 +58,70 @@ begin
     begin
         TReservedWord.Create(ctx, nextTokenKind.reservedWordKind, true);
         lastAddOp := nextTokenKind.reservedWordKind;
-        CreateTerm(ctx);
-        // TODO: determine type
-        // TODO: type compatibility checks
+        nextOperand := CreateTerm(ctx);
+
+        case lastAddOp of
+            rwPlus:
+                if not (typeDef.kind in [tkString, tkChar, tkCharRange, tkInteger, tkReal]) then
+                begin
+                    state := tsError;
+                    SetString(str, start, ctx.Cursor - start);
+                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastAddOp)] + '": expected string, char, integer or real, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
+                end
+                else if (typeDef.kind in [tkInteger, tkReal]) and not (nextOperand.typeDef.kind in [tkInteger, tkReal]) then
+                begin
+                    state := tsError;
+                    SetString(str, nextOperand.start, nextOperand.len);
+                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastAddOp)] + '": expected integer or real, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                end
+                else if (typeDef.kind in [tkString, tkChar, tkCharRange]) and not (nextOperand.typeDef.kind in [tkString, tkChar, tkCharRange]) then
+                begin
+                    state := tsError;
+                    SetString(str, nextOperand.start, nextOperand.len);
+                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastAddOp)] + '": expected string or char, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                end;
+            rwMinus:
+                if not (typeDef.kind in [tkInteger, tkReal]) then
+                begin
+                    state := tsError;
+                    SetString(str, start, ctx.Cursor - start);
+                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastAddOp)] + '": expected integer or real operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
+                end
+                else if not (nextOperand.typeDef.kind in [tkInteger, tkReal]) then
+                begin
+                    state := tsError;
+                    SetString(str, nextOperand.start, nextOperand.len);
+                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastAddOp)] + '": expected integer or real operands, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                end;
+            rwOr, rwXor:
+                if not (typeDef.kind in [tkInteger, tkBoolean]) then
+                begin
+                    state := tsError;
+                    SetString(str, start, ctx.Cursor - start);
+                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastAddOp)] + '": expected integer or boolean operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
+                end
+                else if (typeDef.kind = tkInteger) and (nextOperand.typeDef.kind <> tkInteger) then
+                begin
+                    state := tsError;
+                    SetString(str, nextOperand.start, nextOperand.len);
+                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastAddOp)] + '": expected integer, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                end
+                else if (typeDef.kind = tkBoolean) and (nextOperand.typeDef.kind <> tkBoolean) then
+                begin
+                    state := tsError;
+                    SetString(str, nextOperand.start, nextOperand.len);
+                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastAddOp)] + '": expected boolean, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                end;
+        end;
+
+        if (lastAddOp in [rwPlus, rwMinus]) and (typeDef.kind = tkInteger) and (nextOperand.typeDef.kind = tkReal) then
+            typeDef := nextOperand.typeDef // TODO: handle type size expansion
+        else if (lastAddOp = rwPlus) and (typeDef.kind in [tkChar, tkCharRange]) and (nextOperand.typeDef.kind in [tkString, tkChar, tkCharRange]) then
+            typeDef := shortstringType; // TODO: use a more precise string type
+
         nextTokenKind := DetermineNextTokenKind(ctx);
     end;
 
-    state := tsCorrect;
     ctx.MarkEndOfToken(Self);
 end;
 

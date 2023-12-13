@@ -39,10 +39,13 @@ end;
 constructor TTerm.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
+    nextOperand: TTypedToken;
+    str: string;
 begin
     ctx.Add(Self);
     tokenName := 'Term';
 
+    state := tsCorrect;
     lastMultiplyOp := rwUnknown;
 
     nextTokenKind := DetermineNextTokenKind(ctx);
@@ -56,15 +59,60 @@ begin
         TReservedWord.Create(ctx, nextTokenKind.reservedWordKind, true);
         lastMultiplyOp := nextTokenKind.reservedWordKind;
         nextTokenKind := DetermineNextTokenKind(ctx);
-        CreateFactor(ctx, nextTokenKind);
-        // TODO: determine type
+        nextOperand := CreateFactor(ctx, nextTokenKind);
+        case lastMultiplyOp of
+            rwMultiply, rwDivide:
+                if not (typeDef.kind in [tkInteger, tkReal]) then
+                begin
+                    state := tsError;
+                    SetString(str, start, ctx.Cursor - start);
+                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastMultiplyOp)] + '": expected integer or real operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
+                end
+                else if not (nextOperand.typeDef.kind in [tkInteger, tkReal]) then
+                begin
+                    state := tsError;
+                    SetString(str, nextOperand.start, nextOperand.len);
+                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastMultiplyOp)] + '": expected integer or real operands, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                end;
+            rwDiv, rwMod, rwShl, rwShr, rwShl2, rwShr2:
+                if typeDef.kind <> tkInteger then
+                begin
+                    state := tsError;
+                    SetString(str, start, ctx.Cursor - start);
+                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastMultiplyOp)] + '": expected integer operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
+                end
+                else if nextOperand.typeDef.kind <> tkInteger then
+                begin
+                    state := tsError;
+                    SetString(str, nextOperand.start, nextOperand.len);
+                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastMultiplyOp)] + '": expected integer operands, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                end;
+            rwAnd:
+                if not (typeDef.kind in [tkInteger, tkBoolean]) then
+                begin
+                    state := tsError;
+                    SetString(str, start, ctx.Cursor - start);
+                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastMultiplyOp)] + '": expected integer or boolean operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
+                end
+                else if (typeDef.kind = tkInteger) and (nextOperand.typeDef.kind <> tkInteger) then
+                begin
+                    state := tsError;
+                    SetString(str, nextOperand.start, nextOperand.len);
+                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastMultiplyOp)] + '": expected integer, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                end
+                else if (typeDef.kind = tkBoolean) and (nextOperand.typeDef.kind <> tkBoolean) then
+                begin
+                    state := tsError;
+                    SetString(str, nextOperand.start, nextOperand.len);
+                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastMultiplyOp)] + '": expected boolean, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                end;
+        end;
+
+        if (lastMultiplyOp in [rwMultiply, rwDivide]) and (typeDef.kind = tkInteger) and (nextOperand.typeDef.kind = tkReal) then
+            typeDef := nextOperand.typeDef; // TODO: handle type size expansion
 
         nextTokenKind := DetermineNextTokenKind(ctx);
     end;
-
-    state := tsCorrect;
-
-    // TODO: type compatibility checks
 
     ctx.MarkEndOfToken(Self);
 end;

@@ -1,0 +1,37 @@
+{ProgramFile}{RW}program{/RW} {SymbDecl}BadAssign{/SymbDecl}{RW};{/RW}
+
+{TypeSection}{RW}type{/RW}
+    {TypeDecl}{SymbDecl}TFruits{/SymbDecl} {RW}={/RW} {TypeSpec}{EnumSpec}{RW}({/RW}{SymbDecl}bananas{/SymbDecl}{RW},{/RW} {SymbDecl}oranges{/SymbDecl}{RW},{/RW} {SymbDecl}apples{/SymbDecl}{RW},{/RW} {SymbDecl}grapes{/SymbDecl}{RW}){/RW}{/EnumSpec}{/TypeSpec}{/TypeDecl}{RW};{/RW}
+    {TypeDecl}{SymbDecl}TMarks{/SymbDecl} {RW}={/RW} {TypeSpec}{EnumSpec}{RW}({/RW}{SymbDecl}markNone{/SymbDecl}{RW},{/RW} {SymbDecl}markX{/SymbDecl}{RW},{/RW} {SymbDecl}markO{/SymbDecl}{RW}){/RW}{/EnumSpec}{/TypeSpec}{/TypeDecl}{RW};{/RW}{/TypeSection}
+
+{VarSection}{RW}var{/RW}
+    {VarDecl}{SymbDecl}a{/SymbDecl}{RW},{/RW} {SymbDecl}b{/SymbDecl}{RW}:{/RW} {TypeSpec}{Ident}integer{/Ident}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}s{/SymbDecl}{RW}:{/RW} {TypeSpec}{RW}string{/RW}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}fruits{/SymbDecl}{RW}:{/RW} {TypeSpec}{SymbRef}TFruits{/SymbRef}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}fruitStorage{/SymbDecl}{RW}:{/RW} {TypeSpec}{ArraySpec}{RW}array{/RW} {RW}[{/RW}{TypeSpec}{SymbRef}TFruits{/SymbRef}{/TypeSpec}{RW}]{/RW} {RW}of{/RW} {TypeSpec}{RangeSpec}{Num}0{/Num}{RW}..{/RW}{Num}100{/Num}{/RangeSpec}{/TypeSpec}{/ArraySpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}ticTacToe{/SymbDecl}{RW}:{/RW} {TypeSpec}{ArraySpec}{RW}array{/RW} {RW}[{/RW}{TypeSpec}{RangeSpec}{Num}0{/Num}{RW}..{/RW}{Num}2{/Num}{/RangeSpec}{/TypeSpec}{RW},{/RW} {TypeSpec}{RangeSpec}{Num}0{/Num}{RW}..{/RW}{Num}2{/Num}{/RangeSpec}{/TypeSpec}{RW}]{/RW} {RW}of{/RW} {TypeSpec}{EnumSpec}{RW}({/RW}{SymbDecl}markNone{/SymbDecl}{RW},{/RW} {SymbDecl}markX{/SymbDecl}{RW},{/RW} {SymbDecl}markO{/SymbDecl}{RW}){/RW}{/EnumSpec}{/TypeSpec}{/ArraySpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}dynArr{/SymbDecl}{RW}:{/RW} {TypeSpec}{ArraySpec}{RW}array{/RW} {RW}of{/RW} {TypeSpec}{RW}string{/RW}{/TypeSpec}{/ArraySpec}{/TypeSpec}{/VarDecl}{RW};{/RW}{/VarSection}
+
+{Block}{RW}begin{/RW}
+    {Assignment ERROR "Invalid assignment: expected integer or assignment-compatible, but found char!"}{SymbRef}a{/SymbRef} {RW}:={/RW} {Str}'1'{/Str}{/Assignment}{RW};{/RW}
+    {Assignment}{SymbRef}b{/SymbRef} {RW}:={/RW} {SimpleExpression ERROR "Cannot apply operator "+": expected integer or real, but '20' is string"}{Num}10{/Num} {RW}+{/RW} {Str}'20'{/Str} {RW}+{/RW} {SymbRef}a{/SymbRef}{/SimpleExpression}{/Assignment}{RW};{/RW}
+    {Assignment ERROR "Invalid assignment: expected integer or assignment-compatible, but found enum value!"}{SymbRef}b{/SymbRef} {RW}:={/RW} {SymbRef}bananas{/SymbRef}{/Assignment}{RW};{/RW}
+    {Assignment ERROR "Invalid assignment: expected string or assignment-compatible, but found enum value!"}{SymbRef}s{/SymbRef} {RW}:={/RW} {SymbRef}markNone{/SymbRef}{/Assignment}{RW};{/RW}
+    {Assignment}{SymbRef}s{/SymbRef} {RW}:={/RW} {SimpleExpression ERROR "Cannot apply operator "+": expected string or char, but markX is enum value"}{SymbRef}s{/SymbRef} {RW}+{/RW} {Str}'something else'{/Str} {RW}+{/RW} {SymbRef}markX{/SymbRef} {RW}+{/RW} {Str}#$0a{/Str}{/SimpleExpression}{/Assignment}{RW};{/RW}
+
+    {Assignment ERROR "Invalid assignment: different enums!"}{SymbRef}fruits{/SymbRef} {RW}:={/RW} {SymbRef}markX{/SymbRef}{/Assignment}{RW};{/RW}
+    {Assignment ERROR "Invalid assignment: expected enumeration or assignment-compatible, but found string!"}{SymbRef}fruits{/SymbRef} {RW}:={/RW} {VarRef}{SymbRef}dynArr{/SymbRef}{RW}[{/RW}{Num}12{/Num}{RW}]{/RW}{/VarRef}{/Assignment}{RW};{/RW}
+    {Assignment ERROR "Invalid assignment: expected integer or assignment-compatible, but found string!"}{VarRef}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{SymbRef}fruits{/SymbRef}{RW}]{/RW}{/VarRef} {RW}:={/RW} {Str}'1243'{/Str}{/Assignment}{RW};{/RW}
+    {Assignment}{VarRef}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{Str ERROR "Index expression is not compatible with the array type: expected enumeration or assignment-compatible, but found string!"}'bananas'{/Str}{RW}]{/RW}{/VarRef} {RW}:={/RW} {Num}5{/Num}{/Assignment}{RW};{/RW}
+    {Assignment}{VarRef}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{Num ERROR "Index expression is not compatible with the array type: expected enumeration or assignment-compatible, but found integer!"}10{/Num}{RW}]{/RW}{/VarRef} {RW}:={/RW} {Num}111{/Num}{/Assignment}{RW};{/RW}
+    {Assignment}{VarRef}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{SymbRef ERROR "Index expression is not compatible with the array type: different enums!"}markX{/SymbRef}{RW}]{/RW}{/VarRef} {RW}:={/RW} {Num}12{/Num}{/Assignment}{RW};{/RW}
+
+    {Assignment}{SymbRef}a{/SymbRef} {RW}:={/RW} {VarRef}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{SymbRef ERROR "Index expression is not compatible with the array type: different enums!"}markO{/SymbRef}{RW}]{/RW}{/VarRef}{/Assignment}{RW};{/RW}
+    {Assignment}{SymbRef}b{/SymbRef} {RW}:={/RW} {VarRef}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{Str ERROR "Index expression is not compatible with the array type: expected enumeration or assignment-compatible, but found string!"}'oranges'{/Str}{RW}]{/RW}{/VarRef}{/Assignment}{RW};{/RW}
+
+    {Assignment}{VarRef}{SymbRef}ticTacToe{/SymbRef}{RW}[{/RW}{Str ERROR "Index expression is not compatible with the array type: expected integer or assignment-compatible, but found char!"}'0'{/Str}{RW},{/RW} {Num}0{/Num}{RW}]{/RW}{/VarRef} {RW}:={/RW} {SymbRef}markX{/SymbRef}{/Assignment}{RW};{/RW}
+    {Assignment}{VarRef}{SymbRef}ticTacToe{/SymbRef}{RW}[{/RW}{Num}1{/Num}{RW}]{/RW}{RW}[{/RW}{SymbRef ERROR "Index expression is not compatible with the array type: expected integer or assignment-compatible, but found enum value!"}oranges{/SymbRef}{RW}]{/RW}{/VarRef} {RW}:={/RW} {SymbRef}markO{/SymbRef}{/Assignment}{RW};{/RW}
+
+    {Assignment ERROR "Invalid assignment: expected string or assignment-compatible, but found real!"}{VarRef}{SymbRef}dynArr{/SymbRef}{RW}[{/RW}{Num}0{/Num}{RW}]{/RW}{/VarRef} {RW}:={/RW} {Num}123.45{/Num}{/Assignment}{RW};{/RW}
+    {Assignment ERROR "Invalid assignment: expected string or assignment-compatible, but found enumeration!"}{VarRef}{SymbRef}dynArr{/SymbRef}{RW}[{/RW}{Num}1{/Num}{RW}]{/RW}{/VarRef} {RW}:={/RW} {VarRef}{SymbRef}ticTacToe{/SymbRef}{RW}[{/RW}{Num}0{/Num}{RW}]{/RW}{RW}[{/RW}{Num}1{/Num}{RW}]{/RW}{/VarRef}{/Assignment}{RW};{/RW}
+{RW}end{/RW}{/Block}{RW}.{/RW}{/ProgramFile}
