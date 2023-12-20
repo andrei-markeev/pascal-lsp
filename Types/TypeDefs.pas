@@ -25,6 +25,7 @@ type
         tkPointer: (isTyped: boolean; pointerToType: PTypeDef);
         tkArray: (typeOfIndex: PTypeDef; typeOfValues: PTypeDef);
         tkDynamicArray: (typeOfDynValues: PTypeDef);
+        tkSet: (typeOfSet: PTypeDef);
         tkBoolean, tkChar, tkReal, tkUnitName: ();
     end;
 

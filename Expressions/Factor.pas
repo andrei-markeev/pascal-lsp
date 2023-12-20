@@ -6,8 +6,7 @@ unit Factor;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, TypeDefs,
-    Token, TypedToken, ReservedWord, Identifier, Number, StringToken, VarRef;
+    ParserContext, Anchors, TypedToken, ReservedWord;
 
 type
     TFactor = class(TTypedToken)
@@ -21,7 +20,9 @@ function CreateFactor(ctx: TParserContext; nextTokenKind: TTokenKind): TTypedTok
 
 implementation
 
-uses Expression;
+uses
+    Symbols, TypeDefs, Token, Identifier, Number, StringToken,
+    Expression, VarRef, SetConstructor;
 
 function CreateFactor(ctx: TParserContext; nextTokenKind: TTokenKind): TTypedToken;
 var
@@ -118,7 +119,8 @@ begin
                     end;
                 rwOpenSquareBracket:
                     begin
-                        // TODO: constructor of a set
+                        factorToken := TSetConstructor.Create(ctx);
+                        typeDef := TFactor(factorToken).typeDef;
                     end;
                 rwOpenParenthesis: 
                     begin

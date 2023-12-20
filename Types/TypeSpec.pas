@@ -17,7 +17,8 @@ type
 implementation
 
 uses
-    Anchors, Symbols, Token, ReservedWord, Identifier, EnumSpec, RangeSpec, ArraySpec;
+    Anchors, Symbols, Token, ReservedWord, Identifier,
+    EnumSpec, RangeSpec, ArraySpec, SetSpec;
 
 constructor TTypeSpec.Create(ctx: TParserContext);
 var
@@ -104,7 +105,15 @@ begin
                 rwClass: typeDef.kind := tkClass; // TODO: implement ClassSpec
                 rwObject: typeDef.kind := tkObject; // TODO: implement ObjectSpec
                 rwRecord: typeDef.kind := tkRecord; // TODO: implement RecordSpec
-                rwSet: typeDef.kind := tkSet; // TODO: implement SetSpec
+                rwSet:
+                    begin
+                        start := ctx.Cursor;
+                        TSetSpec.Create(ctx);
+                        typeDef.kind := tkSet;
+                        state := tsCorrect;
+                        ctx.MarkEndOfToken(Self);
+                        exit;
+                    end;
                 rwFile: typeDef.kind := tkFile; // TODO: implement FileSpec
                 rwString:
                     begin

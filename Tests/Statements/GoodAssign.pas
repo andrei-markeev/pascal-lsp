@@ -8,6 +8,7 @@ var
     s: string;
     fruits: TFruits;
     fruitStorage: array [TFruits] of 0..100;
+    storageHas: set of TFruits;
     ticTacToe: array [0..2, 0..2] of (markX, markO);
     dynArr: array of string;
 
@@ -21,6 +22,8 @@ begin
     fruits := oranges;
     fruitStorage[fruits] := 10;
     fruitStorage[bananas] := 5;
+
+    storageHas := [fruits, bananas];
 
     a := fruitStorage[apples];
     b := fruitStorage[fruits];
