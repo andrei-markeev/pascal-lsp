@@ -128,18 +128,20 @@ function TypesAreAssignable(left, right: TTypeDef; out errorMessage: string): bo
 begin
     TypesAreAssignable := left.kind = right.kind;
     if (left.kind = tkUnknown) or (right.kind = tkUnknown) then
-        TypesAreAssignable := true;
-    if (left.kind = tkChar) and (right.kind = tkCharRange) then
-        TypesAreAssignable := true;
-    if (left.kind = tkCharRange) and (right.kind = tkChar) then
-        TypesAreAssignable := true;
-    if (left.kind = tkEnumMember) and (right.kind = tkEnumMember) then
-        TypesAreAssignable := left.enumSpec = right.enumSpec;
-    if (left.kind = tkEnum) and (right.kind = tkEnumMember) then
-        TypesAreAssignable := left.enumSpec = right.enumSpec;
+        TypesAreAssignable := true
+    else if (left.kind = tkChar) and (right.kind = tkCharRange) then
+        TypesAreAssignable := true
+    else if (left.kind = tkCharRange) and (right.kind = tkChar) then
+        TypesAreAssignable := true
+    else if (left.kind in [tkEnum, tkEnumMember]) and (right.kind in [tkEnum, tkEnumMember]) then
+        TypesAreAssignable := left.enumSpec = right.enumSpec
+    else if (left.kind = tkSet) and (right.kind = tkSet) then
+        TypesAreAssignable := TypesAreAssignable(left.typeOfSet^, right.typeOfSet^, errorMessage);
 
     if not TypesAreAssignable then
-        if (left.kind in [tkEnum, tkEnumMember]) and (right.kind in [tkEnum, tkEnumMember]) then
+        if (left.kind = tkSet) and (right.kind = tkSet) then
+            errorMessage := 'base types of sets are not compatible: ' + errorMessage
+        else if (left.kind in [tkEnum, tkEnumMember]) and (right.kind in [tkEnum, tkEnumMember]) then
             errorMessage := 'different enums!'
         else
             errorMessage := 'expected ' + TypeKindStr[ord(left.kind)] + ' or assignment-compatible, but found ' + TypeKindStr[ord(right.kind)] + '!';

@@ -42,19 +42,17 @@ begin
     else
         baseType := @expr.typeDef;
 
-    typeDef.size := 1;
-    typeDef.kind := tkSet;
-    typeDef.typeOfSet := baseType;
-
     if not (baseType^.kind in [tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum]) then
     begin
         state := tsError;
+        typeDef.kind := tkUnknown;
         errorMessage := 'Expected a set of ordinal type. Type of set cannot be ' + TypeKindStr[ord(baseType^.kind)];
     end
-    else if baseType^.size > 1 then
+    else
     begin
-        state := tsError;
-        errorMessage := 'The base type of the set must not have more than 256 possible values!';
+        typeDef.size := 1;
+        typeDef.kind := tkSet;
+        typeDef.typeOfSet := baseType;
     end;
 
     nextReservedWord := DetermineReservedWord(ctx);
@@ -62,12 +60,13 @@ begin
     begin
         TReservedWord.Create(ctx, nextReservedWord, true);
         expr := CreateExpression(ctx);
-        if not TypesAreAssignable(baseType^, expr.typeDef, errorMessage) then
+        if (state = tsCorrect) and not TypesAreAssignable(baseType^, expr.typeDef, errorMessage) then
         begin
             state := tsError;
             SetString(exprStr, expr.start, expr.len);
             errorMessage := exprStr + ' is not assignable to the type of the set (' + TypeKindStr[ord(baseType^.kind)] + '): ' + errorMessage;
         end;
+        // TODO: check that range has lower element first (if expressions are constants)
         nextReservedWord := DetermineReservedWord(ctx);
     end;
 

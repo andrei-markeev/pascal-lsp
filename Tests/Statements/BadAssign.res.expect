@@ -9,6 +9,7 @@
     {VarDecl}{SymbDecl}s{/SymbDecl}{RW}:{/RW} {TypeSpec}{RW}string{/RW}{/TypeSpec}{/VarDecl}{RW};{/RW}
     {VarDecl}{SymbDecl}fruits{/SymbDecl}{RW}:{/RW} {TypeSpec}{SymbRef}TFruits{/SymbRef}{/TypeSpec}{/VarDecl}{RW};{/RW}
     {VarDecl}{SymbDecl}fruitStorage{/SymbDecl}{RW}:{/RW} {TypeSpec}{ArraySpec}{RW}array{/RW} {RW}[{/RW}{TypeSpec}{SymbRef}TFruits{/SymbRef}{/TypeSpec}{RW}]{/RW} {RW}of{/RW} {TypeSpec}{RangeSpec}{Num}0{/Num}{RW}..{/RW}{Num}100{/Num}{/RangeSpec}{/TypeSpec}{/ArraySpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
+    {VarDecl}{SymbDecl}storageHas{/SymbDecl}{RW}:{/RW} {TypeSpec}{SetSpec}{RW}set{/RW} {RW}of{/RW} {TypeSpec}{SymbRef}TFruits{/SymbRef}{/TypeSpec}{/SetSpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
     {VarDecl}{SymbDecl}ticTacToe{/SymbDecl}{RW}:{/RW} {TypeSpec}{ArraySpec}{RW}array{/RW} {RW}[{/RW}{TypeSpec}{RangeSpec}{Num}0{/Num}{RW}..{/RW}{Num}2{/Num}{/RangeSpec}{/TypeSpec}{RW},{/RW} {TypeSpec}{RangeSpec}{Num}0{/Num}{RW}..{/RW}{Num}2{/Num}{/RangeSpec}{/TypeSpec}{RW}]{/RW} {RW}of{/RW} {TypeSpec}{EnumSpec}{RW}({/RW}{SymbDecl}markNone{/SymbDecl}{RW},{/RW} {SymbDecl}markX{/SymbDecl}{RW},{/RW} {SymbDecl}markO{/SymbDecl}{RW}){/RW}{/EnumSpec}{/TypeSpec}{/ArraySpec}{/TypeSpec}{/VarDecl}{RW};{/RW}
     {VarDecl}{SymbDecl}dynArr{/SymbDecl}{RW}:{/RW} {TypeSpec}{ArraySpec}{RW}array{/RW} {RW}of{/RW} {TypeSpec}{RW}string{/RW}{/TypeSpec}{/ArraySpec}{/TypeSpec}{/VarDecl}{RW};{/RW}{/VarSection}
 
@@ -25,6 +26,13 @@
     {Assignment}{VarRef}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{Str ERROR "Index expression is not compatible with the array type: expected enumeration or assignment-compatible, but found string!"}'bananas'{/Str}{RW}]{/RW}{/VarRef} {RW}:={/RW} {Num}5{/Num}{/Assignment}{RW};{/RW}
     {Assignment}{VarRef}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{Num ERROR "Index expression is not compatible with the array type: expected enumeration or assignment-compatible, but found integer!"}10{/Num}{RW}]{/RW}{/VarRef} {RW}:={/RW} {Num}111{/Num}{/Assignment}{RW};{/RW}
     {Assignment}{VarRef}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{SymbRef ERROR "Index expression is not compatible with the array type: different enums!"}markX{/SymbRef}{RW}]{/RW}{/VarRef} {RW}:={/RW} {Num}12{/Num}{/Assignment}{RW};{/RW}
+
+    {Assignment ERROR "Invalid assignment: expected set or assignment-compatible, but found integer!"}{SymbRef}storageHas{/SymbRef} {RW}:={/RW} {Num}123{/Num}{/Assignment}{RW};{/RW}
+    {Assignment ERROR "Invalid assignment: expected set or assignment-compatible, but found string!"}{SymbRef}storageHas{/SymbRef} {RW}:={/RW} {Str}'wat'{/Str}{/Assignment}{RW};{/RW}
+    {Assignment ERROR "Invalid assignment: base types of sets are not compatible: different enums!"}{SymbRef}storageHas{/SymbRef} {RW}:={/RW} {SetConstructor}{RW}[{/RW}{SymbRef}markX{/SymbRef}{RW}]{/RW}{/SetConstructor}{/Assignment}{RW};{/RW}
+    {Assignment}{SymbRef}storageHas{/SymbRef} {RW}:={/RW} {SetConstructor ERROR "Expected a set of ordinal type. Type of set cannot be string"}{RW}[{/RW}{Str}'bananas'{/Str}{RW}]{/RW}{/SetConstructor}{/Assignment}{RW};{/RW}
+    {Assignment ERROR "Invalid assignment: base types of sets are not compatible: expected enumeration or assignment-compatible, but found integer!"}{SymbRef}storageHas{/SymbRef} {RW}:={/RW} {SetConstructor}{RW}[{/RW}{Num}1{/Num}{RW}..{/RW}{Num}2{/Num}{RW}]{/RW}{/SetConstructor}{/Assignment}{RW};{/RW}
+    {Assignment}{SymbRef}storageHas{/SymbRef} {RW}:={/RW} {SetConstructor ERROR "markO is not assignable to the type of the set (enumeration): different enums!"}{RW}[{/RW}{SymbRef}oranges{/SymbRef}{RW},{/RW} {SymbRef}markO{/SymbRef}{RW}]{/RW}{/SetConstructor}{/Assignment}{RW};{/RW}
 
     {Assignment}{SymbRef}a{/SymbRef} {RW}:={/RW} {VarRef}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{SymbRef ERROR "Index expression is not compatible with the array type: different enums!"}markO{/SymbRef}{RW}]{/RW}{/VarRef}{/Assignment}{RW};{/RW}
     {Assignment}{SymbRef}b{/SymbRef} {RW}:={/RW} {VarRef}{SymbRef}fruitStorage{/SymbRef}{RW}[{/RW}{Str ERROR "Index expression is not compatible with the array type: expected enumeration or assignment-compatible, but found string!"}'oranges'{/Str}{RW}]{/RW}{/VarRef}{/Assignment}{RW};{/RW}

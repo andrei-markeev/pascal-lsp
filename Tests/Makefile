@@ -4,7 +4,7 @@ RES = $(PAS:.pas=.res)
 .PHONY: all parse clean
 
 %.res: %.pas
-	git diff -U0 --word-diff --no-index -- $@.expect $@
+	git diff -U0 --word-diff=color --word-diff-regex='[A-Za-z]' --no-index -- $@.expect $@
 #	diff --color $@.expect $@
 
 all: parse $(RES)

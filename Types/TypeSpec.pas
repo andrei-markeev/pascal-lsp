@@ -26,6 +26,7 @@ var
     rangeSpecToken: TRangeSpec;
     enumSpecToken: TEnumSpec;
     arraySpecToken: TArraySpec;
+    setSpecToken: TSetSpec;
     ident: TIdentifier;
     identName: shortstring;
     symbol: TSymbol;
@@ -108,8 +109,8 @@ begin
                 rwSet:
                     begin
                         start := ctx.Cursor;
-                        TSetSpec.Create(ctx);
-                        typeDef.kind := tkSet;
+                        setSpecToken := TSetSpec.Create(ctx);
+                        typeDef := setSpecToken.typeDef;
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
                         exit;
