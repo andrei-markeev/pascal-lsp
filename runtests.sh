@@ -1,5 +1,6 @@
 #!/bin/bash
 
+mkdir -p build
 rm build/*
 
 set -e

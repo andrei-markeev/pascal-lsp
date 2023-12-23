@@ -124,7 +124,9 @@ begin
                 end;
         end;
 
-        if (lastAddOp in [rwPlus, rwMinus]) and (typeDef.kind = tkInteger) and (nextOperand.typeDef.kind = tkReal) then
+        if state = tsError then
+            typeDef.kind := tkUnknown
+        else if (lastAddOp in [rwPlus, rwMinus]) and (typeDef.kind = tkInteger) and (nextOperand.typeDef.kind = tkReal) then
             typeDef := nextOperand.typeDef // TODO: handle type size expansion
         else if (lastAddOp = rwPlus) and (typeDef.kind in [tkChar, tkCharRange]) and (nextOperand.typeDef.kind in [tkString, tkChar, tkCharRange]) then
             typeDef := shortstringType; // TODO: use a more precise string type
