@@ -43,11 +43,11 @@ begin
         if cur.state = tsInvisible then
             continue;
 
-        if cur.state = tsMissing then inserts[j] := inserts[j] + '{' + cur.tokenName + ' MISSING /}'
-        else if cur.state = tsSkipped then inserts[j] := inserts[j] + '{' + cur.tokenName + ' SKIPPED}'
-        else if cur.state = tsError then inserts[j] := inserts[j] + '{' + cur.tokenName + ' ERROR "' + cur.errorMessage + '"}'
-        else if cur.state = tsEndOf then inserts[j] := inserts[j] + '{/' + cur.tokenName + '}'
-        else inserts[j] := inserts[j] + '{' + cur.tokenName + '}';
+        if cur.state = tsMissing then inserts[j] := inserts[j] + '<' + cur.tokenName + ' MISSING="' + cur.GetStr + '" />'
+        else if cur.state = tsSkipped then inserts[j] := inserts[j] + '<' + cur.tokenName + ' SKIPPED="true">'
+        else if cur.state = tsError then inserts[j] := inserts[j] + '<' + cur.tokenName + ' ERROR="' + cur.errorMessage + '">'
+        else if cur.state = tsEndOf then inserts[j] := inserts[j] + '</' + cur.tokenName + '>'
+        else inserts[j] := inserts[j] + '<' + cur.tokenName + '>';
 
         if cur.isPrimitive and (cur.state <> tsMissing) then
         begin
@@ -57,11 +57,11 @@ begin
                 WriteLn('j=', j, ' i=',i, ' cur.tokenName=', cur.tokenName, ' cur.start=', cur.start - PChar(contents), ' cur.len=', cur.len, ' len=', len);
                 j := len;
             end;
-            inserts[j] := '{/' + cur.tokenName + '}' + inserts[j];
+            inserts[j] := '</' + cur.tokenName + '>' + inserts[j];
         end;
     end;
 
-    Assign(fres, StringReplace(fileName, '.pas', '.res', []));
+    Assign(fres, StringReplace(fileName, '.pas', '.out.xml', []));
     Rewrite(fres);
     for i := 1 to len do
     begin

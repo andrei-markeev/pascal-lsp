@@ -38,7 +38,7 @@ begin
     if (symbol <> nil) and not (symbol.typeDef.kind in [tkRecord, tkObject, tkClass]) then
     begin
         state := tsError;
-        errorMessage := 'Operator "with" cannot be applied to a variable of type ' + TypeKindStr[ord(symbol.typeDef.kind)] + '!';
+        errorMessage := 'Operator ''with'' cannot be applied to a variable of type ' + TypeKindStr[ord(symbol.typeDef.kind)] + '!';
     end;
     TReservedWord.Create(ctx, rwDo, false);
 

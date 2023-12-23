@@ -1,0 +1,12 @@
+<ProgramFile><RW>program</RW> <SymbDecl>PredefinedTypes</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>hello</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>world</SymbDecl><RW>:</RW> <TypeSpec><Ident>char</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>a</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>longint</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>c</SymbDecl><RW>:</RW> <TypeSpec><Ident>word</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>bool</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

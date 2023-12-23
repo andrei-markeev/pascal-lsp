@@ -1,9 +1,0 @@
-{ProgramFile}{RW}program{/RW} {SymbDecl}Program7{/SymbDecl}{RW};{/RW}
-
-{$mode tp}
-
-{ConstSection}{RW}const{/RW}
-    {ConstDecl}{SymbDecl}class{/SymbDecl} {RW}={/RW} {ConstValue}{Num}100{/Num}{/ConstValue}{/ConstDecl}{RW};{/RW}{/ConstSection}
-
-{Block}{RW}begin{/RW}
-{RW}end{/RW}{/Block}{RW}.{/RW}{/ProgramFile}

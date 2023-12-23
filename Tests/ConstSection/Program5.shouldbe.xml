@@ -1,0 +1,6 @@
+<ProgramFile><RW>program</RW> <SymbDecl>Program5</SymbDecl><RW>;</RW>
+
+<ConstSection><RW>const</RW>
+    <ConstDecl><SymbDecl>a</SymbDecl> <RW>=</RW> <ConstValue><Num>100</Num></ConstValue></ConstDecl><RW>;</RW></ConstSection><RW MISSING="" />
+
+<Block><RW>end</RW></Block><RW>.</RW></ProgramFile>

@@ -71,7 +71,7 @@ begin
         if (sign <> rwUnknown) and not (symbol.typeDef.kind in [tkInteger, tkReal]) then
         begin
             state := tsError;
-            errorMessage := 'Sign "' + ReservedWordStr[ord(sign)] + '" cannot be applied to ' + ident.name + ' (' + TypeKindStr[ord(symbol.typeDef.kind)] + ')!';
+            errorMessage := 'Sign ''' + ReservedWordStr[ord(sign)] + ''' cannot be applied to ' + ident.name + ' (' + TypeKindStr[ord(symbol.typeDef.kind)] + ')!';
             exit;
         end;
 
@@ -98,7 +98,7 @@ begin
         if sign <> rwUnknown then
         begin
             state := tsError;
-            errorMessage := 'Sign "' + ReservedWordStr[ord(sign)] + '" cannot be applied to a char!';
+            errorMessage := 'Sign ''' + ReservedWordStr[ord(sign)] + ''' cannot be applied to a char!';
             exit;
         end;
 

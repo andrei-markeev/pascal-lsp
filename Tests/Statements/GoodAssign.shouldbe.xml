@@ -1,0 +1,37 @@
+<ProgramFile><RW>program</RW> <SymbDecl>GoodAssign</SymbDecl><RW>;</RW>
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TFruits</SymbDecl> <RW>=</RW> <TypeSpec><EnumSpec><RW>(</RW><SymbDecl>bananas</SymbDecl><RW>,</RW> <SymbDecl>oranges</SymbDecl><RW>,</RW> <SymbDecl>apples</SymbDecl><RW>,</RW> <SymbDecl>grapes</SymbDecl><RW>)</RW></EnumSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>a</SymbDecl><RW>,</RW> <SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>fruits</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TFruits</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>fruitStorage</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>[</RW><TypeSpec><SymbRef>TFruits</SymbRef></TypeSpec><RW>]</RW> <RW>of</RW> <TypeSpec><RangeSpec><Num>0</Num><RW>..</RW><Num>100</Num></RangeSpec></TypeSpec></ArraySpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>storageHas</SymbDecl><RW>:</RW> <TypeSpec><SetSpec><RW>set</RW> <RW>of</RW> <TypeSpec><SymbRef>TFruits</SymbRef></TypeSpec></SetSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>ticTacToe</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>[</RW><TypeSpec><RangeSpec><Num>0</Num><RW>..</RW><Num>2</Num></RangeSpec></TypeSpec><RW>,</RW> <TypeSpec><RangeSpec><Num>0</Num><RW>..</RW><Num>2</Num></RangeSpec></TypeSpec><RW>]</RW> <RW>of</RW> <TypeSpec><EnumSpec><RW>(</RW><SymbDecl>markX</SymbDecl><RW>,</RW> <SymbDecl>markO</SymbDecl><RW>)</RW></EnumSpec></TypeSpec></ArraySpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>dynArr</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>of</RW> <TypeSpec><RW>string</RW></TypeSpec></ArraySpec></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <Num>1</Num></Assignment><RW>;</RW>
+    <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>a</SymbRef> <RW>+</RW> <Num>1</Num></SimpleExpression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <SimpleExpression><Num>10</Num> <RW>+</RW> <Num>20</Num> <RW>+</RW> <SymbRef>a</SymbRef></SimpleExpression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>''</Str></Assignment><RW>;</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>s</SymbRef> <RW>+</RW> <Str>'something else'</Str> <RW>+</RW> <Str>#13</Str> <RW>+</RW> <Str>#$0a</Str></SimpleExpression></Assignment><RW>;</RW>
+
+    <Assignment><SymbRef>fruits</SymbRef> <RW>:=</RW> <SymbRef>oranges</SymbRef></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>fruitStorage</SymbRef><RW>[</RW><SymbRef>fruits</SymbRef><RW>]</RW></VarRef> <RW>:=</RW> <Num>10</Num></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>fruitStorage</SymbRef><RW>[</RW><SymbRef>bananas</SymbRef><RW>]</RW></VarRef> <RW>:=</RW> <Num>5</Num></Assignment><RW>;</RW>
+
+    <Assignment><SymbRef>storageHas</SymbRef> <RW>:=</RW> <SetConstructor><RW>[</RW><SymbRef>fruits</SymbRef><RW>,</RW> <SymbRef>bananas</SymbRef><RW>]</RW></SetConstructor></Assignment><RW>;</RW>
+
+    <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <VarRef><SymbRef>fruitStorage</SymbRef><RW>[</RW><SymbRef>apples</SymbRef><RW>]</RW></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <VarRef><SymbRef>fruitStorage</SymbRef><RW>[</RW><SymbRef>fruits</SymbRef><RW>]</RW></VarRef></Assignment><RW>;</RW>
+
+    <Assignment><VarRef><SymbRef>ticTacToe</SymbRef><RW>[</RW><Num>0</Num><RW>,</RW> <Num>0</Num><RW>]</RW></VarRef> <RW>:=</RW> <SymbRef>markX</SymbRef></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>ticTacToe</SymbRef><RW>[</RW><Num>1</Num><RW>]</RW><RW>[</RW><Num>1</Num><RW>]</RW></VarRef> <RW>:=</RW> <SymbRef>markO</SymbRef></Assignment><RW>;</RW>
+
+    <Assignment><VarRef><SymbRef>dynArr</SymbRef><RW>[</RW><Num>0</Num><RW>]</RW></VarRef> <RW>:=</RW> <Str>'hello'</Str></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>dynArr</SymbRef><RW>[</RW><Num>1</Num><RW>]</RW></VarRef> <RW>:=</RW> <Str>'world'</Str></Assignment><RW>;</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <VarRef><SymbRef>dynArr</SymbRef><RW>[</RW><Num>12</Num><RW>]</RW></VarRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

@@ -66,45 +66,45 @@ begin
                 begin
                     state := tsError;
                     SetString(str, start, ctx.Cursor - start);
-                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastMultiplyOp)] + '": expected integer or real operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastMultiplyOp)] + ''': expected integer or real operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
                 end
                 else if not (nextOperand.typeDef.kind in [tkInteger, tkReal]) then
                 begin
                     state := tsError;
                     SetString(str, nextOperand.start, nextOperand.len);
-                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastMultiplyOp)] + '": expected integer or real operands, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastMultiplyOp)] + ''': expected integer or real operands, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
                 end;
             rwDiv, rwMod, rwShl, rwShr, rwShl2, rwShr2:
                 if typeDef.kind <> tkInteger then
                 begin
                     state := tsError;
                     SetString(str, start, ctx.Cursor - start);
-                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastMultiplyOp)] + '": expected integer operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastMultiplyOp)] + ''': expected integer operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
                 end
                 else if nextOperand.typeDef.kind <> tkInteger then
                 begin
                     state := tsError;
                     SetString(str, nextOperand.start, nextOperand.len);
-                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastMultiplyOp)] + '": expected integer operands, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastMultiplyOp)] + ''': expected integer operands, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
                 end;
             rwAnd:
                 if not (typeDef.kind in [tkInteger, tkBoolean]) then
                 begin
                     state := tsError;
                     SetString(str, start, ctx.Cursor - start);
-                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastMultiplyOp)] + '": expected integer or boolean operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastMultiplyOp)] + ''': expected integer or boolean operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
                 end
                 else if (typeDef.kind = tkInteger) and (nextOperand.typeDef.kind <> tkInteger) then
                 begin
                     state := tsError;
                     SetString(str, nextOperand.start, nextOperand.len);
-                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastMultiplyOp)] + '": expected integer, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastMultiplyOp)] + ''': expected integer, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
                 end
                 else if (typeDef.kind = tkBoolean) and (nextOperand.typeDef.kind <> tkBoolean) then
                 begin
                     state := tsError;
                     SetString(str, nextOperand.start, nextOperand.len);
-                    errorMessage := 'Cannot apply operator "' + ReservedWordStr[ord(lastMultiplyOp)] + '": expected boolean, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastMultiplyOp)] + ''': expected boolean, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
                 end;
         end;
 

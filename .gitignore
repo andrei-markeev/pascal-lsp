@@ -1,7 +1,7 @@
 backup/
 build/
 lib/
-Tests/**/*.res
+Tests/**/*.out.xml
 *.exe
 test.pas
 TokenTemplate.pas

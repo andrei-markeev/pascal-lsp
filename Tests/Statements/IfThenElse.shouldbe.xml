@@ -1,0 +1,38 @@
+<ProgramFile><RW>program</RW> <SymbDecl>IfThenElse</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>a</SymbDecl><RW>,</RW> <SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>fruits</SymbDecl><RW>:</RW> <TypeSpec><EnumSpec><RW>(</RW><SymbDecl>bananas</SymbDecl><RW>,</RW> <SymbDecl>oranges</SymbDecl><RW>,</RW> <SymbDecl>apples</SymbDecl><RW>,</RW> <SymbDecl>grapes</SymbDecl><RW>)</RW></EnumSpec></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+
+    { --- good ones --- }
+
+    <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <Num>1</Num></Assignment><RW>;</RW>
+    <If><RW>if</RW> <Expression><SymbRef>a</SymbRef> <RW><></RW> <Num>1</Num></Expression> <RW>then</RW>
+        <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>a</SymbRef> <RW>+</RW> <Num>1</Num></SimpleExpression></Assignment>
+    <RW>else</RW>
+        <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <SimpleExpression><Num>10</Num> <RW>+</RW> <Num>20</Num> <RW>+</RW> <Term><SymbRef>a</SymbRef> <RW>*</RW> <Num>2</Num></Term></SimpleExpression></Assignment></If><RW>;</RW>
+    
+    <Assignment><SymbRef>fruits</SymbRef> <RW>:=</RW> <SymbRef>oranges</SymbRef></Assignment><RW>;</RW>
+
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'this is bananas'</Str></Assignment><RW>;</RW>
+    <If><RW>if</RW> <Expression ERROR="Comparing enumeration with enum value is not supported!"><SymbRef>fruits</SymbRef> <RW>></RW> <SymbRef>bananas</SymbRef></Expression> <RW>then</RW>
+        <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'not bananas but more than bananas!'</Str></Assignment></If><RW>;</RW>
+
+    { --- incomplete --- }
+
+    <If><RW>if</RW><Factor MISSING="" /><RW MISSING="" />
+
+    <If><RW>if</RW> <Expression><SymbRef>a</SymbRef> <RW>></RW> <SymbRef>b</SymbRef></Expression> <RW>then</RW>
+        <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'no way'</Str></Assignment></If></If><RW>;</RW>
+    
+    <If ERROR="Condition expression returns integer but must return a boolean value!"><RW>if</RW> <SymbRef>a</SymbRef><RW MISSING="" />
+
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Num>100</Num></Assignment></If><RW>;</RW>
+
+    <If ERROR="Condition expression returns integer but must return a boolean value!"><RW>if</RW> <SymbRef>a</SymbRef> <RW>then</RW>
+    <Block><RW>begin</RW>
+        <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'here we go'</Str></Assignment><RW>;</RW>
+
+<RW>end</RW></Block></If><RW SKIPPED>.</RW><RW MISSING="" /><Invalid ERROR="Unexpected end of file!"></Invalid><RW MISSING="" /></Block><RW MISSING="" /></ProgramFile>

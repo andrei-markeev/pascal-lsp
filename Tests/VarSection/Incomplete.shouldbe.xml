@@ -1,0 +1,12 @@
+<ProgramFile><RW>program</RW> <SymbDecl>Incomplete</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>hello</SymbDecl><RW>:</RW> <TypeSpec ERROR="Identifier has not been declared!"><Ident>UndefinedType</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>world</SymbDecl><RW>:</RW> <TypeSpec><RangeSpec ERROR="Strings cannot be used in subrange declarations. Only character strings are allowed, e.g. 'A', #13, etc."><Str>'not a type'</Str><RW MISSING="" /></RangeSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>goodOne</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>noType</SymbDecl><RW MISSING="" /><TypeSpec MISSING="" /></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>goodOne2</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>incomplete</SymbDecl><RW>:</RW><TypeSpec MISSING="" /></VarDecl><RW MISSING="" /></VarSection> 
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

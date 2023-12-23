@@ -355,7 +355,6 @@ begin
             state := tsMissing;
             start := ctx.cursorBeforeTrivia;
             len := 0;
-            tokenName := 'RW ''' + expected + '''';
             ctx.Add(Self);
             exit;
         end;

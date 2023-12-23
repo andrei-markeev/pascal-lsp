@@ -1,0 +1,30 @@
+<ProgramFile><RW>program</RW> <SymbDecl>Subranges</SymbDecl><RW>;</RW>
+
+<ConstSection><RW>const</RW>
+    <ConstDecl><SymbDecl>MIN</SymbDecl> <RW>=</RW> <ConstValue><Num>0</Num></ConstValue></ConstDecl><RW>;</RW>
+    <ConstDecl><SymbDecl>MAX</SymbDecl> <RW>=</RW> <ConstValue><Num>10000</Num></ConstValue></ConstDecl><RW>;</RW>
+    <ConstDecl><SymbDecl>CHAR_S</SymbDecl> <RW>=</RW> <ConstValue><Str>'S'</Str></ConstValue></ConstDecl><RW>;</RW>
+    <ConstDecl><SymbDecl>CHAR_Y</SymbDecl> <RW>=</RW> <ConstValue><Str>'Y'</Str></ConstValue></ConstDecl><RW>;</RW></ConstSection>
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>myRangeType</SymbDecl> <RW>=</RW> <TypeSpec><RangeSpec><Num>10</Num><RW>..</RW><Num>20</Num></RangeSpec></TypeSpec></TypeDecl><RW>;</RW>
+    <TypeDecl><SymbDecl>myEnumType</SymbDecl> <RW>=</RW> <TypeSpec><EnumSpec><RW>(</RW><SymbDecl>apple</SymbDecl><RW>,</RW> <SymbDecl>orange</SymbDecl><RW>,</RW> <SymbDecl>banana</SymbDecl><RW>)</RW></EnumSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>constSubrange</SymbDecl><RW>:</RW> <TypeSpec><RangeSpec><SymbRef>MIN</SymbRef><RW>..</RW><SymbRef>MAX</SymbRef></RangeSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>mixedConstSubrange1</SymbDecl><RW>:</RW> <TypeSpec><RangeSpec><Num>1</Num><RW>..</RW><SymbRef>MAX</SymbRef></RangeSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>mixedConstSubrange2</SymbDecl><RW>:</RW> <TypeSpec><RangeSpec><SymbRef>MIN</SymbRef><RW>..</RW><Num>255</Num></RangeSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>typeSubrange</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>myRangeType</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>numberSubrange</SymbDecl><RW>:</RW> <TypeSpec><RangeSpec><Num>0</Num><RW>..</RW><Num>200</Num></RangeSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>signedNumberRange</SymbDecl><RW>:</RW> <TypeSpec><RangeSpec><RW>-</RW><Num>100</Num><RW>..</RW><Num>100</Num></RangeSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>negativeNumberRange</SymbDecl><RW>:</RW> <TypeSpec><RangeSpec><RW>-</RW><Num>10</Num><RW>..</RW><RW>-</RW><Num>1</Num></RangeSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>positiveNumberRange</SymbDecl><RW>:</RW> <TypeSpec><RangeSpec><RW>+</RW><Num>1</Num><RW>..</RW><RW>+</RW><Num>10</Num></RangeSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>enumSubrange</SymbDecl><RW>:</RW> <TypeSpec><RangeSpec><SymbRef>orange</SymbRef><RW>..</RW><SymbRef>banana</SymbRef></RangeSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>myLongInt</SymbDecl><RW>:</RW> <TypeSpec><RangeSpec><Num>$80000000</Num><RW>..</RW><Num>$7fffffff</Num></RangeSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>charSubrange</SymbDecl><RW>:</RW> <TypeSpec><RangeSpec><Str>'1'</Str><RW>..</RW><Str>'9'</Str></RangeSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>constCharSubrange</SymbDecl><RW>:</RW> <TypeSpec><RangeSpec><SymbRef>CHAR_S</SymbRef><RW>..</RW><SymbRef>CHAR_Y</SymbRef></RangeSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>mixedConstCharSubrange1</SymbDecl><RW>:</RW> <TypeSpec><RangeSpec><Str>'d'</Str><RW>..</RW><SymbRef>CHAR_S</SymbRef></RangeSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>mixedConstCharSubrange2</SymbDecl><RW>:</RW> <TypeSpec><RangeSpec><SymbRef>CHAR_Y</SymbRef><RW>..</RW><Str>'z'</Str></RangeSpec></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

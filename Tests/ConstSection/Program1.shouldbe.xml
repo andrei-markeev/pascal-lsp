@@ -1,0 +1,7 @@
+<ProgramFile><RW>program</RW> <SymbDecl>Program1</SymbDecl><RW>;</RW>
+
+<ConstSection><RW>const</RW>
+    <ConstDecl><SymbDecl>a</SymbDecl> <RW>=</RW> <ConstValue><Num>10</Num></ConstValue></ConstDecl><RW>;</RW></ConstSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

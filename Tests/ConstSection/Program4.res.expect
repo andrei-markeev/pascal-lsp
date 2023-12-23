@@ -1,6 +1,0 @@
-{ProgramFile}{RW}program{/RW} {SymbDecl}Program4{/SymbDecl}{RW};{/RW}
-
-{ConstSection}{RW}const{/RW}{ConstDecl MISSING /}{RW ';' MISSING /}{/ConstSection}
-
-{Block}{RW}begin{/RW}
-{RW}end{/RW}{/Block}{RW}.{/RW}{/ProgramFile}
