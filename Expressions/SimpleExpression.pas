@@ -41,6 +41,7 @@ var
     nextTokenKind: TTokenKind;
     nextOperand: TTypedToken;
     str: string;
+    savedPos: PChar;
 begin
     ctx.Add(Self);
     tokenName := 'SimpleExpression';
@@ -52,6 +53,8 @@ begin
     lastAddOp := rwUnknown;
     leftOperand := CreateTerm(ctx);
     typeDef := leftOperand.typeDef;
+
+    savedPos := ctx.Cursor;
     nextTokenKind := DetermineNextTokenKind(ctx);
 
     while nextTokenKind.reservedWordKind in [rwPlus, rwMinus, rwOr, rwXor, rwSymmetricDifference] do
@@ -60,12 +63,13 @@ begin
         lastAddOp := nextTokenKind.reservedWordKind;
         nextOperand := CreateTerm(ctx);
 
+        if state <> tsError then
         case lastAddOp of
             rwPlus:
                 if not (typeDef.kind in [tkString, tkChar, tkCharRange, tkInteger, tkReal, tkSet]) then
                 begin
                     state := tsError;
-                    SetString(str, start, ctx.Cursor - start);
+                    SetString(str, start, savedPos - start);
                     errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected string, char, integer, real or set, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
                 end
                 else if (typeDef.kind in [tkInteger, tkReal]) and not (nextOperand.typeDef.kind in [tkInteger, tkReal]) then
@@ -89,7 +93,7 @@ begin
                 if not (typeDef.kind in [tkInteger, tkReal, tkSet]) then
                 begin
                     state := tsError;
-                    SetString(str, start, ctx.Cursor - start);
+                    SetString(str, start, savedPos - start);
                     errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected integer or real operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
                 end
                 else if (typeDef.kind in [tkInteger, tkReal]) and not (nextOperand.typeDef.kind in [tkInteger, tkReal]) then
@@ -107,7 +111,7 @@ begin
                 if not (typeDef.kind in [tkInteger, tkBoolean]) then
                 begin
                     state := tsError;
-                    SetString(str, start, ctx.Cursor - start);
+                    SetString(str, start, savedPos - start);
                     errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected integer or boolean operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
                 end
                 else if (typeDef.kind = tkInteger) and (nextOperand.typeDef.kind <> tkInteger) then
@@ -122,6 +126,21 @@ begin
                     SetString(str, nextOperand.start, nextOperand.len);
                     errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected boolean, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
                 end;
+            rwSymmetricDifference:
+                if (typeDef.kind <> tkSet) or (nextOperand.typeDef.kind <> tkSet) then
+                begin
+                    state := tsError;
+                    if typeDef.kind <> tkSet then
+                        SetString(str, start, savedPos - start)
+                    else
+                        SetString(str, nextOperand.start, nextOperand.len);
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected set operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
+                end
+                else if not TypesAreAssignable(typeDef, nextOperand.typeDef, str) then
+                begin
+                    state := tsError;
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': ' + str;
+                end;
         end;
 
         if state = tsError then
@@ -131,6 +150,7 @@ begin
         else if (lastAddOp = rwPlus) and (typeDef.kind in [tkChar, tkCharRange]) and (nextOperand.typeDef.kind in [tkString, tkChar, tkCharRange]) then
             typeDef := shortstringType; // TODO: use a more precise string type
 
+        savedPos := ctx.Cursor;
         nextTokenKind := DetermineNextTokenKind(ctx);
     end;
 

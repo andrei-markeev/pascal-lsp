@@ -1,0 +1,39 @@
+<ProgramFile><RW>program</RW> <SymbDecl>SetsIntersection</SymbDecl><RW>;</RW>
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TFruits</SymbDecl> <RW>=</RW> <TypeSpec><EnumSpec><RW>(</RW><SymbDecl>banana</SymbDecl><RW>,</RW> <SymbDecl>apple</SymbDecl><RW>,</RW> <SymbDecl>orange</SymbDecl><RW>,</RW> <SymbDecl>kiwi</SymbDecl><RW>,</RW> <SymbDecl>plum</SymbDecl><RW>)</RW></EnumSpec></TypeSpec></TypeDecl><RW>;</RW>
+    <TypeDecl><SymbDecl>TVegetables</SymbDecl> <RW>=</RW> <TypeSpec><EnumSpec><RW>(</RW><SymbDecl>cucumber</SymbDecl><RW>,</RW> <SymbDecl>carrot</SymbDecl><RW>,</RW> <SymbDecl>potato</SymbDecl><RW>,</RW> <SymbDecl>turnip</SymbDecl><RW>,</RW> <SymbDecl>cabbage</SymbDecl><RW>)</RW></EnumSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>myFruits</SymbDecl><RW>:</RW> <TypeSpec><SetSpec><RW>set</RW> <RW>of</RW> <TypeSpec><SymbRef>TFruits</SymbRef></TypeSpec></SetSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>hisFruits</SymbDecl><RW>:</RW> <TypeSpec><SetSpec><RW>set</RW> <RW>of</RW> <TypeSpec><SymbRef>TFruits</SymbRef></TypeSpec></SetSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>vegetables</SymbDecl><RW>:</RW> <TypeSpec><SetSpec><RW>set</RW> <RW>of</RW> <TypeSpec><SymbRef>TVegetables</SymbRef></TypeSpec></SetSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>result</SymbDecl><RW>:</RW> <TypeSpec><SetSpec><RW>set</RW> <RW>of</RW> <TypeSpec><SymbRef>TFruits</SymbRef></TypeSpec></SetSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>i</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+
+    <Assignment><SymbRef>i</SymbRef> <RW>:=</RW> <Num>1</Num></Assignment><RW>;</RW>
+
+    <Assignment><SymbRef>myFruits</SymbRef> <RW>:=</RW> <SetConstructor><RW>[</RW><SymbRef>banana</SymbRef><RW>,</RW> <SymbRef>kiwi</SymbRef><RW>]</RW></SetConstructor></Assignment><RW>;</RW>
+    <Assignment><SymbRef>hisFruits</SymbRef> <RW>:=</RW> <SetConstructor><RW>[</RW><SymbRef>apple</SymbRef><RW>,</RW> <SymbRef>orange</SymbRef><RW>,</RW> <SymbRef>kiwi</SymbRef><RW>]</RW></SetConstructor></Assignment><RW>;</RW>
+
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term><SymbRef>myFruits</SymbRef> <RW>*</RW> <SymbRef>hisFruits</SymbRef></Term></Assignment><RW>;</RW>
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term><SymbRef>myFruits</SymbRef> <RW>*</RW> <SetConstructor><RW>[</RW><SymbRef>orange</SymbRef><RW>]</RW></SetConstructor></Term></Assignment><RW>;</RW>
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term><SetConstructor><RW>[</RW><SymbRef>orange</SymbRef><RW>]</RW></SetConstructor> <RW>*</RW> <SymbRef>hisFruits</SymbRef></Term></Assignment><RW>;</RW>
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term><SetConstructor><RW>[</RW><SymbRef>apple</SymbRef><RW>,</RW> <SymbRef>kiwi</SymbRef><RW>]</RW></SetConstructor> <RW>*</RW> <SetConstructor><RW>[</RW><RW>]</RW></SetConstructor></Term></Assignment><RW>;</RW>
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term><SetConstructor><RW>[</RW><RW>]</RW></SetConstructor> <RW>*</RW> <SetConstructor><RW>[</RW><SymbRef>banana</SymbRef><RW>]</RW></SetConstructor></Term></Assignment><RW>;</RW>
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term><SetConstructor><RW>[</RW><SymbRef>apple</SymbRef><RW>,</RW> <SymbRef>kiwi</SymbRef><RW>]</RW></SetConstructor> <RW>*</RW> <SetConstructor><RW>[</RW><SymbRef>apple</SymbRef><RW>,</RW> <SymbRef>banana</SymbRef><RW>]</RW></SetConstructor> <RW>*</RW> <SetConstructor><RW>[</RW><SymbRef>plum</SymbRef><RW>]</RW></SetConstructor></Term></Assignment><RW>;</RW>
+
+    <Assignment ERROR="Invalid assignment: base types of sets are not compatible: different enums!"><SymbRef>result</SymbRef> <RW>:=</RW> <Term><SymbRef>vegetables</SymbRef> <RW>*</RW> <SetConstructor><RW>[</RW><SymbRef>cabbage</SymbRef><RW>]</RW></SetConstructor></Term></Assignment><RW>;</RW>
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term ERROR="Cannot apply operator '*': base types of sets are not compatible: different enums!"><SymbRef>vegetables</SymbRef> <RW>*</RW> <SetConstructor><RW>[</RW><SymbRef>orange</SymbRef><RW>]</RW></SetConstructor></Term></Assignment><RW>;</RW>
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term ERROR="Cannot apply operator '*': base types of sets are not compatible: different enums!"><SymbRef>vegetables</SymbRef> <RW>*</RW> <SymbRef>hisFruits</SymbRef></Term></Assignment><RW>;</RW>
+    <Assignment ERROR="Invalid assignment: base types of sets are not compatible: different enums!"><SymbRef>result</SymbRef> <RW>:=</RW> <Term><SymbRef>vegetables</SymbRef> <RW>*</RW> <SetConstructor><RW>[</RW><RW>]</RW></SetConstructor></Term></Assignment><RW>;</RW>
+
+    <Assignment ERROR="Invalid assignment: base types of sets are not compatible: different enums!"><SymbRef>result</SymbRef> <RW>:=</RW> <Term><SetConstructor><RW>[</RW><SymbRef>cabbage</SymbRef><RW>]</RW></SetConstructor> <RW>*</RW> <SymbRef>vegetables</SymbRef></Term></Assignment><RW>;</RW>
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term ERROR="Cannot apply operator '*': base types of sets are not compatible: different enums!"><SetConstructor><RW>[</RW><SymbRef>orange</SymbRef><RW>]</RW></SetConstructor> <RW>*</RW> <SymbRef>vegetables</SymbRef></Term></Assignment><RW>;</RW>
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term ERROR="Cannot apply operator '*': base types of sets are not compatible: different enums!"><SymbRef>hisFruits</SymbRef> <RW>*</RW> <SymbRef>vegetables</SymbRef></Term></Assignment><RW>;</RW>
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term><SetConstructor><RW>[</RW><RW>]</RW></SetConstructor> <RW>*</RW> <SymbRef>vegetables</SymbRef></Term></Assignment><RW>;</RW>
+
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term ERROR="Cannot apply operator '*': expected integer, real or set operands, but 'test' is string"><Str>'test'</Str> <RW>*</RW> <SetConstructor><RW>[</RW><SymbRef>plum</SymbRef><RW>]</RW></SetConstructor></Term></Assignment><RW>;</RW>
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term ERROR="Cannot apply operator '*': expected a set, but  is (unknown)"><SetConstructor><RW>[</RW><SymbRef>orange</SymbRef><RW>]</RW></SetConstructor> <RW>*</RW><Factor MISSING="" /></Term></Assignment><RW MISSING=";" />
+
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
