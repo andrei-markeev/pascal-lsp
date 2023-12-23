@@ -8,7 +8,7 @@ interface
 type
     TTokenState = (tsCorrect, tsError, tsMissing, tsSkipped, tsEndOf, tsInvisible);
     TToken = class
-    private
+    protected
         asString: string;
     public
         state: TTokenState;

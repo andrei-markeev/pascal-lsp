@@ -1,4 +1,4 @@
-<ProgramFile><RW>program</RW> <SymbDecl>Program6</SymbDecl><RW MISSING="" />
+<ProgramFile><RW>program</RW> <SymbDecl>Program6</SymbDecl><RW MISSING=";" />
 
 <ConstSection><RW>const</RW>
     <ConstDecl><SymbDecl>a</SymbDecl> <RW>=</RW> <ConstValue><Num>100</Num></ConstValue></ConstDecl><RW>;</RW></ConstSection>

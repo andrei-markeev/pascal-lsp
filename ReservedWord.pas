@@ -355,6 +355,7 @@ begin
             state := tsMissing;
             start := ctx.cursorBeforeTrivia;
             len := 0;
+            asString := expected;
             ctx.Add(Self);
             exit;
         end;

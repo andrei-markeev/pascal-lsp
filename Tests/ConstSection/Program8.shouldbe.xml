@@ -3,7 +3,7 @@
 {$mode delphi}
 
 <ConstSection><RW>const</RW><ConstDecl MISSING="" />
-    <RW SKIPPED>class</RW> <RW SKIPPED>=</RW> <Num SKIPPED>100</Num><RW SKIPPED>;</RW><RW MISSING="" /></ConstSection>
+    <RW SKIPPED="true">class</RW> <RW SKIPPED="true">=</RW> <Num SKIPPED="true">100</Num><RW SKIPPED="true">;</RW><RW MISSING=";" /></ConstSection>
 
 <Block><RW>begin</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

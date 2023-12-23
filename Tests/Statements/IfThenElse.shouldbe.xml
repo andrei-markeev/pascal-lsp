@@ -22,12 +22,12 @@
 
     { --- incomplete --- }
 
-    <If><RW>if</RW><Factor MISSING="" /><RW MISSING="" />
+    <If><RW>if</RW><Factor MISSING="" /><RW MISSING="then" />
 
     <If><RW>if</RW> <Expression><SymbRef>a</SymbRef> <RW>></RW> <SymbRef>b</SymbRef></Expression> <RW>then</RW>
         <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'no way'</Str></Assignment></If></If><RW>;</RW>
     
-    <If ERROR="Condition expression returns integer but must return a boolean value!"><RW>if</RW> <SymbRef>a</SymbRef><RW MISSING="" />
+    <If ERROR="Condition expression returns integer but must return a boolean value!"><RW>if</RW> <SymbRef>a</SymbRef><RW MISSING="then" />
 
     <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Num>100</Num></Assignment></If><RW>;</RW>
 
@@ -35,4 +35,4 @@
     <Block><RW>begin</RW>
         <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'here we go'</Str></Assignment><RW>;</RW>
 
-<RW>end</RW></Block></If><RW SKIPPED>.</RW><RW MISSING="" /><Invalid ERROR="Unexpected end of file!"></Invalid><RW MISSING="" /></Block><RW MISSING="" /></ProgramFile>
+<RW>end</RW></Block></If><RW SKIPPED="true">.</RW><RW MISSING=";" /><Invalid ERROR="Unexpected end of file!"></Invalid><RW MISSING="end" /></Block><RW MISSING="." /></ProgramFile>

@@ -1,10 +1,10 @@
 <ProgramFile><RW>program</RW> <SymbDecl>Program2</SymbDecl><RW>;</RW>
 
 <ConstSection><RW>const</RW>
-    <ConstDecl><SymbDecl>a</SymbDecl> <RW SKIPPED>:=</RW><RW MISSING="" /> <ConstValue><Num>10</Num></ConstValue></ConstDecl><RW>;</RW>
-    <ConstDecl><SymbDecl>b</SymbDecl><RW MISSING="" /> <ConstValue><Num>20</Num></ConstValue></ConstDecl><RW>;</RW>
+    <ConstDecl><SymbDecl>a</SymbDecl> <RW SKIPPED="true">:=</RW><RW MISSING="=" /> <ConstValue><Num>10</Num></ConstValue></ConstDecl><RW>;</RW>
+    <ConstDecl><SymbDecl>b</SymbDecl><RW MISSING="=" /> <ConstValue><Num>20</Num></ConstValue></ConstDecl><RW>;</RW>
     <ConstDecl><SymbDecl>c</SymbDecl> <RW>=</RW> <ConstValue><Str>'Hello ''10'' world!'</Str></ConstValue></ConstDecl><RW>;</RW>
-    <ConstDecl><SymbDecl>d</SymbDecl> <Invalid SKIPPED>!</Invalid><RW>=</RW> <ConstValue><SymbRef>a</SymbRef></ConstValue></ConstDecl><RW>;</RW></ConstSection>
+    <ConstDecl><SymbDecl>d</SymbDecl> <Invalid SKIPPED="true">!</Invalid><RW>=</RW> <ConstValue><SymbRef>a</SymbRef></ConstValue></ConstDecl><RW>;</RW></ConstSection>
 
 <Block><RW>begin</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

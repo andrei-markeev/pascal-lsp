@@ -1,0 +1,80 @@
+<!ENTITY % commonAttrs 
+    'ERROR   CDATA   #IMPLIED
+     MISSING  CDATA   #IMPLIED
+     SKIPPED  (true|false)   "false"'>
+
+
+<!ELEMENT ProgramFile ANY>
+<!ATTLIST ProgramFile %commonAttrs;>
+<!ELEMENT UsesClause ANY>
+<!ATTLIST UsesClause %commonAttrs;>
+
+<!ELEMENT TypeSection ANY>
+<!ATTLIST TypeSection %commonAttrs;>
+<!ELEMENT TypeDecl ANY>
+<!ATTLIST TypeDecl %commonAttrs;>
+<!ELEMENT ConstSection ANY>
+<!ATTLIST ConstSection %commonAttrs;>
+<!ELEMENT ConstDecl ANY>
+<!ATTLIST ConstDecl %commonAttrs;>
+<!ELEMENT VarSection ANY>
+<!ATTLIST VarSection %commonAttrs;>
+<!ELEMENT VarDecl ANY>
+<!ATTLIST VarDecl %commonAttrs;>
+
+<!ELEMENT TypeSpec ANY>
+<!ATTLIST TypeSpec %commonAttrs;>
+<!ELEMENT RangeSpec ANY>
+<!ATTLIST RangeSpec %commonAttrs;>
+<!ELEMENT EnumSpec ANY>
+<!ATTLIST EnumSpec %commonAttrs;>
+<!ELEMENT ArraySpec ANY>
+<!ATTLIST ArraySpec %commonAttrs;>
+<!ELEMENT SetSpec ANY>
+<!ATTLIST SetSpec %commonAttrs;>
+
+<!ELEMENT Block ANY>
+<!ATTLIST Block %commonAttrs;>
+<!ELEMENT Assignment ANY>
+<!ATTLIST Assignment %commonAttrs;>
+<!ELEMENT If ANY>
+<!ATTLIST If %commonAttrs;>
+<!ELEMENT For ANY>
+<!ATTLIST For %commonAttrs;>
+<!ELEMENT While ANY>
+<!ATTLIST While %commonAttrs;>
+<!ELEMENT With ANY>
+<!ATTLIST With %commonAttrs;>
+
+<!ELEMENT Expression ANY>
+<!ATTLIST Expression %commonAttrs;>
+<!ELEMENT SimpleExpression ANY>
+<!ATTLIST SimpleExpression %commonAttrs;>
+<!ELEMENT Term ANY>
+<!ATTLIST Term %commonAttrs;>
+<!ELEMENT Factor ANY>
+<!ATTLIST Factor %commonAttrs;>
+<!ELEMENT VarRef ANY>
+<!ATTLIST VarRef %commonAttrs;>
+<!ELEMENT SetConstructor ANY>
+<!ATTLIST SetConstructor %commonAttrs;>
+
+<!ELEMENT ConstValue ANY>
+<!ATTLIST ConstValue %commonAttrs;>
+
+<!ELEMENT RW (#PCDATA)>
+<!ATTLIST RW %commonAttrs;>
+<!ELEMENT Num (#PCDATA)>
+<!ATTLIST Num %commonAttrs;>
+<!ELEMENT Str (#PCDATA)>
+<!ATTLIST Str %commonAttrs;>
+
+<!ELEMENT Ident (#PCDATA)>
+<!ATTLIST Ident %commonAttrs;>
+<!ELEMENT SymbDecl (#PCDATA)>
+<!ATTLIST SymbDecl %commonAttrs;>
+<!ELEMENT SymbRef (#PCDATA)>
+<!ATTLIST SymbRef %commonAttrs;>
+
+<!ELEMENT Invalid (#PCDATA)>
+<!ATTLIST Invalid %commonAttrs;>
