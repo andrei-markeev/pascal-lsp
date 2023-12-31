@@ -26,6 +26,7 @@ type
         tkArray: (typeOfIndex: PTypeDef; typeOfValues: PTypeDef);
         tkDynamicArray: (typeOfDynValues: PTypeDef);
         tkSet: (typeOfSet: PTypeDef);
+        tkRecord: (fields: TFPHashList);
         tkBoolean, tkChar, tkReal, tkUnitName: ();
     end;
 

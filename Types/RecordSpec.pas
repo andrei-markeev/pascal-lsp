@@ -11,7 +11,6 @@ uses
 type
     TRecordSpec = class(TTypedToken)
     public
-        fields: TFPHashList;
         constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol);
     end;
 
@@ -32,7 +31,7 @@ begin
     state := tsCorrect;
     typeDef.size := 0;
     typeDef.kind := tkRecord;
-    fields := TFPHashList.Create;
+    typeDef.fields := TFPHashList.Create; // TODO: free memory
 
     TReservedWord.Create(ctx, rwRecord, true);
 
@@ -45,7 +44,7 @@ begin
             fieldDecl := TVarDecl.Create(ctx, parentSymbols);
             for i := 0 to length(fieldDecl.idents) - 1 do
             begin
-                fields.Add(fieldDecl.idents[i].GetStr(), @fieldDecl.varType.typeDef);
+                typeDef.fields.Add(fieldDecl.idents[i].GetStr(), @fieldDecl.varType.typeDef);
                 inc(typeDef.size, fieldDecl.varType.typeDef.size);
             end;
             TReservedWord.Create(ctx, rwSemiColon, false);

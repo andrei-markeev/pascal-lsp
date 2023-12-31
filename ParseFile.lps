@@ -8,10 +8,9 @@
       <Unit>
         <Filename Value="ParseFile.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="35"/>
-        <CursorPos X="110" Y="46"/>
+        <TopLine Value="5"/>
+        <CursorPos X="18" Y="22"/>
         <UsageCount Value="148"/>
         <Loaded Value="True"/>
       </Unit>
@@ -322,19 +321,22 @@
       </Unit>
       <Unit>
         <Filename Value="Expressions\VarRef.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="45"/>
-        <CursorPos Y="62"/>
-        <UsageCount Value="14"/>
+        <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="49"/>
+        <CursorPos X="34" Y="65"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="..\..\..\..\usr\local\share\fpcsrc\rtl\objpas\sysutils\diskh.inc"/>
+        <Filename Value="C:\usr\local\share\fpcsrc\rtl\objpas\sysutils\diskh.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="10" Y="18"/>
         <UsageCount Value="9"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="14">
+    <JumpHistory HistoryIndex="17">
       <Position>
         <Filename Value="Statements\AssignmentStatement.pas"/>
         <Caret Line="35" TopLine="21"/>
@@ -395,38 +397,53 @@
         <Filename Value="Types\TypeDefs.pas"/>
         <Caret Line="137" TopLine="118"/>
       </Position>
+      <Position>
+        <Filename Value="Expressions\VarRef.pas"/>
+        <Caret Line="64" TopLine="51"/>
+      </Position>
+      <Position>
+        <Filename Value="ParseFile.pas"/>
+        <Caret Line="22" Column="18" TopLine="5"/>
+      </Position>
+      <Position>
+        <Filename Value="Expressions\VarRef.pas"/>
+        <Caret Line="67" Column="11" TopLine="48"/>
+      </Position>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes ActiveMode="default">
         <Mode Name="default">
           <local>
-            <CommandLineParams Value="\Users\markeev\Projects\pascal-lsp\Tests\ConstSection\Program2.pas"/>
+            <CommandLineParams Value="Tests\VarSection\RecordTypes.pas"/>
           </local>
         </Mode>
       </Modes>
     </RunParams>
     <HistoryLists>
-      <List Name="LaunchingApplication" Type="File" Count="2">
-        <Item2 Value="C:\WINDOWS\system32\cmd.exe /C ${TargetCmdLine}"/>
+      <List Name="LaunchingApplication" Type="File" Count="1">
+        <Item1 Value="C:\WINDOWS\system32\cmd.exe /C ${TargetCmdLine}"/>
       </List>
-      <List Name="CommandLineParameters" Count="16">
-        <Item1 Value="/Users/markeev/Projects/pascal-lsp/Tests/ConstSection/Program2.pas"/>
-        <Item2 Value="/Users/markeev/Projects/pascal-lsp/Tests/Operations/SetsUnionAndDifference.pas"/>
-        <Item3 Value="Tests/Operations/SetsUnionAndDifference.pas"/>
-        <Item4 Value="Tests/Statements/BadAssign.pas"/>
-        <Item5 Value="Tests/Statements/GoodAssign.pas"/>
-        <Item6 Value="Tests/Statements/GoodAssign1.pas"/>
-        <Item7 Value="Tests/VarSection/ArrayTypes.pas"/>
-        <Item8 Value="Tests/Statements/IfThenElse.pas"/>
-        <Item9 Value="Tests/VarSection/SubrangeErrors.pas"/>
-        <Item10 Value="Tests/VarSection/Subranges.pas"/>
-        <Item11 Value="Tests/Assignments/Assign1.pas"/>
-        <Item12 Value="Tests/VarSection/UserTypes.pas"/>
-        <Item13 Value="Tests/VarSection/Incomplete.pas"/>
-        <Item14 Value="Tests/VarSection/VarSection1.pas"/>
-        <Item15 Value="Tests/Program3.pas"/>
-        <Item16 Value="Tests/Program8.pas"/>
+      <List Name="CommandLineParameters" Count="19">
+        <Item1 Value="Tests\VarSection\RecordTypes.pas"/>
+        <Item2 Value="\Users\markeev\Projects\pascal-lsp\Tests\VarSection\RecordTypes.pas"/>
+        <Item3 Value="/Users/markeev/Projects/pascal-lsp/Tests/ConstSection/Program2.pas"/>
+        <Item4 Value="/Users/markeev/Projects/pascal-lsp/Tests/Operations/SetsUnionAndDifference.pas"/>
+        <Item5 Value="Tests/Operations/SetsUnionAndDifference.pas"/>
+        <Item6 Value="Tests/Statements/BadAssign.pas"/>
+        <Item7 Value="Tests/Statements/GoodAssign.pas"/>
+        <Item8 Value="Tests/Statements/GoodAssign1.pas"/>
+        <Item9 Value="Tests/VarSection/ArrayTypes.pas"/>
+        <Item10 Value="Tests/Statements/IfThenElse.pas"/>
+        <Item11 Value="Tests/VarSection/SubrangeErrors.pas"/>
+        <Item12 Value="Tests/VarSection/Subranges.pas"/>
+        <Item13 Value="Tests/Assignments/Assign1.pas"/>
+        <Item14 Value="Tests/VarSection/UserTypes.pas"/>
+        <Item15 Value="Tests/VarSection/Incomplete.pas"/>
+        <Item16 Value="Tests/VarSection/VarSection1.pas"/>
+        <Item17 Value="Tests/Program3.pas"/>
+        <Item18 Value="Tests/Program8.pas"/>
+        <Item19 Value="\Users\markeev\Projects\pascal-lsp\Tests\ConstSection\Program2.pas"/>
       </List>
       <List Name="WorkingDirectory" Type="File" Count="2">
         <Item2 Value="/Users/markeev/Projects/pascal-lsp"/>
@@ -434,15 +451,6 @@
     </HistoryLists>
   </ProjectSession>
   <Debugging>
-    <BreakPoints>
-      <Item>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="Expressions\VarRef.pas"/>
-        <Line Value="109"/>
-      </Item>
-    </BreakPoints>
     <Watches>
       <Item>
         <Expression Value="ctx.Cursor"/>

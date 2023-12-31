@@ -1,0 +1,13 @@
+<ProgramFile><RW>program</RW> <SymbDecl>RecordTypes</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>p</SymbDecl><RW>:</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>x</SymbDecl><RW>,</RW> <SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><Ident ERROR="Identifier has not been declared!">x</Ident> <RW>:=</RW> <Num>123</Num></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>p</SymbRef><RW>.</RW><Ident>x</Ident></VarRef> <RW>:=</RW> <Num>100</Num></Assignment><RW>;</RW>
+    <Assignment ERROR="Invalid assignment: expected integer or assignment-compatible, but found string!"><VarRef><SymbRef>p</SymbRef><RW>.</RW><Ident>y</Ident></VarRef> <RW>:=</RW> <Str>'19'</Str></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>p</SymbRef><RW>.</RW><Ident ERROR="Field or method with the name 'z' was not found!">z</Ident></VarRef> <RW>:=</RW> <Num>0</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

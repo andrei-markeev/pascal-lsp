@@ -42,6 +42,8 @@ end;
 constructor TVarRef.Create(ctx: TParserContext);
 var
     symbol: TSymbol;
+    found: pointer;
+    ident: TIdentifier;
     varRef: TVarRef;
     expr: TTypedToken;
     reservedWordToken: TReservedWord;
@@ -61,7 +63,10 @@ begin
 
     firstIdent := TIdentifier.Create(ctx, true);
     symbol := TSymbol(firstIdent.symbol);
-    typeDef := symbol.typeDef;
+    if symbol <> nil then
+        typeDef := symbol.typeDef
+    else
+        typeDef.kind := tkUnknown;
 
     canBeTypecast := ctx.mode >= cmTurboPascal;
 
@@ -158,11 +163,27 @@ begin
                 end;
             rwDot:
                 begin
-                    // TODO: ensure that the variable is of structured type and there's such field in that type
+                    reservedWordToken := TReservedWord.Create(ctx, rwDot, true);
 
-                    TReservedWord.Create(ctx, rwDot, true);
-                    TIdentifier.Create(ctx, false);
-                    // TODO: set typeDef to the type of that field
+                    if not (typeDef.kind in [tkRecord, tkClass, tkObject]) then
+                    begin
+                        SetString(text, start, ctx.Cursor - start - 1);
+                        reservedWordToken.state := tsError;
+                        reservedWordToken.errorMessage := 'Cannot apply ''.'' on ' + text + ' because it is not of a structured type (record, class or object)!';
+                    end;
+
+                    ident := TIdentifier.Create(ctx, false);
+                    text := ident.GetStr();
+                    found := typeDef.fields.Find(text);
+                    if found = nil then
+                    begin
+                        ident.state := tsError;
+                        ident.errorMessage := 'Field or method with the name ''' + text + ''' was not found!';
+                        typeDef.size := 1;
+                        typeDef.kind := tkUnknown;
+                    end
+                    else
+                        typeDef := PTypeDef(found)^;
                     isSimple := false;
                 end;
         end;
