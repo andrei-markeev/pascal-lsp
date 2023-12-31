@@ -13,17 +13,20 @@ type
     public
         idents: array of TIdentifier;
         varType: TTypeSpec;
-        typeDef: PTypeDef;
-        constructor Create(ctx: TParserContext);
+        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol);
     end;
 
 implementation
 
-constructor TVarDecl.Create(ctx: TParserContext);
+const
+    unknownType: TTypeDef = (size: 1; kind: tkUnknown);
+
+constructor TVarDecl.Create(ctx: TParserContext; parentSymbols: array of TSymbol);
 var
     nextTokenKind: TTokenKind;
-    i, l: integer;
+    i, l, p: integer;
     hasMoreMembers: boolean;
+    symbols: array of TSymbol;
 begin
     tokenName := 'VarDecl';
     ctx.Add(Self);
@@ -57,14 +60,22 @@ begin
     nextTokenKind := SkipUntilAnchor(ctx);
     RemoveAnchor(rwColon);
 
+    if (length(parentSymbols) > 0) and (parentSymbols[0] <> nil) then
+        WriteLn('parentSymbol is not nil in VarDecl: ', parentSymbols[0].name);
+    SetLength(symbols, l * length(parentSymbols));
+    for p := 0 to length(parentSymbols) - 1 do
+        for i := 0 to l - 1 do
+            symbols[i + p * l] := RegisterSymbol(idents[i], parentSymbols[p], skVariable, ctx.parseUnit, unknownType, ctx.Cursor);
+
     TReservedWord.Create(ctx, rwColon, nextTokenKind.reservedWordKind = rwColon);
-    varType := TTypeSpec.Create(ctx);
+    varType := TTypeSpec.Create(ctx, symbols);
+
+    for i := 0 to length(symbols) - 1 do
+        symbols[i].typeDef := varType.typeDef;
 
     // TODO: variable initialization
 
     ctx.MarkEndOfToken(Self);
-    for i := 0 to l - 1 do
-        RegisterSymbol(idents[i], skVariable, ctx.parseUnit, varType.typeDef, ctx.Cursor);
 end;
 
 end.

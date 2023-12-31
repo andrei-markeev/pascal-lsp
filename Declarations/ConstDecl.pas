@@ -54,7 +54,7 @@ begin
     if nextTokenKind.reservedWordKind = rwColon then
     begin
         TReservedWord.Create(ctx, rwColon, true);
-        constType := TTypeSpec.Create(ctx);
+        constType := CreateTypeSpec(ctx);
         symbolKind := skTypedConstant;
     end;
     RemoveAnchor(rwColon);
@@ -82,7 +82,7 @@ begin
     end;
 
     ctx.MarkEndOfToken(Self);
-    RegisterSymbol(ident, symbolKind, ctx.parseUnit, typeDef, ctx.Cursor);
+    RegisterSymbol(ident, nil, symbolKind, ctx.parseUnit, typeDef, ctx.Cursor);
 end;
 
 end.

@@ -35,7 +35,7 @@ begin
 
     ident := TIdentifier.Create(ctx, false);
     programTypeDef.kind := tkUnitName;
-    RegisterSymbol(ident, skUnitName, Self, programTypeDef, ctx.Cursor);
+    RegisterSymbol(ident, nil, skUnitName, Self, programTypeDef, ctx.Cursor);
 
     // programs parameters are ignored by FPC so we also ignore them
     if PeekReservedWord(ctx, rwOpenParenthesis) then

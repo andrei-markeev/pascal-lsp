@@ -14,6 +14,8 @@ type
     public
         kind: TSymbolKind;
         name: shortstring;
+        uniquePrefix: shortstring;
+        parent: TSymbol;
         scopeStart: PChar;
         scope: TToken;
         declaration: TIdentifier;
@@ -33,13 +35,27 @@ const
 var
     SymbolsList: TFPHashList;
 
-function RegisterSymbol(declaredAt: TIdentifier; symbolKind: TSymbolKind; scopeToken: TToken; symbolType: TTypeDef; cursor: PChar): TSymbol;
+procedure CleanupSymbols;
+function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; scopeToken: TToken; symbolType: TTypeDef; cursor: PChar): TSymbol;
 function FindSymbol(findName: shortstring): TSymbol; inline;
+function FindSymbol(parent: TSymbol; findName: shortstring): TSymbol; inline;
 function FindSymbol(ident: TIdentifier): TSymbol;
 
 implementation
 
-function RegisterSymbol(declaredAt: TIdentifier; symbolKind: TSymbolKind; scopeToken: TToken; symbolType: TTypeDef; cursor: PChar): TSymbol;
+uses
+    sysutils;
+
+var
+    lastId: longword = 0;
+
+procedure CleanupSymbols;
+begin
+    lastId := 0;
+    SymbolsList.Clear;
+end;
+
+function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; scopeToken: TToken; symbolType: TTypeDef; cursor: PChar): TSymbol;
 var
     symbolName: shortstring;
 begin
@@ -50,8 +66,17 @@ begin
     RegisterSymbol := TSymbol.Create;
     with RegisterSymbol do
     begin
-        name := symbolName;
+        if symbolParent <> nil then
+        begin
+            name := symbolParent.uniquePrefix + symbolName;
+            WriteLn('symbol with parent: ', name);
+        end
+        else
+            name := symbolName;
+        uniquePrefix := IntToStr(lastId) + '.';
+        inc(lastId);
         kind := symbolKind;
+        parent := symbolParent;
         declaration := declaredAt;
         SetLength(references, 1);
         references[0] := declaredAt;
@@ -59,11 +84,11 @@ begin
         scope := scopeToken;
         typeDef := symbolType;
         declaration.symbol := RegisterSymbol;
-        declaration.name := symbolName;
+        declaration.name := name;
         declaration.typeDef := symbolType;
         declaration.tokenName := 'SymbDecl';
     end;
-    SymbolsList.Add(symbolName, RegisterSymbol);
+    SymbolsList.Add(RegisterSymbol.name, RegisterSymbol);
 end;
 
 function FindSymbol(ident: TIdentifier): TSymbol;
@@ -80,6 +105,11 @@ end;
 function FindSymbol(findName: shortstring): TSymbol; inline;
 begin
     FindSymbol := TSymbol(SymbolsList.Find(findName));
+end;
+
+function FindSymbol(parent: TSymbol; findName: shortstring): TSymbol; inline;
+begin
+    FindSymbol := TSymbol(SymbolsList.Find(parent.uniquePrefix + findName));
 end;
 
 constructor TSymbol.Create;

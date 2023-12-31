@@ -6,27 +6,35 @@ unit TypeSpec;
 interface
 
 uses
-    ParserContext, TypedToken, TypeDefs;
+    ParserContext, Symbols, TypedToken, TypeDefs;
 
 type
     TTypeSpec = class(TTypedToken)
     public
-        constructor Create(ctx: TParserContext);
+        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol);
     end;
+
+function CreateTypeSpec(ctx: TParserContext): TTypeSpec;
 
 implementation
 
 uses
-    Anchors, Symbols, Token, ReservedWord, Identifier,
-    EnumSpec, RangeSpec, ArraySpec, SetSpec;
+    Anchors, Token, ReservedWord, Identifier,
+    EnumSpec, RangeSpec, ArraySpec, SetSpec, RecordSpec;
 
-constructor TTypeSpec.Create(ctx: TParserContext);
+function CreateTypeSpec(ctx: TParserContext): TTypeSpec;
+begin
+    CreateTypeSpec := TTypeSpec.Create(ctx, [nil]);
+end;
+
+constructor TTypeSpec.Create(ctx: TParserContext; parentSymbols: array of TSymbol);
 var
     nextTokenKind: TTokenKind;
     rangeSpecToken: TRangeSpec;
     enumSpecToken: TEnumSpec;
     arraySpecToken: TArraySpec;
     setSpecToken: TSetSpec;
+    recordSpecToken: TRecordSpec;
     ident: TIdentifier;
     identName: shortstring;
     symbol: TSymbol;
@@ -105,7 +113,15 @@ begin
             case nextTokenKind.reservedWordKind of
                 rwClass: typeDef.kind := tkClass; // TODO: implement ClassSpec
                 rwObject: typeDef.kind := tkObject; // TODO: implement ObjectSpec
-                rwRecord: typeDef.kind := tkRecord; // TODO: implement RecordSpec
+                rwRecord:
+                    begin
+                        start := ctx.Cursor;
+                        recordSpecToken := TRecordSpec.Create(ctx, parentSymbols);
+                        typeDef := recordSpecToken.typeDef;
+                        state := tsCorrect;
+                        ctx.MarkEndOfToken(Self);
+                        exit;
+                    end;
                 rwSet:
                     begin
                         start := ctx.Cursor;

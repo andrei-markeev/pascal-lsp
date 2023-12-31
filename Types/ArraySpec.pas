@@ -40,7 +40,7 @@ begin
         curTypeDef := @typeDef;
         curTypeDef^.kind := tkArray;
         repeat
-            spec := TTypeSpec.Create(ctx);
+            spec := CreateTypeSpec(ctx);
             curTypeDef^.typeOfIndex := @spec.typeDef;
 
             nextIsComma := PeekReservedWord(ctx, rwComma);
@@ -57,7 +57,7 @@ begin
 
         TReservedWord.Create(ctx, rwOf, false);
 
-        spec := TTypeSpec.Create(ctx);
+        spec := CreateTypeSpec(ctx);
         curTypeDef^.typeOfValues := @spec.typeDef;
     end
     else
@@ -65,7 +65,7 @@ begin
 
         TReservedWord.Create(ctx, rwOf, false);
 
-        spec := TTypeSpec.Create(ctx);
+        spec := CreateTypeSpec(ctx);
         typeDef.size := 8; // TODO: detect arch size
         typeDef.kind := tkDynamicArray;
         typeDef.typeOfDynValues := @spec.typeDef;

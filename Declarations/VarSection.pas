@@ -31,7 +31,7 @@ begin
     AddAnchor(rwSemiColon);
     repeat
 
-        TVarDecl.Create(ctx);
+        TVarDecl.Create(ctx, [nil]);
 
         TReservedWord.Create(ctx, rwSemicolon, false);
         nextReservedWord := DetermineReservedWord(ctx);

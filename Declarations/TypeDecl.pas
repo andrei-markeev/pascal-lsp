@@ -45,10 +45,10 @@ begin
     RemoveAnchor(rwEquals);
 
     TReservedWord.Create(ctx, rwEquals, nextTokenKind.reservedWordKind = rwEquals);
-    declType := TTypeSpec.Create(ctx);
+    declType := CreateTypeSpec(ctx);
 
     ctx.MarkEndOfToken(Self);
-    RegisterSymbol(ident, skTypeName, ctx.parseUnit, declType.typeDef, ctx.Cursor);
+    RegisterSymbol(ident, nil, skTypeName, ctx.parseUnit, declType.typeDef, ctx.Cursor);
 end;
 
 end.

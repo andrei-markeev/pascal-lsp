@@ -30,7 +30,7 @@ begin
     TReservedWord.Create(ctx, rwSet, true);
     TReservedWord.Create(ctx, rwOf, false);
 
-    spec := TTypeSpec.Create(ctx);
+    spec := CreateTypeSpec(ctx);
     typeDef.size := 1;
     typeDef.kind := tkSet;
     typeDef.typeOfSet := @spec.typeDef;
