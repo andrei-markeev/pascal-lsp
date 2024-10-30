@@ -14,6 +14,7 @@ var
     dynArr: array of string;
 
 begin
+    x := 'Hello';
     a := '1';
     b := 10 + '20' + a;
     b := bananas;

@@ -10,4 +10,10 @@
     <Assignment><VarRef><SymbRef>p</SymbRef><RW>.</RW><Ident>x</Ident></VarRef> <RW>:=</RW> <Num>100</Num></Assignment><RW>;</RW>
     <Assignment ERROR="Invalid assignment: expected integer or assignment-compatible, but found string!"><VarRef><SymbRef>p</SymbRef><RW>.</RW><Ident>y</Ident></VarRef> <RW>:=</RW> <Str>'19'</Str></Assignment><RW>;</RW>
     <Assignment><VarRef><SymbRef>p</SymbRef><RW>.</RW><Ident ERROR="Field or method with the name 'z' was not found!">z</Ident></VarRef> <RW>:=</RW> <Num>0</Num></Assignment><RW>;</RW>
+
+    <With><RW>with</RW> <SymbRef>p</SymbRef> <RW>do</RW>
+    <Block><RW>begin</RW>
+        <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>200</Num></Assignment><RW>;</RW>
+        <Assignment><SymbRef>y</SymbRef> <RW>:=</RW> <Factor><RW>-</RW><Factor><Num>1</Num></Factor></Factor></Assignment><RW>;</RW>
+    <RW>end</RW></Block></With><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

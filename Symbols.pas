@@ -21,6 +21,7 @@ type
         declaration: TIdentifier;
         typeDef: TTypeDef;
         references: array of TIdentifier;
+        children: array of TSymbol;
         constructor Create;
         destructor Destroy; override;
         procedure AddReference(ident: TIdentifier);
@@ -58,6 +59,7 @@ end;
 function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; scopeToken: TToken; symbolType: TTypeDef; cursor: PChar): TSymbol;
 var
     symbolName: shortstring;
+    parentChildrenCount: integer;
 begin
     if declaredAt.len > 255 then
         WriteLn('ERROR: identifier of more than 255 symbols found! Only first 255 will be used for indexing.');
@@ -77,6 +79,12 @@ begin
         inc(lastId);
         kind := symbolKind;
         parent := symbolParent;
+        if symbolParent <> nil then
+        begin
+            parentChildrenCount := length(symbolParent.children);
+            SetLength(symbolParent.children, parentChildrenCount + 1);
+            symbolParent.children[parentChildrenCount] := RegisterSymbol;
+        end;
         declaration := declaredAt;
         SetLength(references, 1);
         references[0] := declaredAt;

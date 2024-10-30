@@ -35,7 +35,7 @@ begin
                 identName := PeekIdentifier(ctx);
                 symbol := FindSymbol(identName);
                 if (symbol <> nil) and (symbol.kind in [skProcedure, skFunction]) then
-                    exit(nil)//CreateStatement := TProcedureCallStatement.Create(ctx)
+                    exit(nil) // TODO: CreateStatement := TProcedureCallStatement.Create(ctx)
                 else
                     CreateStatement := TAssignmentStatement.Create(ctx);
             end;
@@ -44,9 +44,9 @@ begin
                 rwWith: CreateStatement := TWithStatement.Create(ctx);
                 rwFor: CreateStatement := TForStatement.Create(ctx);
                 rwIf: CreateStatement := TIfStatement.Create(ctx);
-                rwWhile: exit(nil);//CreateStatement := TWhileStatement.Create(ctx);
-                rwRepeat: exit(nil);//CreateStatement := TRepeatStatement.Create(ctx);
-                rwGoto: exit(nil);//CreateStatement := TGotoStatement.Create(ctx);
+                rwWhile: exit(nil); // TODO: CreateStatement := TWhileStatement.Create(ctx);
+                rwRepeat: exit(nil); // TODO: CreateStatement := TRepeatStatement.Create(ctx);
+                rwGoto: exit(nil); // TODO: CreateStatement := TGotoStatement.Create(ctx);
                 rwBegin: CreateStatement := CreateBlock(ctx);
             end;
     end;

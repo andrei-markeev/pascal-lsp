@@ -14,6 +14,7 @@
     <VarDecl><SymbDecl>dynArr</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>of</RW> <TypeSpec><RW>string</RW></TypeSpec></ArraySpec></TypeSpec></VarDecl><RW>;</RW></VarSection>
 
 <Block><RW>begin</RW>
+    <Assignment><Ident ERROR="Identifier has not been declared!">x</Ident> <RW>:=</RW> <Str>'Hello'</Str></Assignment><RW>;</RW>
     <Assignment ERROR="Invalid assignment: expected integer or assignment-compatible, but found char!"><SymbRef>a</SymbRef> <RW>:=</RW> <Str>'1'</Str></Assignment><RW>;</RW>
     <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <SimpleExpression ERROR="Cannot apply operator '+': expected integer or real, but '20' is string"><Num>10</Num> <RW>+</RW> <Str>'20'</Str> <RW>+</RW> <SymbRef>a</SymbRef></SimpleExpression></Assignment><RW>;</RW>
     <Assignment ERROR="Invalid assignment: expected integer or assignment-compatible, but found enum value!"><SymbRef>b</SymbRef> <RW>:=</RW> <SymbRef>bananas</SymbRef></Assignment><RW>;</RW>

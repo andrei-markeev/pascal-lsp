@@ -22,6 +22,7 @@ constructor TWithStatement.Create(ctx: TParserContext);
 var
     ident: TIdentifier;
     symbol: TSymbol;
+    i: integer;
 begin
     ctx.Add(Self);
     tokenName := 'With';
@@ -42,7 +43,9 @@ begin
     end;
     TReservedWord.Create(ctx, rwDo, false);
 
-    // TODO: add members of the `symbol` to the scope of the statement
+    for i := 0 to length(symbol.children) - 1 do
+        RegisterSymbol(symbol.children[i].declaration, nil, symbol.children[i].kind, Self, symbol.children[i].typeDef, start);
+
     CreateStatement(ctx);
 
     ctx.MarkEndOfToken(Self);
