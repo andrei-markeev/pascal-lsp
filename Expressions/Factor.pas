@@ -67,7 +67,7 @@ begin
         pkIdentifier:
             begin
                 identName := PeekIdentifier(ctx);
-                symbol := FindSymbol(identName);
+                symbol := FindSymbol(identName, ctx.Cursor);
                 if symbol <> nil then
                 begin
                     case symbol.kind of

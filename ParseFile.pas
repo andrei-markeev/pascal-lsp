@@ -72,7 +72,6 @@ begin
     Close(fres);
 
     progFile.Free;
-    CleanupSymbols;
     TypesList.Clear;
 
 end;

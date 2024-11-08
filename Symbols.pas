@@ -33,28 +33,18 @@ const
         '', 'constant', 'typed constant', 'type', 'variable', 'procedure', 'function'
     );
 
-var
-    SymbolsList: TFPHashList;
-
-procedure CleanupSymbols;
 function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; scopeToken: TToken; symbolType: TTypeDef; cursor: PChar): TSymbol;
-function FindSymbol(findName: shortstring): TSymbol; inline;
-function FindSymbol(parent: TSymbol; findName: shortstring): TSymbol; inline;
+function FindSymbol(findName: shortstring; cursor: PChar): TSymbol;
+function FindSymbol(parent: TSymbol; findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(ident: TIdentifier): TSymbol;
 
 implementation
 
 uses
-    sysutils;
+    sysutils, Scopes;
 
 var
     lastId: longword = 0;
-
-procedure CleanupSymbols;
-begin
-    lastId := 0;
-    SymbolsList.Clear;
-end;
 
 function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; scopeToken: TToken; symbolType: TTypeDef; cursor: PChar): TSymbol;
 var
@@ -96,7 +86,23 @@ begin
         declaration.typeDef := symbolType;
         declaration.tokenName := 'SymbDecl';
     end;
-    SymbolsList.Add(RegisterSymbol.name, RegisterSymbol);
+    FindScope(cursor).symbolsList.Add(RegisterSymbol.name, RegisterSymbol);
+end;
+
+function FindSymbol(findName: shortstring; cursor: PChar): TSymbol;
+var
+    scope: TScope;
+begin
+    scope := FindScope(cursor);
+    repeat
+        FindSymbol := TSymbol(scope.symbolsList.Find(findName));
+        scope := scope.parentScope;
+    until (scope = nil) or (FindSymbol <> nil);
+end;
+
+function FindSymbol(parent: TSymbol; findName: shortstring; cursor: PChar): TSymbol; inline;
+begin
+    FindSymbol := FindSymbol(parent.uniquePrefix + findName, cursor);
 end;
 
 function FindSymbol(ident: TIdentifier): TSymbol;
@@ -107,17 +113,7 @@ begin
         WriteLn('ERROR: identifier of more than 255 symbols found! Only first 255 will be used for indexing.');
 
     SetString(name, ident.start, Min(255, ident.len));
-    FindSymbol := TSymbol(SymbolsList.Find(name));
-end;
-
-function FindSymbol(findName: shortstring): TSymbol; inline;
-begin
-    FindSymbol := TSymbol(SymbolsList.Find(findName));
-end;
-
-function FindSymbol(parent: TSymbol; findName: shortstring): TSymbol; inline;
-begin
-    FindSymbol := TSymbol(SymbolsList.Find(parent.uniquePrefix + findName));
+    FindSymbol := FindSymbol(name, ident.start);
 end;
 
 constructor TSymbol.Create;
@@ -142,8 +138,4 @@ begin
     ident.tokenName := 'SymbRef';
 end;
 
-initialization
-    SymbolsList := TFPHashList.Create;
-finalization
-    SymbolsList.Free;
 end.

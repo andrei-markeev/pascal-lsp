@@ -60,7 +60,7 @@ begin
             begin
                 start := ctx.Cursor;
                 identName := PeekIdentifier(ctx);
-                symbol := FindSymbol(identName);
+                symbol := FindSymbol(identName, ctx.Cursor);
                 if symbol = nil then
                 begin
                     found := TypesList.Find(identName);

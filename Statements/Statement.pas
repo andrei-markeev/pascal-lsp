@@ -33,7 +33,7 @@ begin
                 // 1. VarRef -> always starts with identifier, can be TypeName or Variable
                 // 2. ProcedureCall -> always starts with identifier, can be Procedure or Function name
                 identName := PeekIdentifier(ctx);
-                symbol := FindSymbol(identName);
+                symbol := FindSymbol(identName, ctx.Cursor);
                 if (symbol <> nil) and (symbol.kind in [skProcedure, skFunction]) then
                     exit(nil) // TODO: CreateStatement := TProcedureCallStatement.Create(ctx)
                 else

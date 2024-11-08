@@ -16,4 +16,6 @@
         <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>200</Num></Assignment><RW>;</RW>
         <Assignment><SymbRef>y</SymbRef> <RW>:=</RW> <Factor><RW>-</RW><Factor><Num>1</Num></Factor></Factor></Assignment><RW>;</RW>
     <RW>end</RW></Block></With><RW>;</RW>
+
+    <Assignment><Ident ERROR="Identifier has not been declared!">y</Ident> <RW>:=</RW> <Num>321</Num></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

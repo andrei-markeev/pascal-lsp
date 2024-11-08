@@ -72,7 +72,7 @@ begin
     begin
         SetString(name, start, len);
 
-        symbol := FindSymbol(name);
+        symbol := FindSymbol(name, ctx.Cursor);
         if symbol = nil then
         begin
             state := tsError;
