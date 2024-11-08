@@ -16,7 +16,7 @@ implementation
 uses
     Symbols, InvalidSymbol, ReservedWord, Identifier,
     AssignmentStatement, IfStatement, WithStatement, ForStatement,
-    WhileStatement, Block;
+    WhileStatement, RepeatStatement, Block;
 
 function CreateStatement(ctx: TParserContext): TToken; inline;
 begin
@@ -46,7 +46,7 @@ begin
                 rwFor: CreateStatement := TForStatement.Create(ctx);
                 rwIf: CreateStatement := TIfStatement.Create(ctx);
                 rwWhile: CreateStatement := TWhileStatement.Create(ctx);
-                rwRepeat: exit(nil); // TODO: CreateStatement := TRepeatStatement.Create(ctx);
+                rwRepeat: CreateStatement := TRepeatStatement.Create(ctx);
                 rwGoto: exit(nil); // TODO: CreateStatement := TGotoStatement.Create(ctx);
                 rwBegin: CreateStatement := CreateBlock(ctx);
             end;

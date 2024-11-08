@@ -1,0 +1,13 @@
+<ProgramFile><RW>program</RW> <SymbDecl>GoodRepeat</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>i</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>i</SymbRef> <RW>:=</RW> <Num>0</Num></Assignment><RW>;</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>''</Str></Assignment><RW>;</RW>
+    <Repeat><RW>repeat</RW>
+        <Assignment><SymbRef>i</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>i</SymbRef> <RW>+</RW> <Num>1</Num></SimpleExpression></Assignment><RW>;</RW>
+        <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>s</SymbRef> <RW>+</RW> <Str>'1'</Str></SimpleExpression></Assignment><RW>;</RW>
+    <RW>until</RW> <Expression><SymbRef>s</SymbRef> <RW>=</RW> <Str>'11111'</Str></Expression></Repeat><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

@@ -21,8 +21,6 @@ uses
 
 constructor TWhileStatement.Create(ctx: TParserContext);
 var
-    ident: TIdentifier;
-    nextReservedWord: TReservedWordKind;
     expr: TTypedToken;
 begin
     ctx.Add(Self);
