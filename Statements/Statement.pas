@@ -6,8 +6,7 @@ unit Statement;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, Token, InvalidSymbol, ReservedWord, Identifier,
-    AssignmentStatement, IfStatement, WithStatement, ForStatement;
+    ParserContext, Anchors, Token;
 
 function CreateStatement(ctx: TParserContext): TToken; inline;
 function CreateStatement(ctx: TParserContext; nextTokenKind: TTokenKind): TToken;
@@ -15,7 +14,9 @@ function CreateStatement(ctx: TParserContext; nextTokenKind: TTokenKind): TToken
 implementation
 
 uses
-    Block;
+    Symbols, InvalidSymbol, ReservedWord, Identifier,
+    AssignmentStatement, IfStatement, WithStatement, ForStatement,
+    WhileStatement, Block;
 
 function CreateStatement(ctx: TParserContext): TToken; inline;
 begin
@@ -44,7 +45,7 @@ begin
                 rwWith: CreateStatement := TWithStatement.Create(ctx);
                 rwFor: CreateStatement := TForStatement.Create(ctx);
                 rwIf: CreateStatement := TIfStatement.Create(ctx);
-                rwWhile: exit(nil); // TODO: CreateStatement := TWhileStatement.Create(ctx);
+                rwWhile: CreateStatement := TWhileStatement.Create(ctx);
                 rwRepeat: exit(nil); // TODO: CreateStatement := TRepeatStatement.Create(ctx);
                 rwGoto: exit(nil); // TODO: CreateStatement := TGotoStatement.Create(ctx);
                 rwBegin: CreateStatement := CreateBlock(ctx);

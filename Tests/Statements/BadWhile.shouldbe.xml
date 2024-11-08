@@ -1,0 +1,15 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadWhile</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>i</SymbDecl><RW>,</RW> <SymbDecl>j</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>a</SymbDecl><RW>,</RW> <SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <Str>'test'</Str></Assignment><RW>;</RW>
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Str>'hello'</Str></Assignment><RW>;</RW>
+    <Assignment><SymbRef>i</SymbRef> <RW>:=</RW> <Num>1</Num></Assignment><RW>;</RW>
+    <While ERROR="While condition should be boolean, but it is string."><RW>while</RW> <SymbRef>a</SymbRef> <RW>do</RW>
+    <Block><RW>begin</RW>
+        <While ERROR="While condition should be boolean, but it is integer."><RW>while</RW> <SymbRef>i</SymbRef><RW MISSING="do" /> <Assignment><SymbRef>i</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>i</SymbRef> <RW>+</RW> <Num>1</Num></SimpleExpression></Assignment></While><RW>;</RW>
+        <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <SymbRef>a</SymbRef></Assignment><RW>;</RW>
+    <RW>end</RW></Block></While><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
