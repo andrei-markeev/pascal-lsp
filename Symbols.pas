@@ -16,8 +16,6 @@ type
         name: shortstring;
         uniquePrefix: shortstring;
         parent: TSymbol;
-        scopeStart: PChar;
-        scope: TToken;
         declaration: TIdentifier;
         typeDef: TTypeDef;
         references: array of TIdentifier;
@@ -33,7 +31,7 @@ const
         '', 'constant', 'typed constant', 'type', 'variable', 'procedure', 'function'
     );
 
-function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; scopeToken: TToken; symbolType: TTypeDef; cursor: PChar): TSymbol;
+function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
 function FindSymbol(findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(parent: TSymbol; findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(ident: TIdentifier): TSymbol;
@@ -46,7 +44,7 @@ uses
 var
     lastId: longword = 0;
 
-function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; scopeToken: TToken; symbolType: TTypeDef; cursor: PChar): TSymbol;
+function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
 var
     symbolName: shortstring;
     parentChildrenCount: integer;
@@ -78,8 +76,6 @@ begin
         declaration := declaredAt;
         SetLength(references, 1);
         references[0] := declaredAt;
-        scopeStart := cursor;
-        scope := scopeToken;
         typeDef := symbolType;
         declaration.symbol := RegisterSymbol;
         declaration.name := name;

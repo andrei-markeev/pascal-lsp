@@ -48,7 +48,7 @@ begin
     declType := CreateTypeSpec(ctx);
 
     ctx.MarkEndOfToken(Self);
-    RegisterSymbol(ident, nil, skTypeName, ctx.parseUnit, declType.typeDef, ctx.Cursor);
+    RegisterSymbol(ident, nil, skTypeName, declType.typeDef, ctx.Cursor);
 end;
 
 end.

@@ -65,7 +65,7 @@ begin
     SetLength(symbols, l * length(parentSymbols));
     for p := 0 to length(parentSymbols) - 1 do
         for i := 0 to l - 1 do
-            symbols[i + p * l] := RegisterSymbol(idents[i], parentSymbols[p], skVariable, ctx.parseUnit, unknownType, ctx.Cursor);
+            symbols[i + p * l] := RegisterSymbol(idents[i], parentSymbols[p], skVariable, unknownType, ctx.Cursor);
 
     TReservedWord.Create(ctx, rwColon, nextTokenKind.reservedWordKind = rwColon);
     varType := TTypeSpec.Create(ctx, symbols);

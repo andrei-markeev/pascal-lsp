@@ -1,4 +1,4 @@
-unit Block;
+unit CompoundStatement;
 
 {$mode objfpc}
 {$longstrings on}
@@ -6,24 +6,27 @@ unit Block;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, Token, ReservedWord, Statement;
+    ParserContext, Anchors, Symbols, Token, ReservedWord;
 
 type
-    TBlock = class(TToken)
+    TCompoundStatement = class(TToken)
     public
         constructor Create(ctx: TParserContext);
     end;
 
-function CreateBlock(ctx: TParserContext): TToken;
+function CreateCompoundStatement(ctx: TParserContext): TToken;
 
 implementation
 
-function CreateBlock(ctx: TParserContext): TToken;
+uses
+    Statement;
+
+function CreateCompoundStatement(ctx: TParserContext): TToken;
 begin
-    CreateBlock := TBlock.Create(ctx);
+    CreateCompoundStatement := TCompoundStatement.Create(ctx);
 end;
 
-constructor TBlock.Create(ctx: TParserContext);
+constructor TCompoundStatement.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
 begin

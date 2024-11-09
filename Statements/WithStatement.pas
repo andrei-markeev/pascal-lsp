@@ -45,7 +45,7 @@ begin
 
     RegisterScope(Self);
     for i := 0 to length(symbol.children) - 1 do
-        RegisterSymbol(symbol.children[i].declaration, nil, symbol.children[i].kind, Self, symbol.children[i].typeDef, start);
+        RegisterSymbol(symbol.children[i].declaration, nil, symbol.children[i].kind, symbol.children[i].typeDef, start);
 
     CreateStatement(ctx);
 

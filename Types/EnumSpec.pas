@@ -35,7 +35,7 @@ begin
     memberTypeDef.enumSpec := Self;
     repeat
         ident := TIdentifier.Create(ctx, false);
-        RegisterSymbol(ident, nil, skConstant, ctx.parseUnit, memberTypeDef, ctx.Cursor);
+        RegisterSymbol(ident, nil, skConstant, memberTypeDef, ctx.Cursor);
 
         ctx.SkipTrivia;
         // TODO: support number assignments

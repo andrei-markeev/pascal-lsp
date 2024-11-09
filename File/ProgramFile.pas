@@ -7,7 +7,7 @@ interface
 
 uses
     ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord, Identifier,
-    UsesClause, ConstSection, TypeSection, VarSection,
+    UsesClause, ConstSection, TypeSection, VarSection, FunctionImpl,
     Block;
 
 type
@@ -35,7 +35,7 @@ begin
 
     ident := TIdentifier.Create(ctx, false);
     programTypeDef.kind := tkUnitName;
-    RegisterSymbol(ident, nil, skUnitName, Self, programTypeDef, ctx.Cursor);
+    RegisterSymbol(ident, nil, skUnitName, programTypeDef, ctx.Cursor);
 
     // programs parameters are ignored by FPC so we also ignore them
     if PeekReservedWord(ctx, rwOpenParenthesis) then
@@ -59,36 +59,8 @@ begin
     if PeekReservedWord(ctx, rwUses) then
         TUsesClause.Create(ctx);
 
-    AddAnchor(rwConst);
-    AddAnchor(rwType);
-    AddAnchor(rwVar);
-    AddAnchor(rwProcedure);
-    AddAnchor(rwFunction);
-    AddAnchor(rwBegin);
-    AddAnchor(rwEnd);
-
-    nextTokenKind := SkipUntilAnchor(ctx);
-    while nextTokenKind.reservedWordKind in [rwConst, rwType, rwVar, rwProcedure, rwFunction] do
-    begin
-        case nextTokenKind.reservedWordKind of
-            rwConst: TConstSection.Create(ctx);
-            rwType: TTypeSection.Create(ctx);
-            rwVar: TVarSection.Create(ctx);
-            //rwProcedure: TProcedureImpl.Create(ctx);
-            //rwFunction: TFunctionImpl.Create(ctx);
-        end;
-        nextTokenKind := SkipUntilAnchor(ctx);
-    end;
-
-    RemoveAnchor(rwConst);
-    RemoveAnchor(rwType);
-    RemoveAnchor(rwVar);
-    RemoveAnchor(rwProcedure);
-    RemoveAnchor(rwFunction);
-    RemoveAnchor(rwBegin);
-    RemoveAnchor(rwEnd);
-
     TBlock.Create(ctx);
+
     TReservedWord.Create(ctx, rwDot, false);
 
     ctx.MarkEndOfToken(Self);

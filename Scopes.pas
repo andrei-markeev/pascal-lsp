@@ -27,11 +27,14 @@ var ScopesList: array of TScope;
 procedure RegisterScope(scopeToken: TToken);
 var
     l: integer;
+    p: TScope;
 begin
+    p := FindScope(scopeToken.start);
     l := length(ScopesList);
     SetLength(ScopesList, l + 1);
     ScopesList[l] := TScope.Create;
     ScopesList[l].token := scopeToken;
+    ScopesList[l].parentScope := p;
 end;
 
 function FindScope(cursor: PChar): TScope;

@@ -50,10 +50,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="Statements\Block.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="ParserContext.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -155,6 +151,14 @@
       </Unit>
       <Unit>
         <Filename Value="Scopes.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Declarations\Block.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Statements\CompoundStatement.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
     </Units>
