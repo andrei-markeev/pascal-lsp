@@ -6,13 +6,13 @@ unit FunctionImpl;
 interface
 
 uses
-    ParserContext, Token, TypeDefs, Identifier, VarDecl;
+    ParserContext, Token, TypeDefs, Identifier, ParameterDecl;
 
 type
     TFunctionImpl = class(TToken)
     public
         nameIdent: TIdentifier;
-        paramDecls: array of TVarDecl;
+        paramDecls: array of TParameterDecl;
         funcType: TTypeDef;
         returnType: TTypeDef;
         constructor Create(ctx: TParserContext);
@@ -28,9 +28,9 @@ var
     nextTokenKind: TTokenKind;
     nextReservedWordKind: TReservedWordKind;
     needsReturnType: boolean;
-    ident: TIdentifier;
     symbolKind: TSymbolKind;
     l: integer;
+    hasMoreParams: boolean;
 begin
     ctx.Add(Self);
     tokenName := 'Function';
@@ -70,22 +70,20 @@ begin
         TReservedWord.Create(ctx, rwOpenParenthesis, true);
 
         l := 0;
+        hasMoreParams := false;
         repeat
             nextTokenKind := DetermineNextTokenKind(ctx);
-            if nextTokenKind.primitiveKind = pkIdentifier then
-            begin
-                // TODO: constant parameters
-                // TODO: variable parameters
-                // TODO: untyped parameters
-                // TODO: open parameters (e.g. open arrays)
+            if nextTokenKind.primitiveKind <> pkIdentifier then
+                break;
 
-                SetLength(paramDecls, l + 1);
-                paramDecls[l] := TVarDecl.Create(ctx, [nil]);
-                inc(l);
+            SetLength(paramDecls, l + 1);
+            paramDecls[l] := TParameterDecl.Create(ctx);
+            inc(l);
 
-                TReservedWord.Create(ctx, rwSemiColon, false);
-            end;
-        until nextTokenKind.primitiveKind <> pkIdentifier;
+            hasMoreParams := PeekReservedWord(ctx, rwSemiColon);
+            if hasMoreParams then
+                TReservedWord.Create(ctx, rwSemiColon, true);
+        until hasMoreParams = false;
 
         TReservedWord.Create(ctx, rwCloseParenthesis, false);
     end;

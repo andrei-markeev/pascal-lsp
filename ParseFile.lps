@@ -8,10 +8,10 @@
       <Unit>
         <Filename Value="ParseFile.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="10"/>
         <TopLine Value="5"/>
         <CursorPos X="18" Y="22"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="151"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -20,7 +20,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="5"/>
         <CursorPos X="38" Y="28"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="151"/>
       </Unit>
       <Unit>
         <Filename Value="Declarations\ConstValue.pas"/>
@@ -28,7 +28,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="29"/>
         <CursorPos X="58" Y="52"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="151"/>
       </Unit>
       <Unit>
         <Filename Value="Declarations\ConstDecl.pas"/>
@@ -36,7 +36,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="48"/>
         <CursorPos X="13" Y="78"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="151"/>
       </Unit>
       <Unit>
         <Filename Value="File\ProgramFile.pas"/>
@@ -44,7 +44,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="22"/>
         <CursorPos X="43" Y="45"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="151"/>
       </Unit>
       <Unit>
         <Filename Value="Declarations\ConstSection.pas"/>
@@ -52,14 +52,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="16"/>
         <CursorPos Y="44"/>
-        <UsageCount Value="150"/>
-      </Unit>
-      <Unit>
-        <Filename Value="Statements\Block.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="21"/>
-        <CursorPos Y="52"/>
-        <UsageCount Value="149"/>
+        <UsageCount Value="151"/>
       </Unit>
       <Unit>
         <Filename Value="ParserContext.pas"/>
@@ -67,15 +60,16 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="53"/>
         <CursorPos X="35" Y="128"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="151"/>
       </Unit>
       <Unit>
         <Filename Value="Anchors.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="83"/>
-        <CursorPos X="71" Y="105"/>
-        <UsageCount Value="150"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="62"/>
+        <CursorPos Y="81"/>
+        <UsageCount Value="151"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="Identifier.pas"/>
@@ -83,7 +77,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="58"/>
         <CursorPos X="46" Y="80"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="151"/>
       </Unit>
       <Unit>
         <Filename Value="InvalidSymbol.pas"/>
@@ -91,7 +85,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="8"/>
         <CursorPos Y="31"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="151"/>
       </Unit>
       <Unit>
         <Filename Value="Number.pas"/>
@@ -99,22 +93,22 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="4"/>
         <CursorPos X="54" Y="9"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="151"/>
       </Unit>
       <Unit>
         <Filename Value="StringToken.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="34" Y="66"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="151"/>
       </Unit>
       <Unit>
         <Filename Value="Symbols.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="58"/>
         <CursorPos X="21" Y="89"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="151"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -123,7 +117,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="11"/>
         <CursorPos Y="30"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="151"/>
       </Unit>
       <Unit>
         <Filename Value="Types\TypeSpec.pas"/>
@@ -131,7 +125,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="94"/>
         <CursorPos X="44" Y="121"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="151"/>
       </Unit>
       <Unit>
         <Filename Value="Declarations\VarSection.pas"/>
@@ -139,7 +133,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="4"/>
         <CursorPos Y="22"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="151"/>
       </Unit>
       <Unit>
         <Filename Value="Declarations\VarDecl.pas"/>
@@ -147,15 +141,15 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="31"/>
         <CursorPos X="51" Y="48"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="151"/>
       </Unit>
       <Unit>
         <Filename Value="Types\TypeDefs.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="9"/>
         <TopLine Value="125"/>
         <CursorPos Y="139"/>
-        <UsageCount Value="146"/>
+        <UsageCount Value="147"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -164,7 +158,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="19"/>
         <CursorPos X="9" Y="38"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="102"/>
       </Unit>
       <Unit>
         <Filename Value="Types\RangeSpec.pas"/>
@@ -172,7 +166,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="58"/>
         <CursorPos X="102" Y="75"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="102"/>
       </Unit>
       <Unit>
         <Filename Value="Expressions\Expression.pas"/>
@@ -180,7 +174,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="18"/>
         <CursorPos Y="38"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="69"/>
       </Unit>
       <Unit>
         <Filename Value="Expressions\Factor.pas"/>
@@ -188,7 +182,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="60"/>
         <CursorPos X="40" Y="68"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="69"/>
       </Unit>
       <Unit>
         <Filename Value="Expressions\Term.pas"/>
@@ -196,7 +190,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="54"/>
         <CursorPos X="38" Y="102"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="69"/>
       </Unit>
       <Unit>
         <Filename Value="Expressions\SimpleExpression.pas"/>
@@ -204,14 +198,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="17"/>
         <CursorPos Y="37"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="69"/>
       </Unit>
       <Unit>
         <Filename Value="Statements\AssignmentStatement.pas"/>
         <IsPartOfProject Value="True"/>
         <TopLine Value="2"/>
         <CursorPos X="32" Y="36"/>
-        <UsageCount Value="47"/>
+        <UsageCount Value="48"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -220,22 +214,24 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="19"/>
         <CursorPos X="43" Y="45"/>
-        <UsageCount Value="45"/>
+        <UsageCount Value="46"/>
       </Unit>
       <Unit>
         <Filename Value="Statements\Statement.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="66" Y="10"/>
-        <UsageCount Value="45"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="19"/>
+        <CursorPos Y="31"/>
+        <UsageCount Value="46"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="Statements\WithStatement.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="8"/>
         <TopLine Value="21"/>
         <CursorPos Y="48"/>
-        <UsageCount Value="45"/>
+        <UsageCount Value="46"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -244,7 +240,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="34"/>
         <CursorPos Y="52"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="39"/>
       </Unit>
       <Unit>
         <Filename Value="Expressions\SetConstructor.pas"/>
@@ -252,25 +248,50 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="29"/>
         <CursorPos Y="33"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="30"/>
       </Unit>
       <Unit>
         <Filename Value="Expressions\VarRef.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="11"/>
         <TopLine Value="21"/>
         <CursorPos X="34" Y="65"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="Scopes.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="25"/>
-        <CursorPos Y="32"/>
-        <UsageCount Value="22"/>
+        <TopLine Value="16"/>
+        <CursorPos Y="38"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Declarations\Block.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="36"/>
+        <CursorPos Y="62"/>
+        <UsageCount Value="21"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Statements\CompoundStatement.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="34"/>
+        <CursorPos Y="55"/>
+        <UsageCount Value="21"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Statements\Block.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="21"/>
+        <CursorPos Y="52"/>
+        <UsageCount Value="149"/>
       </Unit>
       <Unit>
         <Filename Value="Types\IntegerType.pas"/>
@@ -346,145 +367,136 @@
         <UsageCount Value="9"/>
       </Unit>
       <Unit>
-        <Filename Value="Declarations\Block.pas"/>
+        <Filename Value="Declarations\FunctionImpl.pas"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="13"/>
-        <CursorPos Y="26"/>
-        <UsageCount Value="20"/>
+        <TopLine Value="74"/>
+        <CursorPos Y="106"/>
+        <UsageCount Value="21"/>
         <Loaded Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="Statements\CompoundStatement.pas"/>
-        <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="20"/>
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="31" TopLine="17"/>
+        <Filename Value="Statements\CompoundStatement.pas"/>
+        <Caret Line="58" TopLine="31"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="32" TopLine="17"/>
+        <Filename Value="Statements\CompoundStatement.pas"/>
+        <Caret Line="59" TopLine="34"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="33" TopLine="17"/>
+        <Filename Value="Statements\CompoundStatement.pas"/>
+        <Caret Line="61" TopLine="34"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="34" TopLine="17"/>
+        <Filename Value="Statements\CompoundStatement.pas"/>
+        <Caret Line="51" TopLine="34"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="43" TopLine="23"/>
+        <Filename Value="Statements\CompoundStatement.pas"/>
+        <Caret Line="52" TopLine="34"/>
       </Position>
       <Position>
-        <Filename Value="Symbols.pas"/>
-        <Caret Line="89" TopLine="67"/>
+        <Filename Value="Statements\CompoundStatement.pas"/>
+        <Caret Line="55" TopLine="34"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="31" TopLine="20"/>
+        <Filename Value="Statements\Statement.pas"/>
+        <Caret Line="22"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="43" TopLine="20"/>
+        <Filename Value="Statements\Statement.pas"/>
+        <Caret Line="23"/>
       </Position>
       <Position>
-        <Filename Value="Symbols.pas"/>
-        <Caret Line="89" TopLine="67"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="56" TopLine="39"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="43" TopLine="20"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="57" TopLine="39"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="45" TopLine="20"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="59" TopLine="39"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="47" TopLine="20"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="57" TopLine="39"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="48" TopLine="20"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="60" TopLine="39"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="45" TopLine="20"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="57" TopLine="39"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="46" Column="32" TopLine="29"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="61" TopLine="39"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="48" Column="40" TopLine="32"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="62" TopLine="39"/>
       </Position>
       <Position>
-        <Filename Value="Declarations\Block.pas"/>
-        <Caret Line="26" TopLine="13"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="63" TopLine="39"/>
       </Position>
       <Position>
-        <Filename Value="Declarations\Block.pas"/>
-        <Caret Line="27" TopLine="13"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="71" TopLine="43"/>
       </Position>
       <Position>
-        <Filename Value="Declarations\Block.pas"/>
-        <Caret Line="29" TopLine="13"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="57" TopLine="43"/>
       </Position>
       <Position>
-        <Filename Value="Declarations\Block.pas"/>
-        <Caret Line="30" TopLine="13"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="71" TopLine="43"/>
       </Position>
       <Position>
-        <Filename Value="Declarations\Block.pas"/>
-        <Caret Line="32" TopLine="13"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="57" TopLine="43"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="31" TopLine="24"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="72" TopLine="44"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="32" TopLine="24"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="57" TopLine="44"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="33" TopLine="24"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="73" TopLine="45"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="34" TopLine="24"/>
+        <Filename Value="Anchors.pas"/>
+        <Caret Line="81" TopLine="62"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="35" TopLine="24"/>
+        <Filename Value="Statements\Statement.pas"/>
+        <Caret Line="32" Column="63" TopLine="19"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="36" TopLine="24"/>
+        <Filename Value="Statements\Statement.pas"/>
+        <Caret Line="36" TopLine="19"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="37" TopLine="24"/>
+        <Filename Value="Statements\Statement.pas"/>
+        <Caret Line="37" TopLine="19"/>
       </Position>
       <Position>
-        <Filename Value="Scopes.pas"/>
-        <Caret Line="38" TopLine="27"/>
+        <Filename Value="Statements\Statement.pas"/>
+        <Caret Line="38" TopLine="19"/>
       </Position>
       <Position>
-        <Filename Value="Declarations\Block.pas"/>
-        <Caret Line="26" TopLine="13"/>
+        <Filename Value="Statements\Statement.pas"/>
+        <Caret Line="40" TopLine="19"/>
       </Position>
     </JumpHistory>
     <RunParams>
@@ -492,7 +504,7 @@
       <Modes ActiveMode="default">
         <Mode Name="default">
           <local>
-            <CommandLineParams Value="Tests\Functions\GoodScopes.pas"/>
+            <CommandLineParams Value="Tests\Functions\ValueParams.pas"/>
           </local>
         </Mode>
       </Modes>
@@ -502,26 +514,26 @@
         <Item1 Value="C:\WINDOWS\system32\cmd.exe /C ${TargetCmdLine}"/>
       </List>
       <List Name="CommandLineParameters" Count="20">
-        <Item1 Value="Tests\Functions\GoodScopes.pas"/>
-        <Item2 Value="Tests\VarSection\RecordTypes.pas"/>
-        <Item3 Value="\Users\markeev\Projects\pascal-lsp\Tests\VarSection\RecordTypes.pas"/>
-        <Item4 Value="/Users/markeev/Projects/pascal-lsp/Tests/ConstSection/Program2.pas"/>
-        <Item5 Value="/Users/markeev/Projects/pascal-lsp/Tests/Operations/SetsUnionAndDifference.pas"/>
-        <Item6 Value="Tests/Operations/SetsUnionAndDifference.pas"/>
-        <Item7 Value="Tests/Statements/BadAssign.pas"/>
-        <Item8 Value="Tests/Statements/GoodAssign.pas"/>
-        <Item9 Value="Tests/Statements/GoodAssign1.pas"/>
-        <Item10 Value="Tests/VarSection/ArrayTypes.pas"/>
-        <Item11 Value="Tests/Statements/IfThenElse.pas"/>
-        <Item12 Value="Tests/VarSection/SubrangeErrors.pas"/>
-        <Item13 Value="Tests/VarSection/Subranges.pas"/>
-        <Item14 Value="Tests/Assignments/Assign1.pas"/>
-        <Item15 Value="Tests/VarSection/UserTypes.pas"/>
-        <Item16 Value="Tests/VarSection/Incomplete.pas"/>
-        <Item17 Value="Tests/VarSection/VarSection1.pas"/>
-        <Item18 Value="Tests/Program3.pas"/>
-        <Item19 Value="Tests/Program8.pas"/>
-        <Item20 Value="\Users\markeev\Projects\pascal-lsp\Tests\ConstSection\Program2.pas"/>
+        <Item1 Value="Tests\Functions\ValueParams.pas"/>
+        <Item2 Value="Tests\Functions\GoodScopes.pas"/>
+        <Item3 Value="Tests\VarSection\RecordTypes.pas"/>
+        <Item4 Value="\Users\markeev\Projects\pascal-lsp\Tests\VarSection\RecordTypes.pas"/>
+        <Item5 Value="/Users/markeev/Projects/pascal-lsp/Tests/ConstSection/Program2.pas"/>
+        <Item6 Value="/Users/markeev/Projects/pascal-lsp/Tests/Operations/SetsUnionAndDifference.pas"/>
+        <Item7 Value="Tests/Operations/SetsUnionAndDifference.pas"/>
+        <Item8 Value="Tests/Statements/BadAssign.pas"/>
+        <Item9 Value="Tests/Statements/GoodAssign.pas"/>
+        <Item10 Value="Tests/Statements/GoodAssign1.pas"/>
+        <Item11 Value="Tests/VarSection/ArrayTypes.pas"/>
+        <Item12 Value="Tests/Statements/IfThenElse.pas"/>
+        <Item13 Value="Tests/VarSection/SubrangeErrors.pas"/>
+        <Item14 Value="Tests/VarSection/Subranges.pas"/>
+        <Item15 Value="Tests/Assignments/Assign1.pas"/>
+        <Item16 Value="Tests/VarSection/UserTypes.pas"/>
+        <Item17 Value="Tests/VarSection/Incomplete.pas"/>
+        <Item18 Value="Tests/VarSection/VarSection1.pas"/>
+        <Item19 Value="Tests/Program3.pas"/>
+        <Item20 Value="Tests/Program8.pas"/>
       </List>
       <List Name="WorkingDirectory" Type="File" Count="2">
         <Item2 Value="/Users/markeev/Projects/pascal-lsp"/>
@@ -536,6 +548,13 @@
         <WatchKind Value="wpkWrite"/>
         <Source Value="Scopes.pas"/>
         <Line Value="32"/>
+      </Item>
+      <Item>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="Declarations\FunctionImpl.pas"/>
+        <Line Value="67"/>
       </Item>
     </BreakPoints>
     <Watches>

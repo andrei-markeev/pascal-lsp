@@ -1,0 +1,23 @@
+<ProgramFile><RW>program</RW> <SymbDecl>ValueParams</SymbDecl><RW>;</RW>
+
+<Function><RW>function</RW> <SymbDecl>Sum</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<VarSection><RW>var</RW> <VarDecl><SymbDecl>z</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>z</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>x</SymbRef> <RW>+</RW> <SymbRef>y</SymbRef></SimpleExpression></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Function><RW>function</RW> <SymbDecl>BadSum</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>,</RW> <SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW MISSING=":" /><TypeSpec MISSING="" /><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><Ident ERROR="Identifier has not been declared!">z</Ident> <RW>:=</RW> <SimpleExpression ERROR="Cannot apply operator '+': expected integer or real, but  is (unknown)"><SymbRef>x</SymbRef> <RW>+</RW></Factor></SimpleExpression></Assignment><RW MISSING=";" /> <Factor><Assignment><Ident ERROR="Identifier has not been declared!">m</Ident><RW MISSING=":=" /><Factor MISSING="" /></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Procedure><RW>procedure</RW> <SymbDecl>Log</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>z</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbDecl>BadLog</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>z</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></ParameterDecl><RW>)</RW><RW MISSING=";" /><RW SKIPPED="true">:</RW> <RW SKIPPED="true">string</RW><RW SKIPPED="true">;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
