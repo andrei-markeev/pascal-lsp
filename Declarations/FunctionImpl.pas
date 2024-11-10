@@ -6,13 +6,13 @@ unit FunctionImpl;
 interface
 
 uses
-    ParserContext, Token, TypeDefs, Identifier, ParameterDecl;
+    ParserContext, Token, TypedToken, TypeDefs, Identifier;
 
 type
     TFunctionImpl = class(TToken)
     public
         nameIdent: TIdentifier;
-        paramDecls: array of TParameterDecl;
+        paramDecls: TTypedTokenArray;
         funcType: TTypeDef;
         returnType: TTypeDef;
         constructor Create(ctx: TParserContext);
@@ -21,7 +21,7 @@ type
 implementation
 
 uses
-    Anchors, ReservedWord, Scopes, Symbols, TypeSpec, Block;
+    Anchors, ReservedWord, Scopes, Symbols, TypeSpec, ParameterDecl, Block;
 
 constructor TFunctionImpl.Create(ctx: TParserContext);
 var
@@ -29,7 +29,6 @@ var
     nextReservedWordKind: TReservedWordKind;
     needsReturnType: boolean;
     symbolKind: TSymbolKind;
-    l: integer;
     hasMoreParams: boolean;
 begin
     ctx.Add(Self);
@@ -62,28 +61,28 @@ begin
     end;
 
     nameIdent := TIdentifier.Create(ctx, false);
-    RegisterSymbol(nameIdent, nil, symbolKind, funcType, ctx.Cursor);
+
+    paramDecls := TTypedTokenArray.Create;
 
     nextReservedWordKind := DetermineReservedWord(ctx);
     if nextReservedWordKind = rwOpenParenthesis then
     begin
         TReservedWord.Create(ctx, rwOpenParenthesis, true);
 
-        l := 0;
         hasMoreParams := false;
         repeat
             nextTokenKind := DetermineNextTokenKind(ctx);
             if nextTokenKind.primitiveKind <> pkIdentifier then
                 break;
 
-            SetLength(paramDecls, l + 1);
-            paramDecls[l] := TParameterDecl.Create(ctx);
-            inc(l);
+            paramDecls.Add(TParameterDecl.Create(ctx));
 
             hasMoreParams := PeekReservedWord(ctx, rwSemiColon);
             if hasMoreParams then
                 TReservedWord.Create(ctx, rwSemiColon, true);
         until hasMoreParams = false;
+
+        funcType.parameters := paramDecls;
 
         TReservedWord.Create(ctx, rwCloseParenthesis, false);
     end;
@@ -93,6 +92,8 @@ begin
         TReservedWord.Create(ctx, rwColon, false);
         returnType := CreateTypeSpec(ctx).typeDef;
     end;
+
+    RegisterSymbol(nameIdent, nil, symbolKind, funcType, ctx.Cursor);
 
     // TODO: modifiers
 

@@ -6,20 +6,19 @@ unit ParameterDecl;
 interface
 
 uses
-    ParserContext, Symbols, Token, Identifier, TypeSpec;
+    ParserContext, Symbols, Token, TypedToken, Identifier;
 
 type
-    TParameterDecl = class(TToken)
+    TParameterDecl = class(TTypedToken)
     public
         idents: array of TIdentifier;
-        varType: TTypeSpec;
         constructor Create(ctx: TParserContext);
     end;
 
 implementation
 
 uses
-    Anchors, TypeDefs, ReservedWord;
+    Anchors, TypeDefs, ReservedWord, TypeSpec;
 
 const
     unknownType: TTypeDef = (size: 1; kind: tkUnknown);
@@ -27,7 +26,7 @@ const
 constructor TParameterDecl.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
-    i, l, p: integer;
+    i, l: integer;
     hasMoreMembers: boolean;
     symbols: array of TSymbol;
 begin
@@ -73,10 +72,10 @@ begin
         symbols[i] := RegisterSymbol(idents[i], nil, skVariable, unknownType, ctx.Cursor);
 
     TReservedWord.Create(ctx, rwColon, nextTokenKind.reservedWordKind = rwColon);
-    varType := TTypeSpec.Create(ctx, symbols);
+    typeDef := TTypeSpec.Create(ctx, symbols).typeDef;
 
     for i := 0 to length(symbols) - 1 do
-        symbols[i].typeDef := varType.typeDef;
+        symbols[i].typeDef := typeDef;
 
     ctx.MarkEndOfToken(Self);
 end;

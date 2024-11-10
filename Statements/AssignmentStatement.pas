@@ -6,29 +6,26 @@ unit AssignmentStatement;
 interface
 
 uses
-    ParserContext, Symbols, Token;
+    ParserContext, Symbols, Token, TypedToken;
 
 type
     TAssignmentStatement = class(TToken)
     public
-        constructor Create(ctx: TParserContext);
+        constructor Create(ctx: TParserContext; ref: TTypedToken);
     end;
 
 implementation
 
 uses
-    TypeDefs, TypedToken, ReservedWord, Expression, VarRef;
+    TypeDefs, ReservedWord, Expression, VarRef;
 
-constructor TAssignmentStatement.Create(ctx: TParserContext);
+constructor TAssignmentStatement.Create(ctx: TParserContext; ref: TTypedToken);
 var
     expr: TTypedToken;
-    ref: TTypedToken;
 begin
-    ctx.Add(Self);
+    ctx.InsertBefore(ref, Self);
     tokenName := 'Assignment';
-    start := ctx.Cursor;
-
-    ref := CreateVarRef(ctx);
+    start := ref.start;
     
     TReservedWord.Create(ctx, rwAssign, false);
 

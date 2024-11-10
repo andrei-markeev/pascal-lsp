@@ -20,4 +20,18 @@ begin
 end;
 
 begin
+    Sum(2, 2);
+    Sum(123, 'hello');
+    Sum('1');
+    Sum;
+
+    Sum
+    (
+        2,
+        3,
+        4
+    );
+
+    Sum
+
 end.

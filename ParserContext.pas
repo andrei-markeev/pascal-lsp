@@ -30,6 +30,7 @@ type
         function GetCursorBeforeTrivia: PChar; inline;
         procedure SkipTrivia;
         procedure Add(token: TToken);
+        procedure InsertBefore(refToken, tokenToInsert: TToken);
         procedure MarkEndOfToken(token: TToken);
     end;
 
@@ -144,6 +145,35 @@ begin
 
     token.line := line;
     token.position := Cursor - lineStart;
+end;
+
+procedure TParserContext.InsertBefore(refToken, tokenToInsert: TToken);
+var
+    atIndex: integer;
+    i: integer;
+begin
+    if tokensLen = tokensCapacity then
+    begin
+        inc(tokensCapacity, 10);
+        SetLength(Tokens, tokensCapacity)
+    end;
+
+    tokenToInsert.line := refToken.line;
+    tokenToInsert.position := refToken.position;
+
+    atIndex := -1;
+    for i := tokensLen downto 0 do
+        if Tokens[i] = refToken then
+        begin
+            atIndex := i;
+            break
+        end;
+
+    for i := tokensLen downto atIndex + 1 do
+        Tokens[i] := Tokens[i - 1];
+
+    Tokens[atIndex] := tokenToInsert;
+    inc(tokensLen);
 end;
 
 procedure TParserContext.MarkEndOfToken(token: TToken);

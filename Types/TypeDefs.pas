@@ -27,6 +27,7 @@ type
         tkDynamicArray: (typeOfDynValues: PTypeDef);
         tkSet: (typeOfSet: PTypeDef);
         tkRecord: (fields: TFPHashList);
+        tkProcedure, tkFunction: (parameters: Pointer);
         tkBoolean, tkChar, tkReal, tkUnitName: ();
     end;
 
@@ -138,6 +139,8 @@ begin
         TypesAreAssignable := left.enumSpec = right.enumSpec
     else if (left.kind = tkSet) and (right.kind = tkSet) then
         TypesAreAssignable := TypesAreAssignable(left.typeOfSet^, right.typeOfSet^, errorMessage);
+
+    // TODO: functions
 
     if not TypesAreAssignable then
         if (left.kind = tkSet) and (right.kind = tkSet) then

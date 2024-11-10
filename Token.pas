@@ -21,6 +21,7 @@ type
         isPrimitive: boolean;
         endMarker: TToken;
         function GetStr: string;
+        destructor Destroy; override;
     end;
 
 implementation
@@ -30,6 +31,12 @@ begin
     if length(asString) = 0 then
         SetString(asString, start, len);
     GetStr := asString;
+end;
+
+destructor TToken.Destroy;
+begin
+    if endMarker <> nil then
+        endMarker.Free;
 end;
 
 end.

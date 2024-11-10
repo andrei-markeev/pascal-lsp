@@ -77,14 +77,8 @@ begin
 
         case nextReservedWord of
             rwOpenParenthesis:
-                if isSimple and canBeTypecast then
+                if isSimple and canBeTypecast and (symbol <> nil) and (symbol.kind = skTypeName) then
                 begin
-                    if (firstIdent.state <> tsError) and (symbol.kind <> skTypeName) then
-                    begin
-                        firstIdent.state := tsError;
-                        firstIdent.errorMessage := 'Expected a type name, but found a ' + SymbolKindStr[ord(symbol.kind)];
-                    end;
-
                     TReservedWord.Create(ctx, rwOpenParenthesis, true);
                     varRef := TVarRef.Create(ctx);
                     if (varRef.state <> tsError) and (varRef.typeDef.size <> typeDef.size) then

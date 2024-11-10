@@ -20,4 +20,18 @@
 <RW>end</RW></Block><RW>;</RW></Procedure>
 
 <Block><RW>begin</RW>
+    <Call><SymbRef>Sum</SymbRef><RW>(</RW><Num>2</Num><RW>,</RW> <Num>2</Num><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>Sum</SymbRef><RW>(</RW><Num>123</Num><RW>,</RW> <Str ERROR="Invalid parameter: expected integer or assignment-compatible, but found string!">'hello'</Str><RW>)</RW></Call><RW>;</RW>
+    <Call ERROR="Expected 2 parameters, but got 1"><SymbRef>Sum</SymbRef><RW>(</RW><Str ERROR="Invalid parameter: expected integer or assignment-compatible, but found char!">'1'</Str><RW MISSING="," /><RW>)</RW></Call><RW>;</RW>
+    <Call ERROR="Procedure call requires 2 parameters!"><SymbRef>Sum</SymbRef></Call><RW>;</RW>
+
+    <Call><SymbRef>Sum</SymbRef>
+    <RW>(</RW>
+        <Num>2</Num><RW>,</RW>
+        <Num>3</Num><RW MISSING=")" /></Call><RW SKIPPED="true">,</RW>
+        <Num SKIPPED="true">4</Num>
+    <RW SKIPPED="true">)</RW><RW>;</RW>
+
+    <Call ERROR="Procedure call requires 2 parameters!"><SymbRef>Sum</SymbRef></Call><RW MISSING=";" />
+
 <RW>end</RW></Block><RW>.</RW></ProgramFile>
