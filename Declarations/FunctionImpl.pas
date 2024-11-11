@@ -29,6 +29,8 @@ var
     nextReservedWordKind: TReservedWordKind;
     needsReturnType: boolean;
     symbolKind: TSymbolKind;
+    paramDecl: TParameterDecl;
+    i: integer;
     hasMoreParams: boolean;
 begin
     ctx.Add(Self);
@@ -72,10 +74,12 @@ begin
         hasMoreParams := false;
         repeat
             nextTokenKind := DetermineNextTokenKind(ctx);
-            if nextTokenKind.primitiveKind <> pkIdentifier then
+            if (nextTokenKind.primitiveKind <> pkIdentifier) and not (nextTokenKind.reservedWordKind in [rwConst, rwVar, rwOut]) then
                 break;
 
-            paramDecls.Add(TParameterDecl.Create(ctx));
+            paramDecl := TParameterDecl.Create(ctx, nextTokenKind);
+            for i := 0 to length(paramDecl.idents) - 1 do
+                paramDecls.Add(paramDecl);
 
             hasMoreParams := PeekReservedWord(ctx, rwSemiColon);
             if hasMoreParams then
