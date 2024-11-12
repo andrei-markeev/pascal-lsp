@@ -31,6 +31,7 @@ var
     symbolKind: TSymbolKind;
     paramDecl: TParameterDecl;
     i: integer;
+    rw: TReservedWord;
     hasMoreParams: boolean;
 begin
     ctx.Add(Self);
@@ -73,17 +74,24 @@ begin
 
         hasMoreParams := false;
         repeat
-            nextTokenKind := DetermineNextTokenKind(ctx);
-            if (nextTokenKind.primitiveKind <> pkIdentifier) and not (nextTokenKind.reservedWordKind in [rwConst, rwVar, rwOut]) then
-                break;
-
-            paramDecl := TParameterDecl.Create(ctx, nextTokenKind);
+            paramDecl := TParameterDecl.Create(ctx);
             for i := 0 to length(paramDecl.idents) - 1 do
                 paramDecls.Add(paramDecl);
 
-            hasMoreParams := PeekReservedWord(ctx, rwSemiColon);
-            if hasMoreParams then
-                TReservedWord.Create(ctx, rwSemiColon, true);
+            if PeekReservedWord(ctx, rwComma) then
+            begin
+                // common error, mixing up ";" and ","
+                hasMoreParams := true;
+                rw := TReservedWord.Create(ctx, rwComma, true);
+                rw.state := tsSkipped;
+                TReservedWord.Create(ctx, rwSemiColon, false);
+            end
+            else
+            begin
+                hasMoreParams := PeekReservedWord(ctx, rwSemiColon);
+                if hasMoreParams then
+                    TReservedWord.Create(ctx, rwSemiColon, true);
+            end;
         until hasMoreParams = false;
 
         funcType.parameters := paramDecls;

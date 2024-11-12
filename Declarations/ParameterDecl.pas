@@ -12,7 +12,7 @@ type
     TParameterDecl = class(TTypedToken)
     public
         idents: array of TIdentifier;
-        constructor Create(ctx: TParserContext; nextTokenKind: TTokenKind);
+        constructor Create(ctx: TParserContext);
     end;
 
 implementation
@@ -23,8 +23,9 @@ uses
 const
     unknownType: TTypeDef = (size: 1; kind: tkUnknown);
 
-constructor TParameterDecl.Create(ctx: TParserContext; nextTokenKind: TTokenKind);
+constructor TParameterDecl.Create(ctx: TParserContext);
 var
+    nextTokenKind: TTokenKind;
     i, l: integer;
     hasMoreMembers: boolean;
     isVar, isConst, isOut: boolean;
@@ -36,10 +37,16 @@ begin
 
     start := ctx.Cursor;
 
-    // TODO: constant parameters
-    // TODO: variable parameters
-    // TODO: untyped parameters
-    // TODO: open parameters (e.g. open arrays)
+    nextTokenKind := DetermineNextTokenKind(ctx);
+    if (nextTokenKind.primitiveKind <> pkIdentifier) and not (nextTokenKind.reservedWordKind in [rwConst, rwVar, rwOut]) then
+    begin
+        SetLength(idents, 0);
+        len := 0;
+        state := tsMissing;
+        exit;
+    end;
+
+    start := ctx.Cursor;
 
     isConst := false;
     isVar := false;
@@ -95,10 +102,23 @@ begin
     if nextTokenKind.reservedWordKind = rwColon then
     begin
         TReservedWord.Create(ctx, rwColon, true);
+
+        // TODO: open parameters (e.g. open arrays)
+        // do we even need any special treatment?
+
         typeDef := TTypeSpec.Create(ctx, symbols).typeDef;
 
         for i := 0 to length(symbols) - 1 do
             symbols[i].typeDef := typeDef;
+    end
+    else if isConst or isVar then
+    begin
+        // TODO: untyped parameters
+    end
+    else
+    begin
+        state := tsError;
+        errorMessage := 'Specify a type or provide a modifier (either ''const'' or ''var'') to create an untyped parameter!';
     end;
 
     ctx.MarkEndOfToken(Self);

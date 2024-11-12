@@ -1,0 +1,28 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadParams</SymbDecl><RW>;</RW>
+
+<Procedure><RW>procedure</RW> <SymbDecl>Sum1</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>,</RW> <SymbDecl>y</SymbDecl><RW>:</RW><TypeSpec MISSING="" /></ParameterDecl><RW MISSING=")" /><RW MISSING=";" />
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbDecl>Sum2</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>,</RW> <SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec ERROR="Identifier has not been declared!"><Ident>inte</Ident></TypeSpec></ParameterDecl><RW MISSING=")" /><RW MISSING=";" />
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbDecl>Sum3</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>,</RW> <SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW MISSING=")" /><RW MISSING=";" />
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbDecl>Sum4</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>,</RW> <SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>;</RW><ParameterDecl MISSING="" /><RW MISSING=")" /><RW MISSING=";" />
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbDecl>Sum5</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>,</RW> <SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW SKIPPED="true">,</RW><RW MISSING=";" /> <ParameterDecl><RW>var</RW> <SymbDecl>z</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbDecl>Sum6</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>,</RW> <SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW SKIPPED="true">,</RW><RW MISSING=";" /> <ParameterDecl ERROR="Specify a type or provide a modifier (either 'const' or 'var') to create an untyped parameter!"><SymbDecl>z</SymbDecl></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
