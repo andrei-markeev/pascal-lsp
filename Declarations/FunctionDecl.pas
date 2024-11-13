@@ -1,4 +1,4 @@
-unit FunctionImpl;
+unit FunctionDecl;
 
 {$mode objfpc}
 {$longstrings on}
@@ -6,37 +6,35 @@ unit FunctionImpl;
 interface
 
 uses
-    ParserContext, Token, TypedToken, TypeDefs, Identifier;
+    ParserContext, Symbols, Token, TypedToken, TypeDefs, Identifier;
 
 type
-    TFunctionImpl = class(TToken)
+    TFunctionDecl = class(TToken)
     public
-        typeIdent: TIdentifier;
         nameIdent: TIdentifier;
         paramDecls: TTypedTokenArray;
         funcType: TTypeDef;
         returnType: TTypeDef;
-        constructor Create(ctx: TParserContext);
+        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol);
     end;
 
 implementation
 
 uses
-    Anchors, ReservedWord, Scopes, Symbols, TypeSpec, ParameterDecl, Block;
+    Anchors, ReservedWord, Scopes, TypeSpec, ParameterDecl, Block;
 
-constructor TFunctionImpl.Create(ctx: TParserContext);
+constructor TFunctionDecl.Create(ctx: TParserContext; parentSymbols: array of TSymbol);
 var
     nextReservedWordKind: TReservedWordKind;
     needsReturnType: boolean;
     symbolKind: TSymbolKind;
-    symbolParent: TSymbol;
     paramDecl: TParameterDecl;
-    i: integer;
+    i, p: integer;
     rw: TReservedWord;
     hasMoreParams: boolean;
 begin
     ctx.Add(Self);
-    tokenName := 'Function';
+    tokenName := 'FunctionDecl';
 
     ctx.SkipTrivia;
     start := ctx.Cursor;
@@ -58,35 +56,17 @@ begin
     end
     else
     begin
-        tokenName := 'Procedure';
+        tokenName := 'ProcedureDecl';
         symbolKind := skProcedure;
         funcType.kind := tkProcedure;
         TReservedWord.Create(ctx, rwProcedure, true);
     end;
 
     nameIdent := TIdentifier.Create(ctx, false);
-    typeIdent := nil;
-    symbolParent := FindSymbol(nameIdent);
-    if (symbolParent <> nil) and (symbolParent.kind = skTypeName) then
-    begin
-        typeIdent := nameIdent;
-        symbolParent.AddReference(typeIdent);
-        if PeekReservedWord(ctx, rwDot) then
-        begin
-            TReservedWord.Create(ctx, rwDot, true);
-            nameIdent := TIdentifier.Create(ctx, false);
-        end
-        else
-        begin
-            typeIdent.state := tsError;
-            typeIdent.errorMessage := 'Previously declared type identifier is used as a ' + LowerCase(tokenName) + ' name!';
-        end;
-    end
-    else if symbolParent <> nil then
+    if FindSymbol(nameIdent) <> nil then
     begin
         nameIdent.state := tsError;
         nameIdent.errorMessage := 'Duplicate identifier!';
-        symbolParent := nil;
     end;
 
     paramDecls := TTypedTokenArray.Create;
@@ -131,16 +111,10 @@ begin
 
     funcType.returnType := @returnType;
 
-    RegisterSymbol(nameIdent, symbolParent, symbolKind, funcType, ctx.Cursor);
-
-    // TODO: result variable and function name variable
+    for p := 0 to length(parentSymbols) - 1 do
+        RegisterSymbol(nameIdent, parentSymbols[p], symbolKind, funcType, ctx.Cursor);
 
     // TODO: modifiers
-
-    TReservedWord.Create(ctx, rwSemiColon, false);
-
-    // TODO: asm
-    TBlock.Create(ctx);
 
     TReservedWord.Create(ctx, rwSemiColon, false);
 

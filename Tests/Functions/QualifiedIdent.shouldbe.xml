@@ -1,0 +1,33 @@
+<ProgramFile><RW>program</RW> <SymbDecl>QualifiedIdent</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TSomething</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <VarDecl><SymbDecl>actions</SymbDecl><RW>:</RW> <TypeSpec><EnumSpec><RW>(</RW><SymbDecl>aSayHello</SymbDecl><RW>,</RW> <SymbDecl>aSayBye</SymbDecl><RW>)</RW></EnumSpec></TypeSpec></VarDecl><RW>;</RW>
+        <ProcedureDecl><RW>procedure</RW> <SymbDecl>SayHello</SymbDecl><RW>;</RW></ProcedureDecl>
+        <ProcedureDecl><RW>procedure</RW> <SymbDecl>SayBye</SymbDecl><RW>;</RW></ProcedureDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Procedure><RW>procedure</RW> <SymbRef>TSomething</SymbRef><RW>.</RW><SymbDecl>SayHello</SymbDecl><RW>;</RW>
+<VarSection><RW>var</RW> <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'Hello world!'</Str></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbRef>TSomething</SymbRef><RW>.</RW><SymbDecl>SayBye</SymbDecl><RW>;</RW>
+<VarSection><RW>var</RW> <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'See you later'</Str></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbDecl ERROR="Previously declared type identifier is used as a procedure name!">TSomething</SymbDecl><RW>;</RW>
+<VarSection><RW>var</RW> <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'Good morning'</Str></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Block><RW>begin</RW>
+    <Call><SymbRef>SayHello</SymbRef><RW>(</RW><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>SayBye</SymbRef></Call><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

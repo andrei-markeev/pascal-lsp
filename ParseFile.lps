@@ -119,10 +119,11 @@
       <Unit>
         <Filename Value="Types\TypeSpec.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="94"/>
-        <CursorPos X="44" Y="121"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="99"/>
+        <CursorPos X="43" Y="119"/>
         <UsageCount Value="154"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="Declarations\VarSection.pas"/>
@@ -199,7 +200,7 @@
       <Unit>
         <Filename Value="Statements\AssignmentStatement.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="10"/>
         <CursorPos X="28" Y="39"/>
         <UsageCount Value="51"/>
@@ -289,7 +290,6 @@
       <Unit>
         <Filename Value="Statements\ProcedureCallStatement.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
         <TopLine Value="29"/>
         <CursorPos Y="36"/>
@@ -384,92 +384,18 @@
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit>
+      <Unit>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="21"/>
+        <CursorPos Y="63"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="65" TopLine="37"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="67" TopLine="39"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="68" TopLine="40"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="74" TopLine="57"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="76" TopLine="57"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="77" TopLine="57"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="78" TopLine="57"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="79" TopLine="63"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="80" TopLine="63"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="81" TopLine="63"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="82" TopLine="63"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="84" TopLine="63"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="85" TopLine="63"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="91" TopLine="63"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="92" TopLine="64"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="93" TopLine="65"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="92" TopLine="65"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="95" TopLine="67"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="97" TopLine="69"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="98" TopLine="70"/>
-      </Position>
-      <Position>
-        <Filename Value="Declarations\ParameterDecl.pas"/>
-        <Caret Line="100" TopLine="72"/>
-      </Position>
       <Position>
         <Filename Value="Declarations\ParameterDecl.pas"/>
         <Caret Line="101" TopLine="73"/>
@@ -500,11 +426,95 @@
       </Position>
       <Position>
         <Filename Value="Declarations\FunctionImpl.pas"/>
-        <Caret Line="33" Column="16" TopLine="44"/>
+        <Caret Line="89" TopLine="67"/>
       </Position>
       <Position>
-        <Filename Value="Declarations\FunctionImpl.pas"/>
-        <Caret Line="89" TopLine="67"/>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="47" TopLine="44"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="49" TopLine="43"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="51" TopLine="43"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="52" TopLine="43"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="54" TopLine="43"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="55" TopLine="43"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="52" TopLine="43"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="57" TopLine="43"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="74" TopLine="46"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="47" TopLine="41"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="49" TopLine="41"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="61" TopLine="41"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="63" TopLine="41"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="64" TopLine="41"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="74" TopLine="46"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="47" TopLine="41"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="49" TopLine="41"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="61" TopLine="41"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="63" TopLine="41"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="64" TopLine="41"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="74" TopLine="46"/>
+      </Position>
+      <Position>
+        <Filename Value="Types\ClassSpec.pas"/>
+        <Caret Line="47" TopLine="41"/>
       </Position>
     </JumpHistory>
     <RunParams>
@@ -512,7 +522,7 @@
       <Modes ActiveMode="default">
         <Mode Name="default">
           <local>
-            <CommandLineParams Value="Tests\Functions\ConstVarParams.pas"/>
+            <CommandLineParams Value="Tests\Functions\QualifiedIdent.pas"/>
           </local>
         </Mode>
       </Modes>
@@ -522,26 +532,26 @@
         <Item1 Value="C:\WINDOWS\system32\cmd.exe /C ${TargetCmdLine}"/>
       </List>
       <List Name="CommandLineParameters" Count="20">
-        <Item1 Value="Tests\Functions\ConstVarParams.pas"/>
-        <Item2 Value="Tests\Functions\ValueParams.pas"/>
-        <Item3 Value="Tests\Functions\GoodScopes.pas"/>
-        <Item4 Value="Tests\VarSection\RecordTypes.pas"/>
-        <Item5 Value="\Users\markeev\Projects\pascal-lsp\Tests\VarSection\RecordTypes.pas"/>
-        <Item6 Value="/Users/markeev/Projects/pascal-lsp/Tests/ConstSection/Program2.pas"/>
-        <Item7 Value="/Users/markeev/Projects/pascal-lsp/Tests/Operations/SetsUnionAndDifference.pas"/>
-        <Item8 Value="Tests/Operations/SetsUnionAndDifference.pas"/>
-        <Item9 Value="Tests/Statements/BadAssign.pas"/>
-        <Item10 Value="Tests/Statements/GoodAssign.pas"/>
-        <Item11 Value="Tests/Statements/GoodAssign1.pas"/>
-        <Item12 Value="Tests/VarSection/ArrayTypes.pas"/>
-        <Item13 Value="Tests/Statements/IfThenElse.pas"/>
-        <Item14 Value="Tests/VarSection/SubrangeErrors.pas"/>
-        <Item15 Value="Tests/VarSection/Subranges.pas"/>
-        <Item16 Value="Tests/Assignments/Assign1.pas"/>
-        <Item17 Value="Tests/VarSection/UserTypes.pas"/>
-        <Item18 Value="Tests/VarSection/Incomplete.pas"/>
-        <Item19 Value="Tests/VarSection/VarSection1.pas"/>
-        <Item20 Value="Tests/Program3.pas"/>
+        <Item1 Value="Tests\Functions\QualifiedIdent.pas"/>
+        <Item2 Value="Tests\Functions\ConstVarParams.pas"/>
+        <Item3 Value="Tests\Functions\ValueParams.pas"/>
+        <Item4 Value="Tests\Functions\GoodScopes.pas"/>
+        <Item5 Value="Tests\VarSection\RecordTypes.pas"/>
+        <Item6 Value="\Users\markeev\Projects\pascal-lsp\Tests\VarSection\RecordTypes.pas"/>
+        <Item7 Value="/Users/markeev/Projects/pascal-lsp/Tests/ConstSection/Program2.pas"/>
+        <Item8 Value="/Users/markeev/Projects/pascal-lsp/Tests/Operations/SetsUnionAndDifference.pas"/>
+        <Item9 Value="Tests/Operations/SetsUnionAndDifference.pas"/>
+        <Item10 Value="Tests/Statements/BadAssign.pas"/>
+        <Item11 Value="Tests/Statements/GoodAssign.pas"/>
+        <Item12 Value="Tests/Statements/GoodAssign1.pas"/>
+        <Item13 Value="Tests/VarSection/ArrayTypes.pas"/>
+        <Item14 Value="Tests/Statements/IfThenElse.pas"/>
+        <Item15 Value="Tests/VarSection/SubrangeErrors.pas"/>
+        <Item16 Value="Tests/VarSection/Subranges.pas"/>
+        <Item17 Value="Tests/Assignments/Assign1.pas"/>
+        <Item18 Value="Tests/VarSection/UserTypes.pas"/>
+        <Item19 Value="Tests/VarSection/Incomplete.pas"/>
+        <Item20 Value="Tests/VarSection/VarSection1.pas"/>
       </List>
       <List Name="WorkingDirectory" Type="File" Count="2">
         <Item2 Value="/Users/markeev/Projects/pascal-lsp"/>

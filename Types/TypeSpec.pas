@@ -20,7 +20,7 @@ implementation
 
 uses
     Anchors, Token, ReservedWord, Identifier,
-    EnumSpec, RangeSpec, ArraySpec, SetSpec, RecordSpec;
+    EnumSpec, RangeSpec, ArraySpec, SetSpec, RecordSpec, ClassSpec;
 
 function CreateTypeSpec(ctx: TParserContext): TTypeSpec;
 begin
@@ -35,6 +35,7 @@ var
     arraySpecToken: TArraySpec;
     setSpecToken: TSetSpec;
     recordSpecToken: TRecordSpec;
+    classSpecToken: TClassSpec;
     ident: TIdentifier;
     identName: shortstring;
     symbol: TSymbol;
@@ -111,7 +112,15 @@ begin
             end;
         pkUnknown:
             case nextTokenKind.reservedWordKind of
-                rwClass: typeDef.kind := tkClass; // TODO: implement ClassSpec
+                rwClass:
+                    begin
+                        start := ctx.Cursor;
+                        classSpecToken := TClassSpec.Create(ctx, parentSymbols);
+                        typeDef := classSpecToken.typeDef;
+                        state := tsCorrect;
+                        ctx.MarkEndOfToken(Self);
+                        exit;
+                    end;
                 rwObject: typeDef.kind := tkObject; // TODO: implement ObjectSpec
                 rwRecord:
                     begin

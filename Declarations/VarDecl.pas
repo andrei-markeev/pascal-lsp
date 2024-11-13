@@ -60,8 +60,6 @@ begin
     nextTokenKind := SkipUntilAnchor(ctx);
     RemoveAnchor(rwColon);
 
-    if (length(parentSymbols) > 0) and (parentSymbols[0] <> nil) then
-        WriteLn('parentSymbol is not nil in VarDecl: ', parentSymbols[0].name);
     SetLength(symbols, l * length(parentSymbols));
     for p := 0 to length(parentSymbols) - 1 do
         for i := 0 to l - 1 do
