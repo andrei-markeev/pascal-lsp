@@ -168,7 +168,7 @@ begin
 
     RegisterSymbol(nameIdent, symbolParent, symbolKind, funcType, ctx.Cursor);
 
-    // TODO: result variable and function name variable
+    // TODO: result variable variable
 
     // TODO: modifiers
 

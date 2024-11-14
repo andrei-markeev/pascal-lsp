@@ -1,9 +1,8 @@
 program ValueParams;
 
 function Sum(x: integer; y: integer): integer;
-var z: integer;
 begin
-    z := x + y;
+    Sum := x + y;
 end;
 
 function BadSum(x, y: integer);

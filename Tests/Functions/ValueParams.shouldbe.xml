@@ -1,9 +1,8 @@
 <ProgramFile><RW>program</RW> <SymbDecl>ValueParams</SymbDecl><RW>;</RW>
 
 <Function><RW>function</RW> <SymbDecl>Sum</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
-<VarSection><RW>var</RW> <VarDecl><SymbDecl>z</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>
-    <Assignment><SymbRef>z</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>x</SymbRef> <RW>+</RW> <SymbRef>y</SymbRef></SimpleExpression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>Sum</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>x</SymbRef> <RW>+</RW> <SymbRef>y</SymbRef></SimpleExpression></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>;</RW></Function>
 
 <Function><RW>function</RW> <SymbDecl>BadSum</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>,</RW> <SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW MISSING=":" /><TypeSpec MISSING="" /><RW>;</RW>

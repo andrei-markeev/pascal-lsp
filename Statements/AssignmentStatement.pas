@@ -23,6 +23,7 @@ constructor TAssignmentStatement.Create(ctx: TParserContext; ref: TTypedToken);
 var
     expr: TTypedToken;
     symbol: TSymbol;
+    leftTypeDef: TTypeDef;
     typeError: string;
 begin
     ctx.InsertBefore(ref, Self);
@@ -41,11 +42,16 @@ begin
         errorMessage := 'Cannot modify a constant!';
     end;
 
+    if (symbol <> nil) and (symbol.kind = skFunction) then
+        leftTypeDef := symbol.typeDef.returnType^
+    else
+        leftTypeDef := ref.typeDef;
+
     TReservedWord.Create(ctx, rwAssign, false);
 
     expr := CreateExpression(ctx);
 
-    if not TypesAreAssignable(ref.typeDef, expr.typeDef, typeError) then
+    if not TypesAreAssignable(leftTypeDef, expr.typeDef, typeError) then
     begin
         state := tsError;
         errorMessage := 'Invalid assignment: ' + typeError;
