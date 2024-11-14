@@ -1,0 +1,21 @@
+<ProgramFile><RW>program</RW> <SymbDecl>Constructors</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TTestClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <VarDecl><SymbDecl>someVar</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+        <ConstructorDecl><RW>constructor</RW> <SymbDecl>Create</SymbDecl><RW>;</RW></ConstructorDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Constructor><RW>constructor</RW> <SymbRef>TTestClass</SymbRef><RW>.</RW><SymbDecl>Create</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>someVar</SymbRef> <RW>:=</RW> <Str>'Hello world!'</Str></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Constructor>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>test</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TTestClass</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    // TODO: test := TTestClass.Create;
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

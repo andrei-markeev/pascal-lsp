@@ -18,9 +18,6 @@ type
 
 implementation
 
-const
-    unknownType: TTypeDef = (size: 1; kind: tkUnknown);
-
 constructor TVarDecl.Create(ctx: TParserContext; parentSymbols: array of TSymbol);
 var
     nextTokenKind: TTokenKind;

@@ -9,7 +9,7 @@ uses
     math, contnrs, Token, Identifier, TypeDefs;
 
 type
-    TSymbolKind = (skUnknown, skConstant, skTypedConstant, skTypeName, skVariable, skProcedure, skFunction, skUnitName);
+    TSymbolKind = (skUnknown, skConstant, skTypedConstant, skTypeName, skVariable, skProcedure, skFunction, skConstructor, skDestructor, skUnitName);
     TSymbol = class
     public
         kind: TSymbolKind;
@@ -82,13 +82,14 @@ begin
         declaration.typeDef := symbolType;
         declaration.tokenName := 'SymbDecl';
     end;
-    FindScope(cursor).symbolsList.Add(RegisterSymbol.name, RegisterSymbol);
+    FindScope(cursor).symbolsList.Add(LowerCase(RegisterSymbol.name), RegisterSymbol);
 end;
 
 function FindSymbol(findName: shortstring; cursor: PChar): TSymbol;
 var
     scope: TScope;
 begin
+    findName := LowerCase(findName);
     scope := FindScope(cursor);
     repeat
         FindSymbol := TSymbol(scope.symbolsList.Find(findName));
@@ -108,7 +109,7 @@ begin
     if ident.len > 255 then
         WriteLn('ERROR: identifier of more than 255 symbols found! Only first 255 will be used for indexing.');
 
-    SetString(name, ident.start, Min(255, ident.len));
+    SetString(name, ident.start, ident.len);
     FindSymbol := FindSymbol(name, ident.start);
 end;
 

@@ -59,7 +59,7 @@ begin
     if PeekReservedWord(ctx, rwUses) then
         TUsesClause.Create(ctx);
 
-    TBlock.Create(ctx);
+    TBlock.Create(ctx, []);
 
     TReservedWord.Create(ctx, rwDot, false);
 

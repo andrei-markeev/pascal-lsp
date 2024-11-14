@@ -44,7 +44,7 @@ begin
 
     nextTokenKind := DetermineNextTokenKind(ctx);
 
-    while (nextTokenKind.primitiveKind = pkIdentifier) or (nextTokenKind.reservedWordKind in [rwProcedure, rwFunction]) do
+    while (nextTokenKind.primitiveKind = pkIdentifier) or (nextTokenKind.reservedWordKind in [rwProcedure, rwFunction, rwConstructor, rwDestructor]) do
     begin
         if nextTokenKind.primitiveKind = pkIdentifier then
         begin
@@ -58,10 +58,9 @@ begin
 
             // TODO: static modifier
         end
-        // TODO: constructor and destructor
-        else if nextTokenKind.reservedWordKind in [rwProcedure, rwFunction] then
+        else if nextTokenKind.reservedWordKind in [rwProcedure, rwFunction, rwConstructor, rwDestructor] then
         begin
-            funcDecl := TFunctionDecl.Create(ctx, parentSymbols);
+            funcDecl := TFunctionDecl.Create(ctx, nextTokenKind.reservedWordKind, parentSymbols);
             typeDef.fields.Add(funcDecl.nameIdent.GetStr(), @funcDecl.funcType);
             // TODO: modifiers
         end;

@@ -21,6 +21,7 @@ implementation
 constructor TTypeDecl.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
+    symbol: TSymbol;
 begin
     tokenName := 'TypeDecl';
     ctx.Add(Self);
@@ -40,15 +41,18 @@ begin
     start := ctx.Cursor;
     ident := TIdentifier.Create(ctx, false);
 
+    symbol := RegisterSymbol(ident, nil, skTypeName, unknownType, ctx.Cursor);
+
     AddAnchor(rwEquals);
     nextTokenKind := SkipUntilAnchor(ctx);
     RemoveAnchor(rwEquals);
 
     TReservedWord.Create(ctx, rwEquals, nextTokenKind.reservedWordKind = rwEquals);
-    declType := CreateTypeSpec(ctx);
+    declType := TTypeSpec.Create(ctx, [symbol]);
+
+    symbol.typeDef := declType.typeDef;
 
     ctx.MarkEndOfToken(Self);
-    RegisterSymbol(ident, nil, skTypeName, declType.typeDef, ctx.Cursor);
 end;
 
 end.

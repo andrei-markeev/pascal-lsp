@@ -6,7 +6,7 @@ unit FunctionDecl;
 interface
 
 uses
-    ParserContext, Symbols, Token, TypedToken, TypeDefs, Identifier;
+    ParserContext, Symbols, Token, ReservedWord, TypedToken, TypeDefs, Identifier;
 
 type
     TFunctionDecl = class(TToken)
@@ -15,15 +15,15 @@ type
         paramDecls: TTypedTokenArray;
         funcType: TTypeDef;
         returnType: TTypeDef;
-        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol);
+        constructor Create(ctx: TParserContext; functionRWKind: TReservedWordKind; parentSymbols: array of TSymbol);
     end;
 
 implementation
 
 uses
-    Anchors, ReservedWord, Scopes, TypeSpec, ParameterDecl, Block;
+    Scopes, TypeSpec, ParameterDecl;
 
-constructor TFunctionDecl.Create(ctx: TParserContext; parentSymbols: array of TSymbol);
+constructor TFunctionDecl.Create(ctx: TParserContext; functionRWKind: TReservedWordKind; parentSymbols: array of TSymbol);
 var
     nextReservedWordKind: TReservedWordKind;
     needsReturnType: boolean;
@@ -39,27 +39,40 @@ begin
     ctx.SkipTrivia;
     start := ctx.Cursor;
 
-    nextReservedWordKind := DetermineReservedWord(ctx);
-    if not (nextReservedWordKind in [rwFunction, rwProcedure]) then
+    if not (functionRWKind in [rwFunction, rwProcedure, rwConstructor, rwDestructor]) then
     begin
         state := tsMissing;
         len := 0;
         exit;
     end;
 
-    needsReturnType := nextReservedWordKind = rwFunction;
-    if nextReservedWordKind = rwFunction then
-    begin
-        symbolKind := skFunction;
-        funcType.kind := tkFunction;
-        TReservedWord.Create(ctx, rwFunction, true)
-    end
-    else
-    begin
-        tokenName := 'ProcedureDecl';
-        symbolKind := skProcedure;
-        funcType.kind := tkProcedure;
-        TReservedWord.Create(ctx, rwProcedure, true);
+    needsReturnType := functionRWKind = rwFunction;
+
+    TReservedWord.Create(ctx, functionRWKind, true);
+    case functionRWKind of
+        rwFunction:
+            begin
+                symbolKind := skFunction;
+                funcType.kind := tkFunction;
+            end;
+        rwProcedure:
+            begin
+                tokenName := 'ProcedureDecl';
+                symbolKind := skProcedure;
+                funcType.kind := tkProcedure;
+            end;
+        rwConstructor:
+            begin
+                tokenName := 'ConstructorDecl';
+                symbolKind := skConstructor;
+                funcType.kind := tkFunction;
+            end;
+        rwDestructor:
+            begin
+                tokenName := 'DestructorDecl';
+                symbolKind := skDestructor;
+                funcType.kind := tkProcedure;
+            end;
     end;
 
     nameIdent := TIdentifier.Create(ctx, false);

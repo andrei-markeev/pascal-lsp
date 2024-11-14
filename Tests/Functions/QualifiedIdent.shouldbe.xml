@@ -27,7 +27,9 @@
     <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'Good morning'</Str></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>;</RW></Procedure>
 
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>something</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TSomething</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>
-    <Call><SymbRef>SayHello</SymbRef><RW>(</RW><RW>)</RW></Call><RW>;</RW>
-    <Call><SymbRef>SayBye</SymbRef></Call><RW>;</RW>
+    // TODO: something.SayHello();
+    // TODO: something.SayBye;
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

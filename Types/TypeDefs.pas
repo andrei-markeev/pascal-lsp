@@ -42,6 +42,8 @@ const
 var
     TypesList: TFPHashList;
 
+    unknownType: TTypeDef = (size: 1; kind: tkUnknown);
+
     byteType: TTypeDef = (size: 1; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 255);
     shortintType: TTypeDef = (size: 1; kind: tkInteger; isSigned: true; rangeStart: -128; rangeEnd: 127);
     wordType: TTypeDef = (size: 2; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 65535);
@@ -67,7 +69,9 @@ var
     pointer32Type: TTypeDef = (size: 4; kind: tkPointer; isTyped: false; pointerToType: nil);
     pointer64Type: TTypeDef = (size: 8; kind: tkPointer; isTyped: false; pointerToType: nil);
 
-    shortstringType: TTypeDef = (size: 255; kind: tkString);
+    pcharType: TTypeDef = (size: 8; kind: tkPointer; isTyped: true; pointerToType: @charType);
+
+    shortstringType: TTypeDef = (size: 256; kind: tkString);
 
     ansiString32Type: TTypeDef = (size: 4; kind: tkString);
     ansiString64Type: TTypeDef = (size: 8; kind: tkString);
@@ -104,6 +108,7 @@ begin
         TypesList.Add('comp', @compType);
 
         TypesList.Add('pointer', @pointer64Type);
+        TypesList.Add('pchar', @pcharType);
         TypesList.Add('string', @shortstringType);
     end;
 
@@ -123,6 +128,7 @@ begin
         TypesList.Add('currency', @currencyType);
 
         TypesList.Add('ansistring', @ansiString64Type);
+        TypesList.Add('shortstring', @shortstringType);
     end;
 end;
 

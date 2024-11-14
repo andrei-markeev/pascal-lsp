@@ -64,7 +64,7 @@ begin
                 symbol := FindSymbol(identName, ctx.Cursor);
                 if symbol = nil then
                 begin
-                    found := TypesList.Find(identName);
+                    found := TypesList.Find(LowerCase(identName));
                     if found = nil then
                     begin
                         TIdentifier.Create(ctx, false);

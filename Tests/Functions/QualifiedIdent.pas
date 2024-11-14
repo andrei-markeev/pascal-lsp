@@ -27,7 +27,9 @@ begin
     s := 'Good morning';
 end;
 
+var
+    something: TSomething;
 begin
-    SayHello();
-    SayBye;
+    // TODO: something.SayHello();
+    // TODO: something.SayBye;
 end.

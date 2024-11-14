@@ -20,9 +20,6 @@ implementation
 uses
     TypeDefs, ReservedWord, TypeSpec;
 
-const
-    unknownType: TTypeDef = (size: 1; kind: tkUnknown);
-
 constructor TParameterDecl.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
