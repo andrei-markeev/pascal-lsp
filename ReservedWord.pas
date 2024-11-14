@@ -9,7 +9,7 @@ uses
     strings, CompilationMode, ParserContext, Token;
 
 const
-    NUM_OF_RESERVED_WORDS = 98;
+    NUM_OF_RESERVED_WORDS = 97;
 
 type
     TReservedWordKind = (
@@ -41,7 +41,7 @@ type
         rwImplementation, rwInherited, rwInline, rwInterface,
         rwObject, rwOperator,
         rwReintroduce,
-        rwSelf, rwShl, rwShr, rwString,
+        rwShl, rwShr, rwString,
         rwUnit, rwUses,
         rwXor,
         { object pascal reserved words }
@@ -93,7 +93,7 @@ const
         'implementation', 'inherited', 'inline', 'interface',
         'object', 'operator',
         'reintroduce',
-        'self', 'shl', 'shr', 'string',
+        'shl', 'shr', 'string',
         'unit', 'uses',
         'xor',
         { object pascal reserved words }
@@ -117,7 +117,7 @@ begin
         rwImplementation, rwInherited, rwInline, rwInterface,
         rwObject, rwOperator,
         rwReintroduce,
-        rwSelf, rwShl, rwShr, rwString,
+        rwShl, rwShr, rwString,
         rwUnit, rwUses,
         rwXor
     ];
@@ -295,7 +295,6 @@ begin
             case ctx.Cursor[1] of
                 'e','E':
                     case ctx.Cursor[2] of
-                        'l','L': maybe := rwSelf;
                         't','T': if ctx.IsSeparator(ctx.Cursor[3]) then found := rwSet;
                     end;
                 'h','H':

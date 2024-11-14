@@ -15,6 +15,7 @@ type
         nameIdent: TIdentifier;
         paramDecls: TTypedTokenArray;
         funcType: TTypeDef;
+        selfType: TTypeDef;
         returnType: TTypeDef;
         constructor Create(ctx: TParserContext);
     end;
@@ -78,6 +79,8 @@ begin
             end;
     end;
 
+    selfType.kind := tkUnknown;
+
     nameIdent := TIdentifier.Create(ctx, false);
     typeIdent := nil;
     needsToAddChildSymbols := false;
@@ -101,8 +104,14 @@ begin
                         nameIdent.state := tsError;
                         nameIdent.errorMessage := symbolParent.name + ' doesn''t have a field with name ' + s + '!';
                     end;
+                    // TODO: check that implementation is equivalent to declaration i.e. it has
+                    // 1. same kind (constructor/destructor/function/procedure)
+                    // 2. same parameter names and types
+                    // 3. same return type
+                    // 4. same modifiers
                 end;
 
+                selfType := symbolParent.typeDef;
                 needsToAddChildSymbols := true;
             end
             else
@@ -177,9 +186,9 @@ begin
     // TODO: asm
 
     if needsToAddChildSymbols then
-        TBlock.Create(ctx, symbolParent.children)
+        TBlock.Create(ctx, symbolParent.children, selfType, returnType)
     else
-        TBlock.Create(ctx, []);
+        TBlock.Create(ctx, [], selfType, returnType);
 
     TReservedWord.Create(ctx, rwSemiColon, false);
 

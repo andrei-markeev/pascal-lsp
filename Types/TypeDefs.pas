@@ -42,7 +42,7 @@ const
 var
     TypesList: TFPHashList;
 
-    unknownType: TTypeDef = (size: 1; kind: tkUnknown);
+    unknownType: TTypeDef = (size: 0; kind: tkUnknown);
 
     byteType: TTypeDef = (size: 1; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 255);
     shortintType: TTypeDef = (size: 1; kind: tkInteger; isSigned: true; rangeStart: -128; rangeEnd: 127);

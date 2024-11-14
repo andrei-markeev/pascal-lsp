@@ -6,11 +6,18 @@
     <TypeDecl><SymbDecl>TTestClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
         <VarDecl><SymbDecl>someVar</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
         <ConstructorDecl><RW>constructor</RW> <SymbDecl>Create</SymbDecl><RW>;</RW></ConstructorDecl>
+        <ConstructorDecl><RW>constructor</RW> <SymbDecl>TestSelf</SymbDecl><RW>;</RW></ConstructorDecl>
     <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
 
 <Constructor><RW>constructor</RW> <SymbRef>TTestClass</SymbRef><RW>.</RW><SymbDecl>Create</SymbDecl><RW>;</RW>
 <Block><RW>begin</RW>
     <Assignment><SymbRef>someVar</SymbRef> <RW>:=</RW> <Str>'Hello world!'</Str></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Constructor>
+
+<Constructor><RW>constructor</RW> <SymbRef>TTestClass</SymbRef><RW>.</RW><SymbDecl>TestSelf</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><VarRef><SymbRef>Self</SymbRef><RW>.</RW><Ident>someVar</Ident></VarRef> <RW>:=</RW> <Str>'2222222'</Str></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>Self</SymbRef><RW>.</RW><Ident ERROR="Field or method with the name 'nonExistingField' was not found!">nonExistingField</Ident></VarRef> <RW>:=</RW> <Str>'111111'</Str></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>;</RW></Constructor>
 
 <VarSection><RW>var</RW>

@@ -1,0 +1,13 @@
+<ProgramFile><RW>program</RW> <SymbDecl>ResultVar</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<Function><RW>function</RW> <SymbDecl>Add</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>a</SymbDecl><RW>,</RW> <SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>a</SymbRef> <RW>+</RW> <SymbRef>b</SymbRef></SimpleExpression></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<VarSection><RW>var</RW> <VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Call><SymbRef>Add</SymbRef><RW>(</RW><Num>10</Num><RW>,</RW> <Num>20</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

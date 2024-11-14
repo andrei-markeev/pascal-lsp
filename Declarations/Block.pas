@@ -6,20 +6,24 @@ unit Block;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, Token, ReservedWord, Statement;
+    ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord;
 
 type
     TBlock = class(TToken)
     public
-        constructor Create(ctx: TParserContext; childSymbols: array of TSymbol);
+        constructor Create(ctx: TParserContext; childSymbols: array of TSymbol; selfType: TTypeDef; resultType: TTypeDef);
     end;
 
 implementation
 
 uses
-    Scopes, ConstSection, TypeSection, VarSection, FunctionImpl, CompoundStatement;
+    CompilationMode, Scopes, Identifier, ConstSection, TypeSection, VarSection, FunctionImpl, CompoundStatement;
 
-constructor TBlock.Create(ctx: TParserContext; childSymbols: array of TSymbol);
+var
+    resultVirtualIdentifier: TIdentifier;
+    selfVirtualIdentifier: TIdentifier;
+
+constructor TBlock.Create(ctx: TParserContext; childSymbols: array of TSymbol; selfType: TTypeDef; resultType: TTypeDef);
 var
     nextTokenKind: TTokenKind;
     i: integer;
@@ -30,6 +34,12 @@ begin
     start := ctx.Cursor;
 
     RegisterScope(Self);
+
+    if selfType.kind <> tkUnknown then
+        RegisterSymbol(selfVirtualIdentifier, nil, skVariable, selfType, start);
+
+    if (resultType.kind <> tkUnknown) and (ctx.mode >= cmObjectFreePascal) then
+        RegisterSymbol(resultVirtualIdentifier, nil, skVariable, resultType, start);
 
     for i := 0 to length(childSymbols) - 1 do
         RegisterSymbol(childSymbols[i].declaration, nil, childSymbols[i].kind, childSymbols[i].typeDef, start);
@@ -73,5 +83,9 @@ begin
     state := tsInvisible;
     endMarker.state := tsInvisible;
 end;
+
+initialization
+    resultVirtualIdentifier := TIdentifier.CreateVirtual('Result');
+    selfVirtualIdentifier := TIdentifier.CreateVirtual('Self');
 
 end.

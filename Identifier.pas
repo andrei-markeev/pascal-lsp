@@ -14,6 +14,7 @@ type
         name: shortstring;
         symbol: pointer;
         constructor Create(ctx: TParserContext; expectDeclared: boolean);
+        constructor CreateVirtual(identName: string);
         destructor Destroy; override;
     end;
 
@@ -43,6 +44,13 @@ begin
     end
     else
         PeekIdentifier := ''
+end;
+
+constructor TIdentifier.CreateVirtual(identName: string);
+begin
+    start := nil;
+    len := length(name);
+    name := identName;
 end;
 
 constructor TIdentifier.Create(ctx: TParserContext; expectDeclared: boolean);

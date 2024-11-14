@@ -52,7 +52,7 @@ begin
     if expr.typeDef.kind <> tkInteger then
     begin
         state := tsError;
-        errorMessage := 'Expected initial value of the loop to be of type integer, but it is ' + TypeKindStr[ord(symbol.typeDef.kind)] + '.';
+        errorMessage := 'Expected initial value of the loop to be of type integer, but it is ' + TypeKindStr[ord(expr.typeDef.kind)] + '.';
     end;
 
     nextReservedWord := DetermineReservedWord(ctx);

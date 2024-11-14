@@ -167,17 +167,20 @@ begin
                     end;
 
                     ident := TIdentifier.Create(ctx, false);
-                    text := ident.GetStr();
-                    found := typeDef.fields.Find(text);
-                    if found = nil then
+                    if typeDef.kind in [tkRecord, tkClass, tkObject] then
                     begin
-                        ident.state := tsError;
-                        ident.errorMessage := 'Field or method with the name ''' + text + ''' was not found!';
-                        typeDef.size := 1;
-                        typeDef.kind := tkUnknown;
-                    end
-                    else
-                        typeDef := PTypeDef(found)^;
+                        text := ident.GetStr();
+                        found := typeDef.fields.Find(text);
+                        if found = nil then
+                        begin
+                            ident.state := tsError;
+                            ident.errorMessage := 'Field or method with the name ''' + text + ''' was not found!';
+                            typeDef.size := 1;
+                            typeDef.kind := tkUnknown;
+                        end
+                        else
+                            typeDef := PTypeDef(found)^;
+                    end;
                     isSimple := false;
                 end;
         end;

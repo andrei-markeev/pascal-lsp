@@ -52,7 +52,11 @@ begin
     if declaredAt.len > 255 then
         WriteLn('ERROR: identifier of more than 255 symbols found! Only first 255 will be used for indexing.');
 
-    SetString(symbolName, declaredAt.start, Min(255, declaredAt.len));
+    if length(declaredAt.name) > 0 then
+        symbolName := declaredAt.name
+    else
+        SetString(symbolName, declaredAt.start, Min(255, declaredAt.len));
+
     RegisterSymbol := TSymbol.Create;
     with RegisterSymbol do
     begin
@@ -78,7 +82,7 @@ begin
         references[0] := declaredAt;
         typeDef := symbolType;
         declaration.symbol := RegisterSymbol;
-        declaration.name := name;
+        declaration.name := symbolName;
         declaration.typeDef := symbolType;
         declaration.tokenName := 'SymbDecl';
     end;
