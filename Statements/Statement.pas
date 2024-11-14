@@ -14,8 +14,8 @@ function CreateStatement(ctx: TParserContext; nextTokenKind: TTokenKind): TToken
 implementation
 
 uses
-    Symbols, TypeDefs, TypedToken, InvalidSymbol, ReservedWord, Identifier, VarRef,
-    AssignmentStatement, ProcedureCallStatement, IfStatement, WithStatement, ForStatement,
+    Symbols, TypeDefs, TypedToken, InvalidSymbol, ReservedWord, Identifier, VarRef, Call,
+    AssignmentStatement, IfStatement, WithStatement, ForStatement,
     WhileStatement, RepeatStatement, CompoundStatement;
 
 function CreateStatement(ctx: TParserContext): TToken; inline;
@@ -33,7 +33,7 @@ begin
                 // This is either an assignment or a procedure call
                 varRef := CreateVarRef(ctx);
                 if (varRef.typeDef.kind in [tkFunction, tkProcedure]) and not PeekReservedWord(ctx, rwAssign) then
-                    CreateStatement := TProcedureCallStatement.Create(ctx, varRef)
+                    CreateStatement := TCall.Create(ctx, varRef)
                 else
                     CreateStatement := TAssignmentStatement.Create(ctx, varRef);
             end;

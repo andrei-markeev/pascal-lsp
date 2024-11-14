@@ -30,6 +30,6 @@ end;
 var
     something: TSomething;
 begin
-    // TODO: something.SayHello();
-    // TODO: something.SayBye;
+    something.SayHello();
+    something.SayBye;
 end.

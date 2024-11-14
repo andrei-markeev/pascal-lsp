@@ -15,7 +15,11 @@ end;
 
 var
     test: TTestClass;
+    s: string;
+    wrong: integer;
 
 begin
-    // TODO: test := TTestClass.Create;
+    test := TTestClass.Create;
+    s := test.someVar;
+    wrong := test.someVar;
 end.

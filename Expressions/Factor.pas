@@ -22,7 +22,7 @@ implementation
 
 uses
     Symbols, TypeDefs, Token, Identifier, Number, StringToken,
-    Expression, VarRef, SetConstructor;
+    Expression, VarRef, Call, SetConstructor;
 
 function CreateFactor(ctx: TParserContext; nextTokenKind: TTokenKind): TTypedToken;
 var
@@ -76,26 +76,21 @@ begin
                                 state := tsError;
                                 errorMessage := 'Unit name cannot be used in expressions!';
                             end;
-                        skTypeName:
-                            begin
-                                state := tsError;
-                                errorMessage := 'Type identifier cannot be used in expressions!';
-                            end;
                         skProcedure:
                             begin
                                 state := tsError;
                                 errorMessage := 'Invalid call to ' + identName + ': procedure calls cannot be used in expressions because they don''t have a return value!';
                             end;
-                        skFunction:
-                            begin
-                                // TODO: handle optional parameter list
-                                // TODO: check function return type
-                                WriteLn('Not implemented!');
-                            end;
-                        skVariable, skConstant, skTypedConstant:
+                        skVariable, skConstant, skTypedConstant, skTypeName, skFunction:
                             begin
                                 factorToken := CreateVarRef(ctx);
                                 typeDef := factorToken.typeDef;
+
+                                if typeDef.kind = tkFunction then
+                                begin
+                                    typeDef := typeDef.returnType^;
+                                    factorToken := TCall.Create(ctx, factorToken);
+                                end;
                             end;
                     end;
                 end;

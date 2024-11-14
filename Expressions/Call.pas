@@ -1,4 +1,4 @@
-unit ProcedureCallStatement;
+unit Call;
 
 {$mode objfpc}
 {$longstrings on}
@@ -9,7 +9,7 @@ uses
     ParserContext, Symbols, Token, TypedToken;
 
 type
-    TProcedureCallStatement = class(TToken)
+    TCall = class(TTypedToken)
     public
         constructor Create(ctx: TParserContext; ref: TTypedToken);
     end;
@@ -19,7 +19,7 @@ implementation
 uses
     sysutils, TypeDefs, ReservedWord, Expression, VarRef;
 
-constructor TProcedureCallStatement.Create(ctx: TParserContext; ref: TTypedToken);
+constructor TCall.Create(ctx: TParserContext; ref: TTypedToken);
 var
     expr: TTypedToken;
     params: TTypedTokenArray;
@@ -30,7 +30,7 @@ begin
     start := ref.start;
     state := tsCorrect;
 
-    // get parameters
+    typeDef := ref.typeDef.returnType^;
     params := TTypedTokenArray(ref.typeDef.parameters);
 
     if PeekReservedWord(ctx, rwOpenParenthesis) then

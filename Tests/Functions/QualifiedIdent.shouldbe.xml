@@ -30,6 +30,6 @@
 <VarSection><RW>var</RW>
     <VarDecl><SymbDecl>something</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TSomething</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>
-    // TODO: something.SayHello();
-    // TODO: something.SayBye;
+    <Call><VarRef><SymbRef>something</SymbRef><RW>.</RW><Ident>SayHello</Ident></VarRef><RW>(</RW><RW>)</RW></Call><RW>;</RW>
+    <Call><VarRef><SymbRef>something</SymbRef><RW>.</RW><Ident>SayBye</Ident></VarRef></Call><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

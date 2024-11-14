@@ -14,8 +14,12 @@
 <RW>end</RW></Block><RW>;</RW></Constructor>
 
 <VarSection><RW>var</RW>
-    <VarDecl><SymbDecl>test</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TTestClass</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+    <VarDecl><SymbDecl>test</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TTestClass</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>wrong</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
 
 <Block><RW>begin</RW>
-    // TODO: test := TTestClass.Create;
+    <Assignment><SymbRef>test</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTestClass</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <VarRef><SymbRef>test</SymbRef><RW>.</RW><Ident>someVar</Ident></VarRef></Assignment><RW>;</RW>
+    <Assignment ERROR="Invalid assignment: expected integer or assignment-compatible, but found string!"><SymbRef>wrong</SymbRef> <RW>:=</RW> <VarRef><SymbRef>test</SymbRef><RW>.</RW><Ident>someVar</Ident></VarRef></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

@@ -166,11 +166,11 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="Statements\ProcedureCallStatement.pas"/>
+        <Filename Value="Types\ClassSpec.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="Types\ClassSpec.pas"/>
+        <Filename Value="Expressions\Call.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
     </Units>
