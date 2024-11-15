@@ -6,24 +6,26 @@ unit ConstDecl;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord, Identifier, ConstValue, TypeSpec;
+    ParserContext, TypeDefs, TypedToken, Identifier, ConstValue;
 
 type
-    TConstDecl = class(TToken)
+    TConstDecl = class(TTypedToken)
     public
         ident: TIdentifier;
-        constType: TTypeSpec;
+        constType: TTypeDef;
         value: TConstValue;
         constructor Create(ctx: TParserContext);
     end;
 
 implementation
 
+uses
+    Anchors, Symbols, Token, ReservedWord, TypeSpec;
+
 constructor TConstDecl.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
     symbolKind: TSymbolKind;
-    typeDef: TTypeDef;
 begin
     tokenName := 'ConstDecl';
     ctx.Add(Self);
@@ -54,7 +56,7 @@ begin
     if nextTokenKind.reservedWordKind = rwColon then
     begin
         TReservedWord.Create(ctx, rwColon, true);
-        constType := CreateTypeSpec(ctx);
+        CreateTypeSpec(ctx, typeDef);
         symbolKind := skTypedConstant;
     end;
     RemoveAnchor(rwColon);
@@ -73,16 +75,15 @@ begin
         typeDef := value.typeDef
     else
     begin
-        if not TypesAreAssignable(constType.typeDef, value.typeDef, errorMessage) then
+        if not TypesAreAssignable(typeDef, value.typeDef, errorMessage) then
         begin
             state := tsError;
             errorMessage := 'Constant value cannot be assigned to the specified type: ' + errorMessage;
         end;
-        typeDef := constType.typeDef;
     end;
 
     ctx.MarkEndOfToken(Self);
-    RegisterSymbol(ident, nil, symbolKind, typeDef, ctx.Cursor);
+    RegisterSymbol(ident, nil, symbolKind, @typeDef, ctx.Cursor);
 end;
 
 end.

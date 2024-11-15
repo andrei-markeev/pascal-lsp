@@ -1,4 +1,4 @@
-unit Block;
+unit ImplementationBlock;
 
 {$mode objfpc}
 {$longstrings on}
@@ -9,9 +9,9 @@ uses
     ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord;
 
 type
-    TBlock = class(TToken)
+    TImplementationBlock = class(TToken)
     public
-        constructor Create(ctx: TParserContext; childSymbols: array of TSymbol; selfType: PTypeDef; resultType: PTypeDef);
+        constructor Create(ctx: TParserContext);
     end;
 
 implementation
@@ -19,30 +19,15 @@ implementation
 uses
     CompilationMode, Scopes, Identifier, ConstSection, TypeSection, VarSection, FunctionImpl, CompoundStatement;
 
-var
-    resultVirtualIdentifier: TIdentifier;
-    selfVirtualIdentifier: TIdentifier;
-
-constructor TBlock.Create(ctx: TParserContext; childSymbols: array of TSymbol; selfType: PTypeDef; resultType: PTypeDef);
+constructor TImplementationBlock.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
     i: integer;
 begin
-    tokenName := 'Block';
+    tokenName := 'ImplementationBlock';
     ctx.Add(Self);
 
     start := ctx.Cursor;
-
-    RegisterScope(Self);
-
-    if selfType <> nil then
-        RegisterSymbol(selfVirtualIdentifier, nil, skVariable, selfType, start);
-
-    if (resultType <> nil) and (ctx.mode >= cmObjectFreePascal) then
-        RegisterSymbol(resultVirtualIdentifier, nil, skVariable, resultType, start);
-
-    for i := 0 to length(childSymbols) - 1 do
-        RegisterSymbol(childSymbols[i].declaration, nil, childSymbols[i].kind, childSymbols[i].typeDef, start);
 
     AddAnchor(rwConst);
     AddAnchor(rwType);
@@ -76,16 +61,21 @@ begin
     RemoveAnchor(rwBegin);
     RemoveAnchor(rwEnd);
 
-    CreateCompoundStatement(ctx);
+    if nextTokenKind.reservedWordKind = rwBegin then
+        CreateCompoundStatement(ctx)
+    else if nextTokenKind.reservedWordKind = rwInitialization then
+    begin
+        TCompoundStatement.Create(ctx, rwInitialization);
+        nextTokenKind := DetermineNextTokenKind(ctx);
+        if nextTokenKind.reservedWordKind = rwFinalization then
+            TCompoundStatement.Create(ctx, rwFinalization);
+    end
+    else if nextTokenKind.reservedWordKind = rwFinalization then
+        TCompoundStatement.Create(ctx, rwFinalization)
+    else if nextTokenKind.reservedWordKind = rwEnd then
+        TReservedWord.Create(ctx, rwEnd, true);
 
     ctx.MarkEndOfToken(Self);
-
-    state := tsInvisible;
-    endMarker.state := tsInvisible;
 end;
-
-initialization
-    resultVirtualIdentifier := TIdentifier.CreateVirtual('Result');
-    selfVirtualIdentifier := TIdentifier.CreateVirtual('Self');
 
 end.

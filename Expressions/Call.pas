@@ -6,7 +6,7 @@ unit Call;
 interface
 
 uses
-    ParserContext, Symbols, Token, TypedToken;
+    ParserContext, Token, TypedToken;
 
 type
     TCall = class(TTypedToken)
@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    sysutils, TypeDefs, ReservedWord, Expression, VarRef;
+    sysutils, TypeDefs, ReservedWord, Expression;
 
 constructor TCall.Create(ctx: TParserContext; ref: TTypedToken);
 var
@@ -30,8 +30,11 @@ begin
     start := ref.start;
     state := tsCorrect;
 
-    typeDef := ref.typeDef.returnType^;
     params := TTypedTokenArray(ref.typeDef.parameters);
+    if ref.typeDef.returnType <> nil then
+        typeDef := ref.typeDef.returnType^
+    else
+        typeDef := unknownType;
 
     if PeekReservedWord(ctx, rwOpenParenthesis) then
     begin

@@ -174,11 +174,23 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
+        <Filename Value="Declarations\TypeDecl.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
         <Filename Value="Statements\ForStatement.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
+        <Filename Value="Declarations\ParameterDecl.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
         <Filename Value="Declarations\FunctionDecl.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Declarations\TypeSection.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
     </Units>

@@ -6,36 +6,30 @@ unit TypeSpec;
 interface
 
 uses
-    ParserContext, Symbols, TypedToken, TypeDefs;
+    ParserContext, Symbols, Token, TypeDefs;
 
 type
-    TTypeSpec = class(TTypedToken)
+    TTypeSpec = class(TToken)
     public
-        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol);
+        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef);
     end;
 
-function CreateTypeSpec(ctx: TParserContext): TTypeSpec;
+function CreateTypeSpec(ctx: TParserContext; var typeDefToFill: TTypeDef): TTypeSpec;
 
 implementation
 
 uses
-    Anchors, Token, ReservedWord, Identifier,
+    Anchors, ReservedWord, Identifier,
     EnumSpec, RangeSpec, ArraySpec, SetSpec, RecordSpec, ClassSpec;
 
-function CreateTypeSpec(ctx: TParserContext): TTypeSpec;
+function CreateTypeSpec(ctx: TParserContext; var typeDefToFill: TTypeDef): TTypeSpec;
 begin
-    CreateTypeSpec := TTypeSpec.Create(ctx, [nil]);
+    CreateTypeSpec := TTypeSpec.Create(ctx, [nil], typeDefToFill);
 end;
 
-constructor TTypeSpec.Create(ctx: TParserContext; parentSymbols: array of TSymbol);
+constructor TTypeSpec.Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef);
 var
     nextTokenKind: TTokenKind;
-    rangeSpecToken: TRangeSpec;
-    enumSpecToken: TEnumSpec;
-    arraySpecToken: TArraySpec;
-    setSpecToken: TSetSpec;
-    recordSpecToken: TRecordSpec;
-    classSpecToken: TClassSpec;
     ident: TIdentifier;
     identName: shortstring;
     symbol: TSymbol;
@@ -51,8 +45,7 @@ begin
         pkNumber, pkString:
             begin
                 start := ctx.Cursor;
-                rangeSpecToken := TRangeSpec.Create(ctx, nextTokenKind);
-                typeDef := rangeSpecToken.typeDef;
+                TRangeSpec.Create(ctx, nextTokenKind, typeDefToFill);
                 state := tsCorrect;
                 ctx.MarkEndOfToken(Self);
                 exit;
@@ -74,7 +67,7 @@ begin
                         exit;
                     end;
 
-                    typeDef := PTypeDef(found)^;
+                    typeDefToFill := PTypeDef(found)^;
                     TIdentifier.Create(ctx, false);
                     state := tsCorrect;
                     ctx.MarkEndOfToken(Self);
@@ -84,7 +77,7 @@ begin
                 case symbol.kind of
                     skTypeName:
                         begin
-                            typeDef := symbol.typeDef;
+                            typeDefToFill := symbol.typeDef^;
                             ident := TIdentifier.Create(ctx, false);
                             symbol.AddReference(ident);
                             state := tsCorrect;
@@ -94,8 +87,7 @@ begin
                     skConstant:
                         begin
                             start := ctx.Cursor;
-                            rangeSpecToken := TRangeSpec.Create(ctx, nextTokenKind);
-                            typeDef := rangeSpecToken.typeDef;
+                            TRangeSpec.Create(ctx, nextTokenKind, typeDefToFill);
                             state := tsCorrect;
                             ctx.MarkEndOfToken(Self);
                             exit;
@@ -115,18 +107,16 @@ begin
                 rwClass:
                     begin
                         start := ctx.Cursor;
-                        classSpecToken := TClassSpec.Create(ctx, parentSymbols);
-                        typeDef := classSpecToken.typeDef;
+                        TClassSpec.Create(ctx, parentSymbols, typeDefToFill);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
                         exit;
                     end;
-                rwObject: typeDef.kind := tkObject; // TODO: implement ObjectSpec
+                rwObject: ; // TODO: implement ObjectSpec
                 rwRecord:
                     begin
                         start := ctx.Cursor;
-                        recordSpecToken := TRecordSpec.Create(ctx, parentSymbols);
-                        typeDef := recordSpecToken.typeDef;
+                        TRecordSpec.Create(ctx, parentSymbols, typeDefToFill);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
                         exit;
@@ -134,18 +124,17 @@ begin
                 rwSet:
                     begin
                         start := ctx.Cursor;
-                        setSpecToken := TSetSpec.Create(ctx);
-                        typeDef := setSpecToken.typeDef;
+                        TSetSpec.Create(ctx, typeDefToFill);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
                         exit;
                     end;
-                rwFile: typeDef.kind := tkFile; // TODO: implement FileSpec
+                rwFile: ; // TODO: implement FileSpec
                 rwString:
                     begin
                         start := ctx.Cursor;
                         TReservedWord.Create(ctx, rwString, true);
-                        typeDef.kind := tkString;
+                        typeDefToFill := ansiString64Type;
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
                         exit;
@@ -153,8 +142,7 @@ begin
                 rwArray:
                     begin
                         start := ctx.Cursor;
-                        arraySpecToken := TArraySpec.Create(ctx);
-                        typeDef := arraySpecToken.typeDef;
+                        TArraySpec.Create(ctx, typeDefToFill);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
                         exit;
@@ -162,8 +150,7 @@ begin
                 rwPlus, rwMinus:
                     begin
                         start := ctx.Cursor;
-                        rangeSpecToken := TRangeSpec.Create(ctx, nextTokenKind);
-                        typeDef := rangeSpecToken.typeDef;
+                        TRangeSpec.Create(ctx, nextTokenKind, typeDefToFill);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
                         exit;
@@ -171,8 +158,7 @@ begin
                 rwOpenParenthesis:
                     begin
                         start := ctx.Cursor;
-                        enumSpecToken := TEnumSpec.Create(ctx);
-                        typeDef := enumSpecToken.typeDef;
+                        TEnumSpec.Create(ctx, typeDefToFill);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
                         exit;
@@ -180,7 +166,6 @@ begin
             end;
     end;
 
-    typeDef := default(TTypeDef);
     state := tsMissing;
     len := 0;
 end;

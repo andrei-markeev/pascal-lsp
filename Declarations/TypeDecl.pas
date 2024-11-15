@@ -6,17 +6,20 @@ unit TypeDecl;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord, Identifier, TypeSpec;
+    ParserContext, TypeDefs, Token, Identifier;
 
 type
     TTypeDecl = class(TToken)
     public
         ident: TIdentifier;
-        declType: TTypeSpec;
+        declType: TTypeDef;
         constructor Create(ctx: TParserContext);
     end;
 
 implementation
+
+uses
+    Anchors, Symbols, TypeSpec, ReservedWord;
 
 constructor TTypeDecl.Create(ctx: TParserContext);
 var
@@ -41,16 +44,16 @@ begin
     start := ctx.Cursor;
     ident := TIdentifier.Create(ctx, false);
 
-    symbol := RegisterSymbol(ident, nil, skTypeName, unknownType, ctx.Cursor);
+    declType := unknownType;
+
+    symbol := RegisterSymbol(ident, nil, skTypeName, @declType, ctx.Cursor);
 
     AddAnchor(rwEquals);
     nextTokenKind := SkipUntilAnchor(ctx);
     RemoveAnchor(rwEquals);
 
     TReservedWord.Create(ctx, rwEquals, nextTokenKind.reservedWordKind = rwEquals);
-    declType := TTypeSpec.Create(ctx, [symbol]);
-
-    symbol.typeDef := declType.typeDef;
+    TTypeSpec.Create(ctx, [symbol], declType);
 
     ctx.MarkEndOfToken(Self);
 end;

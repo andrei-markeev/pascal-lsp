@@ -15,7 +15,7 @@ type
         nameIdent: TIdentifier;
         paramDecls: TTypedTokenArray;
         funcType: TTypeDef;
-        selfType: TTypeDef;
+        selfType: PTypeDef;
         returnType: TTypeDef;
         constructor Create(ctx: TParserContext);
     end;
@@ -23,7 +23,7 @@ type
 implementation
 
 uses
-    contnrs, Anchors, ReservedWord, Scopes, Symbols, TypeSpec, ParameterDecl, Block;
+    ReservedWord, Scopes, Symbols, TypeSpec, ParameterDecl, Block;
 
 constructor TFunctionImpl.Create(ctx: TParserContext);
 var
@@ -79,7 +79,7 @@ begin
             end;
     end;
 
-    selfType.kind := tkUnknown;
+    selfType := nil;
 
     nameIdent := TIdentifier.Create(ctx, false);
     typeIdent := nil;
@@ -93,7 +93,7 @@ begin
         begin
             TReservedWord.Create(ctx, rwDot, true);
             nameIdent := TIdentifier.Create(ctx, false);
-            if symbolParent.typeDef.kind in [tkObject, tkClass] then
+            if symbolParent.typeDef^.kind in [tkObject, tkClass] then
             begin
                 if (nameIdent.state = tsCorrect) then
                 begin
@@ -117,7 +117,7 @@ begin
             else
             begin
                 typeIdent.state := tsError;
-                typeIdent.errorMessage :=  typeIdent.name + ' is of type ' + TypeKindStr[ord(symbolParent.typeDef.kind)] + ' which is not a structured type. Expected class or object!';
+                typeIdent.errorMessage :=  typeIdent.name + ' is of type ' + TypeKindStr[ord(symbolParent.typeDef^.kind)] + ' which is not a structured type. Expected class or object!';
             end;
         end
         else
@@ -170,12 +170,13 @@ begin
     if needsReturnType then
     begin
         TReservedWord.Create(ctx, rwColon, false);
-        returnType := CreateTypeSpec(ctx).typeDef;
-    end;
+        CreateTypeSpec(ctx, returnType);
+        funcType.returnType := @returnType;
+    end
+    else
+        funcType.returnType := nil;
 
-    funcType.returnType := @returnType;
-
-    RegisterSymbol(nameIdent, symbolParent, symbolKind, funcType, ctx.Cursor);
+    RegisterSymbol(nameIdent, symbolParent, symbolKind, @funcType, ctx.Cursor);
 
     // TODO: result variable variable
 
@@ -196,9 +197,9 @@ begin
     // TODO: asm
 
     if needsToAddChildSymbols then
-        TBlock.Create(ctx, symbolParent.children, selfType, returnType)
+        TBlock.Create(ctx, symbolParent.children, selfType, funcType.returnType)
     else
-        TBlock.Create(ctx, [], selfType, returnType);
+        TBlock.Create(ctx, [], selfType, funcType.returnType);
 
     TReservedWord.Create(ctx, rwSemiColon, false);
 

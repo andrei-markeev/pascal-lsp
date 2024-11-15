@@ -43,7 +43,7 @@ begin
     end;
 
     if (symbol <> nil) and (symbol.kind = skFunction) then
-        leftTypeDef := symbol.typeDef.returnType^
+        leftTypeDef := symbol.typeDef^.returnType^
     else
         leftTypeDef := ref.typeDef;
 

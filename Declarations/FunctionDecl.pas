@@ -131,15 +131,15 @@ begin
     if needsReturnType then
     begin
         TReservedWord.Create(ctx, rwColon, false);
-        returnType := CreateTypeSpec(ctx).typeDef;
+        CreateTypeSpec(ctx, returnType);
     end
     else if (symbolKind = skConstructor) and (length(parentSymbols) > 0) then
-        returnType := parentSymbols[0].typeDef;
+        returnType := parentSymbols[0].typeDef^;
 
     funcType.returnType := @returnType;
 
     for p := 0 to length(parentSymbols) - 1 do
-        RegisterSymbol(nameIdent, parentSymbols[p], symbolKind, funcType, ctx.Cursor);
+        RegisterSymbol(nameIdent, parentSymbols[p], symbolKind, @funcType, ctx.Cursor);
 
     TReservedWord.Create(ctx, rwSemiColon, false);
 

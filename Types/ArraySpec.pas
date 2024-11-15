@@ -6,23 +6,22 @@ unit ArraySpec;
 interface
 
 uses
-    ParserContext, TypedToken;
+    ParserContext, Token, TypeDefs;
 
 type
-    TArraySpec = class(TTypedToken)
+    TArraySpec = class(TToken)
     public
-        constructor Create(ctx: TParserContext);
+        constructor Create(ctx: TParserContext; var typeDefToFill: TTypeDef);
     end;
 
 implementation
 
 uses
-    TypeDefs, Token, ReservedWord, TypeSpec;
+    ReservedWord, TypeSpec;
 
-constructor TArraySpec.Create(ctx: TParserContext);
+constructor TArraySpec.Create(ctx: TParserContext; var typeDefToFill: TTypeDef);
 var
     nextIsComma: boolean;
-    spec: TTypeSpec;
     curTypeDef: PTypeDef;
     nextTypeDef: PTypeDef;
 begin
@@ -32,16 +31,16 @@ begin
     
     TReservedWord.Create(ctx, rwArray, true);
 
-    typeDef.kind := tkArray;
+    typeDefToFill.kind := tkArray;
 
     if PeekReservedWord(ctx, rwOpenSquareBracket) then
     begin
         TReservedWord.Create(ctx, rwOpenSquareBracket, true);
-        curTypeDef := @typeDef;
+        curTypeDef := @typeDefToFill;
         curTypeDef^.kind := tkArray;
         repeat
-            spec := CreateTypeSpec(ctx);
-            curTypeDef^.typeOfIndex := @spec.typeDef;
+            curTypeDef^.typeOfIndex := new(PTypeDef); // TODO: free memory
+            CreateTypeSpec(ctx, curTypeDef^.typeOfIndex^);
 
             nextIsComma := PeekReservedWord(ctx, rwComma);
             if nextIsComma then
@@ -57,18 +56,18 @@ begin
 
         TReservedWord.Create(ctx, rwOf, false);
 
-        spec := CreateTypeSpec(ctx);
-        curTypeDef^.typeOfValues := @spec.typeDef;
+        curTypeDef^.typeOfValues := new(PTypeDef); // TODO: free memory
+        CreateTypeSpec(ctx, curTypeDef^.typeOfValues^);
     end
     else
     begin
 
         TReservedWord.Create(ctx, rwOf, false);
 
-        spec := CreateTypeSpec(ctx);
-        typeDef.size := 8; // TODO: detect arch size
-        typeDef.kind := tkDynamicArray;
-        typeDef.typeOfDynValues := @spec.typeDef;
+        typeDefToFill.size := 8; // TODO: detect arch size
+        typeDefToFill.kind := tkDynamicArray;
+        typeDefToFill.typeOfDynValues := new(PTypeDef);
+        CreateTypeSpec(ctx, typeDefToFill.typeOfDynValues^);
 
     end;
 

@@ -12,7 +12,7 @@ type
     TVarDecl = class(TToken)
     public
         idents: array of TIdentifier;
-        varType: TTypeSpec;
+        varType: TTypeDef;
         constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol);
     end;
 
@@ -57,16 +57,15 @@ begin
     nextTokenKind := SkipUntilAnchor(ctx);
     RemoveAnchor(rwColon);
 
+    varType := unknownType;
+
     SetLength(symbols, l * length(parentSymbols));
     for p := 0 to length(parentSymbols) - 1 do
         for i := 0 to l - 1 do
-            symbols[i + p * l] := RegisterSymbol(idents[i], parentSymbols[p], skVariable, unknownType, ctx.Cursor);
+            symbols[i + p * l] := RegisterSymbol(idents[i], parentSymbols[p], skVariable, @varType, ctx.Cursor);
 
     TReservedWord.Create(ctx, rwColon, nextTokenKind.reservedWordKind = rwColon);
-    varType := TTypeSpec.Create(ctx, symbols);
-
-    for i := 0 to length(symbols) - 1 do
-        symbols[i].typeDef := varType.typeDef;
+    TTypeSpec.Create(ctx, symbols, varType);
 
     // TODO: variable initialization
 

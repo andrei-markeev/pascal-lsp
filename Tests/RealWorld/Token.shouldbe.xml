@@ -1,0 +1,44 @@
+<UnitFile><RW>unit</RW> <SymbDecl>Token</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+{$longstrings on}
+
+<RW>interface</RW>
+
+<InterfaceBlock><TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TTokenState</SymbDecl> <RW>=</RW> <TypeSpec><EnumSpec><RW>(</RW><SymbDecl>tsCorrect</SymbDecl><RW>,</RW> <SymbDecl>tsError</SymbDecl><RW>,</RW> <SymbDecl>tsMissing</SymbDecl><RW>,</RW> <SymbDecl>tsSkipped</SymbDecl><RW>,</RW> <SymbDecl>tsEndOf</SymbDecl><RW>,</RW> <SymbDecl>tsInvisible</SymbDecl><RW>)</RW></EnumSpec></TypeSpec></TypeDecl><RW>;</RW>
+    <TypeDecl><SymbDecl>TToken</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+    <Ident>protected</Ident>
+        <VarDecl><SymbDecl>asString</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <Ident>public</Ident>
+        <VarDecl><SymbDecl>state</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TTokenState</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>start</SymbDecl><RW>:</RW> <TypeSpec><Ident>PChar</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>len</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>tokenName</SymbDecl><RW>:</RW> <TypeSpec><Ident>shortstring</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>line</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>position</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>errorMessage</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>isPrimitive</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>endMarker</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TToken</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+        <FunctionDecl><RW>function</RW> <SymbDecl>GetStr</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec><RW>;</RW></FunctionDecl>
+        <DestructorDecl><RW>destructor</RW> <SymbDecl>Destroy</SymbDecl><RW>;</RW> <Ident>override</Ident><RW>;</RW></DestructorDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection></InterfaceBlock>
+
+<RW>implementation</RW>
+
+<ImplementationBlock><Function><RW>function</RW> <SymbRef>TToken</SymbRef><RW>.</RW><SymbDecl>GetStr</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+// TODO:
+//    if length(asString) = 0 then
+//        SetString(asString, start, len);
+    <Assignment><SymbRef>GetStr</SymbRef> <RW>:=</RW> <SymbRef>asString</SymbRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+
+<Destructor><RW>destructor</RW> <SymbRef>TToken</SymbRef><RW>.</RW><SymbDecl>Destroy</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+    <If><RW>if</RW> <Expression><SymbRef>endMarker</SymbRef> <RW><></RW> <Factor><RW>nil</RW></Factor></Expression> <RW>then</RW>
+        <Call><VarRef><SymbRef>endMarker</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call></If><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Destructor>
+
+<RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

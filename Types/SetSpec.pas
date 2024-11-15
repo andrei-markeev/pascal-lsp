@@ -6,22 +6,20 @@ unit SetSpec;
 interface
 
 uses
-    ParserContext, TypedToken;
+    ParserContext, TypeDefs, Token;
 
 type
-    TSetSpec = class(TTypedToken)
+    TSetSpec = class(TToken)
     public
-        constructor Create(ctx: TParserContext);
+        constructor Create(ctx: TParserContext; var typeDefToFill: TTypeDef);
     end;
 
 implementation
 
 uses
-    TypeDefs, Token, ReservedWord, TypeSpec;
+    ReservedWord, TypeSpec;
 
-constructor TSetSpec.Create(ctx: TParserContext);
-var
-    spec: TTypeSpec;
+constructor TSetSpec.Create(ctx: TParserContext; var typeDefToFill: TTypeDef);
 begin
     ctx.Add(Self);
     tokenName := 'SetSpec';
@@ -30,17 +28,17 @@ begin
     TReservedWord.Create(ctx, rwSet, true);
     TReservedWord.Create(ctx, rwOf, false);
 
-    spec := CreateTypeSpec(ctx);
-    typeDef.size := 1;
-    typeDef.kind := tkSet;
-    typeDef.typeOfSet := @spec.typeDef;
+    typeDefToFill.size := 1;
+    typeDefToFill.kind := tkSet;
+    typeDefToFill.typeOfSet := new(PTypeDef); // TODO: free memory
+    CreateTypeSpec(ctx, typeDefToFill.typeOfSet^);
 
-    if not (spec.typeDef.kind in [tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum]) then
+    if not (typeDefToFill.typeOfSet^.kind in [tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum]) then
     begin
         state := tsError;
-        errorMessage := 'Expected set of ordinal type. Type of set cannot be ' + TypeKindStr[ord(spec.typeDef.kind)];
+        errorMessage := 'Expected set of ordinal type. Type of set cannot be ' + TypeKindStr[ord(typeDefToFill.typeOfSet^.kind)];
     end
-    else if spec.typeDef.size > 1 then
+    else if typeDefToFill.typeOfSet^.size > 1 then
     begin
         state := tsError;
         errorMessage := 'The base type of the set must not have more than 256 possible values!';

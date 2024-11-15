@@ -6,12 +6,10 @@ unit ProgramFile;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord, Identifier,
-    UsesClause, ConstSection, TypeSection, VarSection, FunctionImpl,
-    Block;
+    ParserContext, TypedToken;
 
 type
-    TProgramFile = class(TToken)
+    TProgramFile = class(TTypedToken)
     public
         constructor Create(ctx: TParserContext);
     end;
@@ -19,11 +17,14 @@ type
 
 implementation
 
+uses
+    Symbols, TypeDefs, Token, ReservedWord, Identifier, UsesClause,
+    Block;
+
 constructor TProgramFile.Create(ctx: TParserContext);
 var
     nextIsComma: boolean;
     ident: TIdentifier;
-    programTypeDef: TTypeDef;
 begin
     tokenName := 'ProgramFile';
     ctx.parseUnit := Self;
@@ -33,8 +34,8 @@ begin
     TReservedWord.Create(ctx, rwProgram, false);
 
     ident := TIdentifier.Create(ctx, false);
-    programTypeDef.kind := tkUnitName;
-    RegisterSymbol(ident, nil, skUnitName, programTypeDef, ctx.Cursor);
+    typeDef.kind := tkUnitName;
+    RegisterSymbol(ident, nil, skUnitName, @typeDef, ctx.Cursor);
 
     // programs parameters are ignored by FPC so we also ignore them
     if PeekReservedWord(ctx, rwOpenParenthesis) then
@@ -58,7 +59,7 @@ begin
     if PeekReservedWord(ctx, rwUses) then
         TUsesClause.Create(ctx);
 
-    TBlock.Create(ctx, [], unknownType, unknownType);
+    TBlock.Create(ctx, [], nil, nil);
 
     TReservedWord.Create(ctx, rwDot, false);
 

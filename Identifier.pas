@@ -6,7 +6,7 @@ unit Identifier;
 interface
 
 uses
-    math, ParserContext, Token, TypedToken;
+    math, ParserContext, TypedToken;
 
 type
     TIdentifier = class(TTypedToken)
@@ -23,7 +23,7 @@ function PeekIdentifier(ctx: TParserContext): shortstring;
 implementation
 
 uses
-    Symbols, TypeDefs;
+    Symbols, TypeDefs, Token;
 
 function PeekIdentifier(ctx: TParserContext): shortstring;
 var

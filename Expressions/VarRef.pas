@@ -64,7 +64,7 @@ begin
     firstIdent := TIdentifier.Create(ctx, true);
     symbol := TSymbol(firstIdent.symbol);
     if symbol <> nil then
-        typeDef := symbol.typeDef
+        typeDef := symbol.typeDef^
     else
         typeDef.kind := tkUnknown;
 

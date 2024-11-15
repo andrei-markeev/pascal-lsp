@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    TypeDefs, Token, ReservedWord, EnumSpec, Expression;
+    TypeDefs, Token, ReservedWord, Expression;
 
 const
     unknownBaseTypeOfSet: TTypeDef = (size: 1; visibility: vPublic; kind: tkUnknown);
@@ -52,7 +52,7 @@ begin
     expr := CreateExpression(ctx);
 
     if expr.typeDef.kind = tkEnumMember then
-        baseType := @TEnumSpec(expr.typeDef.enumSpec).typeDef
+        baseType := expr.typeDef.enumType
     else if expr.typeDef.kind = tkCharRange then
         baseType := @charType
     else

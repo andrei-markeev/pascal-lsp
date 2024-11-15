@@ -6,7 +6,7 @@ unit InterfaceBlock;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord;
+    ParserContext, Anchors, TypeDefs, Token, ReservedWord;
 
 type
     TInterfaceBlock = class(TToken)
@@ -17,12 +17,11 @@ type
 implementation
 
 uses
-    CompilationMode, Scopes, Identifier, ConstSection, TypeSection, VarSection, FunctionDecl, CompoundStatement;
+    Scopes, ConstSection, TypeSection, VarSection, FunctionDecl;
 
 constructor TInterfaceBlock.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
-    i: integer;
 begin
     tokenName := 'InterfaceBlock';
     ctx.Add(Self);

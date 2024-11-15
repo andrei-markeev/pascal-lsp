@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    TypeDefs, Anchors, Symbols, TypedToken, ReservedWord, Identifier, Expression, Statement;
+    TypeDefs, Anchors, TypedToken, ReservedWord, Expression, Statement;
 
 constructor TRepeatStatement.Create(ctx: TParserContext);
 var

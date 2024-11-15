@@ -11,15 +11,15 @@ uses
 type
     TRecordSpec = class(TTypedToken)
     public
-        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol);
+        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef);
     end;
 
 implementation
 
 uses
-    Anchors, Token, ReservedWord, TypeSpec, VarDecl;
+    Anchors, Token, ReservedWord, VarDecl;
 
-constructor TRecordSpec.Create(ctx: TParserContext; parentSymbols: array of TSymbol);
+constructor TRecordSpec.Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef);
 var
     i: integer;
     fieldDecl: TVarDecl;
@@ -29,9 +29,9 @@ begin
     tokenName := 'RecordSpec';
     start := ctx.Cursor;
     state := tsCorrect;
-    typeDef.size := 0;
-    typeDef.kind := tkRecord;
-    typeDef.fields := TFPHashList.Create; // TODO: free memory
+    typeDefToFill.size := 0;
+    typeDefToFill.kind := tkRecord;
+    typeDefToFill.fields := TFPHashList.Create; // TODO: free memory
 
     TReservedWord.Create(ctx, rwRecord, true);
 
@@ -44,8 +44,8 @@ begin
             fieldDecl := TVarDecl.Create(ctx, parentSymbols);
             for i := 0 to length(fieldDecl.idents) - 1 do
             begin
-                typeDef.fields.Add(fieldDecl.idents[i].GetStr(), @fieldDecl.varType.typeDef);
-                inc(typeDef.size, fieldDecl.varType.typeDef.size);
+                typeDefToFill.fields.Add(fieldDecl.idents[i].GetStr(), @fieldDecl.varType);
+                inc(typeDefToFill.size, fieldDecl.varType.size);
             end;
             TReservedWord.Create(ctx, rwSemiColon, false);
         end

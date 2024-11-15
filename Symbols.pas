@@ -17,7 +17,7 @@ type
         uniquePrefix: shortstring;
         parent: TSymbol;
         declaration: TIdentifier;
-        typeDef: TTypeDef;
+        typeDef: PTypeDef;
         references: array of TIdentifier;
         children: array of TSymbol;
         constructor Create;
@@ -31,7 +31,7 @@ const
         '', 'constant', 'typed constant', 'type', 'variable', 'procedure', 'function'
     );
 
-function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
+function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: PTypeDef; cursor: PChar): TSymbol;
 function FindSymbol(findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(parent: TSymbol; findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(ident: TIdentifier): TSymbol;
@@ -44,7 +44,7 @@ uses
 var
     lastId: longword = 0;
 
-function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
+function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: PTypeDef; cursor: PChar): TSymbol;
 var
     symbolName: shortstring;
     parentChildrenCount: integer;
@@ -83,7 +83,7 @@ begin
         typeDef := symbolType;
         declaration.symbol := RegisterSymbol;
         declaration.name := symbolName;
-        declaration.typeDef := symbolType;
+        declaration.typeDef := symbolType^;
         declaration.tokenName := 'SymbDecl';
     end;
     FindScope(cursor).symbolsList.Add(LowerCase(RegisterSymbol.name), RegisterSymbol);
@@ -135,7 +135,7 @@ begin
     references[l] := ident;
     ident.symbol := Self;
     ident.name := name;
-    ident.typeDef := typeDef;
+    ident.typeDef := typeDef^;
     ident.tokenName := 'SymbRef';
 end;
 

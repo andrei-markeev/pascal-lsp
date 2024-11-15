@@ -6,18 +6,18 @@ unit ClassSpec;
 interface
 
 uses
-    contnrs, ParserContext, Symbols, TypeDefs, TypedToken;
+    contnrs, ParserContext, Symbols, TypeDefs, Token;
 
 type
-    TClassSpec = class(TTypedToken)
+    TClassSpec = class(TToken)
     public
-        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol);
+        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef);
     end;
 
 implementation
 
 uses
-    CompilationMode, Anchors, Token, ReservedWord, TypeSpec, Identifier, VarDecl, FunctionDecl;
+    CompilationMode, Anchors, ReservedWord, Identifier, VarDecl, FunctionDecl;
 
 procedure SetVisibility(ctx: TParserContext; const value: TVisibility; out res: TVisibility);
 begin
@@ -25,7 +25,7 @@ begin
     TIdentifier.Create(ctx, false);
 end;
 
-constructor TClassSpec.Create(ctx: TParserContext; parentSymbols: array of TSymbol);
+constructor TClassSpec.Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef);
 var
     i: integer;
     fieldDecl: TVarDecl;
@@ -38,9 +38,10 @@ begin
     tokenName := 'ClassSpec';
     start := ctx.Cursor;
     state := tsCorrect;
-    typeDef.size := 0;
-    typeDef.kind := tkClass;
-    typeDef.fields := TFPHashList.Create; // TODO: free memory
+    typeDefToFill.size := 0;
+    typeDefToFill.kind := tkClass;
+    typeDefToFill.fields := TFPHashList.Create; // TODO: free memory
+    typeDefToFill.fields.Add('Free', @voidProcedureType);
 
     // TODO: packed classes
 
@@ -65,9 +66,9 @@ begin
                 fieldDecl := TVarDecl.Create(ctx, parentSymbols);
                 for i := 0 to length(fieldDecl.idents) - 1 do
                 begin
-                    typeDef.fields.Add(fieldDecl.idents[i].GetStr(), @fieldDecl.varType.typeDef);
-                    fieldDecl.varType.typeDef.visibility := visibility;
-                    inc(typeDef.size, fieldDecl.varType.typeDef.size);
+                    typeDefToFill.fields.Add(fieldDecl.idents[i].GetStr(), @fieldDecl.varType);
+                    fieldDecl.varType.visibility := visibility;
+                    inc(typeDefToFill.size, fieldDecl.varType.size);
                 end;
                 TReservedWord.Create(ctx, rwSemiColon, false);
             end;
@@ -78,7 +79,7 @@ begin
         begin
             funcDecl := TFunctionDecl.Create(ctx, nextTokenKind.reservedWordKind, parentSymbols);
             funcDecl.funcType.visibility := visibility;
-            typeDef.fields.Add(funcDecl.nameIdent.GetStr(), @funcDecl.funcType);
+            typeDefToFill.fields.Add(funcDecl.nameIdent.GetStr(), @funcDecl.funcType);
         end;
 
         nextTokenKind := DetermineNextTokenKind(ctx);

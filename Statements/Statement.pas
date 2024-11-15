@@ -14,7 +14,7 @@ function CreateStatement(ctx: TParserContext; nextTokenKind: TTokenKind): TToken
 implementation
 
 uses
-    Symbols, TypeDefs, TypedToken, InvalidSymbol, ReservedWord, Identifier, VarRef, Call,
+    TypeDefs, TypedToken, ReservedWord, VarRef, Call,
     AssignmentStatement, IfStatement, WithStatement, ForStatement,
     WhileStatement, RepeatStatement, CompoundStatement;
 

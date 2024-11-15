@@ -6,12 +6,12 @@ unit CompoundStatement;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, Token, ReservedWord;
+    ParserContext, Anchors, Token, ReservedWord;
 
 type
     TCompoundStatement = class(TToken)
     public
-        constructor Create(ctx: TParserContext);
+        constructor Create(ctx: TParserContext; beginRW: TReservedWordKind);
     end;
 
 function CreateCompoundStatement(ctx: TParserContext): TToken;
@@ -23,10 +23,10 @@ uses
 
 function CreateCompoundStatement(ctx: TParserContext): TToken;
 begin
-    CreateCompoundStatement := TCompoundStatement.Create(ctx);
+    CreateCompoundStatement := TCompoundStatement.Create(ctx, rwBegin);
 end;
 
-constructor TCompoundStatement.Create(ctx: TParserContext);
+constructor TCompoundStatement.Create(ctx: TParserContext; beginRW: TReservedWordKind);
 var
     nextTokenKind: TTokenKind;
 begin
@@ -35,7 +35,7 @@ begin
 
     start := ctx.Cursor;
 
-    TReservedWord.Create(ctx, rwBegin, false);
+    TReservedWord.Create(ctx, beginRW, false);
 
     AddAnchor(rwEnd);
     AddAnchor(rwWith);
@@ -45,6 +45,8 @@ begin
     AddAnchor(rwRepeat);
     AddAnchor(rwGoto);
     AddAnchor(rwBegin);
+    AddAnchor(rwInitialization);
+    AddAnchor(rwFinalization);
     AddAnchor(pkIdentifier);
 
     nextTokenKind := SkipUntilAnchor(ctx);
@@ -69,6 +71,8 @@ begin
     RemoveAnchor(rwRepeat);
     RemoveAnchor(rwGoto);
     RemoveAnchor(rwBegin);
+    RemoveAnchor(rwInitialization);
+    RemoveAnchor(rwFinalization);
     RemoveAnchor(pkIdentifier);
 
     TReservedWord.Create(ctx, rwEnd, false);

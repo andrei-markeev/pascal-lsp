@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    TypeDefs, Symbols, TypedToken, ReservedWord, Identifier, Expression, Statement;
+    TypeDefs, TypedToken, ReservedWord, Expression, Statement;
 
 constructor TWhileStatement.Create(ctx: TParserContext);
 var

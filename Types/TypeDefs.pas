@@ -24,7 +24,7 @@ type
     case kind: TTypeKind of
         tkInteger: (isSigned: boolean; rangeStart: int64; rangeEnd: int64);
         tkCharRange: (charRangeStart: char; charRangeEnd: char);
-        tkEnum, tkEnumMember: (enumSpec: Pointer);
+        tkEnum, tkEnumMember: (enumType: PTypeDef; enumSpec: Pointer);
         tkPointer: (isTyped: boolean; pointerToType: PTypeDef);
         tkArray: (typeOfIndex: PTypeDef; typeOfValues: PTypeDef);
         tkDynamicArray: (typeOfDynValues: PTypeDef);
@@ -79,10 +79,15 @@ var
     ansiString32Type: TTypeDef = (size: 4; visibility: vPublic; kind: tkString);
     ansiString64Type: TTypeDef = (size: 8; visibility: vPublic; kind: tkString);
 
+    voidProcedureType: TTypeDef; // defined in initialization block below
+
 procedure InitPredefinedTypes(mode: TCompilationMode);
 function TypesAreAssignable(left, right: TTypeDef; out errorMessage: string): boolean;
 
 implementation
+
+uses
+    TypedToken;
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
 begin
@@ -162,6 +167,9 @@ end;
 
 initialization
     TypesList := TFPHashList.Create;
+    voidProcedureType.kind := tkProcedure;
+    voidProcedureType.size := 0;
+    voidProcedureType.parameters := TTypedTokenArray.Create;
 finalization
     TypesList.Free;
 end.

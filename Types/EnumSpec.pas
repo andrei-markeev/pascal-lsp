@@ -11,15 +11,14 @@ uses
 type
     TEnumSpec = class(TToken)
     public
-        typeDef: TTypeDef;
-        constructor Create(ctx: TParserContext);
+        memberTypeDef: TTypeDef;
+        constructor Create(ctx: TParserContext; var typeDefToFill: TTypeDef);
     end;
 
 implementation
 
-constructor TEnumSpec.Create(ctx: TParserContext);
+constructor TEnumSpec.Create(ctx: TParserContext; var typeDefToFill: TTypeDef);
 var
-    memberTypeDef: TTypeDef;
     hasMoreMembers: boolean;
     ident: TIdentifier;
 begin
@@ -29,13 +28,15 @@ begin
 
     TReservedWord.Create(ctx, rwOpenParenthesis, true);
 
-    typeDef.kind := tkEnum;
-    typeDef.enumSpec := Self;
+    typeDefToFill.kind := tkEnum;
+    typeDefToFill.enumType := @typeDefToFill;
+    typeDefToFill.enumSpec := Self;
     memberTypeDef.kind := tkEnumMember;
+    memberTypeDef.enumType := @typeDefToFill;
     memberTypeDef.enumSpec := Self;
     repeat
         ident := TIdentifier.Create(ctx, false);
-        RegisterSymbol(ident, nil, skConstant, memberTypeDef, ctx.Cursor);
+        RegisterSymbol(ident, nil, skConstant, @memberTypeDef, ctx.Cursor);
 
         ctx.SkipTrivia;
         // TODO: support number assignments

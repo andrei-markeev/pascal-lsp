@@ -40,10 +40,10 @@ begin
     TReservedWord.Create(ctx, rwFor, true);
     ident := TIdentifier.Create(ctx, true);
     symbol := TSymbol(ident.symbol);
-    if (symbol <> nil) and (symbol.typeDef.kind <> tkInteger) then
+    if (symbol <> nil) and (symbol.typeDef^.kind <> tkInteger) then
     begin
         state := tsError;
-        errorMessage := 'Expected loop variable to be of type integer, but ' + ident.name + ' is ' + TypeKindStr[ord(symbol.typeDef.kind)] + '.';
+        errorMessage := 'Expected loop variable to be of type integer, but ' + ident.name + ' is ' + TypeKindStr[ord(symbol.typeDef^.kind)] + '.';
     end;
 
     TReservedWord.Create(ctx, rwAssign, false);

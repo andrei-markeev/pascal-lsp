@@ -94,7 +94,7 @@ begin
 
     SetLength(symbols, l);
     for i := 0 to l - 1 do
-        symbols[i] := RegisterSymbol(idents[i], nil, symbolKind, unknownType, ctx.Cursor);
+        symbols[i] := RegisterSymbol(idents[i], nil, symbolKind, @typeDef, ctx.Cursor);
 
     if nextTokenKind.reservedWordKind = rwColon then
     begin
@@ -103,10 +103,7 @@ begin
         // TODO: open parameters (e.g. open arrays)
         // do we even need any special treatment?
 
-        typeDef := TTypeSpec.Create(ctx, symbols).typeDef;
-
-        for i := 0 to length(symbols) - 1 do
-            symbols[i].typeDef := typeDef;
+        TTypeSpec.Create(ctx, symbols, typeDef);
     end
     else if isConst or isVar then
     begin

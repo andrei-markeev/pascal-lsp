@@ -36,16 +36,16 @@ begin
     TReservedWord.Create(ctx, rwWith, true);
     ident := TIdentifier.Create(ctx, true);
     symbol := TSymbol(ident.symbol);
-    if (symbol <> nil) and not (symbol.typeDef.kind in [tkRecord, tkObject, tkClass]) then
+    if (symbol <> nil) and not (symbol.typeDef^.kind in [tkRecord, tkObject, tkClass]) then
     begin
         state := tsError;
-        errorMessage := 'Operator ''with'' cannot be applied to a variable of type ' + TypeKindStr[ord(symbol.typeDef.kind)] + '!';
+        errorMessage := 'Operator ''with'' cannot be applied to a variable of type ' + TypeKindStr[ord(symbol.typeDef^.kind)] + '!';
     end;
     TReservedWord.Create(ctx, rwDo, false);
 
     RegisterScope(Self);
     for i := 0 to length(symbol.children) - 1 do
-        if symbol.children[i].typeDef.visibility = vPublic then // TODO: handle `with Self`
+        if symbol.children[i].typeDef^.visibility = vPublic then // TODO: handle `with Self`
             RegisterSymbol(symbol.children[i].declaration, nil, symbol.children[i].kind, symbol.children[i].typeDef, start);
 
     CreateStatement(ctx);

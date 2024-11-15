@@ -6,10 +6,10 @@ unit UnitFile;
 interface
 
 uses
-    ParserContext, Token;
+    ParserContext, TypedToken;
 
 type
-    TUnitFile = class(TToken)
+    TUnitFile = class(TTypedToken)
     public
         constructor Create(ctx: TParserContext);
     end;
@@ -18,15 +18,12 @@ type
 implementation
 
 uses
-    Anchors, Symbols, TypeDefs, ReservedWord, Identifier,
-    UsesClause, InterfaceBlock, Block;
+    Symbols, TypeDefs, ReservedWord, Identifier,
+    UsesClause, InterfaceBlock, ImplementationBlock;
 
 constructor TUnitFile.Create(ctx: TParserContext);
 var
-    nextTokenKind: TTokenKind;
-    nextIsComma: boolean;
     ident: TIdentifier;
-    unitTypeDef: TTypeDef;
 begin
     tokenName := 'UnitFile';
     ctx.parseUnit := Self;
@@ -37,8 +34,8 @@ begin
 
     ident := TIdentifier.Create(ctx, false);
     // TODO: namespaced units
-    unitTypeDef.kind := tkUnitName;
-    RegisterSymbol(ident, nil, skUnitName, unitTypeDef, ctx.Cursor);
+    typeDef.kind := tkUnitName;
+    RegisterSymbol(ident, nil, skUnitName, @typeDef, ctx.Cursor);
 
     TReservedWord.Create(ctx, rwSemiColon, false);
 
@@ -54,7 +51,7 @@ begin
     if PeekReservedWord(ctx, rwUses) then
         TUsesClause.Create(ctx);
 
-    TBlock.Create(ctx, [], unknownType, unknownType);
+    TImplementationBlock.Create(ctx);
 
     TReservedWord.Create(ctx, rwDot, false);
 
