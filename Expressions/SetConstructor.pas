@@ -20,7 +20,7 @@ uses
     TypeDefs, Token, ReservedWord, EnumSpec, Expression;
 
 const
-    unknownBaseTypeOfSet: TTypeDef = (size: 1; kind: tkUnknown);
+    unknownBaseTypeOfSet: TTypeDef = (size: 1; visibility: vPublic; kind: tkUnknown);
 
 constructor TSetConstructor.Create(ctx: TParserContext);
 var

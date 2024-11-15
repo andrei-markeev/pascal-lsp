@@ -1,0 +1,48 @@
+<ProgramFile><RW>program</RW> <SymbDecl>PrivatePublic</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TTestVisibility</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <VarDecl><SymbDecl>hello</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <Ident>private</Ident>
+        <VarDecl><SymbDecl>mySecret</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+        <FunctionDecl><RW>function</RW> <SymbDecl>GetSecret</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec><RW>;</RW></FunctionDecl>
+    <Ident>public</Ident>
+        <ConstructorDecl><RW>constructor</RW> <SymbDecl>Create</SymbDecl><RW>;</RW></ConstructorDecl>
+        <ProcedureDecl><RW>procedure</RW> <SymbDecl>SayHello</SymbDecl><RW>;</RW></ProcedureDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Function><RW>function</RW> <SymbRef>TTestVisibility</SymbRef><RW>.</RW><SymbDecl>GetSecret</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>Result</SymbRef> <RW>:=</RW> <SymbRef>mySecret</SymbRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Procedure><RW>procedure</RW> <SymbRef>TTestVisibility</SymbRef><RW>.</RW><SymbDecl>SayHello</SymbDecl><RW>;</RW>
+<VarSection><RW>var</RW> <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>hello</SymbRef> <RW>:=</RW> <Str>'hello'</Str></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Constructor><RW>constructor</RW> <SymbRef>TTestVisibility</SymbRef><RW>.</RW><SymbDecl>Create</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>mySecret</SymbRef> <RW>:=</RW> <Str>'198nsadf93'</Str></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Constructor>
+
+<Function><RW>function</RW> <SymbRef>TTestVisibility</SymbRef><RW>.</RW><SymbDecl>GetSecret</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>Result</SymbRef> <RW>:=</RW> <SymbRef>mySecret</SymbRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>test</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TTestVisibility</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>test</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTestVisibility</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <VarRef><SymbRef>test</SymbRef><RW>.</RW><Ident>hello</Ident></VarRef></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>test</SymbRef><RW>.</RW><Ident>SayHello</Ident></VarRef></Call><RW>;</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <VarRef><SymbRef>test</SymbRef><RW>.</RW><Ident ERROR="mySecret is not public, it cannot be used here!">mySecret</Ident></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>test</SymbRef><RW>.</RW><Ident ERROR="GetSecret is not public, it cannot be used here!">GetSecret</Ident></VarRef></Call></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

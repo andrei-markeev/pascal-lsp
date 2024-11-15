@@ -45,7 +45,8 @@ begin
 
     RegisterScope(Self);
     for i := 0 to length(symbol.children) - 1 do
-        RegisterSymbol(symbol.children[i].declaration, nil, symbol.children[i].kind, symbol.children[i].typeDef, start);
+        if symbol.children[i].typeDef.visibility = vPublic then // TODO: handle `with Self`
+            RegisterSymbol(symbol.children[i].declaration, nil, symbol.children[i].kind, symbol.children[i].typeDef, start);
 
     CreateStatement(ctx);
 

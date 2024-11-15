@@ -15,9 +15,12 @@ type
         tkRecord, tkObject, tkClass, tkSet, tkFile, tkProcedure, tkFunction, tkUnitName
     );
 
+    TVisibility = (vPublic, vPrivate, vProtected, vUnknown);
+
     PTypeDef = ^TTypeDef;
     TTypeDef = record
         size: longword;
+        visibility: TVisibility;
     case kind: TTypeKind of
         tkInteger: (isSigned: boolean; rangeStart: int64; rangeEnd: int64);
         tkCharRange: (charRangeStart: char; charRangeEnd: char);
@@ -42,39 +45,39 @@ const
 var
     TypesList: TFPHashList;
 
-    unknownType: TTypeDef = (size: 0; kind: tkUnknown);
+    unknownType: TTypeDef = (size: 0; visibility: vPublic; kind: tkUnknown);
 
-    byteType: TTypeDef = (size: 1; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 255);
-    shortintType: TTypeDef = (size: 1; kind: tkInteger; isSigned: true; rangeStart: -128; rangeEnd: 127);
-    wordType: TTypeDef = (size: 2; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 65535);
-    smallintType: TTypeDef = (size: 2; kind: tkInteger; isSigned: true; rangeStart: -32768; rangeEnd: 32767);
-    longwordType: TTypeDef = (size: 4; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 4294967295);
-    longintType: TTypeDef = (size: 4; kind: tkInteger; isSigned: true; rangeStart: -2147483648; rangeEnd: 2147483647);
-    qwordType: TTypeDef = (size: 8; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 0);
-    int64Type: TTypeDef = (size: 8; kind: tkInteger; isSigned: true; rangeStart: 0; rangeEnd: 0);
+    byteType: TTypeDef = (size: 1; visibility: vPublic; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 255);
+    shortintType: TTypeDef = (size: 1; visibility: vPublic; kind: tkInteger; isSigned: true; rangeStart: -128; rangeEnd: 127);
+    wordType: TTypeDef = (size: 2; visibility: vPublic; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 65535);
+    smallintType: TTypeDef = (size: 2; visibility: vPublic; kind: tkInteger; isSigned: true; rangeStart: -32768; rangeEnd: 32767);
+    longwordType: TTypeDef = (size: 4; visibility: vPublic; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 4294967295);
+    longintType: TTypeDef = (size: 4; visibility: vPublic; kind: tkInteger; isSigned: true; rangeStart: -2147483648; rangeEnd: 2147483647);
+    qwordType: TTypeDef = (size: 8; visibility: vPublic; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 0);
+    int64Type: TTypeDef = (size: 8; visibility: vPublic; kind: tkInteger; isSigned: true; rangeStart: 0; rangeEnd: 0);
 
-    booleanType: TTypeDef = (size: 1; kind: tkBoolean);
-    boolean16Type: TTypeDef = (size: 2; kind: tkBoolean);
-    boolean32Type: TTypeDef = (size: 4; kind: tkBoolean);
-    boolean64Type: TTypeDef = (size: 8; kind: tkBoolean);
+    booleanType: TTypeDef = (size: 1; visibility: vPublic; kind: tkBoolean);
+    boolean16Type: TTypeDef = (size: 2; visibility: vPublic; kind: tkBoolean);
+    boolean32Type: TTypeDef = (size: 4; visibility: vPublic; kind: tkBoolean);
+    boolean64Type: TTypeDef = (size: 8; visibility: vPublic; kind: tkBoolean);
 
-    charType: TTypeDef = (size: 1; kind: tkChar);
-    realType: TTypeDef = (size: 4; kind: tkReal);
-    singleType: TTypeDef = (size: 4; kind: tkReal);
-    doubleType: TTypeDef = (size: 4; kind: tkReal);
-    extendedType: TTypeDef = (size: 4; kind: tkReal);
-    compType: TTypeDef = (size: 8; kind: tkReal);
-    currencyType: TTypeDef = (size: 8; kind: tkReal);
+    charType: TTypeDef = (size: 1; visibility: vPublic; kind: tkChar);
+    realType: TTypeDef = (size: 4; visibility: vPublic; kind: tkReal);
+    singleType: TTypeDef = (size: 4; visibility: vPublic; kind: tkReal);
+    doubleType: TTypeDef = (size: 4; visibility: vPublic; kind: tkReal);
+    extendedType: TTypeDef = (size: 4; visibility: vPublic; kind: tkReal);
+    compType: TTypeDef = (size: 8; visibility: vPublic; kind: tkReal);
+    currencyType: TTypeDef = (size: 8; visibility: vPublic; kind: tkReal);
 
-    pointer32Type: TTypeDef = (size: 4; kind: tkPointer; isTyped: false; pointerToType: nil);
-    pointer64Type: TTypeDef = (size: 8; kind: tkPointer; isTyped: false; pointerToType: nil);
+    pointer32Type: TTypeDef = (size: 4; visibility: vPublic; kind: tkPointer; isTyped: false; pointerToType: nil);
+    pointer64Type: TTypeDef = (size: 8; visibility: vPublic; kind: tkPointer; isTyped: false; pointerToType: nil);
 
-    pcharType: TTypeDef = (size: 8; kind: tkPointer; isTyped: true; pointerToType: @charType);
+    pcharType: TTypeDef = (size: 8; visibility: vPublic; kind: tkPointer; isTyped: true; pointerToType: @charType);
 
-    shortstringType: TTypeDef = (size: 256; kind: tkString);
+    shortstringType: TTypeDef = (size: 256; visibility: vPublic; kind: tkString);
 
-    ansiString32Type: TTypeDef = (size: 4; kind: tkString);
-    ansiString64Type: TTypeDef = (size: 8; kind: tkString);
+    ansiString32Type: TTypeDef = (size: 4; visibility: vPublic; kind: tkString);
+    ansiString64Type: TTypeDef = (size: 8; visibility: vPublic; kind: tkString);
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
 function TypesAreAssignable(left, right: TTypeDef; out errorMessage: string): boolean;

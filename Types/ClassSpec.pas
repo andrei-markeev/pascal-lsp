@@ -17,7 +17,13 @@ type
 implementation
 
 uses
-    Anchors, Token, ReservedWord, TypeSpec, VarDecl, FunctionDecl;
+    CompilationMode, Anchors, Token, ReservedWord, TypeSpec, Identifier, VarDecl, FunctionDecl;
+
+procedure SetVisibility(ctx: TParserContext; const value: TVisibility; out res: TVisibility);
+begin
+    res := value;
+    TIdentifier.Create(ctx, false);
+end;
 
 constructor TClassSpec.Create(ctx: TParserContext; parentSymbols: array of TSymbol);
 var
@@ -25,6 +31,8 @@ var
     fieldDecl: TVarDecl;
     funcDecl: TFunctionDecl;
     nextTokenKind: TTokenKind;
+    s: string;
+    visibility: TVisibility;
 begin
     ctx.Add(Self);
     tokenName := 'ClassSpec';
@@ -40,29 +48,37 @@ begin
 
     // TODO: abstract, sealed
     // TODO: heritage
-    // TODO: visibility
 
+    visibility := vPublic;
     nextTokenKind := DetermineNextTokenKind(ctx);
 
     while (nextTokenKind.primitiveKind = pkIdentifier) or (nextTokenKind.reservedWordKind in [rwProcedure, rwFunction, rwConstructor, rwDestructor]) do
     begin
         if nextTokenKind.primitiveKind = pkIdentifier then
         begin
-            fieldDecl := TVarDecl.Create(ctx, parentSymbols);
-            for i := 0 to length(fieldDecl.idents) - 1 do
-            begin
-                typeDef.fields.Add(fieldDecl.idents[i].GetStr(), @fieldDecl.varType.typeDef);
-                inc(typeDef.size, fieldDecl.varType.typeDef.size);
+            s := LowerCase(PeekIdentifier(ctx));
+            case s of
+                'private': SetVisibility(ctx, vPrivate, visibility);
+                'public': SetVisibility(ctx, vPublic, visibility);
+                'protected': if ctx.mode >= cmObjectFreePascal then SetVisibility(ctx, vProtected, visibility);
+            else
+                fieldDecl := TVarDecl.Create(ctx, parentSymbols);
+                for i := 0 to length(fieldDecl.idents) - 1 do
+                begin
+                    typeDef.fields.Add(fieldDecl.idents[i].GetStr(), @fieldDecl.varType.typeDef);
+                    fieldDecl.varType.typeDef.visibility := visibility;
+                    inc(typeDef.size, fieldDecl.varType.typeDef.size);
+                end;
+                TReservedWord.Create(ctx, rwSemiColon, false);
             end;
-            TReservedWord.Create(ctx, rwSemiColon, false);
 
             // TODO: static modifier
         end
         else if nextTokenKind.reservedWordKind in [rwProcedure, rwFunction, rwConstructor, rwDestructor] then
         begin
             funcDecl := TFunctionDecl.Create(ctx, nextTokenKind.reservedWordKind, parentSymbols);
+            funcDecl.funcType.visibility := visibility;
             typeDef.fields.Add(funcDecl.nameIdent.GetStr(), @funcDecl.funcType);
-            // TODO: modifiers
         end;
 
         nextTokenKind := DetermineNextTokenKind(ctx);

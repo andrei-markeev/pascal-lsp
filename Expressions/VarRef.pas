@@ -179,7 +179,16 @@ begin
                             typeDef.kind := tkUnknown;
                         end
                         else
+                        begin
                             typeDef := PTypeDef(found)^;
+
+                            // TODO: handle valid cases such as Self.privateField
+                            if typeDef.visibility in [vPrivate, vProtected] then
+                            begin
+                                ident.state := tsError;
+                                ident.errorMessage := text + ' is not public, it cannot be used here!';
+                            end;
+                        end;
                     end;
                     isSimple := false;
                 end;
