@@ -21,7 +21,6 @@ implementation
 
 constructor TProgramFile.Create(ctx: TParserContext);
 var
-    nextTokenKind: TTokenKind;
     nextIsComma: boolean;
     ident: TIdentifier;
     programTypeDef: TTypeDef;

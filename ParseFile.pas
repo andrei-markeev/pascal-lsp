@@ -4,8 +4,7 @@ program ParseFile;
 {$longstrings on}
 
 uses
-    sysutils, ParserContext, Token, Symbols, FunctionDecl, ForStatement,
-    TypeDefs, ProgramFile;
+    sysutils, ParserContext, Token, Symbols, ReservedWord, TypeDefs, ProgramFile, UnitFile;
 
 procedure Parse(fileName: string);
 var
@@ -16,7 +15,7 @@ var
     contents: string;
     ctx: TParserContext;
     cur: TToken;
-    progFile: TProgramFile;
+    fileToken: TToken;
     inserts: array of string;
 begin
     WriteLn(fileName);
@@ -29,7 +28,10 @@ begin
 
     ctx := TParserContext.Create(contents);
 
-    progFile := TProgramFile.Create(ctx);
+    if PeekReservedWord(ctx, rwUnit) then
+        fileToken := TUnitFile.Create(ctx)
+    else
+        fileToken := TProgramFile.Create(ctx);
 
     SetLength(inserts, len + 1);
     for i := 0 to len do
@@ -72,7 +74,7 @@ begin
     if length(inserts[len]) <> 0 then Write(fres, inserts[len]);
     Close(fres);
 
-    progFile.Free;
+    fileToken.Free;
     TypesList.Clear;
 
 end;
