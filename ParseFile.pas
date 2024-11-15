@@ -4,8 +4,8 @@ program ParseFile;
 {$longstrings on}
 
 uses
-    sysutils, ParserContext, Token, Symbols, ForStatement, TypeDefs,
-    ProgramFile;
+    sysutils, ParserContext, Token, Symbols, FunctionDecl, ForStatement,
+    TypeDefs, ProgramFile;
 
 procedure Parse(fileName: string);
 var

@@ -1,0 +1,25 @@
+<ProgramFile><RW>program</RW> <SymbDecl>Destructors</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TTestClass1</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <FunctionDecl><RW>function</RW> <SymbDecl>Hello</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec><RW>;</RW> <Ident>virtual</Ident><RW>;</RW></FunctionDecl>
+        <DestructorDecl><RW>destructor</RW> <SymbDecl ERROR="Destructor must be called 'Destroy'!">Test</SymbDecl><RW>;</RW></DestructorDecl>
+        <DestructorDecl><RW>destructor</RW> <SymbDecl ERROR="Destructor must have 'override' modifier!">Destroy</SymbDecl><RW>;</RW></DestructorDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW>
+    <TypeDecl><SymbDecl>TTestClass2</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <DestructorDecl><RW>destructor</RW> <SymbDecl>Destroy</SymbDecl><RW>;</RW> <Ident>override</Ident><RW>;</RW></DestructorDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Function><RW>function</RW> <SymbRef>TTestClass1</SymbRef><RW>.</RW><SymbDecl>Hello</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Str>'Hello there!'</Str></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Destructor><RW>destructor</RW> <SymbRef>TTestClass2</SymbRef><RW>.</RW><SymbDecl>Destroy</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Destructor>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

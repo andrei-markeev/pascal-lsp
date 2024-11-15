@@ -6,7 +6,7 @@ unit FunctionDecl;
 interface
 
 uses
-    ParserContext, Symbols, Token, ReservedWord, TypedToken, TypeDefs, Identifier;
+    ParserContext, Modifiers, Symbols, Token, ReservedWord, TypedToken, TypeDefs, Identifier;
 
 type
     TFunctionDecl = class(TToken)
@@ -15,6 +15,8 @@ type
         paramDecls: TTypedTokenArray;
         funcType: TTypeDef;
         returnType: TTypeDef;
+        funcModifiers: TFunctionModifiers;
+        methodModifiers: TMethodModifiers;
         constructor Create(ctx: TParserContext; functionRWKind: TReservedWordKind; parentSymbols: array of TSymbol);
     end;
 
@@ -30,6 +32,7 @@ var
     symbolKind: TSymbolKind;
     paramDecl: TParameterDecl;
     i, p: integer;
+    s: string;
     rw: TReservedWord;
     hasMoreParams: boolean;
 begin
@@ -82,6 +85,13 @@ begin
         nameIdent.errorMessage := 'Duplicate identifier!';
     end;
 
+    SetString(s, nameIdent.start, nameIdent.len);
+    if (nameIdent.state <> tsError) and (symbolKind = skDestructor) and (LowerCase(s) <> 'destroy') then
+    begin
+        nameIdent.state := tsError;
+        nameIdent.errorMessage := 'Destructor must be called ''Destroy''!';
+    end;
+
     paramDecls := TTypedTokenArray.Create;
 
     nextReservedWordKind := DetermineReservedWord(ctx);
@@ -129,9 +139,29 @@ begin
     for p := 0 to length(parentSymbols) - 1 do
         RegisterSymbol(nameIdent, parentSymbols[p], symbolKind, funcType, ctx.Cursor);
 
-    // TODO: modifiers
-
     TReservedWord.Create(ctx, rwSemiColon, false);
+
+    repeat
+        ctx.SkipTrivia;
+        s := PeekIdentifier(ctx);
+        case LowerCase(s) of
+            'override': methodModifiers.override := true;
+            'reintroduce': methodModifiers.reintroduce := true;
+            'virtual': methodModifiers.virtual := true;
+            // TODO: message
+            // TODO: funcModifiers
+        else
+            break;
+        end;
+        TIdentifier.Create(ctx, false);
+        TReservedWord.Create(ctx, rwSemiColon, false);
+    until ctx.IsEOF;
+
+    if (nameIdent.state = tsCorrect) and (symbolKind = skDestructor) and not methodModifiers.override then
+    begin
+        nameIdent.state := tsError;
+        nameIdent.errorMessage := 'Destructor must have ''override'' modifier!';
+    end;
 
     state := tsCorrect;
     ctx.MarkEndOfToken(Self);

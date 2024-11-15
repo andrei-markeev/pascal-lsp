@@ -5,3 +5,4 @@ Tests/**/*.out.xml
 *.exe
 test.pas
 TokenTemplate.pas
+*.lps
