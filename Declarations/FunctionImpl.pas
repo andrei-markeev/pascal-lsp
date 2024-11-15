@@ -180,6 +180,16 @@ begin
     // TODO: result variable variable
 
     // TODO: modifiers
+{
+        case s of
+            // TODO: external
+            'far': funcModifiers.far := true;
+            'forward': funcModifiers.forward := true; // TODO: forward is replacing body in FunctionImpl
+            'interrupt': funcModifiers.interrupt := true; // TODO: interrupt can only be applied to procedures
+            'near': funcModifiers.near := true;
+            // TODO: public
+        end;
+}
 
     TReservedWord.Create(ctx, rwSemiColon, false);
 

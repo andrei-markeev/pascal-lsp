@@ -33,6 +33,7 @@ type
         MWPascal: boolean;
         near: boolean;
         noreturn: boolean;
+        nostackframe: boolean;
         overload: boolean;
         pascal: boolean;
         public: string;

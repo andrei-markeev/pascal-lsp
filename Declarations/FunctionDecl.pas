@@ -34,7 +34,9 @@ var
     i, p: integer;
     s: string;
     rw: TReservedWord;
+    ident: TIdentifier;
     hasMoreParams: boolean;
+    isMethodModifier, isFunctionModifier: boolean;
 begin
     ctx.Add(Self);
     tokenName := 'FunctionDecl';
@@ -143,18 +145,68 @@ begin
 
     repeat
         ctx.SkipTrivia;
-        s := PeekIdentifier(ctx);
-        case LowerCase(s) of
-            'override': methodModifiers.override := true;
-            'reintroduce': methodModifiers.reintroduce := true;
-            'virtual': methodModifiers.virtual := true;
+        s := LowerCase(PeekIdentifier(ctx));
+        isMethodModifier := true;
+        case s of
+            'abstract': methodModifiers.abstract := true;
+            'dynamic': methodModifiers.dynamic := true; // TODO: not valid for objects
+            'override': methodModifiers.override := true; // TODO: not valid for objects
+            'reintroduce': methodModifiers.reintroduce := true; // TODO: not valid for objects
+            'virtual': methodModifiers.virtual := true; // TODO: in Turbo Pascal mode, can be followed by a number constant
             // TODO: message
-            // TODO: funcModifiers
         else
-            break;
+            isMethodModifier := false;
         end;
-        TIdentifier.Create(ctx, false);
+
+        isFunctionModifier := true;
+        case s of
+            // TODO: alias
+            'cdecl': funcModifiers.cdecl := true;
+            'cppdecl': funcModifiers.cppdecl := true;
+            'export': funcModifiers.export := true;
+            'hardfloat': funcModifiers.hardfloat := true;
+            'inline': funcModifiers.inline := true;
+            'iocheck': funcModifiers.iocheck := true;
+            'local': funcModifiers.local := true;
+            'MS_ABI_Default': funcModifiers.MS_ABI_Default := true;
+            'MS_ABI_CDecl': funcModifiers.MS_ABI_CDecl := true;
+            'MWPascal': funcModifiers.MWPascal := true;
+            'noreturn': funcModifiers.noreturn := true;
+            'nostackframe': funcModifiers.nostackframe := true;
+            'overload': funcModifiers.overload := true;
+            'pascal': funcModifiers.pascal := true;
+            'register': funcModifiers.register := true;
+            'safecall': funcModifiers.safecall := true;
+            'saveregisters': funcModifiers.saveregisters := true;
+            'softload': funcModifiers.softload := true;
+            'stdcall': funcModifiers.stdcall := true;
+            'SYSV_ABI_Default': funcModifiers.SYSV_ABI_Default := true;
+            'SYSV_ABI_CDecl': funcModifiers.SYSV_ABI_CDecl := true;
+            'varargs': funcModifiers.varargs := true;
+            'vectorcall': funcModifiers.vectorcall := true;
+            'winapi': funcModifiers.winapi := true;
+        else
+            isFunctionModifier := false;
+        end;
+
+        if not isMethodModifier and not isFunctionModifier then
+            break;
+
+        ident := TIdentifier.Create(ctx, false);
         TReservedWord.Create(ctx, rwSemiColon, false);
+
+        if (length(parentSymbols) = 0) and isMethodModifier then
+        begin
+            ident.state := tsError;
+            ident.errorMessage := 'Method modifier ''' + s + ''' can only be used with class and object methods!';
+        end;
+
+        if (length(parentSymbols) > 0) and (s = 'export') then
+        begin
+            ident.state := tsError;
+            ident.errorMessage := 'Methods cannot be exported!';
+        end;
+
     until ctx.IsEOF;
 
     if (nameIdent.state = tsCorrect) and (symbolKind = skDestructor) and not methodModifiers.override then
