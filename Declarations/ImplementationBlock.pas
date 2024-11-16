@@ -6,7 +6,7 @@ unit ImplementationBlock;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord;
+    ParserContext, Anchors, TypeDefs, Token, ReservedWord;
 
 type
     TImplementationBlock = class(TToken)
@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    CompilationMode, Scopes, Identifier, ConstSection, TypeSection, VarSection, FunctionImpl, CompoundStatement;
+    Scopes, ConstSection, TypeSection, VarSection, FunctionImpl, CompoundStatement;
 
 constructor TImplementationBlock.Create(ctx: TParserContext);
 var

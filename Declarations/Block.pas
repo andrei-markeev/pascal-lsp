@@ -19,10 +19,6 @@ implementation
 uses
     CompilationMode, Scopes, Identifier, ConstSection, TypeSection, VarSection, FunctionImpl, CompoundStatement;
 
-var
-    resultVirtualIdentifier: TIdentifier;
-    selfVirtualIdentifier: TIdentifier;
-
 constructor TBlock.Create(ctx: TParserContext; childSymbols: array of TSymbol; selfType: PTypeDef; resultType: PTypeDef);
 var
     nextTokenKind: TTokenKind;
@@ -36,10 +32,10 @@ begin
     RegisterScope(Self);
 
     if selfType <> nil then
-        RegisterSymbol(selfVirtualIdentifier, nil, skVariable, selfType, start);
+        RegisterSymbolByName('Self', nil, skVariable, selfType, start);
 
     if (resultType <> nil) and (ctx.mode >= cmObjectFreePascal) then
-        RegisterSymbol(resultVirtualIdentifier, nil, skVariable, resultType, start);
+        RegisterSymbolByName('Result', nil, skVariable, resultType, start);
 
     for i := 0 to length(childSymbols) - 1 do
         RegisterSymbol(childSymbols[i].declaration, nil, childSymbols[i].kind, childSymbols[i].typeDef, start);
@@ -83,9 +79,5 @@ begin
     state := tsInvisible;
     endMarker.state := tsInvisible;
 end;
-
-initialization
-    resultVirtualIdentifier := TIdentifier.CreateVirtual('Result');
-    selfVirtualIdentifier := TIdentifier.CreateVirtual('Self');
 
 end.

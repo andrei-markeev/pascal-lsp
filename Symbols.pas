@@ -32,6 +32,7 @@ const
     );
 
 function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: PTypeDef; cursor: PChar): TSymbol;
+function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: PTypeDef; cursor: PChar): TSymbol;
 function FindSymbol(findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(parent: TSymbol; findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(ident: TIdentifier): TSymbol;
@@ -47,7 +48,6 @@ var
 function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: PTypeDef; cursor: PChar): TSymbol;
 var
     symbolName: shortstring;
-    parentChildrenCount: integer;
 begin
     if declaredAt.len > 255 then
         WriteLn('ERROR: identifier of more than 255 symbols found! Only first 255 will be used for indexing.');
@@ -57,36 +57,45 @@ begin
     else
         SetString(symbolName, declaredAt.start, Min(255, declaredAt.len));
 
-    RegisterSymbol := TSymbol.Create;
+    RegisterSymbol := RegisterSymbolByName(symbolName, symbolParent, symbolKind, symbolType, cursor);
+
     with RegisterSymbol do
     begin
-        if symbolParent <> nil then
-        begin
-            name := symbolParent.uniquePrefix + symbolName;
-            WriteLn('symbol with parent: ', name);
-        end
-        else
-            name := symbolName;
+        declaration := declaredAt;
+        SetLength(references, 1);
+        references[0] := declaredAt;
+        declaration.symbol := RegisterSymbol;
+        declaration.name := symbolName;
+        declaration.typeDef := symbolType^;
+        declaration.tokenName := 'SymbDecl';
+    end;
+
+end;
+
+function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: PTypeDef; cursor: PChar): TSymbol;
+var
+    parentChildrenCount: integer;
+begin
+
+    RegisterSymbolByName := TSymbol.Create;
+    with RegisterSymbolByName do
+    begin
+        typeDef := symbolType;
         uniquePrefix := IntToStr(lastId) + '.';
         inc(lastId);
         kind := symbolKind;
         parent := symbolParent;
         if symbolParent <> nil then
         begin
+            name := symbolParent.uniquePrefix + symbolName;
             parentChildrenCount := length(symbolParent.children);
             SetLength(symbolParent.children, parentChildrenCount + 1);
-            symbolParent.children[parentChildrenCount] := RegisterSymbol;
-        end;
-        declaration := declaredAt;
-        SetLength(references, 1);
-        references[0] := declaredAt;
-        typeDef := symbolType;
-        declaration.symbol := RegisterSymbol;
-        declaration.name := symbolName;
-        declaration.typeDef := symbolType^;
-        declaration.tokenName := 'SymbDecl';
+            symbolParent.children[parentChildrenCount] := RegisterSymbolByName;
+        end
+        else
+            name := symbolName;
     end;
-    FindScope(cursor).symbolsList.Add(LowerCase(RegisterSymbol.name), RegisterSymbol);
+    FindScope(cursor).symbolsList.Add(LowerCase(RegisterSymbolByName.name), RegisterSymbolByName);
 end;
 
 function FindSymbol(findName: shortstring; cursor: PChar): TSymbol;
