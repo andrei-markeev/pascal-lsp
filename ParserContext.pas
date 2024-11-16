@@ -36,6 +36,9 @@ type
 
 implementation
 
+uses
+    SystemUnits;
+
 constructor TParserContext.Create(fileContents: string);
 begin
     contents := fileContents;
@@ -46,6 +49,7 @@ begin
     line := 0;
     mode := cmFreePascal;
     InitPredefinedTypes(mode);
+    RegisterSystemSymbols(Self);
 end;
 
 destructor TParserContext.Destroy;

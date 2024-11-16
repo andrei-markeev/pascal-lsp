@@ -28,9 +28,8 @@
 
 <ImplementationBlock><Function><RW>function</RW> <SymbRef>TToken</SymbRef><RW>.</RW><SymbDecl>GetStr</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec><RW>;</RW>
 <Block><RW>begin</RW>
-// TODO:
-//    if length(asString) = 0 then
-//        SetString(asString, start, len);
+    <If><RW>if</RW> <Expression><Call><SymbRef>length</SymbRef><RW>(</RW><SymbRef>asString</SymbRef><RW>)</RW></Call> <RW>=</RW> <Num>0</Num></Expression> <RW>then</RW>
+        <Call><SymbRef>SetString</SymbRef><RW>(</RW><SymbRef>asString</SymbRef><RW>,</RW> <SymbRef>start</SymbRef><RW>,</RW> <SymbRef>len</SymbRef><RW>)</RW></Call></If><RW>;</RW>
     <Assignment><SymbRef>GetStr</SymbRef> <RW>:=</RW> <SymbRef>asString</SymbRef></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>;</RW></Function>
 

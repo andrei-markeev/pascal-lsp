@@ -28,9 +28,8 @@ implementation
 
 function TToken.GetStr: string;
 begin
-// TODO:
-//    if length(asString) = 0 then
-//        SetString(asString, start, len);
+    if length(asString) = 0 then
+        SetString(asString, start, len);
     GetStr := asString;
 end;
 
