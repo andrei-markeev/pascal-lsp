@@ -8,7 +8,7 @@ interface
 uses
     ParserContext, Anchors, Token;
 
-function CreateStatement(ctx: TParserContext): TToken; inline;
+function CreateStatement(ctx: TParserContext): TToken;
 function CreateStatement(ctx: TParserContext; nextTokenKind: TTokenKind): TToken;
 
 implementation
@@ -18,7 +18,7 @@ uses
     AssignmentStatement, IfStatement, WithStatement, ForStatement,
     WhileStatement, RepeatStatement, CompoundStatement;
 
-function CreateStatement(ctx: TParserContext): TToken; inline;
+function CreateStatement(ctx: TParserContext): TToken;
 begin
     CreateStatement := CreateStatement(ctx, DetermineNextTokenKind(ctx));
 end;

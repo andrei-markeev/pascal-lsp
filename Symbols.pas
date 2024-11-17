@@ -110,7 +110,7 @@ begin
     until (scope = nil) or (FindSymbol <> nil);
 end;
 
-function FindSymbol(parent: TSymbol; findName: shortstring; cursor: PChar): TSymbol; inline;
+function FindSymbol(parent: TSymbol; findName: shortstring; cursor: PChar): TSymbol;
 begin
     FindSymbol := FindSymbol(parent.uniquePrefix + findName, cursor);
 end;

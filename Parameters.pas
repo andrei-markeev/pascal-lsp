@@ -62,8 +62,6 @@ begin
 end;
 
 destructor TParameterList.Destroy;
-var
-    i: integer;
 begin
     SetLength(items, 0);
 end;

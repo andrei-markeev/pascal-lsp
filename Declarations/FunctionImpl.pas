@@ -32,7 +32,6 @@ var
     symbolParent, symbolField: TSymbol;
     paramDecl: TParameterDecl;
     params: TParameterList;
-    param: TParameter;
     i: integer;
     rw: TReservedWord;
     hasMoreParams: boolean;

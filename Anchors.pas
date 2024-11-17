@@ -6,7 +6,7 @@ unit Anchors;
 interface
 
 uses
-    CompilationMode, ParserContext, Token, InvalidSymbol, ReservedWord, Number, Identifier, StringToken;
+    ParserContext, ReservedWord;
 
 const
     NUM_OF_PRIMITIVES = 4;
@@ -27,6 +27,9 @@ function DetermineNextTokenKind(ctx: TParserContext): TTokenKind;
 function SkipUntilAnchor(ctx: TParserContext): TTokenKind;
 
 implementation
+
+uses
+    CompilationMode, Token, InvalidSymbol, Number, Identifier, StringToken;
 
 var
     PrimitiveKindAnchors: array [0..NUM_OF_PRIMITIVES - 1] of integer;

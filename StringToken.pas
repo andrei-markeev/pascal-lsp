@@ -6,7 +6,7 @@ unit StringToken;
 interface
 
 uses
-    CompilationMode, TypeDefs, ParserContext, Token, TypedToken;
+    ParserContext, TypedToken;
 
 type
     TStringToken = class(TTypedToken)
@@ -18,6 +18,9 @@ type
     end;
 
 implementation
+
+uses
+    CompilationMode, TypeDefs, Token;
 
 constructor TStringToken.Create(ctx: TParserContext);
 begin

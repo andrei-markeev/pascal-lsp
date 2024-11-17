@@ -166,11 +166,11 @@ begin
         RegisterSymbolByName('SaveInt3E', nil, skVariable, @pointer32Type, ctx.Cursor);
         RegisterSymbolByName('SaveInt3F', nil, skVariable, @pointer32Type, ctx.Cursor);
         RegisterSymbolByName('SaveInt75', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('seg0040', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('segAOOO', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('segBOOO', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('segB800', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('selectorInc', nil, skVariable, @wordType, ctx.Cursor);
+        RegisterSymbolByName('Seg0040', nil, skVariable, @wordType, ctx.Cursor);
+        RegisterSymbolByName('SegAOOO', nil, skVariable, @wordType, ctx.Cursor);
+        RegisterSymbolByName('SegBOOO', nil, skVariable, @wordType, ctx.Cursor);
+        RegisterSymbolByName('SegB800', nil, skVariable, @wordType, ctx.Cursor);
+        RegisterSymbolByName('SelectorInc', nil, skVariable, @wordType, ctx.Cursor);
         RegisterSymbolByName('StackLimit', nil, skVariable, @wordType, ctx.Cursor);
         RegisterSymbolByName('Test8087', nil, skVariable, @byteType, ctx.Cursor);
     end;

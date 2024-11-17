@@ -31,7 +31,6 @@ var
     symbolKind: TSymbolKind;
     paramDecl: TParameterDecl;
     params: TParameterList;
-    param: TParameter;
     i, p: integer;
     s: string;
     rw: TReservedWord;

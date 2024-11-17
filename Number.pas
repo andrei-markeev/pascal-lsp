@@ -6,7 +6,7 @@ unit Number;
 interface
 
 uses
-    CompilationMode, ParserContext, Token, TypedToken, TypeDefs;
+    ParserContext, TypedToken;
 
 type
     TNumber = class(TTypedToken)
@@ -20,6 +20,9 @@ type
     end;
 
 implementation
+
+uses
+    CompilationMode, Token, TypeDefs;
 
 procedure TNumber.ParseHexNumber(ctx: TParserContext);
 begin
