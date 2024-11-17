@@ -17,12 +17,12 @@ type
 implementation
 
 uses
-    sysutils, TypeDefs, ReservedWord, Expression;
+    sysutils, TypeDefs, Parameters, ReservedWord, Expression;
 
 constructor TCall.Create(ctx: TParserContext; ref: TTypedToken);
 var
     expr: TTypedToken;
-    params: TTypedTokenArray;
+    params: TParameterList;
     i: integer;
 begin    
     ctx.InsertBefore(ref, Self);
@@ -30,7 +30,7 @@ begin
     start := ref.start;
     state := tsCorrect;
 
-    params := TTypedTokenArray(ref.typeDef.parameters);
+    params := TParameterList(ref.typeDef.parameters);
     if ref.typeDef.returnType <> nil then
         typeDef := ref.typeDef.returnType^
     else
@@ -52,7 +52,7 @@ begin
 
             expr := CreateExpression(ctx);
 
-            if not TypesAreAssignable(params.items[i].typeDef, expr.typeDef, expr.errorMessage) then
+            if not TypesAreAssignable(params.items[i].typeDef^, expr.typeDef, expr.errorMessage) then
             begin
                 expr.state := tsError;
                 expr.errorMessage := 'Invalid parameter: ' + expr.errorMessage;

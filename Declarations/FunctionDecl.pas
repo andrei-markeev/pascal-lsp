@@ -6,13 +6,12 @@ unit FunctionDecl;
 interface
 
 uses
-    ParserContext, Modifiers, Symbols, Token, ReservedWord, TypedToken, TypeDefs, Identifier;
+    ParserContext, Modifiers, Symbols, Parameters, Token, ReservedWord, TypedToken, TypeDefs, Identifier;
 
 type
     TFunctionDecl = class(TToken)
     public
         nameIdent: TIdentifier;
-        paramDecls: TTypedTokenArray;
         funcType: TTypeDef;
         returnType: TTypeDef;
         funcModifiers: TFunctionModifiers;
@@ -31,6 +30,8 @@ var
     needsReturnType: boolean;
     symbolKind: TSymbolKind;
     paramDecl: TParameterDecl;
+    params: TParameterList;
+    param: TParameter;
     i, p: integer;
     s: string;
     rw: TReservedWord;
@@ -94,7 +95,7 @@ begin
         nameIdent.errorMessage := 'Destructor must be called ''Destroy''!';
     end;
 
-    paramDecls := TTypedTokenArray.Create;
+    params := TParameterList.Create;
 
     nextReservedWordKind := DetermineReservedWord(ctx);
     if nextReservedWordKind = rwOpenParenthesis then
@@ -105,7 +106,10 @@ begin
         repeat
             paramDecl := TParameterDecl.Create(ctx);
             for i := 0 to length(paramDecl.idents) - 1 do
-                paramDecls.Add(paramDecl);
+            begin
+                SetString(s, paramDecl.idents[i].start, paramDecl.idents[i].len);
+                params.Add(CreateParam(paramDecl.parameterKind, s, @paramDecl.typeDef));
+            end;
 
             if PeekReservedWord(ctx, rwComma) then
             begin
@@ -126,7 +130,7 @@ begin
         TReservedWord.Create(ctx, rwCloseParenthesis, false);
     end;
 
-    funcType.parameters := paramDecls;
+    funcType.parameters := params;
 
     if needsReturnType then
     begin

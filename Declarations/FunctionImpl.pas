@@ -13,7 +13,6 @@ type
     public
         typeIdent: TIdentifier;
         nameIdent: TIdentifier;
-        paramDecls: TTypedTokenArray;
         funcType: TTypeDef;
         selfType: PTypeDef;
         returnType: TTypeDef;
@@ -23,7 +22,7 @@ type
 implementation
 
 uses
-    ReservedWord, Scopes, Symbols, TypeSpec, ParameterDecl, Block;
+    ReservedWord, Scopes, Symbols, Parameters, TypeSpec, ParameterDecl, Block;
 
 constructor TFunctionImpl.Create(ctx: TParserContext);
 var
@@ -32,6 +31,8 @@ var
     symbolKind: TSymbolKind;
     symbolParent, symbolField: TSymbol;
     paramDecl: TParameterDecl;
+    params: TParameterList;
+    param: TParameter;
     i: integer;
     rw: TReservedWord;
     hasMoreParams: boolean;
@@ -133,7 +134,7 @@ begin
         symbolParent := nil;
     end;
 
-    paramDecls := TTypedTokenArray.Create;
+    params := TParameterList.Create;
 
     nextReservedWordKind := DetermineReservedWord(ctx);
     if nextReservedWordKind = rwOpenParenthesis then
@@ -144,7 +145,10 @@ begin
         repeat
             paramDecl := TParameterDecl.Create(ctx);
             for i := 0 to length(paramDecl.idents) - 1 do
-                paramDecls.Add(paramDecl);
+            begin
+                SetString(s, paramDecl.idents[i].start, paramDecl.idents[i].len);
+                params.Add(CreateParam(paramDecl.parameterKind, s, @paramDecl.typeDef));
+            end;
 
             if PeekReservedWord(ctx, rwComma) then
             begin
@@ -165,7 +169,7 @@ begin
         TReservedWord.Create(ctx, rwCloseParenthesis, false);
     end;
 
-    funcType.parameters := paramDecls;
+    funcType.parameters := params;
 
     if needsReturnType then
     begin

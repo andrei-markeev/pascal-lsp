@@ -87,7 +87,7 @@ function TypesAreAssignable(left, right: TTypeDef; out errorMessage: string): bo
 implementation
 
 uses
-    TypedToken;
+    Parameters;
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
 begin
@@ -169,7 +169,7 @@ initialization
     TypesList := TFPHashList.Create;
     voidProcedureType.kind := tkProcedure;
     voidProcedureType.size := 0;
-    voidProcedureType.parameters := TTypedTokenArray.Create;
+    voidProcedureType.parameters := TParameterList.Create;
 finalization
     TypesList.Free;
 end.

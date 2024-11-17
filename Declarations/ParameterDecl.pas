@@ -6,11 +6,12 @@ unit ParameterDecl;
 interface
 
 uses
-    ParserContext, Symbols, Anchors, Token, TypedToken, Identifier;
+    ParserContext, Symbols, Parameters, Anchors, Token, TypedToken, Identifier;
 
 type
     TParameterDecl = class(TTypedToken)
     public
+        parameterKind: TParameterKind;
         idents: array of TIdentifier;
         constructor Create(ctx: TParserContext);
     end;
@@ -25,7 +26,6 @@ var
     nextTokenKind: TTokenKind;
     i, l: integer;
     hasMoreMembers: boolean;
-    isVar, isConst, isOut: boolean;
     symbolKind: TSymbolKind;
     symbols: array of TSymbol;
 begin
@@ -45,17 +45,17 @@ begin
 
     start := ctx.Cursor;
 
-    isConst := false;
-    isVar := false;
-    isOut := false;
+    typeDef := unknownType;
+
+    parameterKind := ptkValue;
 
     if nextTokenKind.reservedWordKind <> rwUnknown then
     begin
         TReservedWord.Create(ctx, nextTokenKind.reservedWordKind, true);
         case nextTokenKind.reservedWordKind of
-            rwConst: isConst := true;
-            rwVar: isVar := true;
-            rwOut: isOut := true;
+            rwConst: parameterKind := ptkConst;
+            rwVar: parameterKind := ptkVar;
+            rwOut: parameterKind := ptkOut;
         end;
     end;
 
@@ -86,7 +86,7 @@ begin
     RemoveAnchor(rwCloseParenthesis);
 
     symbolKind := skVariable;
-    if isConst then
+    if parameterKind = ptkConst then
         if nextTokenKind.reservedWordKind = rwColon then
             symbolKind := skTypedConstant
         else
@@ -105,8 +105,9 @@ begin
 
         TTypeSpec.Create(ctx, symbols, typeDef);
     end
-    else if isConst or isVar then
+    else if parameterKind in [ptkConst, ptkVar] then
     begin
+        parameterKind := ptkUntyped;
         // TODO: untyped parameters
     end
     else

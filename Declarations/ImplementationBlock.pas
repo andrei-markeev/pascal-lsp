@@ -22,7 +22,6 @@ uses
 constructor TImplementationBlock.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
-    i: integer;
 begin
     tokenName := 'ImplementationBlock';
     ctx.Add(Self);
