@@ -6,7 +6,7 @@ unit TypeDefs;
 interface
 
 uses
-    contnrs, CompilationMode;
+    contnrs, classes, CompilationMode;
 
 type
     TTypeKind = (
@@ -30,7 +30,7 @@ type
         tkDynamicArray: (typeOfDynValues: PTypeDef);
         tkSet: (typeOfSet: PTypeDef);
         tkRecord, tkObject, tkClass: (fields: TFPHashList);
-        tkProcedure, tkFunction: (parameters: Pointer; returnType: PTypeDef);
+        tkProcedure, tkFunction: (parameters: Pointer; returnType: PTypeDef; overloads: TFPList);
         tkBoolean, tkChar, tkReal, tkUnitName: ();
     end;
 
@@ -83,6 +83,7 @@ var
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
 function TypesAreAssignable(left, right: TTypeDef; out errorMessage: string): boolean;
+function HaveSameSignature(a, b: PTypeDef): boolean;
 
 implementation
 
@@ -164,6 +165,35 @@ begin
         else
             errorMessage := 'expected ' + TypeKindStr[ord(left.kind)] + ' or assignment-compatible, but found ' + TypeKindStr[ord(right.kind)] + '!';
 end;
+
+function HaveSameSignature(a, b: PTypeDef): boolean;
+var
+    pa, pb: TParameterList;
+    i: integer;
+begin
+    if not (a^.kind in [tkProcedure, tkFunction]) or not (b^.kind in [tkProcedure, tkFunction]) then
+        exit(false);
+
+    if a^.parameters = b^.parameters then
+        exit(true);
+
+    pa := TParameterList(a^.parameters);
+    pb := TParameterList(b^.parameters);
+    if pa.count <> pb.count then
+        exit(false);
+
+    for i := 0 to pa.count - 1 do
+    begin
+        if pa.items[i].kind <> pb.items[i].kind then
+            exit(false);
+        if pa.items[i].typeDef <> pb.items[i].typeDef then
+            exit(false);
+    end;
+
+    HaveSameSignature := true;
+end;
+
+
 
 initialization
     TypesList := TFPHashList.Create;

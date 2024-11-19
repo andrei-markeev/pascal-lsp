@@ -21,7 +21,7 @@
     <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'See you later'</Str></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>;</RW></Procedure>
 
-<Procedure><RW>procedure</RW> <SymbDecl ERROR="Previously declared type identifier is used as a procedure name!">TSomething</SymbDecl><RW>;</RW>
+<Procedure><RW>procedure</RW> <SymbRef ERROR="Previously declared type identifier is used as a procedure name!">TSomething</SymbRef><RW>;</RW>
 <VarSection><RW>var</RW> <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>
     <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'Good morning'</Str></Assignment><RW>;</RW>

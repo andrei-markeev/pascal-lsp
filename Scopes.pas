@@ -19,6 +19,7 @@ type
 
 procedure RegisterScope(scopeToken: TToken);
 function FindScope(cursor: PChar): TScope;
+procedure ResetScopes;
 
 implementation
 
@@ -67,6 +68,16 @@ end;
 destructor TScope.Destroy;
 begin
     symbolsList.Free;
+end;
+
+procedure ResetScopes;
+var
+    i: integer;
+begin
+    for i := 0 to length(ScopesList) - 1 do
+        ScopesList[i].Free;
+    SetLength(ScopesList, 1);
+    ScopesList[0] := TScope.Create;
 end;
 
 var i: integer;

@@ -25,12 +25,15 @@ type
         procedure AddReference(ident: TIdentifier);
     end;
 
+    TTryAddOverrideResult = (ovNotApplicable, ovNotFound, ovExactDuplicate, ovAdded);
+
 const
     NUM_OF_SYMBOL_KINDS = 7;
     SymbolKindStr: array [0..NUM_OF_SYMBOL_KINDS-1] of shortstring = (
         '', 'constant', 'typed constant', 'type', 'variable', 'procedure', 'function'
     );
 
+function TryAddOverride(ident: TIdentifier; symbolType: PTypeDef; cursor: PChar): TTryAddOverrideResult;
 function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: PTypeDef; cursor: PChar): TSymbol;
 function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: PTypeDef; cursor: PChar): TSymbol;
 function FindSymbol(findName: shortstring; cursor: PChar): TSymbol;
@@ -40,10 +43,46 @@ function FindSymbol(ident: TIdentifier): TSymbol;
 implementation
 
 uses
-    sysutils, Scopes;
+    sysutils, classes, Scopes;
 
 var
     lastId: longword = 0;
+
+
+function TryAddOverride(ident: TIdentifier; symbolType: PTypeDef; cursor: PChar): TTryAddOverrideResult;
+var
+    overloadedSymbol: TSymbol;
+    overloads: TFPList;
+    i: integer;
+begin
+    if not (symbolType^.kind in [tkProcedure, tkFunction]) then
+        exit(ovNotApplicable);
+
+    overloadedSymbol := FindSymbol(ident.GetStr(), cursor);
+    if overloadedSymbol = nil then
+        exit(ovNotFound);
+
+    overloads := overloadedSymbol.typeDef^.overloads;
+
+    if HaveSameSignature(symbolType, overloadedSymbol.typeDef) then
+        exit(ovExactDuplicate);
+
+    if overloads <> nil then
+        for i := 0 to overloads.Count - 1 do
+            if HaveSameSignature(symbolType, overloads.Items[i]) then
+                exit(ovExactDuplicate);
+
+    if overloads = nil then
+    begin
+        overloads := TFPList.Create;
+        overloadedSymbol.typeDef^.overloads := overloads;
+    end;
+
+    overloads.Add(symbolType);
+    overloadedSymbol.AddReference(ident);
+
+    TryAddOverride := ovAdded;
+end;
 
 function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: PTypeDef; cursor: PChar): TSymbol;
 var
@@ -133,6 +172,7 @@ end;
 destructor TSymbol.Destroy;
 begin
     SetLength(references, 0);
+    SetLength(children, 0);
 end;
 
 procedure TSymbol.AddReference(ident: TIdentifier);

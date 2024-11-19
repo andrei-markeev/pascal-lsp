@@ -37,6 +37,7 @@ var
     ident: TIdentifier;
     hasMoreParams: boolean;
     isMethodModifier, isFunctionModifier: boolean;
+    overrideResult: TTryAddOverrideResult;
 begin
     ctx.Add(Self);
     tokenName := 'FunctionDecl';
@@ -81,11 +82,6 @@ begin
     end;
 
     nameIdent := TIdentifier.Create(ctx, false);
-    if FindSymbol(nameIdent) <> nil then
-    begin
-        nameIdent.state := tsError;
-        nameIdent.errorMessage := 'Duplicate identifier!';
-    end;
 
     SetString(s, nameIdent.start, nameIdent.len);
     if (nameIdent.state <> tsError) and (symbolKind = skDestructor) and (LowerCase(s) <> 'destroy') then
@@ -141,8 +137,15 @@ begin
 
     funcType.returnType := @returnType;
 
-    for p := 0 to length(parentSymbols) - 1 do
-        RegisterSymbol(nameIdent, parentSymbols[p], symbolKind, @funcType, ctx.Cursor);
+    overrideResult := TryAddOverride(nameIdent, @funcType, ctx.Cursor);
+    if overrideResult = ovExactDuplicate then
+    begin
+        nameIdent.state := tsError;
+        nameIdent.errorMessage := 'Duplicate subroutine declaration!';
+    end
+    else if overrideResult <> ovAdded then
+        for p := 0 to length(parentSymbols) - 1 do
+            RegisterSymbol(nameIdent, parentSymbols[p], symbolKind, @funcType, ctx.Cursor);
 
     TReservedWord.Create(ctx, rwSemiColon, false);
 

@@ -17,18 +17,23 @@ type
 implementation
 
 uses
-    sysutils, TypeDefs, Parameters, ReservedWord, Expression;
+    sysutils, classes, TypeDefs, Parameters, ReservedWord, Expression;
 
 constructor TCall.Create(ctx: TParserContext; ref: TTypedToken);
 var
     expr: TTypedToken;
     params: TParameterList;
-    i: integer;
+    overloads: TFPList;
+    n, match: integer;
+    hasMoreParams: boolean;
 begin    
     ctx.InsertBefore(ref, Self);
     tokenName := 'Call';
     start := ref.start;
     state := tsCorrect;
+
+    match := -1;
+    overloads := TFPList(ref.typeDef.overloads);
 
     params := TParameterList(ref.typeDef.parameters);
     if ref.typeDef.returnType <> nil then
@@ -36,39 +41,71 @@ begin
     else
         typeDef := unknownType;
 
+    n := 0;
+
     if PeekReservedWord(ctx, rwOpenParenthesis) then
     begin
         TReservedWord.Create(ctx, rwOpenParenthesis, false);
 
-        for i := 0 to params.count - 1 do
-        begin
-
-            if PeekReservedWord(ctx, rwCloseParenthesis) then
-            begin
-                state := tsError;
-                errorMessage := 'Expected ' + IntToStr(params.count) + ' parameters, but got ' + IntToStr(i);
-                break;
-            end;
+        if not PeekReservedWord(ctx, rwCloseParenthesis) then
+        repeat
 
             expr := CreateExpression(ctx);
 
-            if not TypesAreAssignable(params.items[i].typeDef^, expr.typeDef, expr.errorMessage) then
-            begin
-                expr.state := tsError;
-                expr.errorMessage := 'Invalid parameter: ' + expr.errorMessage;
-            end;
+            repeat
 
-            if i <> params.count - 1 then
-                TReservedWord.Create(ctx, rwComma, false);
-        end;
+                while params.count <= n do
+                begin
+                    inc(match);
+                    if (overloads = nil) or (match >= overloads.Count) then
+                    begin
+                        expr.state := tsError;
+                        expr.errorMessage := 'Too many parameters.';
+                        TReservedWord.Create(ctx, rwCloseParenthesis, false);
+                        ctx.MarkEndOfToken(Self);
+                        exit;
+                    end;
+                    params := TParameterList(PTypeDef(overloads.Items[match])^.parameters);
+                end;
+
+                if not TypesAreAssignable(params.items[n].typeDef^, expr.typeDef, expr.errorMessage) then
+                begin
+                    inc(match);
+                    if (overloads = nil) or (match >= overloads.Count) then
+                    begin
+                        expr.state := tsError;
+                        expr.errorMessage := 'Invalid parameter: ' + expr.errorMessage;
+                        break;
+                    end;
+                    params := TParameterList(PTypeDef(overloads.Items[match])^.parameters);
+                end;
+
+            until params.count > n;
+
+            inc(n);
+
+            if PeekReservedWord(ctx, rwCloseParenthesis) then
+                break;
+
+            hasMoreParams := PeekReservedWord(ctx, rwComma);
+            if hasMoreParams then
+                TReservedWord.Create(ctx, rwComma, true);
+
+        until not hasMoreParams;
 
         TReservedWord.Create(ctx, rwCloseParenthesis, false);
-    end
-    // TODO: count required parameters only, some might be optional
-    else if params.count > 0 then
+    end;
+
+    while params.count <> n do
     begin
-        state := tsError;
-        errorMessage := 'Procedure call requires ' + IntToStr(params.count) + ' parameters!';
+        inc(match);
+        if (overloads = nil) or (match >= overloads.Count) then
+        begin
+            state := tsError;
+            errorMessage := 'Expected ' + IntToStr(params.count) + ' parameters, but got ' + IntToStr(n);
+            break;
+        end;
+        params := TParameterList(PTypeDef(overloads.Items[match])^.parameters);
     end;
 
     ctx.MarkEndOfToken(Self);

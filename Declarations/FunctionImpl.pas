@@ -36,6 +36,7 @@ var
     rw: TReservedWord;
     hasMoreParams: boolean;
     s: string;
+    overrideResult: TTryAddOverrideResult;
 begin
     ctx.Add(Self);
     tokenName := 'Function';
@@ -125,12 +126,6 @@ begin
             typeIdent.state := tsError;
             typeIdent.errorMessage := 'Previously declared type identifier is used as a ' + LowerCase(tokenName) + ' name!';
         end;
-    end
-    else if symbolParent <> nil then
-    begin
-        nameIdent.state := tsError;
-        nameIdent.errorMessage := 'Duplicate identifier!';
-        symbolParent := nil;
     end;
 
     params := TParameterList.Create;
@@ -179,7 +174,14 @@ begin
     else
         funcType.returnType := nil;
 
-    RegisterSymbol(nameIdent, symbolParent, symbolKind, @funcType, ctx.Cursor);
+    overrideResult := TryAddOverride(nameIdent, @funcType, ctx.Cursor);
+    if overrideResult = ovExactDuplicate then
+    begin
+        nameIdent.state := tsError;
+        nameIdent.errorMessage := 'Duplicate subroutine declaration!';
+    end
+    else if overrideResult <> ovAdded then
+        RegisterSymbol(nameIdent, symbolParent, symbolKind, @funcType, ctx.Cursor);
 
     // TODO: result variable variable
 

@@ -4,7 +4,7 @@ program ParseFile;
 {$longstrings on}
 
 uses
-    sysutils, ParserContext, Token, Symbols, ReservedWord, TypeDecl,
+    sysutils, ParserContext, Token, Symbols, Scopes, ReservedWord, TypeDecl,
     ParameterDecl, TypeDefs, ProgramFile, UnitFile;
 
 procedure Parse(fileName: string);
@@ -77,6 +77,7 @@ begin
 
     fileToken.Free;
     TypesList.Clear;
+    ResetScopes;
 
 end;
 

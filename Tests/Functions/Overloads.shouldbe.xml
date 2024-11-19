@@ -1,0 +1,23 @@
+<ProgramFile><RW>program</RW> <SymbDecl>Overloads</SymbDecl><RW>;</RW>
+
+<Function><RW>function</RW> <SymbDecl>Test</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>Test</SymbRef> <RW>:=</RW> <Num>1</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Function><RW>function</RW> <Ident ERROR="Duplicate subroutine declaration!">Test</Ident><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>Test</SymbRef> <RW>:=</RW> <Num>2</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Function><RW>function</RW> <SymbRef>Test</SymbRef><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>Test</SymbRef> <RW>:=</RW> <Term><SymbRef>x</SymbRef> <RW>*</RW> <Num>2</Num></Term></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<VarSection><RW>var</RW> <VarDecl><SymbDecl>r1</SymbDecl><RW>,</RW> <SymbDecl>r2</SymbDecl><RW>,</RW> <SymbDecl>r3</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>r1</SymbRef> <RW>:=</RW> <Call><SymbRef>Test</SymbRef></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>r2</SymbRef> <RW>:=</RW> <Call><SymbRef>Test</SymbRef><RW>(</RW><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>r3</SymbRef> <RW>:=</RW> <Call><SymbRef>Test</SymbRef><RW>(</RW><Num>3</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
