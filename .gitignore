@@ -6,3 +6,4 @@ Tests/**/*.out.xml
 test.pas
 TokenTemplate.pas
 *.lps
+.DS_Store
