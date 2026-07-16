@@ -93,6 +93,8 @@ begin
 
                     if (strlicomp(Cursor, PChar('iso'), 3) = 0) and (Cursor[3] in [' ',#9,'}']) then
                         mode := cmStandardPascal
+                    else if (strlicomp(Cursor, PChar('extpas'), 6) = 0) and (Cursor[6] in [' ',#9,'}']) then
+                        mode := cmExtendedPascal
                     else if (strlicomp(Cursor, PChar('tp'), 2) = 0) and (Cursor[2] in [' ',#9,'}']) then
                         mode := cmTurboPascal
                     else if (strlicomp(Cursor, PChar('fpc'), 3) = 0) and (Cursor[3] in [' ',#9,'}']) then

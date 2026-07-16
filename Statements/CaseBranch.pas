@@ -17,16 +17,25 @@ type
 implementation
 
 uses
-    Number, StringToken, Identifier, Statement;
+    CompilationMode, Number, StringToken, Identifier, Statement;
 
 procedure ParseCaseConstant(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
+    stringTok: TToken;
 begin
     nextTokenKind := DetermineNextTokenKind(ctx);
     case nextTokenKind.primitiveKind of
         pkNumber: TNumber.Create(ctx);
-        pkString: TStringToken.Create(ctx);
+        pkString:
+        begin
+            stringTok := TStringToken.Create(ctx);
+            if ctx.mode < cmFreePascal then
+            begin
+                stringTok.state := tsError;
+                stringTok.errorMessage := 'String case labels not supported in this compilation mode';
+            end;
+        end;
         pkIdentifier: TIdentifier.Create(ctx, false);
     else
         if PeekReservedWord(ctx, rwMinus) then
@@ -38,6 +47,8 @@ begin
 end;
 
 constructor TCaseBranch.Create(ctx: TParserContext);
+var
+    rangeRW: TReservedWord;
 begin
     ctx.Add(Self);
     tokenName := 'CaseBranch';
@@ -47,7 +58,12 @@ begin
 
     if PeekReservedWord(ctx, rwRange) then
     begin
-        TReservedWord.Create(ctx, rwRange, true);
+        rangeRW := TReservedWord.Create(ctx, rwRange, true);
+        if ctx.mode = cmStandardPascal then
+        begin
+            rangeRW.state := tsError;
+            rangeRW.errorMessage := '".." ranges in case statements not supported in Standard Pascal (ISO 7185)';
+        end;
         ParseCaseConstant(ctx);
     end;
 
@@ -57,7 +73,12 @@ begin
         ParseCaseConstant(ctx);
         if PeekReservedWord(ctx, rwRange) then
         begin
-            TReservedWord.Create(ctx, rwRange, true);
+            rangeRW := TReservedWord.Create(ctx, rwRange, true);
+            if ctx.mode = cmStandardPascal then
+            begin
+                rangeRW.state := tsError;
+                rangeRW.errorMessage := '".." ranges in case statements not supported in Standard Pascal (ISO 7185)';
+            end;
             ParseCaseConstant(ctx);
         end;
     end;

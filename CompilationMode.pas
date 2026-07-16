@@ -3,7 +3,7 @@ unit CompilationMode;
 interface
 
 type
-    TCompilationMode = (cmStandardPascal, cmTurboPascal, cmFreePascal, cmObjectFreePascal, cmDelphi);
+    TCompilationMode = (cmStandardPascal, cmExtendedPascal, cmTurboPascal, cmFreePascal, cmObjectFreePascal, cmDelphi);
 
 implementation
 

@@ -17,11 +17,12 @@ type
 implementation
 
 uses
-    Expression, CaseBranch, Statement;
+    CompilationMode, Expression, CaseBranch, Statement;
 
 constructor TCaseStatement.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
+    fallbackRW: TReservedWord;
 begin
     ctx.Add(Self);
     tokenName := 'Case';
@@ -40,6 +41,7 @@ begin
 
     AddAnchor(rwEnd);
     AddAnchor(rwElse);
+    AddAnchor(rwOtherwise);
     AddAnchor(pkNumber);
     AddAnchor(pkString);
     AddAnchor(pkIdentifier);
@@ -58,9 +60,24 @@ begin
     RemoveAnchor(pkNumber);
     RemoveAnchor(pkString);
 
-    if nextTokenKind.reservedWordKind = rwElse then
+    if (nextTokenKind.reservedWordKind = rwElse) or (nextTokenKind.reservedWordKind = rwOtherwise) then
     begin
-        TReservedWord.Create(ctx, rwElse, true);
+        if nextTokenKind.reservedWordKind = rwElse then
+        begin
+            fallbackRW := TReservedWord.Create(ctx, rwElse, true);
+            if ctx.mode = cmStandardPascal then
+            begin
+                fallbackRW.state := tsError;
+                fallbackRW.errorMessage := 'Fallback block not supported in Standard Pascal (ISO 7185)';
+            end
+            else if ctx.mode = cmExtendedPascal then
+            begin
+                fallbackRW.state := tsError;
+                fallbackRW.errorMessage := 'Use ''otherwise'' instead of ''else'' in Extended Pascal (ISO 10206)';
+            end;
+        end
+        else
+            TReservedWord.Create(ctx, rwOtherwise, true);
 
         AddAnchor(rwWith);
         AddAnchor(rwFor);
@@ -96,6 +113,7 @@ begin
 
     RemoveAnchor(rwEnd);
     RemoveAnchor(rwElse);
+    RemoveAnchor(rwOtherwise);
     RemoveAnchor(pkIdentifier);
 
     TReservedWord.Create(ctx, rwEnd, false);

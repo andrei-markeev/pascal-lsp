@@ -1,0 +1,23 @@
+{$mode iso}
+<ProgramFile><RW>program</RW> <SymbDecl>BadCaseISO</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>ch</SymbDecl><RW>:</RW> <TypeSpec><Ident>char</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    { range not supported in ISO 7185 }
+    <Case><RW>case</RW> <SymbRef>x</SymbRef> <RW>of</RW>
+        <CaseBranch><Num>1</Num><RW ERROR="".." ranges in case statements not supported in Standard Pascal (ISO 7185)">..</RW><Num>5</Num><RW>:</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>10</Num></Assignment></CaseBranch><RW>;</RW>
+    <RW>end</RW></Case><RW>;</RW>
+
+    { else fallback not supported in ISO 7185 }
+    <Case><RW>case</RW> <SymbRef>x</SymbRef> <RW>of</RW>
+        <CaseBranch><Num>1</Num><RW>:</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>10</Num></Assignment></CaseBranch><RW>;</RW>
+        <RW ERROR="Fallback block not supported in Standard Pascal (ISO 7185)">else</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>0</Num></Assignment><RW>;</RW>
+    <RW>end</RW></Case><RW>;</RW>
+
+    { string labels not supported in ISO 7185 }
+    <Case><RW>case</RW> <SymbRef>ch</SymbRef> <RW>of</RW>
+        <CaseBranch><Str ERROR="String case labels not supported in this compilation mode">'a'</Str><RW>:</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>1</Num></Assignment></CaseBranch><RW>;</RW>
+    <RW>end</RW></Case><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

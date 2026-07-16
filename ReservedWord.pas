@@ -9,7 +9,7 @@ uses
     strings, CompilationMode, ParserContext, Token;
 
 const
-    NUM_OF_RESERVED_WORDS = 97;
+    NUM_OF_RESERVED_WORDS = 98;
 
 type
     TReservedWordKind = (
@@ -34,6 +34,8 @@ type
         rwUntil,
         rwVar,
         rwWhile, rwWith,
+        { extended pascal reserved words }
+        rwOtherwise,
         { turbo pascal reserved words}
         rwAbsolute, rwAsm,
         rwConstructor,
@@ -86,6 +88,8 @@ const
         'until',
         'var',
         'while', 'with',
+        { extended pascal reserved words }
+        'otherwise',
         { turbo pascal reserved words }
         'absolute', 'asm',
         'constructor',
@@ -121,6 +125,11 @@ begin
         rwUnit, rwUses,
         rwXor
     ];
+end;
+
+function IsExtendedPascalKeyword(rwKind: TReservedWordKind): boolean; inline;
+begin
+    IsExtendedPascalKeyword := rwKind = rwOtherwise;
 end;
 
 function IsObjectPascalReservedWord(rwKind: TReservedWordKind): boolean; inline;
@@ -268,6 +277,7 @@ begin
                 'n','N': if ctx.IsSeparator(ctx.Cursor[2]) then found := rwOn;
                 'p','P': maybe := rwOperator;
                 'r','R': if ctx.IsSeparator(ctx.Cursor[2]) then found := rwOr;
+                't','T': maybe := rwOtherwise;
                 'u','U': maybe := rwOut;
             end;
         'p','P':
@@ -329,6 +339,9 @@ begin
         maybe := rwUnknown;
 
     if (ctx.mode < cmObjectFreePascal) and IsObjectPascalReservedWord(maybe) then
+        maybe := rwUnknown;
+
+    if IsExtendedPascalKeyword(maybe) and (ctx.mode <> cmExtendedPascal) and (ctx.mode < cmFreePascal) then
         maybe := rwUnknown;
 
     if (maybe <> rwUnknown) and PeekReservedWord(ctx, ReservedWordStr[ord(maybe)]) then

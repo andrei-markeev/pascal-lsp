@@ -1,0 +1,18 @@
+<ProgramFile><RW>program</RW> <SymbDecl>GoodCaseOtherwise</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    { otherwise is valid in FPC mode (default) }
+    <Case><RW>case</RW> <SymbRef>x</SymbRef> <RW>of</RW>
+        <CaseBranch><Num>1</Num><RW>:</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>10</Num></Assignment></CaseBranch><RW>;</RW>
+        <CaseBranch><Num>2</Num><RW>..</RW><Num>5</Num><RW>:</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>20</Num></Assignment></CaseBranch><RW>;</RW>
+        <RW>otherwise</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>0</Num></Assignment><RW>;</RW>
+    <RW>end</RW></Case><RW>;</RW>
+
+    { both else and otherwise are valid in FPC }
+    <Case><RW>case</RW> <SymbRef>x</SymbRef> <RW>of</RW>
+        <CaseBranch><Num>1</Num><RW>:</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>10</Num></Assignment></CaseBranch><RW>;</RW>
+        <RW>else</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>99</Num></Assignment><RW>;</RW>
+    <RW>end</RW></Case><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
