@@ -1,0 +1,17 @@
+<ProgramFile><RW>program</RW> <SymbDecl>PointerTypes</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>PInteger</SymbDecl> <RW>=</RW> <TypeSpec><PointerSpec><RW>^</RW><TypeSpec><Ident>integer</Ident></TypeSpec></PointerSpec></TypeSpec></TypeDecl><RW>;</RW>
+    <TypeDecl><SymbDecl>TNode</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>value</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>next</SymbDecl><RW>:</RW> <TypeSpec><PointerSpec><RW>^</RW><TypeSpec><SymbRef>TNode</SymbRef></TypeSpec></PointerSpec></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>p</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>PInteger</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>val</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

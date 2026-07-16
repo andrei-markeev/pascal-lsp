@@ -170,6 +170,10 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
+        <Filename Value="Types\PointerSpec.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
         <Filename Value="Expressions\Call.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>

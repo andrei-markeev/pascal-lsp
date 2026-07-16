@@ -20,7 +20,7 @@ implementation
 
 uses
     Anchors, ReservedWord, Identifier,
-    EnumSpec, RangeSpec, ArraySpec, SetSpec, RecordSpec, ClassSpec;
+    EnumSpec, RangeSpec, ArraySpec, SetSpec, RecordSpec, ClassSpec, PointerSpec;
 
 function CreateTypeSpec(ctx: TParserContext; var typeDefToFill: TTypeDef): TTypeSpec;
 begin
@@ -143,6 +143,14 @@ begin
                     begin
                         start := ctx.Cursor;
                         TArraySpec.Create(ctx, typeDefToFill);
+                        state := tsCorrect;
+                        ctx.MarkEndOfToken(Self);
+                        exit;
+                    end;
+                rwHat:
+                    begin
+                        start := ctx.Cursor;
+                        TPointerSpec.Create(ctx, typeDefToFill);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
                         exit;

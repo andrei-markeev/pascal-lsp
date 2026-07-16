@@ -1,0 +1,8 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadPointerTypes</SymbDecl><RW>;</RW>
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>PBad</SymbDecl> <RW>=</RW> <TypeSpec><PointerSpec><RW>^</RW><TypeSpec MISSING="" /></PointerSpec></TypeSpec></TypeDecl><RW>;</RW>
+    <TypeDecl><SymbDecl>PBad2</SymbDecl> <RW>=</RW> <TypeSpec><PointerSpec><RW>^</RW> <TypeSpec><RangeSpec><Num>123</Num><RW MISSING=".." /></RangeSpec></TypeSpec></PointerSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
