@@ -186,6 +186,14 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
+        <Filename Value="Statements\CaseStatement.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Statements\CaseBranch.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
         <Filename Value="Declarations\ParameterDecl.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>

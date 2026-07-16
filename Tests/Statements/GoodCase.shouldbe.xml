@@ -1,0 +1,24 @@
+<ProgramFile><RW>program</RW> <SymbDecl>GoodCase</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>ch</SymbDecl><RW>:</RW> <TypeSpec><Ident>char</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>kind</SymbDecl><RW>:</RW> <TypeSpec><EnumSpec><RW>(</RW><SymbDecl>red</SymbDecl><RW>,</RW> <SymbDecl>green</SymbDecl><RW>,</RW> <SymbDecl>blue</SymbDecl><RW>)</RW></EnumSpec></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Case><RW>case</RW> <SymbRef>x</SymbRef> <RW>of</RW>
+        <CaseBranch><Num>1</Num><RW>:</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>10</Num></Assignment></CaseBranch><RW>;</RW>
+        <CaseBranch><Num>2</Num><RW>,</RW> <Num>3</Num><RW>:</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>20</Num></Assignment></CaseBranch><RW>;</RW>
+        <CaseBranch><Num>4</Num><RW>..</RW><Num>10</Num><RW>:</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>30</Num></Assignment></CaseBranch><RW>;</RW>
+        <RW>else</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>0</Num></Assignment><RW>;</RW>
+    <RW>end</RW></Case><RW>;</RW>
+
+    <Case><RW>case</RW> <SymbRef>ch</SymbRef> <RW>of</RW>
+        <CaseBranch><Str>'a'</Str><RW>..</RW><Str>'z'</Str><RW>:</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>1</Num></Assignment></CaseBranch><RW>;</RW>
+        <CaseBranch><Str>'A'</Str><RW>..</RW><Str>'Z'</Str><RW>:</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>2</Num></Assignment></CaseBranch><RW>;</RW>
+    <RW>end</RW></Case><RW>;</RW>
+
+    <Case><RW>case</RW> <SymbRef>kind</SymbRef> <RW>of</RW>
+        <CaseBranch><Ident>red</Ident><RW>:</RW> <Assignment><SymbRef>ch</SymbRef> <RW>:=</RW> <Str>'r'</Str></Assignment></CaseBranch><RW>;</RW>
+        <CaseBranch><Ident>green</Ident><RW>,</RW> <Ident>blue</Ident><RW>:</RW> <Assignment><SymbRef>ch</SymbRef> <RW>:=</RW> <Str>'g'</Str></Assignment></CaseBranch><RW>;</RW>
+    <RW>end</RW></Case><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

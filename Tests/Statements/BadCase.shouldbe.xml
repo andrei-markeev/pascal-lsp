@@ -1,0 +1,21 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadCase</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    { missing 'of' }
+    <Case><RW>case</RW> <SymbRef>x</SymbRef><RW MISSING="of" />
+        <CaseBranch><Num>1</Num><RW>:</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>10</Num></Assignment></CaseBranch><RW>;</RW>
+    <RW>end</RW></Case><RW>;</RW>
+
+    { missing ':' in branch }
+    <Case><RW>case</RW> <SymbRef>x</SymbRef> <RW>of</RW>
+        <CaseBranch><Num>2</Num><RW MISSING=":" /> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>20</Num></Assignment></CaseBranch><RW>;</RW>
+    <RW>end</RW></Case><RW>;</RW>
+
+    { missing 'end' }
+    <Case><RW>case</RW> <SymbRef>x</SymbRef> <RW>of</RW>
+        <CaseBranch><Num>3</Num><RW>:</RW> <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <Num>30</Num></Assignment></CaseBranch><RW>;</RW>
+
+<RW>end</RW></Case><RW SKIPPED="true">.</RW></Invalid><RW MISSING=";" /></Invalid><RW MISSING="end" /></Block><RW MISSING="." /></ProgramFile>
+<Invalid ERROR="Unexpected end of file!"><Invalid ERROR="Unexpected end of file!">
