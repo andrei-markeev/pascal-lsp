@@ -29,7 +29,9 @@ type
         tkArray: (typeOfIndex: PTypeDef; typeOfValues: PTypeDef);
         tkDynamicArray: (typeOfDynValues: PTypeDef);
         tkSet: (typeOfSet: PTypeDef);
-        tkRecord, tkObject, tkClass: (fields: TFPHashList);
+        tkRecord: (recordFields: TFPHashList);
+        tkObject: (objectFields: TFPHashList; parentObject: PTypeDef);
+        tkClass: (classFields: TFPHashList; parentClass: PTypeDef);
         tkProcedure, tkFunction: (parameters: Pointer; returnType: PTypeDef; overloads: TFPList);
         tkBoolean, tkChar, tkReal, tkUnitName: ();
     end;

@@ -31,7 +31,7 @@ begin
     state := tsCorrect;
     typeDefToFill.size := 0;
     typeDefToFill.kind := tkRecord;
-    typeDefToFill.fields := TFPHashList.Create; // TODO: free memory
+    typeDefToFill.recordFields := TFPHashList.Create; // TODO: free memory
 
     TReservedWord.Create(ctx, rwRecord, true);
 
@@ -44,7 +44,7 @@ begin
             fieldDecl := TVarDecl.Create(ctx, parentSymbols);
             for i := 0 to length(fieldDecl.idents) - 1 do
             begin
-                typeDefToFill.fields.Add(fieldDecl.idents[i].GetStr(), @fieldDecl.varType);
+                typeDefToFill.recordFields.Add(fieldDecl.idents[i].GetStr(), @fieldDecl.varType);
                 inc(typeDefToFill.size, fieldDecl.varType.size);
             end;
             TReservedWord.Create(ctx, rwSemiColon, false);

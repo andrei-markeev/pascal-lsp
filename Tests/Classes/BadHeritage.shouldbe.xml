@@ -1,0 +1,36 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadHeritage</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TParentClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <VarDecl><SymbDecl>parentField</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    // 1. Parent class does not exist
+    <TypeDecl><SymbDecl>TBadChild1</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW><RW>(</RW><Ident ERROR="Class type expected!">TNonExisting</Ident><RW>)</RW>
+        <VarDecl><SymbDecl>childField1</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    // 2. Parent identifier is not a class
+    <TypeDecl><SymbDecl>TBadChild2</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW><RW>(</RW><Ident ERROR="Class type expected!">integer</Ident><RW>)</RW>
+        <VarDecl><SymbDecl>childField2</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    // 3. Only open parenthesis
+    <TypeDecl><SymbDecl>TBadChild3</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW><RW>(</RW><Ident MISSING="" /><RW MISSING=")" />
+        <VarDecl><SymbDecl>childField3</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    // 4. Missing closing parenthesis
+    <TypeDecl><SymbDecl>TBadChild4</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW><RW>(</RW><SymbRef>TParentClass</SymbRef><RW MISSING=")" />
+        <VarDecl><SymbDecl>childField4</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    // 5. Circular inheritance (self)
+    <TypeDecl><SymbDecl>TBadChild5</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW><RW>(</RW><Ident ERROR="Circular inheritance is not allowed!">TBadChild5</Ident><RW>)</RW>
+        <VarDecl><SymbDecl>childField5</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

@@ -1,0 +1,41 @@
+<ProgramFile><RW>program</RW> <SymbDecl>Heritage</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TParentClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <VarDecl><SymbDecl>parentField</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <ConstructorDecl><RW>constructor</RW> <SymbDecl>Create</SymbDecl><RW>;</RW></ConstructorDecl>
+        <FunctionDecl><RW>function</RW> <SymbDecl>GetParentField</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW></FunctionDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    <TypeDecl><SymbDecl>TChildClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW><RW>(</RW><SymbRef>TParentClass</SymbRef><RW>)</RW>
+        <VarDecl><SymbDecl>childField</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <FunctionDecl><RW>function</RW> <SymbDecl>GetChildField</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW></FunctionDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Constructor><RW>constructor</RW> <SymbRef>TParentClass</SymbRef><RW>.</RW><SymbDecl>Create</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Constructor>
+
+<Function><RW>function</RW> <SymbRef>TParentClass</SymbRef><RW>.</RW><SymbDecl>GetParentField</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>GetParentField</SymbRef> <RW>:=</RW> <SymbRef>parentField</SymbRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Function><RW>function</RW> <SymbRef>TChildClass</SymbRef><RW>.</RW><SymbDecl>GetChildField</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>GetChildField</SymbRef> <RW>:=</RW> <SymbRef>childField</SymbRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>child</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TChildClass</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>val1</SymbDecl><RW>,</RW> <SymbDecl>val2</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>child</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TChildClass</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>child</SymbRef><RW>.</RW><Ident>parentField</Ident></VarRef> <RW>:=</RW> <Num>100</Num></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>child</SymbRef><RW>.</RW><Ident>childField</Ident></VarRef> <RW>:=</RW> <Num>200</Num></Assignment><RW>;</RW>
+    <Assignment><SymbRef>val1</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>child</SymbRef><RW>.</RW><Ident>GetParentField</Ident></VarRef><RW>(</RW><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>val2</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>child</SymbRef><RW>.</RW><Ident>GetChildField</Ident></VarRef><RW>(</RW><RW>)</RW></Call></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

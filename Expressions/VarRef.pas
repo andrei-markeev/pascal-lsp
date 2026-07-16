@@ -52,6 +52,7 @@ var
     text: string;
     canBeTypecast: boolean;
     nextIsComma: boolean;
+    currType: PTypeDef;
 begin
     ctx.Add(Self);
     tokenName := 'VarRef';
@@ -170,7 +171,36 @@ begin
                     if typeDef.kind in [tkRecord, tkClass, tkObject] then
                     begin
                         text := ident.GetStr();
-                        found := typeDef.fields.Find(text);
+                        
+                        found := nil;
+                        currType := @typeDef;
+                        while currType <> nil do
+                        begin
+                            case currType^.kind of
+                                tkRecord:
+                                    begin
+                                        found := currType^.recordFields.Find(text);
+                                        break;
+                                    end;
+                                tkObject:
+                                    begin
+                                        found := currType^.objectFields.Find(text);
+                                        if found <> nil then
+                                            break;
+                                        currType := currType^.parentObject;
+                                    end;
+                                tkClass:
+                                    begin
+                                        found := currType^.classFields.Find(text);
+                                        if found <> nil then
+                                            break;
+                                        currType := currType^.parentClass;
+                                    end;
+                            else
+                                currType := nil;
+                            end;
+                        end;
+
                         if found = nil then
                         begin
                             ident.state := tsError;
