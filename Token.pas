@@ -35,8 +35,6 @@ end;
 
 destructor TToken.Destroy;
 begin
-    if endMarker <> nil then
-        endMarker.Free;
 end;
 
 end.

@@ -7,3 +7,5 @@ test.pas
 TokenTemplate.pas
 *.lps
 .DS_Store
+node_modules
+vscode-extension/out

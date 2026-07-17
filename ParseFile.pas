@@ -75,7 +75,7 @@ begin
     if length(inserts[len]) <> 0 then Write(fres, inserts[len]);
     Close(fres);
 
-    fileToken.Free;
+    ctx.Free;
     TypesList.Clear;
     ResetScopes;
 

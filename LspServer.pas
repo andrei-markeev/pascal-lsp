@@ -78,16 +78,12 @@ end;
 
 procedure FreeLastParsed;
 begin
-  if LastFileToken <> nil then
-  begin
-    LastFileToken.Free;
-    LastFileToken := nil;
-  end;
   if LastParserContext <> nil then
   begin
     LastParserContext.Free;
     LastParserContext := nil;
   end;
+  LastFileToken := nil;
   TypesList.Clear;
   ResetScopes;
 end;
@@ -149,15 +145,73 @@ begin
   );
 end;
 
+function SerializeSymbol(symbol: TSymbol): string;
+var
+  childJson, resultJson, symRange, selectionRange: string;
+  symbolKindVal: integer;
+  c: integer;
+begin
+  childJson := '';
+  for c := 0 to length(symbol.children) - 1 do
+  begin
+    if (symbol.children[c] <> nil) and (symbol.children[c].declaration <> nil) then
+    begin
+      if childJson <> '' then
+        childJson := childJson + ',';
+      childJson := childJson + SerializeSymbol(symbol.children[c]);
+    end;
+  end;
+
+  case symbol.kind of
+    skUnitName: symbolKindVal := 4; // Package
+    skTypeName: symbolKindVal := 5; // Class
+    skConstant, skTypedConstant: symbolKindVal := 14; // Constant
+    skVariable: symbolKindVal := 13; // Variable
+    skProcedure, skFunction:
+      begin
+        if symbol.parent <> nil then
+          symbolKindVal := 6 // Method
+        else
+          symbolKindVal := 12; // Function
+      end;
+    skConstructor, skDestructor: symbolKindVal := 9; // Constructor
+  else
+    symbolKindVal := 13; // Variable/Default
+  end;
+
+  if (symbol.rangeToken <> nil) and (symbol.rangeToken.endMarker <> nil) then
+    symRange := '{"start":{"line":' + IntToStr(symbol.rangeToken.line) + ',"character":' + IntToStr(symbol.rangeToken.position) + '},' +
+                '"end":{"line":' + IntToStr(symbol.rangeToken.endMarker.line) + ',"character":' + IntToStr(symbol.rangeToken.endMarker.position) + '}}'
+  else
+    symRange := '{"start":{"line":' + IntToStr(symbol.declaration.line) + ',"character":' + IntToStr(symbol.declaration.position) + '},' +
+                '"end":{"line":' + IntToStr(symbol.declaration.line) + ',"character":' + IntToStr(symbol.declaration.position + symbol.declaration.len) + '}}';
+
+  selectionRange := '{"start":{"line":' + IntToStr(symbol.declaration.line) + ',"character":' + IntToStr(symbol.declaration.position) + '},' +
+                     '"end":{"line":' + IntToStr(symbol.declaration.line) + ',"character":' + IntToStr(symbol.declaration.position + symbol.declaration.len) + '}}';
+
+  resultJson := '{' +
+    '"name":' + '"' + string(StringToJSONString(symbol.shortName)) + '"' + ',' +
+    '"kind":' + IntToStr(symbolKindVal) + ',' +
+    '"range":' + symRange + ',' +
+    '"selectionRange":' + selectionRange;
+
+  if childJson <> '' then
+    resultJson := resultJson + ',"children":[' + childJson + ']';
+
+  resultJson := resultJson + '}';
+  Result := resultJson;
+end;
+
 procedure HandleDocumentSymbol(WriteStream: TStream; const Uri: string; Id: TJSONData);
 var
-  Response, SymbolJson: string;
-  SymbolCount: integer;
-  i, j: integer;
+  Response: string;
+  i, j, k: integer;
   scope: TScope;
   symbol: TSymbol;
-  symbolKindVal: integer;
   symRange: string;
+  interfaceBlock, implementationBlock, curToken: TToken;
+  interfaceChildren, implementationChildren, topLevelJson: string;
+  symbolSerialized: string;
 begin
   Response := '{"jsonrpc":"2.0",';
   if Id <> nil then
@@ -165,56 +219,91 @@ begin
   else
     Response := Response + '"id":null,';
     
-  SymbolJson := '';
-  SymbolCount := 0;
+  interfaceBlock := nil;
+  implementationBlock := nil;
+  interfaceChildren := '';
+  implementationChildren := '';
+  topLevelJson := '';
   
   if (LastParserContext <> nil) and (LastParsedUri = Uri) then
   begin
+    for k := 0 to LastParserContext.tokensLen - 1 do
+    begin
+      curToken := LastParserContext.Tokens[k];
+      if curToken.ClassNameIs('TInterfaceBlock') then
+        interfaceBlock := curToken
+      else if curToken.ClassNameIs('TImplementationBlock') then
+        implementationBlock := curToken;
+    end;
+
     for i := 0 to length(ScopesList) - 1 do
     begin
+      if (i > 0) and ((LastFileToken = nil) or not (LastFileToken is TProgramFile) or (i > 1)) then
+        continue;
       scope := ScopesList[i];
       for j := 0 to scope.symbolsList.Count - 1 do
       begin
         symbol := TSymbol(scope.symbolsList.Items[j]);
-        if (symbol <> nil) and (symbol.declaration <> nil) then
+        if (symbol <> nil) and (symbol.declaration <> nil) and (symbol.parent = nil) then
         begin
-          case symbol.kind of
-            skUnitName: symbolKindVal := 4; // Package
-            skTypeName: symbolKindVal := 5; // Class
-            skConstant, skTypedConstant: symbolKindVal := 14; // Constant
-            skVariable: symbolKindVal := 13; // Variable
-            skProcedure, skFunction:
-              begin
-                if symbol.parent <> nil then
-                  symbolKindVal := 6 // Method
-                else
-                  symbolKindVal := 12; // Function
-              end;
-            skConstructor, skDestructor: symbolKindVal := 9; // Constructor
+          symbolSerialized := SerializeSymbol(symbol);
+          
+          if (interfaceBlock <> nil) and (symbol.declaration.start >= interfaceBlock.start) and (symbol.declaration.start < interfaceBlock.start + interfaceBlock.len) then
+          begin
+            if interfaceChildren <> '' then
+              interfaceChildren := interfaceChildren + ',';
+            interfaceChildren := interfaceChildren + symbolSerialized;
+          end
+          else if (implementationBlock <> nil) and (symbol.declaration.start >= implementationBlock.start) and (symbol.declaration.start < implementationBlock.start + implementationBlock.len) then
+          begin
+            if implementationChildren <> '' then
+              implementationChildren := implementationChildren + ',';
+            implementationChildren := implementationChildren + symbolSerialized;
+          end
           else
-            symbolKindVal := 13; // Variable/Default
+          begin
+            if topLevelJson <> '' then
+              topLevelJson := topLevelJson + ',';
+            topLevelJson := topLevelJson + symbolSerialized;
           end;
-          
-          symRange := '{"start":{"line":' + IntToStr(symbol.declaration.line) + ',"character":' + IntToStr(symbol.declaration.position) + '},' +
-                      '"end":{"line":' + IntToStr(symbol.declaration.line) + ',"character":' + IntToStr(symbol.declaration.position + symbol.declaration.len) + '}}';
-          
-          if SymbolCount > 0 then
-            SymbolJson := SymbolJson + ',';
-            
-          SymbolJson := SymbolJson + '{' +
-            '"name":' + '"' + string(StringToJSONString(symbol.name)) + '"' + ',' +
-            '"kind":' + IntToStr(symbolKindVal) + ',' +
-            '"range":' + symRange + ',' +
-            '"selectionRange":' + symRange +
-          '}';
-          
-          inc(SymbolCount);
         end;
       end;
     end;
   end;
+
+  if (interfaceBlock <> nil) and (interfaceBlock.endMarker <> nil) then
+  begin
+    symRange := '{"start":{"line":' + IntToStr(interfaceBlock.line) + ',"character":' + IntToStr(interfaceBlock.position) + '},' +
+                '"end":{"line":' + IntToStr(interfaceBlock.endMarker.line) + ',"character":' + IntToStr(interfaceBlock.endMarker.position) + '}}';
+    if topLevelJson <> '' then
+      topLevelJson := topLevelJson + ',';
+    topLevelJson := topLevelJson + '{' +
+      '"name":"interface",' +
+      '"kind":3,' + // Namespace
+      '"range":' + symRange + ',' +
+      '"selectionRange":' + symRange;
+    if interfaceChildren <> '' then
+      topLevelJson := topLevelJson + ',"children":[' + interfaceChildren + ']';
+    topLevelJson := topLevelJson + '}';
+  end;
+
+  if (implementationBlock <> nil) and (implementationBlock.endMarker <> nil) then
+  begin
+    symRange := '{"start":{"line":' + IntToStr(implementationBlock.line) + ',"character":' + IntToStr(implementationBlock.position) + '},' +
+                '"end":{"line":' + IntToStr(implementationBlock.endMarker.line) + ',"character":' + IntToStr(implementationBlock.endMarker.position) + '}}';
+    if topLevelJson <> '' then
+      topLevelJson := topLevelJson + ',';
+    topLevelJson := topLevelJson + '{' +
+      '"name":"implementation",' +
+      '"kind":3,' + // Namespace
+      '"range":' + symRange + ',' +
+      '"selectionRange":' + symRange;
+    if implementationChildren <> '' then
+      topLevelJson := topLevelJson + ',"children":[' + implementationChildren + ']';
+    topLevelJson := topLevelJson + '}';
+  end;
   
-  Response := Response + '"result":[' + SymbolJson + ']}';
+  Response := Response + '"result":[' + topLevelJson + ']}';
   SendResponse(WriteStream, Response);
 end;
 

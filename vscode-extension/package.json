@@ -1,0 +1,49 @@
+{
+  "name": "pascal-lsp-client",
+  "displayName": "Pascal LSP Client",
+  "description": "VS Code Client for custom Pascal LSP Server",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:pascal"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "pascal",
+        "aliases": ["Pascal", "pascal"],
+        "extensions": [".pas", ".pp", ".inc", ".lpr"]
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Pascal LSP Client Configuration",
+      "properties": {
+        "pascalLsp.serverPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the LspServer executable. If empty, the extension looks for build/LspServer.exe in the workspace root."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "@types/vscode": "^1.74.0",
+    "typescript": "^5.1.6"
+  }
+}
