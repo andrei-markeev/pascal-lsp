@@ -1,0 +1,35 @@
+<UnitFile><RW>unit</RW> <SymbDecl>MockedUnits</SymbDecl><RW>;</RW>
+
+<RW>interface</RW>
+
+<TUsesClause><RW>uses</RW>
+    <Ident>classes</Ident><RW>,</RW> <Ident>contnrs</Ident><RW>,</RW> <Ident>math</Ident><RW>,</RW> <Ident>sysutils</Ident><RW>,</RW> <Ident>strings</Ident><RW>;</RW></TUsesClause><InterfaceBlock>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>list</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TFPList</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>hashList</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TFPHashList</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>cnt</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>ptr</SymbDecl><RW>:</RW> <TypeSpec><Ident>pointer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>valMin</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>str</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>p</SymbDecl><RW>:</RW> <TypeSpec><Ident>PChar</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<ProcedureDecl><RW>procedure</RW> <Ident>TestMocked</Ident><RW>;</RW></ProcedureDecl></InterfaceBlock>
+
+<RW>implementation</RW>
+
+<ImplementationBlock><Procedure><RW>procedure</RW> <SymbDecl>TestMocked</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>cnt</SymbRef> <RW>:=</RW> <VarRef><SymbRef>list</SymbRef><RW>.</RW><Ident>count</Ident></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>ptr</SymbRef> <RW>:=</RW> <VarRef><SymbRef>list</SymbRef><RW>.</RW><Ident>items</Ident><RW>[</RW><Num>0</Num><RW>]</RW></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>ptr</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>hashList</SymbRef><RW>.</RW><Ident>find</Ident></VarRef><RW>(</RW><Str>'key'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>valMin</SymbRef> <RW>:=</RW> <Call><SymbRef>Min</SymbRef><RW>(</RW><Num>10</Num><RW>,</RW> <Num>20</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>str</SymbRef> <RW>:=</RW> <Call><SymbRef>LowerCase</SymbRef><RW>(</RW><Str>'TEST'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>str</SymbRef> <RW>:=</RW> <Call><SymbRef>IntToStr</SymbRef><RW>(</RW><Num>123</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>str</SymbRef> <RW>:=</RW> <Call><SymbRef>StringReplace</SymbRef><RW>(</RW><Str>'abc'</Str><RW>,</RW> <Str>'a'</Str><RW>,</RW> <Str>'b'</Str><RW>,</RW> <SetConstructor><RW>[</RW><RW>]</RW></SetConstructor><RW>)</RW></Call></Assignment><RW>;</RW>
+    <If><RW>if</RW> <Expression><Call><SymbRef>strlicomp</SymbRef><RW>(</RW><SymbRef>p</SymbRef><RW>,</RW> <Str>'mode'</Str><RW>,</RW> <Num>4</Num><RW>)</RW></Call> <RW>=</RW> <Num>0</Num></Expression> <RW>then</RW>
+    <Block><RW>begin</RW>
+    <RW>end</RW></Block></If><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

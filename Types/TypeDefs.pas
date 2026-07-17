@@ -157,6 +157,11 @@ begin
     else if (left.kind = tkSet) and (right.kind = tkSet) then
         TypesAreAssignable := TypesAreAssignable(left.typeOfSet^, right.typeOfSet^, errorMessage);
 
+    if (left.kind = tkString) and (right.kind = tkChar) then
+        TypesAreAssignable := true
+    else if (left.kind = tkPointer) and (left.pointerToType <> nil) and (left.pointerToType^.kind = tkChar) and (right.kind = tkString) then
+        TypesAreAssignable := true;
+
     // TODO: functions
 
     if not TypesAreAssignable then
@@ -202,6 +207,7 @@ initialization
     voidProcedureType.kind := tkProcedure;
     voidProcedureType.size := 0;
     voidProcedureType.parameters := TParameterList.Create;
+    voidProcedureType.overloads := nil;
 finalization
     TypesList.Free;
 end.

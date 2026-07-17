@@ -6,11 +6,13 @@ uses
     ParserContext;
 
 procedure RegisterSystemSymbols(ctx: TParserContext);
+procedure LoadSystemUnit(unitName: string; ctx: TParserContext);
 
 implementation
 
 uses
-    CompilationMode, Symbols, TypeDefs, Parameters;
+    contnrs, CompilationMode, Symbols, TypeDefs, Parameters,
+    SystemUnit, ClassesUnit, ContnrsUnit, MathUnit, SysutilsUnit, StringsUnit;
 
 var
     functionType_Real: TTypeDef;
@@ -22,6 +24,12 @@ var
     functionType_Real_Longint: TTypeDef;
     functionType_constString_constString_LongInt: TTypeDef;
     procedureType_outString_PChar_LongInt: TTypeDef;
+
+    classesMock: TClassesUnit;
+    contnrsMock: TContnrsUnit;
+    mathMock: TMathUnit;
+    sysutilsMock: TSysutilsUnit;
+    stringsMock: TStringsUnit;
 
 procedure RegisterSystemSymbols(ctx: TParserContext);
 begin
@@ -180,26 +188,15 @@ begin
     end;
 end;
 
-function CreateFunctionType(params: TParameterList; returnType: PTypeDef): TTypeDef;
+procedure LoadSystemUnit(unitName: string; ctx: TParserContext);
 begin
-    CreateFunctionType.kind := tkFunction;
-    CreateFunctionType.visibility := vPublic;
-    CreateFunctionType.size := 0;
-    CreateFunctionType.parameters := params;
-    CreateFunctionType.returnType := returnType;
-end;
-
-function CreateOneParamFunctionType(paramName: shortstring; paramType, returnType: PTypeDef): TTypeDef;
-begin
-    CreateOneParamFunctionType := CreateFunctionType(TParameterList.Create([CreateParam(ptkValue, paramName, paramType)]), returnType);
-end;
-
-function CreateProcedureType(params: TParameterList): TTypeDef;
-begin
-    CreateProcedureType.kind := tkProcedure;
-    CreateProcedureType.visibility := vPublic;
-    CreateProcedureType.size := 0;
-    CreateProcedureType.parameters := params;
+    case LowerCase(unitName) of
+        'classes': classesMock.Load(ctx);
+        'contnrs': contnrsMock.Load(ctx);
+        'math': mathMock.Load(ctx);
+        'sysutils': sysutilsMock.Load(ctx);
+        'strings': stringsMock.Load(ctx);
+    end;
 end;
 
 procedure InitFunctionTypes;
@@ -229,4 +226,15 @@ end;
 
 initialization
     InitFunctionTypes;
+    classesMock := TClassesUnit.Create;
+    contnrsMock := TContnrsUnit.Create;
+    mathMock := TMathUnit.Create;
+    sysutilsMock := TSysutilsUnit.Create;
+    stringsMock := TStringsUnit.Create;
+finalization
+    classesMock.Free;
+    contnrsMock.Free;
+    mathMock.Free;
+    sysutilsMock.Free;
+    stringsMock.Free;
 end.
