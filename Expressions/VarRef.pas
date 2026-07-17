@@ -137,7 +137,12 @@ begin
                     begin
                         state := tsError;
                         if isSimple then
-                            errorMessage := 'Expected a pointer, but found a ' + SymbolKindStr[ord(symbol.kind)]
+                        begin
+                            if symbol <> nil then
+                                errorMessage := 'Expected a pointer, but found a ' + SymbolKindStr[ord(symbol.kind)]
+                            else
+                                errorMessage := 'Expected a pointer!';
+                        end
                         else
                         begin
                             SetString(text, start, ctx.Cursor - start);

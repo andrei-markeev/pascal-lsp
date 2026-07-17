@@ -41,10 +41,22 @@ begin
         outToken := ident;
 
         symbol := TSymbol(ident.symbol);
+        if symbol = nil then
+        begin
+            state := tsError;
+            errorMessage := 'Identifier ' + ident.name + ' has not been declared!';
+            exit;
+        end;
         if symbol.kind <> skConstant then
         begin
             state := tsError;
             errorMessage := 'Cannot use ' + ident.name + ' (' + SymbolKindStr[ord(symbol.kind)] + ') in a subrange declaration! Only constants are allowed.';
+            exit;
+        end;
+        if symbol.typeDef = nil then
+        begin
+            state := tsError;
+            errorMessage := 'Identifier ' + ident.name + ' has no type defined!';
             exit;
         end;
 

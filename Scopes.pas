@@ -21,9 +21,9 @@ procedure RegisterScope(scopeToken: TToken);
 function FindScope(cursor: PChar): TScope;
 procedure ResetScopes;
 
-implementation
-
 var ScopesList: array of TScope;
+
+implementation
 
 procedure RegisterScope(scopeToken: TToken);
 var

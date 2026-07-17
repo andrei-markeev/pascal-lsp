@@ -47,6 +47,7 @@ begin
     tokensCapacity := 1 + length(contents) div 10;
     SetLength(Tokens, tokensCapacity);
     line := 0;
+    lineStart := Cursor;
     mode := cmFreePascal;
     InitPredefinedTypes(mode);
     RegisterSystemSymbols(Self);
@@ -150,7 +151,10 @@ begin
     inc(tokensLen);
 
     token.line := line;
-    token.position := Cursor - lineStart;
+    if (token.start <> nil) and (token.start >= lineStart) then
+        token.position := token.start - lineStart
+    else
+        token.position := 0;
 end;
 
 procedure TParserContext.InsertBefore(refToken, tokenToInsert: TToken);

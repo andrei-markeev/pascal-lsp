@@ -44,9 +44,10 @@ begin
     TReservedWord.Create(ctx, rwDo, false);
 
     RegisterScope(Self);
-    for i := 0 to length(symbol.children) - 1 do
-        if symbol.children[i].typeDef^.visibility = vPublic then // TODO: handle `with Self`
-            RegisterSymbol(symbol.children[i].declaration, nil, symbol.children[i].kind, symbol.children[i].typeDef, start);
+    if symbol <> nil then
+        for i := 0 to length(symbol.children) - 1 do
+            if symbol.children[i].typeDef^.visibility = vPublic then // TODO: handle `with Self`
+                RegisterSymbol(symbol.children[i].declaration, nil, symbol.children[i].kind, symbol.children[i].typeDef, start);
 
     CreateStatement(ctx);
 
