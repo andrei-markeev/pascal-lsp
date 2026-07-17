@@ -1,0 +1,33 @@
+<ProgramFile><RW>program</RW> <SymbDecl>OrdinalFunctions</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+{$longstrings on}
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>i</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>c</SymbDecl><RW>:</RW> <TypeSpec><Ident>char</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>arr</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW><RW>[</RW><TypeSpec><RangeSpec><Num>1</Num><RW>..</RW><Num>10</Num></RangeSpec></TypeSpec><RW>]</RW> <RW>of</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ArraySpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>h</SymbDecl><RW>,</RW> <SymbDecl>l</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>i</SymbRef> <RW>:=</RW> <Num>5</Num></Assignment><RW>;</RW>
+    <Call><SymbRef>Inc</SymbRef><RW>(</RW><SymbRef>i</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>Inc</SymbRef><RW>(</RW><SymbRef>i</SymbRef><RW>,</RW> <Num>2</Num><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>Dec</SymbRef><RW>(</RW><SymbRef>i</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>Dec</SymbRef><RW>(</RW><SymbRef>i</SymbRef><RW>,</RW> <Num>3</Num><RW>)</RW></Call><RW>;</RW>
+
+    <Assignment><SymbRef>c</SymbRef> <RW>:=</RW> <Str>'a'</Str></Assignment><RW>;</RW>
+    <Call><SymbRef>Inc</SymbRef><RW>(</RW><SymbRef>c</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>Dec</SymbRef><RW>(</RW><SymbRef>c</SymbRef><RW>)</RW></Call><RW>;</RW>
+
+    <Assignment><SymbRef>h</SymbRef> <RW>:=</RW> <Call><SymbRef>High</SymbRef><RW>(</RW><SymbRef>i</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>l</SymbRef> <RW>:=</RW> <Call><SymbRef>Low</SymbRef><RW>(</RW><SymbRef>i</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>h</SymbRef> <RW>:=</RW> <Call><SymbRef>High</SymbRef><RW>(</RW><SymbRef>c</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>l</SymbRef> <RW>:=</RW> <Call><SymbRef>Low</SymbRef><RW>(</RW><SymbRef>c</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>h</SymbRef> <RW>:=</RW> <Call><SymbRef>High</SymbRef><RW>(</RW><SymbRef>arr</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>l</SymbRef> <RW>:=</RW> <Call><SymbRef>Low</SymbRef><RW>(</RW><SymbRef>arr</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+
+    <Assignment><SymbRef>h</SymbRef> <RW>:=</RW> <Call><SymbRef>High</SymbRef><RW>(</RW><Ident>integer</Ident><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>l</SymbRef> <RW>:=</RW> <Call><SymbRef>Low</SymbRef><RW>(</RW><Ident>integer</Ident><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>h</SymbRef> <RW>:=</RW> <Call><SymbRef>High</SymbRef><RW>(</RW><Ident>char</Ident><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>l</SymbRef> <RW>:=</RW> <Call><SymbRef>Low</SymbRef><RW>(</RW><Ident>char</Ident><RW>)</RW></Call></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

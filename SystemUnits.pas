@@ -11,7 +11,7 @@ procedure LoadSystemUnit(unitName: string; ctx: TParserContext);
 implementation
 
 uses
-    contnrs, CompilationMode, Symbols, TypeDefs, Parameters,
+    classes, contnrs, CompilationMode, Symbols, TypeDefs, Parameters,
     SystemUnit, ClassesUnit, ContnrsUnit, MathUnit, SysutilsUnit, StringsUnit;
 
 var
@@ -24,6 +24,9 @@ var
     functionType_Real_Longint: TTypeDef;
     functionType_constString_constString_LongInt: TTypeDef;
     procedureType_outString_PChar_LongInt: TTypeDef;
+    procedureType_Ordinal1: TTypeDef;
+    procedureType_Ordinal2: TTypeDef;
+    functionType_HighLow: TTypeDef;
 
     classesMock: TClassesUnit;
     contnrsMock: TContnrsUnit;
@@ -77,10 +80,10 @@ begin
         // TODO: RunError 
 
         // Ordinal procedures & functions
-        // TODO: Dec
-        // TODO: Inc
-        // TODO: High
-        // TODO: Low
+        RegisterSymbolByName('Dec', nil, skProcedure, @procedureType_Ordinal1, ctx.Cursor);
+        RegisterSymbolByName('Inc', nil, skProcedure, @procedureType_Ordinal1, ctx.Cursor);
+        RegisterSymbolByName('High', nil, skFunction, @functionType_HighLow, ctx.Cursor);
+        RegisterSymbolByName('Low', nil, skFunction, @functionType_HighLow, ctx.Cursor);
 
         // Arithmetic functions
         RegisterSymbolByName('Frac', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
@@ -222,6 +225,20 @@ begin
         CreateParam(ptkValue, 'l', @longintType)
     ]));
 
+    procedureType_Ordinal1 := CreateProcedureType(TParameterList.Create([
+        CreateParam(ptkVar, 'x', @unknownType)
+    ]));
+    procedureType_Ordinal2 := CreateProcedureType(TParameterList.Create([
+        CreateParam(ptkVar, 'x', @unknownType),
+        CreateParam(ptkValue, 'n', @longintType)
+    ]));
+    procedureType_Ordinal1.overloads := TFPList.Create;
+    procedureType_Ordinal1.overloads.Add(@procedureType_Ordinal2);
+
+    functionType_HighLow := CreateFunctionType(TParameterList.Create([
+        CreateParam(ptkValue, 'x', @unknownType)
+    ]), @unknownType);
+
 end;
 
 initialization
@@ -232,6 +249,7 @@ initialization
     sysutilsMock := TSysutilsUnit.Create;
     stringsMock := TStringsUnit.Create;
 finalization
+    procedureType_Ordinal1.overloads.Free;
     classesMock.Free;
     contnrsMock.Free;
     mathMock.Free;

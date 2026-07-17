@@ -1,0 +1,12 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadOrdinalFunctions</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>i</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Call ERROR="Expected 2 parameters, but got 0"><SymbRef>Inc</SymbRef></Call><RW>;</RW>
+    <Call><SymbRef>Dec</SymbRef><RW>(</RW><SymbRef>i</SymbRef><RW>,</RW><Factor MISSING="" /> <RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>Inc</SymbRef><RW>(</RW><SymbRef>i</SymbRef><RW>,</RW> <Num>1</Num><RW>,</RW> <Num ERROR="Too many parameters.">2</Num><RW>)</RW></Call><RW>;</RW>
+    <Call ERROR="Expected 1 parameters, but got 0"><SymbRef>High</SymbRef><RW>(</RW><RW>)</RW></Call><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

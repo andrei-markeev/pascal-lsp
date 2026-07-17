@@ -68,30 +68,28 @@ begin
             begin
                 identName := PeekIdentifier(ctx);
                 symbol := FindSymbol(identName, ctx.Cursor);
-                if symbol <> nil then
+                if (symbol <> nil) or (TypesList.Find(LowerCase(identName)) <> nil) then
                 begin
-                    case symbol.kind of
-                        skUnitName:
-                            begin
-                                state := tsError;
-                                errorMessage := 'Unit name cannot be used in expressions!';
-                            end;
-                        skProcedure:
-                            begin
-                                state := tsError;
-                                errorMessage := 'Invalid call to ' + identName + ': procedure calls cannot be used in expressions because they don''t have a return value!';
-                            end;
-                        skVariable, skConstant, skTypedConstant, skTypeName, skFunction:
-                            begin
-                                factorToken := CreateVarRef(ctx);
-                                typeDef := factorToken.typeDef;
+                    if (symbol <> nil) and (symbol.kind = skUnitName) then
+                    begin
+                        state := tsError;
+                        errorMessage := 'Unit name cannot be used in expressions!';
+                    end
+                    else if (symbol <> nil) and (symbol.kind = skProcedure) then
+                    begin
+                        state := tsError;
+                        errorMessage := 'Invalid call to ' + identName + ': procedure calls cannot be used in expressions because they don''t have a return value!';
+                    end
+                    else
+                    begin
+                        factorToken := CreateVarRef(ctx);
+                        typeDef := factorToken.typeDef;
 
-                                if typeDef.kind = tkFunction then
-                                begin
-                                    typeDef := typeDef.returnType^;
-                                    factorToken := TCall.Create(ctx, factorToken);
-                                end;
-                            end;
+                        if typeDef.kind = tkFunction then
+                        begin
+                            typeDef := typeDef.returnType^;
+                            factorToken := TCall.Create(ctx, factorToken);
+                        end;
                     end;
                 end;
             end;
