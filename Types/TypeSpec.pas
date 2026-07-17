@@ -177,6 +177,7 @@ begin
     end;
 
     state := tsMissing;
+    start := ctx.GetCursorBeforeTrivia;
     len := 0;
 end;
 

@@ -72,12 +72,12 @@ begin
         SetString(name, start, len);
 
         symbol := FindSymbol(name, ctx.Cursor);
-        if symbol = nil then
+        if (symbol = nil) and (TypesList.Find(LowerCase(name)) = nil) then
         begin
             state := tsError;
             errorMessage := 'Identifier has not been declared!';
         end
-        else
+        else if symbol <> nil then
             TSymbol(symbol).AddReference(Self);
 
     end;

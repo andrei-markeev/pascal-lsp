@@ -6,7 +6,7 @@ unit ParserContext;
 interface
 
 uses
-    strings, Token, CompilationMode, TypeDefs;
+    classes, strings, contnrs, Token, CompilationMode, TypeDefs;
 
 type
     TParserContext = class
@@ -23,7 +23,9 @@ type
         Cursor: PChar;
         parseUnit: TToken;
         mode: TCompilationMode;
-        constructor Create(fileContents: string);
+        filePath: string;
+        isDependency: boolean;
+        constructor Create(AFilePath: string; AFileContents: string);
         destructor Destroy; override;
         function IsSeparator(ch: char): boolean; inline;
         function IsEOF: boolean; inline;
@@ -35,14 +37,26 @@ type
         procedure MarkEndOfToken(token: TToken);
     end;
 
+var
+    LoadedUnits: TFPHashList;
+    ActiveContexts: TFPList;
+    LastFoundContext: TParserContext;
+
+procedure ClearLoadedUnits;
+function UriToFilename(const Uri: string): string;
+function FindContextForCursor(cursor: PChar): TParserContext;
+
+
 implementation
 
 uses
-    SystemUnits;
+    sysutils, SystemUnits;
 
-constructor TParserContext.Create(fileContents: string);
+constructor TParserContext.Create(AFilePath: string; AFileContents: string);
 begin
-    contents := fileContents;
+    filePath := AFilePath;
+    contents := AFileContents;
+    isDependency := false;
     Cursor := PChar(contents);
     triviaSkippedUntil := nil;
     tokensCapacity := 1 + length(contents) div 10;
@@ -52,11 +66,17 @@ begin
     mode := cmFreePascal;
     InitPredefinedTypes(mode);
     RegisterSystemSymbols(Self);
+    if ActiveContexts <> nil then
+        ActiveContexts.Add(Self);
 end;
 
 destructor TParserContext.Destroy;
 var i: integer;
 begin
+    if LastFoundContext = Self then
+        LastFoundContext := nil;
+    if ActiveContexts <> nil then
+        ActiveContexts.Remove(Self);
     for i := 0 to length(Tokens) - 1 do
         Tokens[i].Free;
     SetLength(Tokens, 0);
@@ -218,5 +238,70 @@ function TParserContext.GetContents: string; inline;
 begin
     GetContents := contents;
 end;
+
+procedure ClearLoadedUnits;
+var
+    i: integer;
+    ctx: TParserContext;
+begin
+    if LoadedUnits <> nil then
+    begin
+        for i := 0 to LoadedUnits.Count - 1 do
+        begin
+            ctx := TParserContext(LoadedUnits.Items[i]);
+            if (ctx <> nil) and ctx.isDependency then
+                ctx.Free;
+        end;
+        LoadedUnits.Clear;
+    end;
+end;
+
+function UriToFilename(const Uri: string): string;
+begin
+    if Copy(Uri, 1, 8) = 'file:///' then
+        Result := Copy(Uri, 9, Length(Uri) - 8)
+    else
+        Result := Uri;
+    Result := StringReplace(Result, '%20', ' ', [rfReplaceAll]);
+    Result := StringReplace(Result, '%3A', ':', [rfReplaceAll]);
+    Result := StringReplace(Result, '%3a', ':', [rfReplaceAll]);
+end;
+
+function FindContextForCursor(cursor: PChar): TParserContext;
+var
+    i: integer;
+    ctx: TParserContext;
+begin
+    if (LastFoundContext <> nil) and 
+       (cursor >= PChar(LastFoundContext.contents)) and 
+       (cursor <= PChar(LastFoundContext.contents) + Length(LastFoundContext.contents)) then
+    begin
+        Result := LastFoundContext;
+        exit;
+    end;
+
+    Result := nil;
+    if ActiveContexts = nil then
+        exit;
+    for i := 0 to ActiveContexts.Count - 1 do
+    begin
+        ctx := TParserContext(ActiveContexts.Items[i]);
+        if (cursor >= PChar(ctx.contents)) and (cursor <= PChar(ctx.contents) + Length(ctx.contents)) then
+        begin
+            LastFoundContext := ctx;
+            Result := ctx;
+            exit;
+        end;
+    end;
+end;
+
+initialization
+    LoadedUnits := TFPHashList.Create;
+    ActiveContexts := TFPList.Create;
+    LastFoundContext := nil;
+finalization
+    ClearLoadedUnits;
+    LoadedUnits.Free;
+    ActiveContexts.Free;
 
 end.

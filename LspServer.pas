@@ -9,7 +9,7 @@ uses
   {$ENDIF}
   sysutils, classes, ssockets, fpjson, jsonparser,
   ParserContext, Token, Identifier, Symbols, Scopes, ReservedWord, TypeDecl,
-  ParameterDecl, TypeDefs, ProgramFile, UnitFile;
+  ParameterDecl, TypeDefs, ProgramFile, UnitFile, LspConfig;
 
 type
   TSemanticToken = record
@@ -95,6 +95,18 @@ begin
   LastFileToken := nil;
   TypesList.Clear;
   ResetScopes;
+  ClearLoadedUnits;
+end;
+
+function UriToFilename(const Uri: string): string;
+begin
+  if Copy(Uri, 1, 8) = 'file:///' then
+    Result := Copy(Uri, 9, Length(Uri) - 8)
+  else
+    Result := Uri;
+  Result := StringReplace(Result, '%20', ' ', [rfReplaceAll]);
+  Result := StringReplace(Result, '%3A', ':', [rfReplaceAll]);
+  Result := StringReplace(Result, '%3a', ':', [rfReplaceAll]);
 end;
 
 procedure HandleFileChange(WriteStream: TStream; const Uri: string; const Content: string);
@@ -108,7 +120,7 @@ var
 begin
   FreeLastParsed;
   
-  ctx := TParserContext.Create(Content);
+  ctx := TParserContext.Create(UriToFilename(Uri), Content);
   if PeekReservedWord(ctx, rwUnit) then
     fileToken := TUnitFile.Create(ctx)
   else
@@ -183,7 +195,7 @@ begin
   begin
     if (symbol.children[c] <> nil) and (symbol.children[c].declaration <> nil) then
     begin
-      if not IsMethodImplementation(symbol.children[c]) then
+      if not IsMethodImplementation(symbol.children[c]) and not symbol.children[c].isParameter then
       begin
         if childJson <> '' then
           childJson := childJson + ',';
@@ -656,6 +668,9 @@ var
   Parser: TJSONParser;
   Method, Uri, Content, Response: string;
   Id: TJSONData;
+  RootUriData, RootPathData, InitOptions, OptLpi, OptDproj, OptScan, OptPaths: TJSONData;
+  WorkspaceRoot: string;
+  Idx: integer;
 begin
   Parser := TJSONParser.Create(JsonStr);
   try
@@ -677,6 +692,49 @@ begin
 
     if Method = 'initialize' then
     begin
+      RootUriData := Json.FindPath('params.rootUri');
+      if (RootUriData <> nil) and (RootUriData.JSONType = jtString) then
+        WorkspaceRoot := UriToFilename(RootUriData.AsString)
+      else
+      begin
+        RootPathData := Json.FindPath('params.rootPath');
+        if (RootPathData <> nil) and (RootPathData.JSONType = jtString) then
+          WorkspaceRoot := RootPathData.AsString
+        else
+          WorkspaceRoot := '';
+      end;
+
+      InitOptions := Json.FindPath('params.initializationOptions');
+      if InitOptions <> nil then
+      begin
+        OptLpi := InitOptions.FindPath('readLpi');
+        if OptLpi <> nil then
+          GConfig.ReadLpi := OptLpi.AsBoolean;
+
+        OptDproj := InitOptions.FindPath('readDproj');
+        if OptDproj <> nil then
+          GConfig.ReadDproj := OptDproj.AsBoolean;
+
+        OptScan := InitOptions.FindPath('scanProjectFolders');
+        if OptScan <> nil then
+          GConfig.ScanProjectFolders := OptScan.AsBoolean;
+
+        OptPaths := InitOptions.FindPath('configuredPaths');
+        if (OptPaths <> nil) and (OptPaths.JSONType = jtArray) then
+        begin
+          GConfig.UseConfiguredPaths := true;
+          GConfig.ConfiguredPaths.Clear;
+          for Idx := 0 to OptPaths.Count - 1 do
+            GConfig.ConfiguredPaths.Add(OptPaths.Items[Idx].AsString);
+        end;
+      end;
+
+      if WorkspaceRoot <> '' then
+      begin
+        GConfig.SetWorkspaceRoot(WorkspaceRoot);
+        GConfig.ResolveSearchPaths;
+      end;
+
       Response := '{"jsonrpc":"2.0",';
       if Id <> nil then
         Response := Response + '"id":' + Id.AsJSON + ','

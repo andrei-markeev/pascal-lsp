@@ -23,6 +23,11 @@ export function activate(context: vscode.ExtensionContext) {
 
     console.log(`Pascal LSP client: starting server from ${serverPath}`);
 
+    const configuredPaths = config.get<string[]>('configuredPaths') || [];
+    const readLpi = config.get<boolean>('readLpi', true);
+    const readDproj = config.get<boolean>('readDproj', true);
+    const scanProjectFolders = config.get<boolean>('scanProjectFolders', true);
+
     const serverOptions: ServerOptions = {
         run: { command: serverPath, args: ['--stdio'] },
         debug: { command: serverPath, args: ['--stdio'] }
@@ -32,6 +37,12 @@ export function activate(context: vscode.ExtensionContext) {
         documentSelector: [{ scheme: 'file', language: 'pascal' }],
         synchronize: {
             fileEvents: vscode.workspace.createFileSystemWatcher('**/*.pas')
+        },
+        initializationOptions: {
+            configuredPaths: configuredPaths,
+            readLpi: readLpi,
+            readDproj: readDproj,
+            scanProjectFolders: scanProjectFolders
         }
     };
 

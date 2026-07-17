@@ -19,6 +19,66 @@ implementation
 uses
     CompilationMode, Scopes, ConstSection, TypeSection, VarSection, FunctionImpl, CompoundStatement;
 
+function FindClassSymbol(typeDef: PTypeDef): TSymbol;
+var
+    i, j: integer;
+    scope: TScope;
+    sym: TSymbol;
+begin
+    Result := nil;
+    for i := 0 to length(ScopesList) - 1 do
+    begin
+        scope := ScopesList[i];
+        for j := 0 to scope.symbolsList.Count - 1 do
+        begin
+            sym := TSymbol(scope.symbolsList.Items[j]);
+            if (sym <> nil) and (sym.kind = skTypeName) and (sym.typeDef = typeDef) then
+            begin
+                Result := sym;
+                exit;
+            end;
+        end;
+    end;
+end;
+
+procedure RegisterInheritedMembers(selfType: PTypeDef; start: PChar);
+var
+    currClass: PTypeDef;
+    classSym: TSymbol;
+    childName: shortstring;
+    i: integer;
+begin
+    if selfType = nil then
+        exit;
+
+    if selfType^.kind = tkClass then
+        currClass := selfType^.parentClass
+    else if selfType^.kind = tkObject then
+        currClass := selfType^.parentObject
+    else
+        currClass := nil;
+
+    while currClass <> nil do
+    begin
+        classSym := FindClassSymbol(currClass);
+        if classSym <> nil then
+        begin
+            for i := 0 to length(classSym.children) - 1 do
+            begin
+                childName := LowerCase(classSym.children[i].displayName);
+                if FindScope(start).symbolsList.Find(childName) = nil then
+                    RegisterSymbol(classSym.children[i].declaration, nil, classSym.children[i].kind, classSym.children[i].typeDef, start);
+            end;
+        end;
+        if currClass^.kind = tkClass then
+            currClass := currClass^.parentClass
+        else if currClass^.kind = tkObject then
+            currClass := currClass^.parentObject
+        else
+            currClass := nil;
+    end;
+end;
+
 constructor TBlock.Create(ctx: TParserContext; childSymbols: array of TSymbol; selfType: PTypeDef; resultType: PTypeDef);
 var
     nextTokenKind: TTokenKind;
@@ -39,6 +99,8 @@ begin
 
     for i := 0 to length(childSymbols) - 1 do
         RegisterSymbol(childSymbols[i].declaration, nil, childSymbols[i].kind, childSymbols[i].typeDef, start);
+
+    RegisterInheritedMembers(selfType, start);
 
     AddAnchor(rwConst);
     AddAnchor(rwType);

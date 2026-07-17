@@ -5,7 +5,7 @@ unit Scopes;
 
 interface
 
-uses contnrs, Token;
+uses contnrs, Token, ParserContext;
 
 type
     TScope = class
@@ -43,13 +43,22 @@ var
     i: integer;
     unbound: boolean;
     s: TScope;
+    cursorCtx, scopeCtx: TParserContext;
 begin
 
     Result := ScopesList[0];
+    cursorCtx := FindContextForCursor(cursor);
 
     for i := length(ScopesList) - 1 downto 1 do
     begin
         s := ScopesList[i];
+        if s.token = nil then
+            continue;
+            
+        scopeCtx := FindContextForCursor(s.token.start);
+        if scopeCtx <> cursorCtx then
+            continue;
+
         unbound := not s.token.isPrimitive and (s.token.endMarker = nil);
         if (s.token.start <= cursor) and (unbound or (cursor < s.token.start + s.token.len)) then
         begin

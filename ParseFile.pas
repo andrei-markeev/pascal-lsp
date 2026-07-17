@@ -27,7 +27,7 @@ begin
     BlockRead(f, contents[1], len);
     Close(f);
 
-    ctx := TParserContext.Create(contents);
+    ctx := TParserContext.Create(fileName, contents);
 
     if PeekReservedWord(ctx, rwUnit) then
         fileToken := TUnitFile.Create(ctx)
@@ -78,6 +78,7 @@ begin
     ctx.Free;
     TypesList.Clear;
     ResetScopes;
+    ClearLoadedUnits;
 
 end;
 

@@ -1,0 +1,10 @@
+<UnitFile><RW>unit</RW> <SymbDecl>DepUnit</SymbDecl><RW>;</RW>
+
+<RW>interface</RW>
+
+<InterfaceBlock><VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>DepVar</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection></InterfaceBlock>
+
+<RW>implementation</RW>
+
+<ImplementationBlock><RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

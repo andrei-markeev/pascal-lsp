@@ -1,0 +1,8 @@
+<ProgramFile><RW>program</RW> <SymbDecl>TestDep</SymbDecl><RW>;</RW>
+
+<TUsesClause><RW>uses</RW>
+    <Ident>DepUnit</Ident><RW>;</RW></TUsesClause>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>DepVar</SymbRef> <RW>:=</RW> <Num>42</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

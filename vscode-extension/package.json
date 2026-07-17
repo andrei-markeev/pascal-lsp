@@ -29,6 +29,29 @@
           "type": "string",
           "default": "",
           "description": "Path to the LspServer executable. If empty, the extension looks for build/LspServer.exe in the workspace root."
+        },
+        "pascalLsp.configuredPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "List of custom search paths for Pascal units (absolute or relative to workspace)."
+        },
+        "pascalLsp.readLpi": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use search paths from Lazarus (.lpi) project files if available."
+        },
+        "pascalLsp.readDproj": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use search paths from Delphi (.dproj) project files if available."
+        },
+        "pascalLsp.scanProjectFolders": {
+          "type": "boolean",
+          "default": true,
+          "description": "Scan workspace subfolders recursively (up to depth of 3, ignoring build/system folders) to discover unit directories."
         }
       }
     }

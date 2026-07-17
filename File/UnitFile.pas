@@ -37,6 +37,9 @@ begin
     typeDef.kind := tkUnitName;
     RegisterSymbol(ident, nil, skUnitName, @typeDef, ctx.Cursor);
 
+    if LoadedUnits.Find(LowerCase(ident.GetStr)) = nil then
+        LoadedUnits.Add(LowerCase(ident.GetStr), ctx);
+
     TReservedWord.Create(ctx, rwSemiColon, false);
 
     TReservedWord.Create(ctx, rwInterface, false);
@@ -47,6 +50,13 @@ begin
     TInterfaceBlock.Create(ctx);
 
     TReservedWord.Create(ctx, rwImplementation, false);
+
+    if ctx.isDependency then
+    begin
+        ctx.Cursor := ctx.Cursor + strlen(ctx.Cursor);
+        ctx.MarkEndOfToken(Self);
+        exit;
+    end;
 
     if PeekReservedWord(ctx, rwUses) then
         TUsesClause.Create(ctx);
