@@ -1,0 +1,37 @@
+<ProgramFile><RW>program</RW> <SymbDecl>VariantRecordTypes</SymbDecl><RW>;</RW>
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TNode1</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <RW>case</RW> <SymbDecl>kind</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>of</RW>
+            <Num>1</Num><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <Num>2</Num><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>real</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    <TypeDecl><SymbDecl>TNode2</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <RW>case</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>of</RW>
+            <Num>1</Num><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>real</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    <TypeDecl><SymbDecl>TNode3</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>a</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <RW>case</RW> <SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec> <RW>of</RW>
+            <Ident>true</Ident><RW>:</RW> <RW>(</RW>
+                <VarDecl><SymbDecl>c</SymbDecl><RW>:</RW> <TypeSpec><Ident>real</Ident></TypeSpec></VarDecl><RW>;</RW>
+                <RW>case</RW> <SymbDecl>d</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>of</RW>
+                    <Num>1</Num><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>e</SymbDecl><RW>:</RW> <TypeSpec><Ident>char</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+                    <Num>2</Num><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>f</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW> <VarDecl><SymbDecl>g</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <RW>)</RW><RW>;</RW>
+            <Ident>false</Ident><RW>:</RW> <RW>(</RW>
+                <VarDecl><SymbDecl>h</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl>
+            <RW>)</RW><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>n</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TNode3</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><VarRef><SymbRef>n</SymbRef><RW>.</RW><Ident>a</Ident></VarRef> <RW>:=</RW> <Num>1</Num></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>n</SymbRef><RW>.</RW><Ident>c</Ident></VarRef> <RW>:=</RW> <Num>2.5</Num></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>n</SymbRef><RW>.</RW><Ident>e</Ident></VarRef> <RW>:=</RW> <Str>'A'</Str></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>n</SymbRef><RW>.</RW><Ident>h</Ident></VarRef> <RW>:=</RW> <Num>10</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

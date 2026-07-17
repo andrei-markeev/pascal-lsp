@@ -14,6 +14,8 @@ type
         constructor Create(ctx: TParserContext);
     end;
 
+procedure ParseCaseConstant(ctx: TParserContext);
+
 implementation
 
 uses

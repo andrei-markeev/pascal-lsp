@@ -6,12 +6,13 @@ unit TypeSpec;
 interface
 
 uses
-    ParserContext, Symbols, Token, TypeDefs;
+    ParserContext, Symbols, Token, TypeDefs, Identifier;
 
 type
     TTypeSpec = class(TToken)
     public
-        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef);
+        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef); overload;
+        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef; ident: TIdentifier); overload;
     end;
 
 function CreateTypeSpec(ctx: TParserContext; var typeDefToFill: TTypeDef): TTypeSpec;
@@ -19,7 +20,7 @@ function CreateTypeSpec(ctx: TParserContext; var typeDefToFill: TTypeDef): TType
 implementation
 
 uses
-    Anchors, ReservedWord, Identifier,
+    Anchors, ReservedWord,
     EnumSpec, RangeSpec, ArraySpec, SetSpec, RecordSpec, ClassSpec, PointerSpec;
 
 function CreateTypeSpec(ctx: TParserContext; var typeDefToFill: TTypeDef): TTypeSpec;
@@ -176,6 +177,59 @@ begin
 
     state := tsMissing;
     len := 0;
+end;
+
+constructor TTypeSpec.Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef; ident: TIdentifier);
+var
+    identName: shortstring;
+    symbol: TSymbol;
+    found: pointer;
+begin
+    ctx.InsertBefore(ident, Self);
+    tokenName := 'TypeSpec';
+    start := ident.start;
+
+    identName := ident.GetStr();
+    symbol := FindSymbol(identName, ident.start);
+    if symbol = nil then
+    begin
+        found := TypesList.Find(LowerCase(identName));
+        if found = nil then
+        begin
+            state := tsError;
+            errorMessage := 'Identifier has not been declared!';
+            ctx.MarkEndOfToken(Self);
+            exit;
+        end;
+
+        typeDefToFill := PTypeDef(found)^;
+        state := tsCorrect;
+        ctx.MarkEndOfToken(Self);
+        exit;
+    end;
+
+    case symbol.kind of
+        skTypeName:
+            begin
+                typeDefToFill := symbol.typeDef^;
+                symbol.AddReference(ident);
+                state := tsCorrect;
+                ctx.MarkEndOfToken(Self);
+                exit;
+            end;
+        skConstant:
+            begin
+                state := tsError;
+                errorMessage := 'Type expected!';
+                ctx.MarkEndOfToken(Self);
+                exit;
+            end;
+    end;
+
+    symbol.AddReference(ident);
+    state := tsError;
+    errorMessage := 'Type expected!';
+    ctx.MarkEndOfToken(Self);
 end;
 
 end.

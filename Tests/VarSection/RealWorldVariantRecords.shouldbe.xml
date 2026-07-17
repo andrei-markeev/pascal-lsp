@@ -1,0 +1,35 @@
+<ProgramFile><RW>program</RW> <SymbDecl>RealWorldVariantRecords</SymbDecl><RW>;</RW>
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TFPHashList</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW> <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW>
+    <TypeDecl><SymbDecl>TFPList</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW> <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    <TypeDecl><SymbDecl>TTypeKind</SymbDecl> <RW>=</RW> <TypeSpec><EnumSpec><RW>(</RW>
+        <SymbDecl>tkUnknown</SymbDecl><RW>,</RW> <SymbDecl>tkInteger</SymbDecl><RW>,</RW> <SymbDecl>tkBoolean</SymbDecl><RW>,</RW> <SymbDecl>tkChar</SymbDecl><RW>,</RW> <SymbDecl>tkCharRange</SymbDecl><RW>,</RW> <SymbDecl>tkEnum</SymbDecl><RW>,</RW> <SymbDecl>tkEnumMember</SymbDecl><RW>,</RW>
+        <SymbDecl>tkReal</SymbDecl><RW>,</RW> <SymbDecl>tkString</SymbDecl><RW>,</RW> <SymbDecl>tkPointer</SymbDecl><RW>,</RW> <SymbDecl>tkArray</SymbDecl><RW>,</RW> <SymbDecl>tkDynamicArray</SymbDecl><RW>,</RW>
+        <SymbDecl>tkRecord</SymbDecl><RW>,</RW> <SymbDecl>tkObject</SymbDecl><RW>,</RW> <SymbDecl>tkClass</SymbDecl><RW>,</RW> <SymbDecl>tkSet</SymbDecl><RW>,</RW> <SymbDecl>tkFile</SymbDecl><RW>,</RW> <SymbDecl>tkProcedure</SymbDecl><RW>,</RW> <SymbDecl>tkFunction</SymbDecl><RW>,</RW> <SymbDecl>tkUnitName</SymbDecl>
+    <RW>)</RW></EnumSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    <TypeDecl><SymbDecl>TVisibility</SymbDecl> <RW>=</RW> <TypeSpec><EnumSpec><RW>(</RW><SymbDecl>vPublic</SymbDecl><RW>,</RW> <SymbDecl>vPrivate</SymbDecl><RW>,</RW> <SymbDecl>vProtected</SymbDecl><RW>,</RW> <SymbDecl>vUnknown</SymbDecl><RW>)</RW></EnumSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    <TypeDecl><SymbDecl>PTypeDef</SymbDecl> <RW>=</RW> <TypeSpec><PointerSpec><RW>^</RW><TypeSpec ERROR="Identifier has not been declared!"><Ident>TTypeDef</Ident></TypeSpec></PointerSpec></TypeSpec></TypeDecl><RW>;</RW>
+    <TypeDecl><SymbDecl>TTypeDef</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>size</SymbDecl><RW>:</RW> <TypeSpec><Ident>longword</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>visibility</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TVisibility</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+        <RW>case</RW> <SymbDecl>kind</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TTypeKind</SymbRef></TypeSpec> <RW>of</RW>
+            <Ident>tkInteger</Ident><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>isSigned</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW> <VarDecl><SymbDecl>rangeStart</SymbDecl><RW>:</RW> <TypeSpec><Ident>int64</Ident></TypeSpec></VarDecl><RW>;</RW> <VarDecl><SymbDecl>rangeEnd</SymbDecl><RW>:</RW> <TypeSpec><Ident>int64</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <Ident>tkCharRange</Ident><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>charRangeStart</SymbDecl><RW>:</RW> <TypeSpec><Ident>char</Ident></TypeSpec></VarDecl><RW>;</RW> <VarDecl><SymbDecl>charRangeEnd</SymbDecl><RW>:</RW> <TypeSpec><Ident>char</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <Ident>tkEnum</Ident><RW>,</RW> <Ident>tkEnumMember</Ident><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>enumType</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>PTypeDef</SymbRef></TypeSpec></VarDecl><RW>;</RW> <VarDecl><SymbDecl>enumSpec</SymbDecl><RW>:</RW> <TypeSpec><Ident>Pointer</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <Ident>tkPointer</Ident><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>isTyped</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW> <VarDecl><SymbDecl>pointerToType</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>PTypeDef</SymbRef></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <Ident>tkArray</Ident><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>typeOfIndex</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>PTypeDef</SymbRef></TypeSpec></VarDecl><RW>;</RW> <VarDecl><SymbDecl>typeOfValues</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>PTypeDef</SymbRef></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <Ident>tkDynamicArray</Ident><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>typeOfDynValues</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>PTypeDef</SymbRef></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <Ident>tkSet</Ident><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>typeOfSet</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>PTypeDef</SymbRef></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <Ident>tkRecord</Ident><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>recordFields</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TFPHashList</SymbRef></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <Ident>tkObject</Ident><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>objectFields</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TFPHashList</SymbRef></TypeSpec></VarDecl><RW>;</RW> <VarDecl><SymbDecl>parentObject</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>PTypeDef</SymbRef></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <Ident>tkClass</Ident><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>classFields</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TFPHashList</SymbRef></TypeSpec></VarDecl><RW>;</RW> <VarDecl><SymbDecl>parentClass</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>PTypeDef</SymbRef></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <Ident>tkProcedure</Ident><RW>,</RW> <Ident>tkFunction</Ident><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>parameters</SymbDecl><RW>:</RW> <TypeSpec><Ident>Pointer</Ident></TypeSpec></VarDecl><RW>;</RW> <VarDecl><SymbDecl>returnType</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>PTypeDef</SymbRef></TypeSpec></VarDecl><RW>;</RW> <VarDecl><SymbDecl>overloads</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TFPList</SymbRef></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <Ident>tkBoolean</Ident><RW>,</RW> <Ident>tkChar</Ident><RW>,</RW> <Ident>tkReal</Ident><RW>,</RW> <Ident>tkUnitName</Ident><RW>:</RW> <RW>(</RW><RW>)</RW><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

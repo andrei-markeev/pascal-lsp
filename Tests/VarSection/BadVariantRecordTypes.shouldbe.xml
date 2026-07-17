@@ -1,0 +1,36 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadVariantRecordTypes</SymbDecl><RW>;</RW>
+
+<TypeSection><RW>type</RW>
+    // Missing 'of' keyword
+    <TypeDecl><SymbDecl>TBad1</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <RW>case</RW> <SymbDecl>kind</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW MISSING="of" />
+            <Num>1</Num><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    // Missing colon after case constant
+    <TypeDecl><SymbDecl>TBad2</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <RW>case</RW> <SymbDecl>kind</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>of</RW>
+            <Num>1</Num><RW MISSING=":" /> <RW>(</RW><VarDecl><SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>real</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    // Missing open parenthesis
+    <TypeDecl><SymbDecl>TBad3</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <RW>case</RW> <SymbDecl>kind</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>of</RW>
+            <Num>1</Num><RW>:</RW><RW MISSING="(" /> <VarDecl><SymbDecl>z</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    // Missing close parenthesis
+    <TypeDecl><SymbDecl>TBad4</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <RW>case</RW> <SymbDecl>kind</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>of</RW>
+            <Num>1</Num><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>w</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW><RW MISSING=")" />
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    // Field after variant part (illegal)
+    <TypeDecl><SymbDecl>TBad5</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <RW>case</RW> <SymbDecl>kind</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>of</RW>
+            <Num>1</Num><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>w</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+        <Ident>extraField</Ident><RW>:</RW><RW MISSING="(" /> <VarDecl><SymbDecl>real</SymbDecl><RW MISSING=":" /><TypeSpec MISSING="" /></VarDecl><RW>;</RW><RW MISSING=")" />
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
