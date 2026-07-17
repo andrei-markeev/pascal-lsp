@@ -47,6 +47,7 @@ begin
     declType := unknownType;
 
     symbol := RegisterSymbol(ident, nil, skTypeName, @declType, ctx.Cursor);
+    symbol.rangeToken := Self;
 
     AddAnchor(rwEquals);
     nextTokenKind := SkipUntilAnchor(ctx);

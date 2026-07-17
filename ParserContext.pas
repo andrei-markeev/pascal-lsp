@@ -28,6 +28,7 @@ type
         function IsSeparator(ch: char): boolean; inline;
         function IsEOF: boolean; inline;
         function GetCursorBeforeTrivia: PChar; inline;
+        function GetContents: string; inline;
         procedure SkipTrivia;
         procedure Add(token: TToken);
         procedure InsertBefore(refToken, tokenToInsert: TToken);
@@ -153,6 +154,8 @@ begin
     token.line := line;
     if (token.start <> nil) and (token.start >= lineStart) then
         token.position := token.start - lineStart
+    else if Cursor >= lineStart then
+        token.position := Cursor - lineStart
     else
         token.position := 0;
 end;
@@ -209,6 +212,11 @@ end;
 function TParserContext.IsEOF: boolean; inline;
 begin
     IsEOF := Cursor[0] = #0;
+end;
+
+function TParserContext.GetContents: string; inline;
+begin
+    GetContents := contents;
 end;
 
 end.

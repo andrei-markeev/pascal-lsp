@@ -14,12 +14,15 @@ type
     public
         kind: TSymbolKind;
         name: shortstring;
+        displayName: shortstring;
+        rangeToken: TToken;
         uniquePrefix: shortstring;
         parent: TSymbol;
         declaration: TIdentifier;
         typeDef: PTypeDef;
         references: array of TIdentifier;
         children: array of TSymbol;
+        isParameter: boolean;
         constructor Create;
         destructor Destroy; override;
         procedure AddReference(ident: TIdentifier);
@@ -124,6 +127,7 @@ begin
         inc(lastId);
         kind := symbolKind;
         parent := symbolParent;
+        displayName := symbolName;
         if symbolParent <> nil then
         begin
             name := symbolParent.uniquePrefix + symbolName;
@@ -167,6 +171,7 @@ end;
 
 constructor TSymbol.Create;
 begin
+    isParameter := false;
 end;
 
 destructor TSymbol.Destroy;

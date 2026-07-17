@@ -36,6 +36,7 @@ var
     symbol: TSymbol;
     found: pointer;
 begin
+    ctx.SkipTrivia;
     ctx.Add(Self);
     tokenName := 'TypeSpec';
     start := ctx.Cursor;

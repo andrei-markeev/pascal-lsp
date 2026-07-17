@@ -8,10 +8,19 @@ uses
   Windows,
   {$ENDIF}
   sysutils, classes, ssockets, fpjson, jsonparser,
-  ParserContext, Token, Symbols, Scopes, ReservedWord, TypeDecl,
+  ParserContext, Token, Identifier, Symbols, Scopes, ReservedWord, TypeDecl,
   ParameterDecl, TypeDefs, ProgramFile, UnitFile;
 
 type
+  TSemanticToken = record
+    line: integer;
+    position: integer;
+    len: integer;
+    tokenType: integer;
+    tokenModifiers: integer;
+  end;
+  TSemanticTokenArray = array of TSemanticToken;
+
   TLspServerApp = class
   public
     procedure OnConnect(Sender: TObject; Data: TSocketStream);
@@ -130,7 +139,10 @@ begin
       if cur.state = tsError then
         DiagnosticsJson := DiagnosticsJson + '"message":' + '"' + string(StringToJSONString(cur.errorMessage)) + '"'
       else
-        DiagnosticsJson := DiagnosticsJson + '"message":' + '"' + string(StringToJSONString('Missing ' + cur.tokenName)) + '"';
+        if cur.GetStr() <> '' then
+          DiagnosticsJson := DiagnosticsJson + '"message":' + '"' + string(StringToJSONString('Missing ''' + cur.GetStr() + '''')) + '"'
+        else
+          DiagnosticsJson := DiagnosticsJson + '"message":' + '"' + string(StringToJSONString('Missing ' + cur.tokenName)) + '"';
         
       DiagnosticsJson := DiagnosticsJson + '}';
       inc(DiagCount);
@@ -145,7 +157,22 @@ begin
   );
 end;
 
-function SerializeSymbol(symbol: TSymbol): string;
+function IsInsideBlock(ident: TIdentifier; block: TToken): boolean;
+begin
+  Result := (ident <> nil) and (block <> nil) and 
+            (ident.start >= block.start) and (ident.start < block.start + block.len);
+end;
+
+function IsMethodImplementation(symbol: TSymbol): boolean;
+begin
+  Result := (symbol.parent <> nil) and 
+            (symbol.kind in [skProcedure, skFunction, skConstructor, skDestructor]) and
+            ((symbol.parent.rangeToken = nil) or 
+             (symbol.declaration.start < symbol.parent.rangeToken.start) or 
+             (symbol.declaration.start >= symbol.parent.rangeToken.start + symbol.parent.rangeToken.len));
+end;
+
+function SerializeSymbol(symbol: TSymbol; interfaceBlock, implementationBlock: TToken): string;
 var
   childJson, resultJson, symRange, selectionRange: string;
   symbolKindVal: integer;
@@ -156,9 +183,12 @@ begin
   begin
     if (symbol.children[c] <> nil) and (symbol.children[c].declaration <> nil) then
     begin
-      if childJson <> '' then
-        childJson := childJson + ',';
-      childJson := childJson + SerializeSymbol(symbol.children[c]);
+      if not IsMethodImplementation(symbol.children[c]) then
+      begin
+        if childJson <> '' then
+          childJson := childJson + ',';
+        childJson := childJson + SerializeSymbol(symbol.children[c], interfaceBlock, implementationBlock);
+      end;
     end;
   end;
 
@@ -190,7 +220,7 @@ begin
                      '"end":{"line":' + IntToStr(symbol.declaration.line) + ',"character":' + IntToStr(symbol.declaration.position + symbol.declaration.len) + '}}';
 
   resultJson := '{' +
-    '"name":' + '"' + string(StringToJSONString(symbol.shortName)) + '"' + ',' +
+    '"name":' + '"' + string(StringToJSONString(symbol.displayName)) + '"' + ',' +
     '"kind":' + IntToStr(symbolKindVal) + ',' +
     '"range":' + symRange + ',' +
     '"selectionRange":' + selectionRange;
@@ -212,6 +242,7 @@ var
   interfaceBlock, implementationBlock, curToken: TToken;
   interfaceChildren, implementationChildren, topLevelJson: string;
   symbolSerialized: string;
+  isInsideInterface, isInsideImplementation: boolean;
 begin
   Response := '{"jsonrpc":"2.0",';
   if Id <> nil then
@@ -244,24 +275,28 @@ begin
       for j := 0 to scope.symbolsList.Count - 1 do
       begin
         symbol := TSymbol(scope.symbolsList.Items[j]);
-        if (symbol <> nil) and (symbol.declaration <> nil) and (symbol.parent = nil) then
+        if (symbol <> nil) and (symbol.declaration <> nil) then
         begin
-          symbolSerialized := SerializeSymbol(symbol);
-          
-          if (interfaceBlock <> nil) and (symbol.declaration.start >= interfaceBlock.start) and (symbol.declaration.start < interfaceBlock.start + interfaceBlock.len) then
+          isInsideInterface := IsInsideBlock(symbol.declaration, interfaceBlock);
+          isInsideImplementation := IsInsideBlock(symbol.declaration, implementationBlock);
+
+          if isInsideInterface and (symbol.parent = nil) then
           begin
+            symbolSerialized := SerializeSymbol(symbol, interfaceBlock, implementationBlock);
             if interfaceChildren <> '' then
               interfaceChildren := interfaceChildren + ',';
             interfaceChildren := interfaceChildren + symbolSerialized;
           end
-          else if (implementationBlock <> nil) and (symbol.declaration.start >= implementationBlock.start) and (symbol.declaration.start < implementationBlock.start + implementationBlock.len) then
+          else if isInsideImplementation and ((symbol.parent = nil) or IsMethodImplementation(symbol)) then
           begin
+            symbolSerialized := SerializeSymbol(symbol, interfaceBlock, implementationBlock);
             if implementationChildren <> '' then
               implementationChildren := implementationChildren + ',';
             implementationChildren := implementationChildren + symbolSerialized;
           end
-          else
+          else if not isInsideInterface and not isInsideImplementation and ((symbol.parent = nil) or IsMethodImplementation(symbol)) then
           begin
+            symbolSerialized := SerializeSymbol(symbol, interfaceBlock, implementationBlock);
             if topLevelJson <> '' then
               topLevelJson := topLevelJson + ',';
             topLevelJson := topLevelJson + symbolSerialized;
@@ -307,6 +342,314 @@ begin
   SendResponse(WriteStream, Response);
 end;
 
+procedure AddSemanticToken(var tokens: TSemanticTokenArray; var count, capacity: integer; line, pos, len, tType, tModifiers: integer);
+begin
+  if count >= capacity then
+  begin
+    capacity := capacity + 256;
+    SetLength(tokens, capacity);
+  end;
+  tokens[count].line := line;
+  tokens[count].position := pos;
+  tokens[count].len := len;
+  tokens[count].tokenType := tType;
+  tokens[count].tokenModifiers := tModifiers;
+  inc(count);
+end;
+
+procedure ScanComments(const Content: string; var tokens: TSemanticTokenArray; var count, capacity: integer);
+var
+  p: PChar;
+  lineStart: PChar;
+  line, pos: integer;
+  commentStart: PChar;
+  commentLen: integer;
+begin
+  if Content = '' then exit;
+  p := PChar(Content);
+  lineStart := p;
+  line := 0;
+  while p[0] <> #0 do
+  begin
+    if (p[0] = #13) and (p[1] = #10) then
+    begin
+      inc(p, 2);
+      inc(line);
+      lineStart := p;
+    end
+    else if p[0] in [#10, #13] then
+    begin
+      inc(p);
+      inc(line);
+      lineStart := p;
+    end
+    else if (p[0] = '/') and (p[1] = '/') then
+    begin
+      commentStart := p;
+      pos := p - lineStart;
+      inc(p, 2);
+      while not (p[0] in [#10, #13, #0]) do
+        inc(p);
+      commentLen := p - commentStart;
+      AddSemanticToken(tokens, count, capacity, line, pos, commentLen, 13, 0); // 13 = comment
+    end
+    else if p[0] = '{' then
+    begin
+      commentStart := p;
+      pos := p - lineStart;
+      inc(p);
+      while (p[0] <> '}') and (p[0] <> #0) do
+      begin
+        if (p[0] = #13) and (p[1] = #10) then
+        begin
+          inc(p, 2);
+          inc(line);
+          lineStart := p;
+        end
+        else if p[0] in [#10, #13] then
+        begin
+          inc(p);
+          inc(line);
+          lineStart := p;
+        end
+        else
+          inc(p);
+      end;
+      if p[0] = '}' then
+        inc(p);
+      commentLen := p - commentStart;
+      AddSemanticToken(tokens, count, capacity, line, pos, commentLen, 13, 0); // 13 = comment
+    end
+    else
+      inc(p);
+  end;
+end;
+
+procedure QuickSortSemanticTokens(var tokens: TSemanticTokenArray; Low, High: integer);
+var
+  i, j: integer;
+  pivot: TSemanticToken;
+  temp: TSemanticToken;
+begin
+  if Low >= High then exit;
+  pivot := tokens[Low + (High - Low) div 2];
+  i := Low;
+  j := High;
+  repeat
+    while (tokens[i].line < pivot.line) or ((tokens[i].line = pivot.line) and (tokens[i].position < pivot.position)) do
+      inc(i);
+    while (tokens[j].line > pivot.line) or ((tokens[j].line = pivot.line) and (tokens[j].position > pivot.position)) do
+      dec(j);
+    if i <= j then
+    begin
+      temp := tokens[i];
+      tokens[i] := tokens[j];
+      tokens[j] := temp;
+      inc(i);
+      dec(j);
+    end;
+  until i > j;
+  QuickSortSemanticTokens(tokens, Low, j);
+  QuickSortSemanticTokens(tokens, i, High);
+end;
+
+procedure HandleSemanticTokens(WriteStream: TStream; const Uri: string; Id: TJSONData);
+var
+  Response: string;
+  tokens: TSemanticTokenArray;
+  count, capacity: integer;
+  i, k: integer;
+  curToken: TToken;
+  ident: TIdentifier;
+  sym: TSymbol;
+  tokenType, tokenModifiers: integer;
+  isParam: boolean;
+  parentsStack: array of string;
+  parentsCount: integer;
+  dataJson: string;
+  prevLine, prevChar: integer;
+  deltaLine, deltaChar: integer;
+  tName: shortstring;
+  identName: shortstring;
+begin
+  Response := '{"jsonrpc":"2.0",';
+  if Id <> nil then
+    Response := Response + '"id":' + Id.AsJSON + ','
+  else
+    Response := Response + '"id":null,';
+    
+  count := 0;
+  capacity := 256;
+  SetLength(tokens, capacity);
+  
+  if (LastParserContext <> nil) and (LastParsedUri = Uri) then
+  begin
+    ScanComments(LastParserContext.GetContents, tokens, count, capacity);
+    
+    parentsCount := 0;
+    SetLength(parentsStack, 64);
+    
+    for k := 0 to LastParserContext.tokensLen - 1 do
+    begin
+      curToken := LastParserContext.Tokens[k];
+      if curToken = nil then continue;
+      
+      if curToken.state = tsEndOf then
+      begin
+        if parentsCount > 0 then
+          dec(parentsCount);
+        continue;
+      end;
+      
+      if not curToken.isPrimitive then
+      begin
+        if parentsCount >= length(parentsStack) then
+          SetLength(parentsStack, parentsCount + 64);
+        parentsStack[parentsCount] := curToken.tokenName;
+        inc(parentsCount);
+        continue;
+      end;
+      
+      if (curToken.len <= 0) or not (curToken.state in [tsCorrect, tsError, tsSkipped]) then
+        continue;
+        
+      tokenType := -1;
+      tokenModifiers := 0;
+      tName := curToken.tokenName;
+      
+      if tName = 'RW' then
+      begin
+        if (TReservedWord(curToken).kind >= rwAnd) and (TReservedWord(curToken).kind <= rwTry) then
+        begin
+          tokenType := 10; // keyword
+        end
+        else if TReservedWord(curToken).kind in [
+          rwAssign, rwPlus, rwMinus, rwMultiply, rwExponentiation, rwDivide, rwHat,
+          rwEquals, rwNotEqual, rwLess, rwMore, rwLessOrEqual, rwMoreOrEqual,
+          rwAt, rwShl2, rwShr2, rwSymmetricDifference
+        ] then
+        begin
+          tokenType := 14; // operator
+        end;
+      end
+      else if tName = 'Num' then
+      begin
+        tokenType := 11; // number
+      end
+      else if tName = 'Str' then
+      begin
+        tokenType := 12; // string
+      end
+      else if (tName = 'Ident') or (tName = 'SymbDecl') or (tName = 'SymbRef') then
+      begin
+        ident := TIdentifier(curToken);
+        sym := TSymbol(ident.symbol);
+        
+        if sym <> nil then
+        begin
+          if sym.declaration = ident then
+            tokenModifiers := tokenModifiers or 1; // declaration
+            
+          isParam := sym.isParameter;
+          
+          case sym.kind of
+            skUnitName:
+              tokenType := 0; // namespace
+            skTypeName:
+              begin
+                if (sym.typeDef <> nil) and (sym.typeDef^.kind = tkClass) then
+                  tokenType := 1 // class
+                else if (sym.typeDef <> nil) and (sym.typeDef^.kind = tkRecord) then
+                  tokenType := 3 // struct
+                else
+                  tokenType := 4; // type
+              end;
+            skConstant, skTypedConstant:
+              begin
+                tokenType := 6; // variable
+                tokenModifiers := tokenModifiers or 4; // readonly
+              end;
+            skVariable:
+              begin
+                for i := parentsCount - 1 downto 0 do
+                  if parentsStack[i] = 'ParameterDecl' then
+                    isParam := true;
+                    
+                if isParam then
+                  tokenType := 5 // parameter
+                else if (sym.parent <> nil) and (sym.parent.kind = skTypeName) then
+                  tokenType := 7 // property
+                else
+                  tokenType := 6; // variable
+              end;
+            skProcedure, skFunction:
+              begin
+                if (sym.parent <> nil) and (sym.parent.kind = skTypeName) then
+                  tokenType := 9 // method
+                else
+                  tokenType := 8; // function
+              end;
+            skConstructor, skDestructor:
+              tokenType := 9; // method
+          end;
+        end
+        else
+        begin
+          identName := LowerCase(ident.GetStr());
+          if (identName = 'public') or (identName = 'protected') or
+             (identName = 'private') or (identName = 'published') or
+             (identName = 'strict') then
+            tokenType := 10 // keyword
+          else if TypesList.Find(identName) <> nil then
+            tokenType := 4; // type
+        end;
+      end;
+      
+      if tokenType <> -1 then
+      begin
+        AddSemanticToken(tokens, count, capacity, curToken.line, curToken.position, curToken.len, tokenType, tokenModifiers);
+      end;
+    end;
+    
+    SetLength(parentsStack, 0);
+  end;
+  
+  if count > 0 then
+  begin
+    QuickSortSemanticTokens(tokens, 0, count - 1);
+  end;
+  
+  dataJson := '';
+  prevLine := 0;
+  prevChar := 0;
+  for i := 0 to count - 1 do
+  begin
+    if i > 0 then
+      dataJson := dataJson + ',';
+      
+    deltaLine := tokens[i].line - prevLine;
+    if deltaLine > 0 then
+      deltaChar := tokens[i].position
+    else
+      deltaChar := tokens[i].position - prevChar;
+      
+    dataJson := dataJson + 
+      IntToStr(deltaLine) + ',' +
+      IntToStr(deltaChar) + ',' +
+      IntToStr(tokens[i].len) + ',' +
+      IntToStr(tokens[i].tokenType) + ',' +
+      IntToStr(tokens[i].tokenModifiers);
+      
+    prevLine := tokens[i].line;
+    prevChar := tokens[i].position;
+  end;
+  
+  SetLength(tokens, 0);
+  
+  Response := Response + '"result":{"data":[' + dataJson + ']}}';
+  SendResponse(WriteStream, Response);
+end;
+
 procedure ProcessRequest(WriteStream: TStream; const JsonStr: string);
 var
   Json: TJSONData;
@@ -342,7 +685,14 @@ begin
       Response := Response + '"result":{' +
         '"capabilities":{' +
           '"textDocumentSync":1,' +
-          '"documentSymbolProvider":true' +
+          '"documentSymbolProvider":true,' +
+          '"semanticTokensProvider":{' +
+            '"legend":{' +
+              '"tokenTypes":["namespace","class","interface","struct","type","parameter","variable","property","function","method","keyword","number","string","comment","operator"],' +
+              '"tokenModifiers":["declaration","definition","readonly","static"]' +
+            '},' +
+            '"full":true' +
+          '}' +
         '}' +
       '}}';
       SendResponse(WriteStream, Response);
@@ -363,6 +713,11 @@ begin
     begin
       Uri := Json.FindPath('params.textDocument.uri').AsString;
       HandleDocumentSymbol(WriteStream, Uri, Id);
+    end
+    else if Method = 'textDocument/semanticTokens/full' then
+    begin
+      Uri := Json.FindPath('params.textDocument.uri').AsString;
+      HandleSemanticTokens(WriteStream, Uri, Id);
     end
     else if Method = 'shutdown' then
     begin

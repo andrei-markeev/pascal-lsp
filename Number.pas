@@ -117,8 +117,6 @@ end;
 constructor TNumber.Create(ctx: TParserContext);
 begin
     tokenName := 'Num';
-    ctx.Add(Self);
-
     isPrimitive := true;
     ctx.SkipTrivia;
 
@@ -132,6 +130,7 @@ begin
     else
         ParseDecNumber(ctx);
 
+    ctx.Add(Self);
 end;
 
 destructor TNumber.Destroy;

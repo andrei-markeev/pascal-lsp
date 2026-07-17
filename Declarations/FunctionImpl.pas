@@ -29,7 +29,7 @@ var
     nextReservedWordKind: TReservedWordKind;
     needsReturnType, needsToAddChildSymbols: boolean;
     symbolKind: TSymbolKind;
-    symbolParent, symbolField: TSymbol;
+    symbolParent, symbolField, symbol: TSymbol;
     paramDecl: TParameterDecl;
     params: TParameterList;
     i: integer;
@@ -181,7 +181,12 @@ begin
         nameIdent.errorMessage := 'Duplicate subroutine declaration!';
     end
     else if overrideResult <> ovAdded then
-        RegisterSymbol(nameIdent, symbolParent, symbolKind, @funcType, ctx.Cursor);
+    begin
+        symbol := RegisterSymbol(nameIdent, symbolParent, symbolKind, @funcType, ctx.Cursor);
+        symbol.rangeToken := Self;
+        if symbolParent <> nil then
+            symbol.displayName := symbolParent.displayName + '.' + symbol.displayName;
+    end;
 
     // TODO: result variable variable
 

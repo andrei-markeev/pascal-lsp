@@ -38,6 +38,7 @@ var
     hasMoreParams: boolean;
     isMethodModifier, isFunctionModifier: boolean;
     overrideResult: TTryAddOverrideResult;
+    symbol: TSymbol;
 begin
     ctx.Add(Self);
     tokenName := 'FunctionDecl';
@@ -145,7 +146,10 @@ begin
     end
     else if overrideResult <> ovAdded then
         for p := 0 to length(parentSymbols) - 1 do
-            RegisterSymbol(nameIdent, parentSymbols[p], symbolKind, @funcType, ctx.Cursor);
+        begin
+            symbol := RegisterSymbol(nameIdent, parentSymbols[p], symbolKind, @funcType, ctx.Cursor);
+            symbol.rangeToken := Self;
+        end;
 
     TReservedWord.Create(ctx, rwSemiColon, false);
 

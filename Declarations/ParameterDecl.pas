@@ -94,7 +94,10 @@ begin
 
     SetLength(symbols, l);
     for i := 0 to l - 1 do
+    begin
         symbols[i] := RegisterSymbol(idents[i], nil, symbolKind, @typeDef, ctx.Cursor);
+        symbols[i].isParameter := true;
+    end;
 
     if nextTokenKind.reservedWordKind = rwColon then
     begin
