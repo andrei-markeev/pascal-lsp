@@ -1,8 +1,7 @@
 #!/bin/bash
-
 mkdir -p build
 rm -f build/LspServer*
 
 set -e
 
-fpc -FEbuild/ -FuDeclarations\;Statements\;Types\;File\;Expressions\;Units -gl LspServer.pas
+fpc -FEbuild/ -FuDeclarations -FuStatements -FuTypes -FuFile -FuExpressions -FuUnits -gl LspServer.pas
