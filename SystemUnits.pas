@@ -38,6 +38,8 @@ procedure RegisterSystemSymbols(ctx: TParserContext);
 begin
     if ctx.mode >= cmStandardPascal then
     begin
+        RegisterSymbolByName('True', nil, skConstant, @booleanType, ctx.Cursor);
+        RegisterSymbolByName('False', nil, skConstant, @booleanType, ctx.Cursor);
         RegisterSymbolByName('Abs', nil, skFunction, @functionType_LongInt_LongInt, ctx.Cursor);
         RegisterSymbolByName('ArcTan', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
         RegisterSymbolByName('Chr', nil, skFunction, @functionType_Byte_Char, ctx.Cursor);

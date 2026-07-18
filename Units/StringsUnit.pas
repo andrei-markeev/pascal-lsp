@@ -1,6 +1,7 @@
 unit StringsUnit;
 
 {$mode objfpc}
+{$longstrings on}
 
 interface
 

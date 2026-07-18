@@ -8,11 +8,14 @@
 <VarSection><RW>var</RW>
     <VarDecl><SymbDecl>list</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TFPList</SymbRef></TypeSpec></VarDecl><RW>;</RW>
     <VarDecl><SymbDecl>hashList</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TFPHashList</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>strList</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TStringList</SymbRef></TypeSpec></VarDecl><RW>;</RW>
     <VarDecl><SymbDecl>cnt</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
     <VarDecl><SymbDecl>ptr</SymbDecl><RW>:</RW> <TypeSpec><Ident>pointer</Ident></TypeSpec></VarDecl><RW>;</RW>
     <VarDecl><SymbDecl>valMin</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
     <VarDecl><SymbDecl>str</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
-    <VarDecl><SymbDecl>p</SymbDecl><RW>:</RW> <TypeSpec><Ident>PChar</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+    <VarDecl><SymbDecl>p</SymbDecl><RW>:</RW> <TypeSpec><Ident>PChar</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>idx</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
 
 <ProcedureDecl><RW>procedure</RW> <Ident>TestMocked</Ident><RW>;</RW></ProcedureDecl></InterfaceBlock>
 
@@ -22,7 +25,25 @@
 <Block><RW>begin</RW>
     <Assignment><SymbRef>cnt</SymbRef> <RW>:=</RW> <VarRef><SymbRef>list</SymbRef><RW>.</RW><Ident>count</Ident></VarRef></Assignment><RW>;</RW>
     <Assignment><SymbRef>ptr</SymbRef> <RW>:=</RW> <VarRef><SymbRef>list</SymbRef><RW>.</RW><Ident>items</Ident><RW>[</RW><Num>0</Num><RW>]</RW></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>cnt</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>list</SymbRef><RW>.</RW><Ident>Add</Ident></VarRef><RW>(</RW><SymbRef>ptr</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>list</SymbRef><RW>.</RW><Ident>Clear</Ident></VarRef></Call><RW>;</RW>
+
     <Assignment><SymbRef>ptr</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>hashList</SymbRef><RW>.</RW><Ident>find</Ident></VarRef><RW>(</RW><Str>'key'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>cnt</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>hashList</SymbRef><RW>.</RW><Ident>Add</Ident></VarRef><RW>(</RW><Str>'key'</Str><RW>,</RW> <SymbRef>ptr</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>hashList</SymbRef><RW>.</RW><Ident>Delete</Ident></VarRef><RW>(</RW><Num>0</Num><RW>)</RW></Call><RW>;</RW>
+
+    <Assignment><SymbRef>strList</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TStringList</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>strList</SymbRef><RW>.</RW><Ident>Add</Ident></VarRef><RW>(</RW><Str>'test'</Str><RW>)</RW></Call><RW>;</RW>
+    <Assignment><VarRef><SymbRef>strList</SymbRef><RW>.</RW><Ident>Delimiter</Ident></VarRef> <RW>:=</RW> <Str>';'</Str></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>strList</SymbRef><RW>.</RW><Ident>StrictDelimiter</Ident></VarRef> <RW>:=</RW> <SymbRef>true</SymbRef></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>strList</SymbRef><RW>.</RW><Ident>DelimitedText</Ident></VarRef> <RW>:=</RW> <Str>'a;b'</Str></Assignment><RW>;</RW>
+    <Assignment><SymbRef>cnt</SymbRef> <RW>:=</RW> <VarRef><SymbRef>strList</SymbRef><RW>.</RW><Ident>Count</Ident></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>idx</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>strList</SymbRef><RW>.</RW><Ident>IndexOf</Ident></VarRef><RW>(</RW><Str>'test'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>str</SymbRef> <RW>:=</RW> <VarRef><SymbRef>strList</SymbRef><RW>[</RW><Num>0</Num><RW>]</RW></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>strList</SymbRef><RW>.</RW><Ident>Find</Ident></VarRef><RW>(</RW><Str>'test'</Str><RW>,</RW> <SymbRef>idx</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>strList</SymbRef><RW>.</RW><Ident>Clear</Ident></VarRef></Call><RW>;</RW>
+    <Call><VarRef><SymbRef>strList</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call><RW>;</RW>
+
     <Assignment><SymbRef>valMin</SymbRef> <RW>:=</RW> <Call><SymbRef>Min</SymbRef><RW>(</RW><Num>10</Num><RW>,</RW> <Num>20</Num><RW>)</RW></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>str</SymbRef> <RW>:=</RW> <Call><SymbRef>LowerCase</SymbRef><RW>(</RW><Str>'TEST'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>str</SymbRef> <RW>:=</RW> <Call><SymbRef>IntToStr</SymbRef><RW>(</RW><Num>123</Num><RW>)</RW></Call></Assignment><RW>;</RW>

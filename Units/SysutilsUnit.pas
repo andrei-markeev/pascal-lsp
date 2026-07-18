@@ -1,6 +1,7 @@
 unit SysutilsUnit;
 
 {$mode objfpc}
+{$longstrings on}
 
 interface
 

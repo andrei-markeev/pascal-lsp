@@ -33,8 +33,10 @@ begin
 
     if ref is TVarRef then
         symbol := TSymbol(TVarRef(ref).firstIdent.symbol)
+    else if ref is TIdentifier then
+        symbol := TSymbol(TIdentifier(ref).symbol)
     else
-        symbol := TSymbol(TIdentifier(ref).symbol);
+        symbol := nil;
 
     if (symbol <> nil) and (symbol.kind in [skConstant, skTypedConstant]) then
     begin
@@ -42,16 +44,18 @@ begin
         errorMessage := 'Cannot modify a constant!';
     end;
 
-    if (symbol <> nil) and (symbol.kind = skFunction) then
+    if (symbol <> nil) and (symbol.kind = skFunction) and (symbol.typeDef <> nil) and (symbol.typeDef^.returnType <> nil) then
         leftTypeDef := symbol.typeDef^.returnType^
+    else if ref <> nil then
+        leftTypeDef := ref.typeDef
     else
-        leftTypeDef := ref.typeDef;
+        leftTypeDef := unknownType;
 
     TReservedWord.Create(ctx, rwAssign, false);
 
     expr := CreateExpression(ctx);
 
-    if not TypesAreAssignable(leftTypeDef, expr.typeDef, typeError) then
+    if (expr <> nil) and not TypesAreAssignable(leftTypeDef, expr.typeDef, typeError) then
     begin
         state := tsError;
         errorMessage := 'Invalid assignment: ' + typeError;

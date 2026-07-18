@@ -1,6 +1,7 @@
 unit MathUnit;
 
 {$mode objfpc}
+{$longstrings on}
 
 interface
 

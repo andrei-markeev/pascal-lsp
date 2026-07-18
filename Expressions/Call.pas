@@ -33,13 +33,27 @@ begin
     state := tsCorrect;
 
     match := -1;
-    overloads := TFPList(ref.typeDef.overloads);
-
-    params := TParameterList(ref.typeDef.parameters);
-    if ref.typeDef.returnType <> nil then
-        typeDef := ref.typeDef.returnType^
+    if ref <> nil then
+    begin
+        overloads := TFPList(ref.typeDef.overloads);
+        params := TParameterList(ref.typeDef.parameters);
+        if ref.typeDef.returnType <> nil then
+            typeDef := ref.typeDef.returnType^
+        else
+            typeDef := unknownType;
+    end
     else
+    begin
+        overloads := nil;
+        params := nil;
         typeDef := unknownType;
+    end;
+
+    if params = nil then
+    begin
+        ctx.MarkEndOfToken(Self);
+        exit;
+    end;
 
     n := 0;
 

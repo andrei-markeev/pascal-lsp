@@ -301,6 +301,9 @@ begin
         symbol := TSymbol(scope.symbolsList.Items[j]);
         if (symbol <> nil) and (symbol.declaration <> nil) then
         begin
+          if symbol.isParameter then
+            continue;
+
           isInsideInterface := IsInsideBlock(symbol.declaration, interfaceBlock);
           isInsideImplementation := IsInsideBlock(symbol.declaration, implementationBlock);
 

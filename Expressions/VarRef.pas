@@ -65,7 +65,13 @@ begin
     firstIdent := TIdentifier.Create(ctx, true);
     symbol := TSymbol(firstIdent.symbol);
     if symbol <> nil then
-        typeDef := symbol.typeDef^
+    begin
+        if symbol.typeDef <> nil then
+        begin
+            typeDef := symbol.typeDef^;
+            firstIdent.typeDef := symbol.typeDef^;
+        end;
+    end
     else
         typeDef.kind := tkUnknown;
 
@@ -97,6 +103,28 @@ begin
             rwOpenSquareBracket:
                 begin
                     reservedWordToken := TReservedWord.Create(ctx, rwOpenSquareBracket, true);
+
+                    if typeDef.kind = tkClass then
+                    begin
+                        currType := @typeDef;
+                        found := nil;
+                        while currType <> nil do
+                        begin
+                            if currType^.kind = tkClass then
+                            begin
+                                found := currType^.classFields.Find('strings');
+                                if found = nil then
+                                    found := currType^.classFields.Find('items');
+                                if found <> nil then
+                                    break;
+                                currType := currType^.parentClass;
+                            end
+                            else
+                                break;
+                        end;
+                        if found <> nil then
+                            typeDef := PTypeDef(found)^;
+                    end;
 
                     if not (typeDef.kind in [tkArray, tkDynamicArray]) then
                     begin
@@ -185,11 +213,15 @@ begin
                                 tkRecord:
                                     begin
                                         found := currType^.recordFields.Find(text);
+                                        if found = nil then
+                                            found := currType^.recordFields.Find(LowerCase(text));
                                         break;
                                     end;
                                 tkObject:
                                     begin
                                         found := currType^.objectFields.Find(text);
+                                        if found = nil then
+                                            found := currType^.objectFields.Find(LowerCase(text));
                                         if found <> nil then
                                             break;
                                         currType := currType^.parentObject;
@@ -197,6 +229,8 @@ begin
                                 tkClass:
                                     begin
                                         found := currType^.classFields.Find(text);
+                                        if found = nil then
+                                            found := currType^.classFields.Find(LowerCase(text));
                                         if found <> nil then
                                             break;
                                         currType := currType^.parentClass;

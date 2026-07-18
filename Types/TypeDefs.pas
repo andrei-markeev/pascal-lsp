@@ -155,7 +155,12 @@ begin
     else if (left.kind in [tkEnum, tkEnumMember]) and (right.kind in [tkEnum, tkEnumMember]) then
         TypesAreAssignable := left.enumSpec = right.enumSpec
     else if (left.kind = tkSet) and (right.kind = tkSet) then
-        TypesAreAssignable := TypesAreAssignable(left.typeOfSet^, right.typeOfSet^, errorMessage);
+    begin
+        if (left.typeOfSet = nil) or (right.typeOfSet = nil) then
+            TypesAreAssignable := true
+        else
+            TypesAreAssignable := TypesAreAssignable(left.typeOfSet^, right.typeOfSet^, errorMessage);
+    end;
 
     if (left.kind = tkString) and (right.kind = tkChar) then
         TypesAreAssignable := true
@@ -178,11 +183,16 @@ var
     pa, pb: TParameterList;
     i: integer;
 begin
+    if (a = nil) or (b = nil) then
+        exit(false);
     if not (a^.kind in [tkProcedure, tkFunction]) or not (b^.kind in [tkProcedure, tkFunction]) then
         exit(false);
 
     if a^.parameters = b^.parameters then
         exit(true);
+
+    if (a^.parameters = nil) or (b^.parameters = nil) then
+        exit(false);
 
     pa := TParameterList(a^.parameters);
     pb := TParameterList(b^.parameters);
