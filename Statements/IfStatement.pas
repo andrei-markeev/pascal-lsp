@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    Expression, Statement;
+    TypeDef, Expression, Statement;
 
 constructor TIfStatement.Create(ctx: TParserContext);
 var
@@ -37,7 +37,7 @@ begin
     start := ctx.Cursor;
     TReservedWord.Create(ctx, rwIf, true);
     expr := CreateExpression(ctx);
-    if (expr.state <> tsMissing) and (expr.typeDef.kind <> tkBoolean) then
+    if (expr <> nil) and (expr.state <> tsMissing) and (expr.typeDef <> nil) and (expr.typeDef.kind <> tkBoolean) then
     begin
         state := tsError;
         errorMessage := 'Condition expression returns ' + TypeKindStr[ord(expr.typeDef.kind)] + ' but must return a boolean value!';

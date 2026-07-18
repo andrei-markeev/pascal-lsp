@@ -13,7 +13,7 @@ if ! command -v make &> /dev/null && command -v wsl.exe &> /dev/null && [[ "$(un
     MAKE="wsl make"
 fi
 
-$FPC -FEbuild/ -FuDeclarations -FuStatements -FuTypes -FuFile -FuExpressions -FuUnits -gl ParseFile.pas
+$FPC -FEbuild/ -FuDeclarations -FuStatements -FuTypes -FuTypes/TypeDefs -FuFile -FuExpressions -FuUnits -gl ParseFile.pas
 
 cd Tests
 

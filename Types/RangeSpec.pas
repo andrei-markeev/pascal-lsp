@@ -20,6 +20,9 @@ type
 
 implementation
 
+uses
+    TypeDef, CharRangeTypeDef, EnumMemberTypeDef;
+
 procedure TRangeSpec.ParseBoundary(ctx: TParserContext; nextTokenKind: TTokenKind; var typeDefToFill: TTypeDef; var outToken: TToken);
 var
     ident: TIdentifier;
@@ -60,37 +63,40 @@ begin
             exit;
         end;
 
-        typesAreCompatible := typeDefToFill.kind = symbol.typeDef^.kind;
-        if (typeDefToFill.kind = tkUnknown) then
+        typesAreCompatible := (typeDefToFill <> nil) and (typeDefToFill.kind = symbol.typeDef.kind);
+        if (typeDefToFill = nil) or (typeDefToFill.kind = tkUnknown) then
             typesAreCompatible := true;
-        if (typeDefToFill.kind = tkChar) and (symbol.typeDef^.kind = tkCharRange) then
+        if (typeDefToFill <> nil) and (typeDefToFill.kind = tkChar) and (symbol.typeDef.kind = tkCharRange) then
             typesAreCompatible := true;
-        if (typeDefToFill.kind = tkCharRange) and (symbol.typeDef^.kind = tkChar) then
+        if (typeDefToFill <> nil) and (typeDefToFill.kind = tkCharRange) and (symbol.typeDef.kind = tkChar) then
             typesAreCompatible := true;
-        if (typeDefToFill.kind = tkEnumMember) and (symbol.typeDef^.kind = tkEnumMember) then
-            typesAreCompatible := typeDefToFill.enumSpec = symbol.typeDef^.enumSpec;
+        if (typeDefToFill <> nil) and (typeDefToFill.kind = tkEnumMember) and (symbol.typeDef.kind = tkEnumMember) then
+            typesAreCompatible := (typeDefToFill is TEnumMemberTypeDef) and (symbol.typeDef is TEnumMemberTypeDef) and (TEnumMemberTypeDef(typeDefToFill).enumSpec = TEnumMemberTypeDef(symbol.typeDef).enumSpec);
+
         if not typesAreCompatible then
         begin
             state := tsError;
-            if typeDefToFill.kind = symbol.typeDef^.kind then
+            if (typeDefToFill <> nil) and (typeDefToFill.kind = symbol.typeDef.kind) then
                 errorMessage := 'Using values from different enums in the same subrange declaration is not supported!'
+            else if typeDefToFill <> nil then
+                errorMessage := 'The type of ' + ident.name + ' (' + TypeKindStr[ord(symbol.typeDef.kind)] + ') is not compatible with the inferred type of the subrange declaration (' + TypeKindStr[ord(typeDefToFill.kind)] + ')!'
             else
-                errorMessage := 'The type of ' + ident.name + ' (' + TypeKindStr[ord(symbol.typeDef^.kind)] + ') is not compatible with the inferred type of the subrange declaration (' + TypeKindStr[ord(typeDefToFill.kind)] + ')!';
+                errorMessage := 'The type of ' + ident.name + ' (' + TypeKindStr[ord(symbol.typeDef.kind)] + ') is not compatible!';
             exit;
         end;
 
-        if (sign <> rwUnknown) and not (symbol.typeDef^.kind in [tkInteger, tkReal]) then
+        if (sign <> rwUnknown) and not (symbol.typeDef.kind in [tkInteger, tkReal]) then
         begin
             state := tsError;
-            errorMessage := 'Sign ''' + ReservedWordStr[ord(sign)] + ''' cannot be applied to ' + ident.name + ' (' + TypeKindStr[ord(symbol.typeDef^.kind)] + ')!';
+            errorMessage := 'Sign ''' + ReservedWordStr[ord(sign)] + ''' cannot be applied to ' + ident.name + ' (' + TypeKindStr[ord(symbol.typeDef.kind)] + ')!';
             exit;
         end;
 
-        typeDefToFill := symbol.typeDef^;
+        typeDefToFill := symbol.typeDef;
     end
     else if nextTokenKind.primitiveKind = pkString then
     begin
-        if not (typeDefToFill.kind in [tkUnknown, tkChar, tkCharRange]) then
+        if (typeDefToFill <> nil) and not (typeDefToFill.kind in [tkUnknown, tkChar, tkCharRange]) then
         begin
             state := tsError;
             errorMessage := 'Expected ' + TypeKindStr[ord(typeDefToFill.kind)] + ' but found a character string!';
@@ -113,14 +119,24 @@ begin
             exit;
         end;
 
-        typeDefToFill.kind := tkCharRange;
-        // TODO: charRangeStart, charRangeEnd
+        typeDefToFill := TCharRangeTypeDef.Create(#0, #255);
 
     end
     else if nextTokenKind.primitiveKind = pkNumber then
     begin
-        typeDefToFill.kind := tkInteger;
+        typeDefToFill := longintType;
         outToken := TNumber.Create(ctx);
+    end;
+
+    nextTokenKind := DetermineNextTokenKind(ctx);
+    if nextTokenKind.reservedWordKind in [rwMinus, rwPlus] then
+    begin
+        TReservedWord.Create(ctx, nextTokenKind.reservedWordKind, true);
+        nextTokenKind := DetermineNextTokenKind(ctx);
+        if nextTokenKind.primitiveKind = pkNumber then
+            TNumber.Create(ctx)
+        else if nextTokenKind.primitiveKind = pkIdentifier then
+            TIdentifier.Create(ctx, true);
     end;
 end;
 

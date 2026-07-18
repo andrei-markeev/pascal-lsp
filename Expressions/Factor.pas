@@ -21,8 +21,8 @@ function CreateFactor(ctx: TParserContext; nextTokenKind: TTokenKind): TTypedTok
 implementation
 
 uses
-    Symbols, TypeDefs, Token, Identifier, Number, StringToken,
-    Expression, VarRef, Call, SetConstructor;
+    Symbols, TypeDefs, TypeDef, Token, Identifier, Number, StringToken,
+    Expression, VarRef, Call, SetConstructor, RoutineTypeDef;
 
 function CreateFactor(ctx: TParserContext; nextTokenKind: TTokenKind): TTypedToken;
 var
@@ -51,45 +51,48 @@ begin
     state := tsCorrect;
     unaryOp := rwUnknown;
     factorToken := nil;
-    typeDef := Default(TTypeDef);
+    typeDef := unknownType;
 
     case nextTokenKind.primitiveKind of
         pkNumber:
             begin
                 factorToken := TNumber.Create(ctx);
-                typeDef := factorToken.typeDef;
+                if factorToken <> nil then
+                    typeDef := factorToken.typeDef;
             end;
         pkString:
             begin
                 factorToken := TStringToken.Create(ctx);
-                typeDef := factorToken.typeDef;
+                if factorToken <> nil then
+                    typeDef := factorToken.typeDef;
             end;
         pkIdentifier:
             begin
                 identName := PeekIdentifier(ctx);
                 symbol := FindSymbol(identName, ctx.Cursor);
-                if (symbol <> nil) or (TypesList.Find(LowerCase(identName)) <> nil) then
+                if (symbol <> nil) and (symbol.kind = skUnitName) then
                 begin
-                    if (symbol <> nil) and (symbol.kind = skUnitName) then
-                    begin
-                        state := tsError;
-                        errorMessage := 'Unit name cannot be used in expressions!';
-                    end
-                    else if (symbol <> nil) and (symbol.kind = skProcedure) then
-                    begin
-                        state := tsError;
-                        errorMessage := 'Invalid call to ' + identName + ': procedure calls cannot be used in expressions because they don''t have a return value!';
-                    end
-                    else
-                    begin
-                        factorToken := CreateVarRef(ctx);
+                    state := tsError;
+                    errorMessage := 'Unit name cannot be used in expressions!';
+                end
+                else if (symbol <> nil) and (symbol.kind = skProcedure) then
+                begin
+                    state := tsError;
+                    errorMessage := 'Invalid call to ' + identName + ': procedure calls cannot be used in expressions because they don''t have a return value!';
+                end
+                else
+                begin
+                    factorToken := CreateVarRef(ctx);
+                    if (factorToken <> nil) and (factorToken.typeDef <> nil) then
                         typeDef := factorToken.typeDef;
 
-                        if typeDef.kind = tkFunction then
-                        begin
-                            typeDef := typeDef.returnType^;
-                            factorToken := TCall.Create(ctx, factorToken);
-                        end;
+                    if (typeDef <> nil) and (typeDef.kind = tkFunction) and (typeDef is TRoutineTypeDef) then
+                    begin
+                        if TRoutineTypeDef(typeDef).returnType <> nil then
+                            typeDef := TRoutineTypeDef(typeDef).returnType
+                        else
+                            typeDef := unknownType;
+                        factorToken := TCall.Create(ctx, factorToken);
                     end;
                 end;
             end;
@@ -101,9 +104,8 @@ begin
                         unaryOp := nextTokenKind.reservedWordKind;
                         nextTokenKind := DetermineNextTokenKind(ctx);
                         factorToken := TFactor.Create(ctx, nextTokenKind);
-                        // TODO: validate if factor's type can be used with current operator
-                        // and change typeDef if needed
-                        typeDef := TFactor(factorToken).typeDef;
+                        if (factorToken <> nil) and (factorToken.typeDef <> nil) then
+                            typeDef := TFactor(factorToken).typeDef;
                     end;
                 rwNil:
                     begin
@@ -113,14 +115,17 @@ begin
                 rwOpenSquareBracket:
                     begin
                         factorToken := TSetConstructor.Create(ctx);
-                        typeDef := TFactor(factorToken).typeDef;
+                        if (factorToken <> nil) and (factorToken.typeDef <> nil) then
+                            typeDef := factorToken.typeDef;
                     end;
                 rwOpenParenthesis: 
                     begin
                         TReservedWord.Create(ctx, rwOpenParenthesis, true);
                         unaryOp := rwOpenParenthesis;
                         factorToken := CreateExpression(ctx);
-                        TReservedWord.Create(ctx, rwOpenParenthesis, false);
+                        if (factorToken <> nil) and (factorToken.typeDef <> nil) then
+                            typeDef := factorToken.typeDef;
+                        TReservedWord.Create(ctx, rwCloseParenthesis, false);
                     end;
             else
                 start := ctx.GetCursorBeforeTrivia;

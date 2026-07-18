@@ -19,7 +19,7 @@ type
         uniquePrefix: shortstring;
         parent: TSymbol;
         declaration: TIdentifier;
-        typeDef: PTypeDef;
+        typeDef: TTypeDef;
         references: array of TIdentifier;
         children: array of TSymbol;
         isParameter: boolean;
@@ -36,9 +36,9 @@ const
         '', 'constant', 'typed constant', 'type', 'variable', 'procedure', 'function'
     );
 
-function TryAddOverride(ident: TIdentifier; symbolType: PTypeDef; cursor: PChar): TTryAddOverrideResult;
-function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: PTypeDef; cursor: PChar): TSymbol;
-function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: PTypeDef; cursor: PChar): TSymbol;
+function TryAddOverride(ident: TIdentifier; symbolType: TTypeDef; cursor: PChar): TTryAddOverrideResult;
+function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
+function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
 function FindSymbol(findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(parent: TSymbol; findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(ident: TIdentifier): TSymbol;
@@ -46,48 +46,52 @@ function FindSymbol(ident: TIdentifier): TSymbol;
 implementation
 
 uses
-    sysutils, classes, Scopes;
+    sysutils, classes, Scopes, TypeDef, RoutineTypeDef;
 
 var
     lastId: longword = 0;
 
 
-function TryAddOverride(ident: TIdentifier; symbolType: PTypeDef; cursor: PChar): TTryAddOverrideResult;
+function TryAddOverride(ident: TIdentifier; symbolType: TTypeDef; cursor: PChar): TTryAddOverrideResult;
 var
     overloadedSymbol: TSymbol;
     overloads: TFPList;
     i: integer;
 begin
-    if not (symbolType^.kind in [tkProcedure, tkFunction]) then
+    if (symbolType = nil) or not (symbolType.kind in [tkProcedure, tkFunction]) then
         exit(ovNotApplicable);
 
     overloadedSymbol := FindSymbol(ident.GetStr(), cursor);
     if overloadedSymbol = nil then
         exit(ovNotFound);
 
-    overloads := overloadedSymbol.typeDef^.overloads;
+    if overloadedSymbol.typeDef is TRoutineTypeDef then
+        overloads := TRoutineTypeDef(overloadedSymbol.typeDef).overloads
+    else
+        overloads := nil;
 
     if HaveSameSignature(symbolType, overloadedSymbol.typeDef) then
         exit(ovExactDuplicate);
 
     if overloads <> nil then
         for i := 0 to overloads.Count - 1 do
-            if HaveSameSignature(symbolType, overloads.Items[i]) then
+            if HaveSameSignature(symbolType, TTypeDef(overloads.Items[i])) then
                 exit(ovExactDuplicate);
 
-    if overloads = nil then
+    if (overloads = nil) and (overloadedSymbol.typeDef is TRoutineTypeDef) then
     begin
         overloads := TFPList.Create;
-        overloadedSymbol.typeDef^.overloads := overloads;
+        TRoutineTypeDef(overloadedSymbol.typeDef).overloads := overloads;
     end;
 
-    overloads.Add(symbolType);
+    if overloads <> nil then
+        overloads.Add(symbolType);
     overloadedSymbol.AddReference(ident);
 
     TryAddOverride := ovAdded;
 end;
 
-function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: PTypeDef; cursor: PChar): TSymbol;
+function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
 var
     symbolName: shortstring;
 begin
@@ -108,13 +112,13 @@ begin
         references[0] := declaredAt;
         declaration.symbol := RegisterSymbol;
         declaration.name := symbolName;
-        declaration.typeDef := symbolType^;
+        declaration.typeDef := symbolType;
         declaration.tokenName := 'SymbDecl';
     end;
 
 end;
 
-function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: PTypeDef; cursor: PChar): TSymbol;
+function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
 var
     parentChildrenCount: integer;
 begin
@@ -189,7 +193,7 @@ begin
     references[l] := ident;
     ident.symbol := Self;
     ident.name := name;
-    ident.typeDef := typeDef^;
+    ident.typeDef := typeDef;
     ident.tokenName := 'SymbRef';
 end;
 

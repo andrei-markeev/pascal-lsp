@@ -46,7 +46,7 @@ begin
 
     declType := unknownType;
 
-    symbol := RegisterSymbol(ident, nil, skTypeName, @declType, ctx.Cursor);
+    symbol := RegisterSymbol(ident, nil, skTypeName, declType, ctx.Cursor);
     symbol.rangeToken := Self;
 
     AddAnchor(rwEquals);
@@ -55,6 +55,9 @@ begin
 
     TReservedWord.Create(ctx, rwEquals, nextTokenKind.reservedWordKind = rwEquals);
     TTypeSpec.Create(ctx, [symbol], declType);
+
+    // Update registered symbol with final type
+    symbol.typeDef := declType;
 
     ctx.MarkEndOfToken(Self);
 end;

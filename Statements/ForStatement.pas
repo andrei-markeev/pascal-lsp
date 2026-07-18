@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    Expression, Statement;
+    TypeDef, Expression, Statement;
 
 constructor TForStatement.Create(ctx: TParserContext);
 var
@@ -40,16 +40,16 @@ begin
     TReservedWord.Create(ctx, rwFor, true);
     ident := TIdentifier.Create(ctx, true);
     symbol := TSymbol(ident.symbol);
-    if (symbol <> nil) and (symbol.typeDef^.kind <> tkInteger) then
+    if (symbol <> nil) and (symbol.typeDef <> nil) and (symbol.typeDef.kind <> tkInteger) then
     begin
         state := tsError;
-        errorMessage := 'Expected loop variable to be of type integer, but ' + ident.name + ' is ' + TypeKindStr[ord(symbol.typeDef^.kind)] + '.';
+        errorMessage := 'Expected loop variable to be of type integer, but ' + ident.name + ' is ' + TypeKindStr[ord(symbol.typeDef.kind)] + '.';
     end;
 
     TReservedWord.Create(ctx, rwAssign, false);
 
     expr := CreateExpression(ctx);
-    if expr.typeDef.kind <> tkInteger then
+    if (expr <> nil) and (expr.typeDef <> nil) and (expr.typeDef.kind <> tkInteger) then
     begin
         state := tsError;
         errorMessage := 'Expected initial value of the loop to be of type integer, but it is ' + TypeKindStr[ord(expr.typeDef.kind)] + '.';

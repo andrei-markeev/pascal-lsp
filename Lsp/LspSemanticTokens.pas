@@ -7,7 +7,7 @@ interface
 
 uses
   sysutils, classes, fpjson, jsonparser,
-  ParserContext, Token, Identifier, Symbols, ReservedWord, TypeDefs,
+  ParserContext, Token, Identifier, Symbols, ReservedWord, TypeDefs, TypeDef,
   LspUtils, LspState;
 
 type
@@ -239,9 +239,9 @@ begin
               tokenType := 0; // namespace
             skTypeName:
               begin
-                if (sym.typeDef <> nil) and (sym.typeDef^.kind = tkClass) then
+                if (sym.typeDef <> nil) and (sym.typeDef.kind = tkClass) then
                   tokenType := 1 // class
-                else if (sym.typeDef <> nil) and (sym.typeDef^.kind = tkRecord) then
+                else if (sym.typeDef <> nil) and (sym.typeDef.kind = tkRecord) then
                   tokenType := 3 // struct
                 else
                   tokenType := 4; // type

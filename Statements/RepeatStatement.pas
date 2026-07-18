@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    TypeDefs, Anchors, TypedToken, ReservedWord, Expression, Statement;
+    TypeDefs, TypeDef, Anchors, TypedToken, ReservedWord, Expression, Statement;
 
 constructor TRepeatStatement.Create(ctx: TParserContext);
 var
@@ -75,7 +75,7 @@ begin
 
     TReservedWord.Create(ctx, rwUntil, false);
     expr := CreateExpression(ctx);
-    if expr.typeDef.kind <> tkBoolean then
+    if (expr <> nil) and (expr.typeDef <> nil) and (expr.typeDef.kind <> tkBoolean) then
     begin
         state := tsError;
         errorMessage := 'Until condition should be boolean, but it is ' + TypeKindStr[ord(expr.typeDef.kind)] + '.';

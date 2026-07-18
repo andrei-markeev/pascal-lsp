@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    TypeDefs, TypedToken, ReservedWord, Expression, Statement;
+    TypeDefs, TypeDef, TypedToken, ReservedWord, Expression, Statement;
 
 constructor TWhileStatement.Create(ctx: TParserContext);
 var
@@ -36,7 +36,7 @@ begin
     start := ctx.Cursor;
     TReservedWord.Create(ctx, rwWhile, true);
     expr := CreateExpression(ctx);
-    if expr.typeDef.kind <> tkBoolean then
+    if (expr <> nil) and (expr.typeDef <> nil) and (expr.typeDef.kind <> tkBoolean) then
     begin
         state := tsError;
         errorMessage := 'While condition should be boolean, but it is ' + TypeKindStr[ord(expr.typeDef.kind)] + '.';

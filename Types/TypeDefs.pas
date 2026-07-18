@@ -6,35 +6,15 @@ unit TypeDefs;
 interface
 
 uses
-    contnrs, classes, CompilationMode;
+    contnrs, classes, CompilationMode,
+    TypeDef, IntegerTypeDef, CharRangeTypeDef, EnumTypeDef, EnumMemberTypeDef,
+    PointerTypeDef, ArrayTypeDef, DynamicArrayTypeDef, SetTypeDef, RecordTypeDef,
+    ObjectTypeDef, ClassTypeDef, RoutineTypeDef, PrimitiveTypeDef;
 
 type
-    TTypeKind = (
-        tkUnknown, tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum, tkEnumMember,
-        tkReal, tkString, tkPointer, tkArray, tkDynamicArray,
-        tkRecord, tkObject, tkClass, tkSet, tkFile, tkProcedure, tkFunction, tkUnitName
-    );
-
-    TVisibility = (vPublic, vPrivate, vProtected, vUnknown);
-
-    PTypeDef = ^TTypeDef;
-    TTypeDef = record
-        size: longword;
-        visibility: TVisibility;
-    case kind: TTypeKind of
-        tkInteger: (isSigned: boolean; rangeStart: int64; rangeEnd: int64);
-        tkCharRange: (charRangeStart: char; charRangeEnd: char);
-        tkEnum, tkEnumMember: (enumType: PTypeDef; enumSpec: Pointer);
-        tkPointer: (isTyped: boolean; pointerToType: PTypeDef);
-        tkArray: (typeOfIndex: PTypeDef; typeOfValues: PTypeDef);
-        tkDynamicArray: (typeOfDynValues: PTypeDef);
-        tkSet: (typeOfSet: PTypeDef);
-        tkRecord: (recordFields: TFPHashList);
-        tkObject: (objectFields: TFPHashList; parentObject: PTypeDef);
-        tkClass: (classFields: TFPHashList; parentClass: PTypeDef);
-        tkProcedure, tkFunction: (parameters: Pointer; returnType: PTypeDef; overloads: TFPList);
-        tkBoolean, tkChar, tkReal, tkUnitName: ();
-    end;
+    TTypeKind = TypeDef.TTypeKind;
+    TVisibility = TypeDef.TVisibility;
+    TTypeDef = TypeDef.TTypeDef;
 
 const
     NUM_OF_TYPE_KINDS = 20;
@@ -47,45 +27,43 @@ const
 var
     TypesList: TFPHashList;
 
-    unknownType: TTypeDef = (size: 0; visibility: vPublic; kind: tkUnknown);
+    unknownType: TTypeDef;
 
-    byteType: TTypeDef = (size: 1; visibility: vPublic; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 255);
-    shortintType: TTypeDef = (size: 1; visibility: vPublic; kind: tkInteger; isSigned: true; rangeStart: -128; rangeEnd: 127);
-    wordType: TTypeDef = (size: 2; visibility: vPublic; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 65535);
-    smallintType: TTypeDef = (size: 2; visibility: vPublic; kind: tkInteger; isSigned: true; rangeStart: -32768; rangeEnd: 32767);
-    longwordType: TTypeDef = (size: 4; visibility: vPublic; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 4294967295);
-    longintType: TTypeDef = (size: 4; visibility: vPublic; kind: tkInteger; isSigned: true; rangeStart: -2147483648; rangeEnd: 2147483647);
-    qwordType: TTypeDef = (size: 8; visibility: vPublic; kind: tkInteger; isSigned: false; rangeStart: 0; rangeEnd: 0);
-    int64Type: TTypeDef = (size: 8; visibility: vPublic; kind: tkInteger; isSigned: true; rangeStart: 0; rangeEnd: 0);
+    byteType: TTypeDef;
+    shortintType: TTypeDef;
+    wordType: TTypeDef;
+    smallintType: TTypeDef;
+    longwordType: TTypeDef;
+    longintType: TTypeDef;
+    qwordType: TTypeDef;
+    int64Type: TTypeDef;
 
-    booleanType: TTypeDef = (size: 1; visibility: vPublic; kind: tkBoolean);
-    boolean16Type: TTypeDef = (size: 2; visibility: vPublic; kind: tkBoolean);
-    boolean32Type: TTypeDef = (size: 4; visibility: vPublic; kind: tkBoolean);
-    boolean64Type: TTypeDef = (size: 8; visibility: vPublic; kind: tkBoolean);
+    booleanType: TTypeDef;
+    boolean16Type: TTypeDef;
+    boolean32Type: TTypeDef;
+    boolean64Type: TTypeDef;
 
-    charType: TTypeDef = (size: 1; visibility: vPublic; kind: tkChar);
-    realType: TTypeDef = (size: 4; visibility: vPublic; kind: tkReal);
-    singleType: TTypeDef = (size: 4; visibility: vPublic; kind: tkReal);
-    doubleType: TTypeDef = (size: 4; visibility: vPublic; kind: tkReal);
-    extendedType: TTypeDef = (size: 4; visibility: vPublic; kind: tkReal);
-    compType: TTypeDef = (size: 8; visibility: vPublic; kind: tkReal);
-    currencyType: TTypeDef = (size: 8; visibility: vPublic; kind: tkReal);
+    charType: TTypeDef;
+    realType: TTypeDef;
+    singleType: TTypeDef;
+    doubleType: TTypeDef;
+    extendedType: TTypeDef;
+    compType: TTypeDef;
+    currencyType: TTypeDef;
 
-    pointer32Type: TTypeDef = (size: 4; visibility: vPublic; kind: tkPointer; isTyped: false; pointerToType: nil);
-    pointer64Type: TTypeDef = (size: 8; visibility: vPublic; kind: tkPointer; isTyped: false; pointerToType: nil);
+    pointer32Type: TTypeDef;
+    pointer64Type: TTypeDef;
+    pcharType: TTypeDef;
 
-    pcharType: TTypeDef = (size: 8; visibility: vPublic; kind: tkPointer; isTyped: true; pointerToType: @charType);
+    shortstringType: TTypeDef;
+    ansiString32Type: TTypeDef;
+    ansiString64Type: TTypeDef;
 
-    shortstringType: TTypeDef = (size: 256; visibility: vPublic; kind: tkString);
-
-    ansiString32Type: TTypeDef = (size: 4; visibility: vPublic; kind: tkString);
-    ansiString64Type: TTypeDef = (size: 8; visibility: vPublic; kind: tkString);
-
-    voidProcedureType: TTypeDef; // defined in initialization block below
+    voidProcedureType: TTypeDef;
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
 function TypesAreAssignable(left, right: TTypeDef; out errorMessage: string): boolean;
-function HaveSameSignature(a, b: PTypeDef): boolean;
+function HaveSameSignature(a, b: TTypeDef): boolean;
 
 implementation
 
@@ -96,59 +74,65 @@ procedure InitPredefinedTypes(mode: TCompilationMode);
 begin
     if mode >= cmStandardPascal then
     begin
-        TypesList.Add('integer', @smallintType);
-        TypesList.Add('boolean', @booleanType);
-        TypesList.Add('char', @charType);
-        TypesList.Add('real', @realType);
+        TypesList.Add('integer', smallintType);
+        TypesList.Add('boolean', booleanType);
+        TypesList.Add('char', charType);
+        TypesList.Add('real', realType);
     end;
 
     if mode >= cmExtendedPascal then
     begin
-        TypesList.Add('string', @shortstringType);
+        TypesList.Add('string', shortstringType);
     end;
 
     if mode >= cmTurboPascal then
     begin
-        TypesList.Add('byte', @byteType);
-        TypesList.Add('shortint', @shortintType);
-        TypesList.Add('word', @wordType);
-        TypesList.Add('longint', @longintType);
+        TypesList.Add('byte', byteType);
+        TypesList.Add('shortint', shortintType);
+        TypesList.Add('word', wordType);
+        TypesList.Add('longint', longintType);
 
-        TypesList.Add('bytebool', @booleanType);
-        TypesList.Add('wordbool', @boolean16Type);
-        TypesList.Add('longbool', @boolean32Type);
+        TypesList.Add('bytebool', booleanType);
+        TypesList.Add('wordbool', boolean16Type);
+        TypesList.Add('longbool', boolean32Type);
 
-        TypesList.Add('single', @singleType);
-        TypesList.Add('double', @doubleType);
-        TypesList.Add('extended', @extendedType);
-        TypesList.Add('comp', @compType);
+        TypesList.Add('single', singleType);
+        TypesList.Add('double', doubleType);
+        TypesList.Add('extended', extendedType);
+        TypesList.Add('comp', compType);
 
-        TypesList.Add('pointer', @pointer64Type);
-        TypesList.Add('pchar', @pcharType);
+        TypesList.Add('pointer', pointer64Type);
+        TypesList.Add('pchar', pcharType);
     end;
 
     if mode >= cmFreePascal then
     begin
-        TypesList.Add('smallint', @smallintType);
-        TypesList.Add('longword', @longwordType);
-        TypesList.Add('cardinal', @longwordType);        
-        TypesList.Add('qword', @qwordType);
-        TypesList.Add('int64', @int64Type);
+        TypesList.Add('smallint', smallintType);
+        TypesList.Add('longword', longwordType);
+        TypesList.Add('cardinal', longwordType);        
+        TypesList.Add('qword', qwordType);
+        TypesList.Add('int64', int64Type);
 
-        TypesList.Add('boolean16', @boolean16Type);
-        TypesList.Add('boolean32', @boolean32Type);
-        TypesList.Add('boolean64', @boolean64Type);
-        TypesList.Add('qwordbool', @boolean64Type);
+        TypesList.Add('boolean16', boolean16Type);
+        TypesList.Add('boolean32', boolean32Type);
+        TypesList.Add('boolean64', boolean64Type);
+        TypesList.Add('qwordbool', boolean64Type);
 
-        TypesList.Add('currency', @currencyType);
+        TypesList.Add('currency', currencyType);
 
-        TypesList.Add('ansistring', @ansiString64Type);
-        TypesList.Add('shortstring', @shortstringType);
+        TypesList.Add('ansistring', ansiString64Type);
+        TypesList.Add('shortstring', shortstringType);
     end;
 end;
 
 function TypesAreAssignable(left, right: TTypeDef; out errorMessage: string): boolean;
 begin
+    if (left = nil) or (right = nil) then
+    begin
+        TypesAreAssignable := true;
+        exit;
+    end;
+
     TypesAreAssignable := left.kind = right.kind;
     if (left.kind = tkUnknown) or (right.kind = tkUnknown) then
         TypesAreAssignable := true
@@ -157,49 +141,70 @@ begin
     else if (left.kind = tkCharRange) and (right.kind = tkChar) then
         TypesAreAssignable := true
     else if (left.kind in [tkEnum, tkEnumMember]) and (right.kind in [tkEnum, tkEnumMember]) then
-        TypesAreAssignable := left.enumSpec = right.enumSpec
+    begin
+        if (left is TEnumMemberTypeDef) and (right is TEnumMemberTypeDef) then
+            TypesAreAssignable := TEnumMemberTypeDef(left).enumSpec = TEnumMemberTypeDef(right).enumSpec
+        else if (left is TEnumTypeDef) and (right is TEnumMemberTypeDef) then
+            TypesAreAssignable := TEnumTypeDef(left).enumSpec = TEnumMemberTypeDef(right).enumSpec
+        else if (left is TEnumMemberTypeDef) and (right is TEnumTypeDef) then
+            TypesAreAssignable := TEnumMemberTypeDef(left).enumSpec = TEnumTypeDef(right).enumSpec
+        else if (left is TEnumTypeDef) and (right is TEnumTypeDef) then
+            TypesAreAssignable := TEnumTypeDef(left).enumSpec = TEnumTypeDef(right).enumSpec;
+    end
     else if (left.kind = tkSet) and (right.kind = tkSet) then
     begin
-        if (left.typeOfSet = nil) or (right.typeOfSet = nil) then
-            TypesAreAssignable := true
+        if (left is TSetTypeDef) and (right is TSetTypeDef) then
+        begin
+            if (TSetTypeDef(left).typeOfSet = nil) or (TSetTypeDef(right).typeOfSet = nil) then
+                TypesAreAssignable := true
+            else
+                TypesAreAssignable := TypesAreAssignable(TSetTypeDef(left).typeOfSet, TSetTypeDef(right).typeOfSet, errorMessage);
+        end
         else
-            TypesAreAssignable := TypesAreAssignable(left.typeOfSet^, right.typeOfSet^, errorMessage);
+            TypesAreAssignable := true;
     end;
 
     if (left.kind = tkString) and (right.kind = tkChar) then
         TypesAreAssignable := true
-    else if (left.kind = tkPointer) and (left.pointerToType <> nil) and (left.pointerToType^.kind = tkChar) and (right.kind = tkString) then
+    else if (left.kind = tkPointer) and (left is TPointerTypeDef) and (TPointerTypeDef(left).pointerToType <> nil) and (TPointerTypeDef(left).pointerToType.kind = tkChar) and (right.kind = tkString) then
         TypesAreAssignable := true;
 
     // TODO: functions
 
     if not TypesAreAssignable then
+    begin
         if (left.kind = tkSet) and (right.kind = tkSet) then
             errorMessage := 'base types of sets are not compatible: ' + errorMessage
         else if (left.kind in [tkEnum, tkEnumMember]) and (right.kind in [tkEnum, tkEnumMember]) then
             errorMessage := 'different enums!'
+        else if (ord(left.kind) >= 0) and (ord(left.kind) < NUM_OF_TYPE_KINDS) and (ord(right.kind) >= 0) and (ord(right.kind) < NUM_OF_TYPE_KINDS) then
+            errorMessage := 'expected ' + TypeKindStr[ord(left.kind)] + ' or assignment-compatible, but found ' + TypeKindStr[ord(right.kind)] + '!'
         else
-            errorMessage := 'expected ' + TypeKindStr[ord(left.kind)] + ' or assignment-compatible, but found ' + TypeKindStr[ord(right.kind)] + '!';
+            errorMessage := 'types are not assignment-compatible!';
+    end;
 end;
 
-function HaveSameSignature(a, b: PTypeDef): boolean;
+function HaveSameSignature(a, b: TTypeDef): boolean;
 var
     pa, pb: TParameterList;
     i: integer;
 begin
     if (a = nil) or (b = nil) then
         exit(false);
-    if not (a^.kind in [tkProcedure, tkFunction]) or not (b^.kind in [tkProcedure, tkFunction]) then
+    if not (a.kind in [tkProcedure, tkFunction]) or not (b.kind in [tkProcedure, tkFunction]) then
         exit(false);
 
-    if a^.parameters = b^.parameters then
+    if not (a is TRoutineTypeDef) or not (b is TRoutineTypeDef) then
+        exit(false);
+
+    if TRoutineTypeDef(a).parameters = TRoutineTypeDef(b).parameters then
         exit(true);
 
-    if (a^.parameters = nil) or (b^.parameters = nil) then
+    if (TRoutineTypeDef(a).parameters = nil) or (TRoutineTypeDef(b).parameters = nil) then
         exit(false);
 
-    pa := TParameterList(a^.parameters);
-    pb := TParameterList(b^.parameters);
+    pa := TParameterList(TRoutineTypeDef(a).parameters);
+    pb := TParameterList(TRoutineTypeDef(b).parameters);
     if pa.count <> pb.count then
         exit(false);
 
@@ -214,14 +219,43 @@ begin
     HaveSameSignature := true;
 end;
 
-
-
 initialization
     TypesList := TFPHashList.Create;
-    voidProcedureType.kind := tkProcedure;
-    voidProcedureType.size := 0;
-    voidProcedureType.parameters := TParameterList.Create;
-    voidProcedureType.overloads := nil;
+
+    unknownType := TPrimitiveTypeDef.Create(tkUnknown, 0);
+
+    byteType := TIntegerTypeDef.Create(1, false, 0, 255);
+    shortintType := TIntegerTypeDef.Create(1, true, -128, 127);
+    wordType := TIntegerTypeDef.Create(2, false, 0, 65535);
+    smallintType := TIntegerTypeDef.Create(2, true, -32768, 32767);
+    longwordType := TIntegerTypeDef.Create(4, false, 0, 4294967295);
+    longintType := TIntegerTypeDef.Create(4, true, -2147483648, 2147483647);
+    qwordType := TIntegerTypeDef.Create(8, false, 0, 0);
+    int64Type := TIntegerTypeDef.Create(8, true, 0, 0);
+
+    booleanType := TPrimitiveTypeDef.Create(tkBoolean, 1);
+    boolean16Type := TPrimitiveTypeDef.Create(tkBoolean, 2);
+    boolean32Type := TPrimitiveTypeDef.Create(tkBoolean, 4);
+    boolean64Type := TPrimitiveTypeDef.Create(tkBoolean, 8);
+
+    charType := TPrimitiveTypeDef.Create(tkChar, 1);
+    realType := TPrimitiveTypeDef.Create(tkReal, 4);
+    singleType := TPrimitiveTypeDef.Create(tkReal, 4);
+    doubleType := TPrimitiveTypeDef.Create(tkReal, 4);
+    extendedType := TPrimitiveTypeDef.Create(tkReal, 4);
+    compType := TPrimitiveTypeDef.Create(tkReal, 8);
+    currencyType := TPrimitiveTypeDef.Create(tkReal, 8);
+
+    pointer32Type := TPointerTypeDef.Create(false, nil, 4);
+    pointer64Type := TPointerTypeDef.Create(false, nil, 8);
+    pcharType := TPointerTypeDef.Create(true, charType, 8);
+
+    shortstringType := TPrimitiveTypeDef.Create(tkString, 256);
+    ansiString32Type := TPrimitiveTypeDef.Create(tkString, 4);
+    ansiString64Type := TPrimitiveTypeDef.Create(tkString, 8);
+
+    voidProcedureType := TRoutineTypeDef.Create(tkProcedure, TParameterList.Create, nil, nil);
+
 finalization
     TypesList.Free;
 end.

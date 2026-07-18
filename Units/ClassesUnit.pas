@@ -52,179 +52,168 @@ type
 implementation
 
 uses
-    contnrs, Symbols, CompilationMode, Parameters;
+    contnrs, Symbols, CompilationMode, Parameters, ClassTypeDef, DynamicArrayTypeDef;
 
 destructor TClassesUnit.Destroy;
 begin
     if loaded then
     begin
-        classType_TFPList.classFields.Free;
-        classType_TStrings.classFields.Free;
-        classType_TStringList.classFields.Free;
+        if classType_TFPList is TClassTypeDef then
+            TClassTypeDef(classType_TFPList).classFields.Free;
+        if classType_TStrings is TClassTypeDef then
+            TClassTypeDef(classType_TStrings).classFields.Free;
+        if classType_TStringList is TClassTypeDef then
+            TClassTypeDef(classType_TStringList).classFields.Free;
     end;
     inherited Destroy;
 end;
 
 procedure TClassesUnit.InitTypes;
 begin
-    dynArrayOfPointerType.kind := tkDynamicArray;
-    dynArrayOfPointerType.size := 8;
-    dynArrayOfPointerType.typeOfDynValues := @pointer64Type;
-
-    dynArrayOfStringType.kind := tkDynamicArray;
-    dynArrayOfStringType.size := 8;
-    dynArrayOfStringType.typeOfDynValues := @ansiString64Type;
+    dynArrayOfPointerType := TDynamicArrayTypeDef.Create(pointer64Type, 8);
+    dynArrayOfStringType := TDynamicArrayTypeDef.Create(ansiString64Type, 8);
 
     // TFPList
-    classType_TFPList.kind := tkClass;
-    classType_TFPList.size := 0;
-    classType_TFPList.classFields := TFPHashList.Create;
-    classType_TFPList.parentClass := nil;
+    classType_TFPList := TClassTypeDef.Create(TFPHashList.Create, nil, 0);
 
     // TStrings
-    classType_TStrings.kind := tkClass;
-    classType_TStrings.size := 0;
-    classType_TStrings.classFields := TFPHashList.Create;
-    classType_TStrings.parentClass := nil;
+    classType_TStrings := TClassTypeDef.Create(TFPHashList.Create, nil, 0);
 
     // TStringList
-    classType_TStringList.kind := tkClass;
-    classType_TStringList.size := 0;
-    classType_TStringList.classFields := TFPHashList.Create;
-    classType_TStringList.parentClass := @classType_TStrings;
+    classType_TStringList := TClassTypeDef.Create(TFPHashList.Create, classType_TStrings, 0);
 
-    func_Create_TFPList := CreateFunctionType(TParameterList.Create, @classType_TFPList);
-    func_Create_TStrings := CreateFunctionType(TParameterList.Create, @classType_TStrings);
-    func_Create_TStringList := CreateFunctionType(TParameterList.Create, @classType_TStringList);
+    func_Create_TFPList := CreateFunctionType(TParameterList.Create, classType_TFPList);
+    func_Create_TStrings := CreateFunctionType(TParameterList.Create, classType_TStrings);
+    func_Create_TStringList := CreateFunctionType(TParameterList.Create, classType_TStringList);
 
-    func_Pointer_LongInt := CreateOneParamFunctionType('item', @pointer64Type, @longintType);
-    func_ItemDirection_LongInt := CreateTwoParamFunctionType('item', @pointer64Type, 'direction', @longintType, @longintType);
-    func_Void_Pointer := CreateFunctionType(TParameterList.Create, @pointer64Type);
-    func_Void_TFPList := CreateFunctionType(TParameterList.Create, @classType_TFPList);
-    func_Pointer_Pointer := CreateOneParamFunctionType('item', @pointer64Type, @pointer64Type);
+    func_Pointer_LongInt := CreateOneParamFunctionType('item', pointer64Type, longintType);
+    func_ItemDirection_LongInt := CreateTwoParamFunctionType('item', pointer64Type, 'direction', longintType, longintType);
+    func_Void_Pointer := CreateFunctionType(TParameterList.Create, pointer64Type);
+    func_Void_TFPList := CreateFunctionType(TParameterList.Create, classType_TFPList);
+    func_Pointer_Pointer := CreateOneParamFunctionType('item', pointer64Type, pointer64Type);
 
-    func_String_LongInt := CreateOneParamFunctionType('s', @ansiString64Type, @longintType);
-    func_StringPointer_LongInt := CreateTwoParamFunctionType('s', @ansiString64Type, 'aobject', @pointer64Type, @longintType);
-    func_StringString_TStrings := CreateTwoParamFunctionType('aname', @ansiString64Type, 'avalue', @ansiString64Type, @classType_TStrings);
-    func_String_String := CreateOneParamFunctionType('s', @ansiString64Type, @ansiString64Type);
-    func_Void_String := CreateFunctionType(TParameterList.Create, @ansiString64Type);
-    func_Pointer_Boolean := CreateOneParamFunctionType('obj', @pointer64Type, @booleanType);
-    func_StringVarLongInt_Boolean := CreateTwoParamVarFunctionType('s', @ansiString64Type, 'index', @longintType, @booleanType);
+    func_String_LongInt := CreateOneParamFunctionType('s', ansiString64Type, longintType);
+    func_StringPointer_LongInt := CreateTwoParamFunctionType('s', ansiString64Type, 'aobject', pointer64Type, longintType);
+    func_StringString_TStrings := CreateTwoParamFunctionType('aname', ansiString64Type, 'avalue', ansiString64Type, classType_TStrings);
+    func_String_String := CreateOneParamFunctionType('s', ansiString64Type, ansiString64Type);
+    func_Void_String := CreateFunctionType(TParameterList.Create, ansiString64Type);
+    func_Pointer_Boolean := CreateOneParamFunctionType('obj', pointer64Type, booleanType);
+    func_StringVarLongInt_Boolean := CreateTwoParamVarFunctionType('s', ansiString64Type, 'index', longintType, booleanType);
 
-    proc_LongInt := CreateOneParamProcedureType('index', @longintType);
-    proc_LongInt_LongInt := CreateTwoParamProcedureType('index1', @longintType, 'index2', @longintType);
-    proc_LongInt_Pointer := CreateTwoParamProcedureType('index', @longintType, 'item', @pointer64Type);
-    proc_LongInt_String := CreateTwoParamProcedureType('index', @longintType, 's', @ansiString64Type);
+    proc_LongInt := CreateOneParamProcedureType('index', longintType);
+    proc_LongInt_LongInt := CreateTwoParamProcedureType('index1', longintType, 'index2', longintType);
+    proc_LongInt_Pointer := CreateTwoParamProcedureType('index', longintType, 'item', pointer64Type);
+    proc_LongInt_String := CreateTwoParamProcedureType('index', longintType, 's', ansiString64Type);
     proc_LongIntStringPointer := CreateProcedureType(TParameterList.Create([
-        CreateParam(ptkValue, 'index', @longintType),
-        CreateParam(ptkValue, 's', @ansiString64Type),
-        CreateParam(ptkValue, 'aobject', @pointer64Type)
+        CreateParam(ptkValue, 'index', longintType),
+        CreateParam(ptkValue, 's', ansiString64Type),
+        CreateParam(ptkValue, 'aobject', pointer64Type)
     ]));
-    proc_String := CreateOneParamProcedureType('s', @ansiString64Type);
-    proc_Pointer := CreateOneParamProcedureType('ptr', @pointer64Type);
-    proc_Pointer_Pointer := CreateTwoParamProcedureType('proc2call', @pointer64Type, 'arg', @pointer64Type);
+    proc_String := CreateOneParamProcedureType('s', ansiString64Type);
+    proc_Pointer := CreateOneParamProcedureType('ptr', pointer64Type);
+    proc_Pointer_Pointer := CreateTwoParamProcedureType('proc2call', pointer64Type, 'arg', pointer64Type);
 
-    classType_TFPList.classFields.Add('capacity', @longintType);
-    classType_TFPList.classFields.Add('count', @longintType);
-    classType_TFPList.classFields.Add('items', @dynArrayOfPointerType);
-    classType_TFPList.classFields.Add('list', @pointer64Type);
-    classType_TFPList.classFields.Add('create', @func_Create_TFPList);
-    classType_TFPList.classFields.Add('destroy', @voidProcedureType);
-    classType_TFPList.classFields.Add('free', @voidProcedureType);
-    classType_TFPList.classFields.Add('add', @func_Pointer_LongInt);
-    classType_TFPList.classFields.Add('addlist', @proc_Pointer);
-    classType_TFPList.classFields.Add('assign', @proc_Pointer);
-    classType_TFPList.classFields.Add('clear', @voidProcedureType);
-    classType_TFPList.classFields.Add('delete', @proc_LongInt);
-    classType_TFPList.classFields.Add('exchange', @proc_LongInt_LongInt);
-    classType_TFPList.classFields.Add('expand', @func_Void_TFPList);
-    classType_TFPList.classFields.Add('extract', @func_Pointer_Pointer);
-    classType_TFPList.classFields.Add('first', @func_Void_Pointer);
-    classType_TFPList.classFields.Add('getenumerator', @func_Void_Pointer);
-    classType_TFPList.classFields.Add('indexof', @func_Pointer_LongInt);
-    classType_TFPList.classFields.Add('indexofitem', @func_ItemDirection_LongInt);
-    classType_TFPList.classFields.Add('insert', @proc_LongInt_Pointer);
-    classType_TFPList.classFields.Add('last', @func_Void_Pointer);
-    classType_TFPList.classFields.Add('move', @proc_LongInt_LongInt);
-    classType_TFPList.classFields.Add('pack', @voidProcedureType);
-    classType_TFPList.classFields.Add('remove', @func_Pointer_LongInt);
-    classType_TFPList.classFields.Add('sort', @proc_Pointer);
-    classType_TFPList.classFields.Add('foreachcall', @proc_Pointer_Pointer);
+    TClassTypeDef(classType_TFPList).classFields.Add('capacity', longintType);
+    TClassTypeDef(classType_TFPList).classFields.Add('count', longintType);
+    TClassTypeDef(classType_TFPList).classFields.Add('items', dynArrayOfPointerType);
+    TClassTypeDef(classType_TFPList).classFields.Add('list', pointer64Type);
+    TClassTypeDef(classType_TFPList).classFields.Add('create', func_Create_TFPList);
+    TClassTypeDef(classType_TFPList).classFields.Add('destroy', voidProcedureType);
+    TClassTypeDef(classType_TFPList).classFields.Add('free', voidProcedureType);
+    TClassTypeDef(classType_TFPList).classFields.Add('add', func_Pointer_LongInt);
+    TClassTypeDef(classType_TFPList).classFields.Add('addlist', proc_Pointer);
+    TClassTypeDef(classType_TFPList).classFields.Add('assign', proc_Pointer);
+    TClassTypeDef(classType_TFPList).classFields.Add('clear', voidProcedureType);
+    TClassTypeDef(classType_TFPList).classFields.Add('delete', proc_LongInt);
+    TClassTypeDef(classType_TFPList).classFields.Add('exchange', proc_LongInt_LongInt);
+    TClassTypeDef(classType_TFPList).classFields.Add('expand', func_Void_TFPList);
+    TClassTypeDef(classType_TFPList).classFields.Add('extract', func_Pointer_Pointer);
+    TClassTypeDef(classType_TFPList).classFields.Add('first', func_Void_Pointer);
+    TClassTypeDef(classType_TFPList).classFields.Add('getenumerator', func_Void_Pointer);
+    TClassTypeDef(classType_TFPList).classFields.Add('indexof', func_Pointer_LongInt);
+    TClassTypeDef(classType_TFPList).classFields.Add('indexofitem', func_ItemDirection_LongInt);
+    TClassTypeDef(classType_TFPList).classFields.Add('insert', proc_LongInt_Pointer);
+    TClassTypeDef(classType_TFPList).classFields.Add('last', func_Void_Pointer);
+    TClassTypeDef(classType_TFPList).classFields.Add('move', proc_LongInt_LongInt);
+    TClassTypeDef(classType_TFPList).classFields.Add('pack', voidProcedureType);
+    TClassTypeDef(classType_TFPList).classFields.Add('remove', func_Pointer_LongInt);
+    TClassTypeDef(classType_TFPList).classFields.Add('sort', proc_Pointer);
+    TClassTypeDef(classType_TFPList).classFields.Add('foreachcall', proc_Pointer_Pointer);
 
-    classType_TStrings.classFields.Add('alwaysquote', @booleanType);
-    classType_TStrings.classFields.Add('capacity', @longintType);
-    classType_TStrings.classFields.Add('commatext', @ansiString64Type);
-    classType_TStrings.classFields.Add('count', @longintType);
-    classType_TStrings.classFields.Add('defaultencoding', @pointer64Type);
-    classType_TStrings.classFields.Add('delimitedtext', @ansiString64Type);
-    classType_TStrings.classFields.Add('delimiter', @charType);
-    classType_TStrings.classFields.Add('encoding', @pointer64Type);
-    classType_TStrings.classFields.Add('linebreak', @ansiString64Type);
-    classType_TStrings.classFields.Add('missingnamevalueseparatoraction', @longintType);
-    classType_TStrings.classFields.Add('names', @dynArrayOfStringType);
-    classType_TStrings.classFields.Add('namevalueseparator', @charType);
-    classType_TStrings.classFields.Add('objects', @dynArrayOfPointerType);
-    classType_TStrings.classFields.Add('options', @longintType);
-    classType_TStrings.classFields.Add('quotechar', @charType);
-    classType_TStrings.classFields.Add('skiplastlinebreak', @booleanType);
-    classType_TStrings.classFields.Add('strictdelimiter', @booleanType);
-    classType_TStrings.classFields.Add('strings', @dynArrayOfStringType);
-    classType_TStrings.classFields.Add('text', @ansiString64Type);
-    classType_TStrings.classFields.Add('textlinebreakstyle', @longintType);
-    classType_TStrings.classFields.Add('trailinglinebreak', @booleanType);
-    classType_TStrings.classFields.Add('uselocale', @booleanType);
-    classType_TStrings.classFields.Add('valuefromindex', @dynArrayOfStringType);
-    classType_TStrings.classFields.Add('values', @ansiString64Type);
-    classType_TStrings.classFields.Add('writebom', @booleanType);
+    TClassTypeDef(classType_TStrings).classFields.Add('alwaysquote', booleanType);
+    TClassTypeDef(classType_TStrings).classFields.Add('capacity', longintType);
+    TClassTypeDef(classType_TStrings).classFields.Add('commatext', ansiString64Type);
+    TClassTypeDef(classType_TStrings).classFields.Add('count', longintType);
+    TClassTypeDef(classType_TStrings).classFields.Add('defaultencoding', pointer64Type);
+    TClassTypeDef(classType_TStrings).classFields.Add('delimitedtext', ansiString64Type);
+    TClassTypeDef(classType_TStrings).classFields.Add('delimiter', charType);
+    TClassTypeDef(classType_TStrings).classFields.Add('encoding', pointer64Type);
+    TClassTypeDef(classType_TStrings).classFields.Add('linebreak', ansiString64Type);
+    TClassTypeDef(classType_TStrings).classFields.Add('missingnamevalueseparatoraction', longintType);
+    TClassTypeDef(classType_TStrings).classFields.Add('names', dynArrayOfStringType);
+    TClassTypeDef(classType_TStrings).classFields.Add('namevalueseparator', charType);
+    TClassTypeDef(classType_TStrings).classFields.Add('objects', dynArrayOfPointerType);
+    TClassTypeDef(classType_TStrings).classFields.Add('options', longintType);
+    TClassTypeDef(classType_TStrings).classFields.Add('quotechar', charType);
+    TClassTypeDef(classType_TStrings).classFields.Add('skiplastlinebreak', booleanType);
+    TClassTypeDef(classType_TStrings).classFields.Add('strictdelimiter', booleanType);
+    TClassTypeDef(classType_TStrings).classFields.Add('strings', dynArrayOfStringType);
+    TClassTypeDef(classType_TStrings).classFields.Add('text', ansiString64Type);
+    TClassTypeDef(classType_TStrings).classFields.Add('textlinebreakstyle', longintType);
+    TClassTypeDef(classType_TStrings).classFields.Add('trailinglinebreak', booleanType);
+    TClassTypeDef(classType_TStrings).classFields.Add('uselocale', booleanType);
+    TClassTypeDef(classType_TStrings).classFields.Add('valuefromindex', dynArrayOfStringType);
+    TClassTypeDef(classType_TStrings).classFields.Add('values', ansiString64Type);
+    TClassTypeDef(classType_TStrings).classFields.Add('writebom', booleanType);
 
-    classType_TStrings.classFields.Add('create', @func_Create_TStrings);
-    classType_TStrings.classFields.Add('destroy', @voidProcedureType);
-    classType_TStrings.classFields.Add('free', @voidProcedureType);
-    classType_TStrings.classFields.Add('add', @func_String_LongInt);
-    classType_TStrings.classFields.Add('addobject', @func_StringPointer_LongInt);
-    classType_TStrings.classFields.Add('addpair', @func_StringString_TStrings);
-    classType_TStrings.classFields.Add('addstrings', @proc_Pointer);
-    classType_TStrings.classFields.Add('addtext', @proc_String);
-    classType_TStrings.classFields.Add('addcommatext', @proc_String);
-    classType_TStrings.classFields.Add('adddelimitedtext', @proc_String);
-    classType_TStrings.classFields.Add('append', @proc_String);
-    classType_TStrings.classFields.Add('assign', @proc_Pointer);
-    classType_TStrings.classFields.Add('beginupdate', @voidProcedureType);
-    classType_TStrings.classFields.Add('clear', @voidProcedureType);
-    classType_TStrings.classFields.Add('delete', @proc_LongInt);
-    classType_TStrings.classFields.Add('endupdate', @voidProcedureType);
-    classType_TStrings.classFields.Add('equals', @func_Pointer_Boolean);
-    classType_TStrings.classFields.Add('exchange', @proc_LongInt_LongInt);
-    classType_TStrings.classFields.Add('extractname', @func_String_String);
-    classType_TStrings.classFields.Add('getenumerator', @func_Void_Pointer);
-    classType_TStrings.classFields.Add('gettext', @func_Void_String);
-    classType_TStrings.classFields.Add('indexof', @func_String_LongInt);
-    classType_TStrings.classFields.Add('indexofname', @func_String_LongInt);
-    classType_TStrings.classFields.Add('indexofobject', @func_Pointer_LongInt);
-    classType_TStrings.classFields.Add('insert', @proc_LongInt_String);
-    classType_TStrings.classFields.Add('insertobject', @proc_LongIntStringPointer);
-    classType_TStrings.classFields.Add('lastindexof', @func_String_LongInt);
-    classType_TStrings.classFields.Add('loadfromfile', @proc_String);
-    classType_TStrings.classFields.Add('loadfromstream', @proc_Pointer);
-    classType_TStrings.classFields.Add('move', @proc_LongInt_LongInt);
-    classType_TStrings.classFields.Add('pop', @func_Void_String);
-    classType_TStrings.classFields.Add('savetofile', @proc_String);
-    classType_TStrings.classFields.Add('savetostream', @proc_Pointer);
-    classType_TStrings.classFields.Add('settext', @proc_String);
-    classType_TStrings.classFields.Add('shift', @func_Void_String);
+    TClassTypeDef(classType_TStrings).classFields.Add('create', func_Create_TStrings);
+    TClassTypeDef(classType_TStrings).classFields.Add('destroy', voidProcedureType);
+    TClassTypeDef(classType_TStrings).classFields.Add('free', voidProcedureType);
+    TClassTypeDef(classType_TStrings).classFields.Add('add', func_String_LongInt);
+    TClassTypeDef(classType_TStrings).classFields.Add('addobject', func_StringPointer_LongInt);
+    TClassTypeDef(classType_TStrings).classFields.Add('addpair', func_StringString_TStrings);
+    TClassTypeDef(classType_TStrings).classFields.Add('addstrings', proc_Pointer);
+    TClassTypeDef(classType_TStrings).classFields.Add('addtext', proc_String);
+    TClassTypeDef(classType_TStrings).classFields.Add('addcommatext', proc_String);
+    TClassTypeDef(classType_TStrings).classFields.Add('adddelimitedtext', proc_String);
+    TClassTypeDef(classType_TStrings).classFields.Add('append', proc_String);
+    TClassTypeDef(classType_TStrings).classFields.Add('assign', proc_Pointer);
+    TClassTypeDef(classType_TStrings).classFields.Add('beginupdate', voidProcedureType);
+    TClassTypeDef(classType_TStrings).classFields.Add('clear', voidProcedureType);
+    TClassTypeDef(classType_TStrings).classFields.Add('delete', proc_LongInt);
+    TClassTypeDef(classType_TStrings).classFields.Add('endupdate', voidProcedureType);
+    TClassTypeDef(classType_TStrings).classFields.Add('equals', func_Pointer_Boolean);
+    TClassTypeDef(classType_TStrings).classFields.Add('exchange', proc_LongInt_LongInt);
+    TClassTypeDef(classType_TStrings).classFields.Add('extractname', func_String_String);
+    TClassTypeDef(classType_TStrings).classFields.Add('getenumerator', func_Void_Pointer);
+    TClassTypeDef(classType_TStrings).classFields.Add('gettext', func_Void_String);
+    TClassTypeDef(classType_TStrings).classFields.Add('indexof', func_String_LongInt);
+    TClassTypeDef(classType_TStrings).classFields.Add('indexofname', func_String_LongInt);
+    TClassTypeDef(classType_TStrings).classFields.Add('indexofobject', func_Pointer_LongInt);
+    TClassTypeDef(classType_TStrings).classFields.Add('insert', proc_LongInt_String);
+    TClassTypeDef(classType_TStrings).classFields.Add('insertobject', proc_LongIntStringPointer);
+    TClassTypeDef(classType_TStrings).classFields.Add('lastindexof', func_String_LongInt);
+    TClassTypeDef(classType_TStrings).classFields.Add('loadfromfile', proc_String);
+    TClassTypeDef(classType_TStrings).classFields.Add('loadfromstream', proc_Pointer);
+    TClassTypeDef(classType_TStrings).classFields.Add('move', proc_LongInt_LongInt);
+    TClassTypeDef(classType_TStrings).classFields.Add('pop', func_Void_String);
+    TClassTypeDef(classType_TStrings).classFields.Add('savetofile', proc_String);
+    TClassTypeDef(classType_TStrings).classFields.Add('savetostream', proc_Pointer);
+    TClassTypeDef(classType_TStrings).classFields.Add('settext', proc_String);
+    TClassTypeDef(classType_TStrings).classFields.Add('shift', func_Void_String);
 
-    classType_TStringList.classFields.Add('duplicates', @longintType);
-    classType_TStringList.classFields.Add('sorted', @booleanType);
-    classType_TStringList.classFields.Add('casesensitive', @booleanType);
-    classType_TStringList.classFields.Add('ownsobjects', @booleanType);
-    classType_TStringList.classFields.Add('sortstyle', @longintType);
+    TClassTypeDef(classType_TStringList).classFields.Add('duplicates', longintType);
+    TClassTypeDef(classType_TStringList).classFields.Add('sorted', booleanType);
+    TClassTypeDef(classType_TStringList).classFields.Add('casesensitive', booleanType);
+    TClassTypeDef(classType_TStringList).classFields.Add('ownsobjects', booleanType);
+    TClassTypeDef(classType_TStringList).classFields.Add('sortstyle', longintType);
 
-    classType_TStringList.classFields.Add('create', @func_Create_TStringList);
-    classType_TStringList.classFields.Add('destroy', @voidProcedureType);
-    classType_TStringList.classFields.Add('free', @voidProcedureType);
-    classType_TStringList.classFields.Add('find', @func_StringVarLongInt_Boolean);
-    classType_TStringList.classFields.Add('sort', @voidProcedureType);
-    classType_TStringList.classFields.Add('customsort', @proc_Pointer);
+    TClassTypeDef(classType_TStringList).classFields.Add('create', func_Create_TStringList);
+    TClassTypeDef(classType_TStringList).classFields.Add('destroy', voidProcedureType);
+    TClassTypeDef(classType_TStringList).classFields.Add('free', voidProcedureType);
+    TClassTypeDef(classType_TStringList).classFields.Add('find', func_StringVarLongInt_Boolean);
+    TClassTypeDef(classType_TStringList).classFields.Add('sort', voidProcedureType);
+    TClassTypeDef(classType_TStringList).classFields.Add('customsort', proc_Pointer);
 end;
 
 procedure TClassesUnit.Load(ctx: TParserContext);
@@ -232,9 +221,9 @@ begin
     inherited Load(ctx);
     if ctx.mode >= cmFreePascal then
     begin
-        RegisterSymbolByName('TFPList', nil, skTypeName, @classType_TFPList, ctx.Cursor);
-        RegisterSymbolByName('TStrings', nil, skTypeName, @classType_TStrings, ctx.Cursor);
-        RegisterSymbolByName('TStringList', nil, skTypeName, @classType_TStringList, ctx.Cursor);
+        RegisterSymbolByName('TFPList', nil, skTypeName, classType_TFPList, ctx.Cursor);
+        RegisterSymbolByName('TStrings', nil, skTypeName, classType_TStrings, ctx.Cursor);
+        RegisterSymbolByName('TStringList', nil, skTypeName, classType_TStringList, ctx.Cursor);
     end;
 end;
 

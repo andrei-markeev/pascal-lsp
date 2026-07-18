@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    CompilationMode, Anchors, ReservedWord, Identifier, VarDecl, FunctionDecl;
+    CompilationMode, Anchors, ReservedWord, Identifier, VarDecl, FunctionDecl, TypeDef, ClassTypeDef;
 
 procedure SetVisibility(ctx: TParserContext; const value: TVisibility; out res: TVisibility);
 begin
@@ -43,19 +43,24 @@ var
     savedTokensLen: integer;
     posBeforeTrivia: PChar;
     identToken: TToken;
-    currParent: PTypeDef;
-    parentTypeDef: PTypeDef;
+    currParent: TTypeDef;
+    parentTypeDef: TTypeDef;
     depth: integer;
     isCircular: boolean;
+    classTypeDef: TClassTypeDef;
 begin
     ctx.Add(Self);
     tokenName := 'ClassSpec';
     start := ctx.Cursor;
     state := tsCorrect;
-    typeDefToFill.size := 0;
-    typeDefToFill.kind := tkClass;
-    typeDefToFill.classFields := TFPHashList.Create; // TODO: free memory
-    typeDefToFill.classFields.Add('Free', @voidProcedureType);
+
+    classTypeDef := TClassTypeDef.Create;
+    typeDefToFill := classTypeDef;
+    for i := 0 to high(parentSymbols) do
+        if parentSymbols[i] <> nil then
+            parentSymbols[i].typeDef := typeDefToFill;
+
+    classTypeDef.classFields.Add('Free', voidProcedureType);
 
     // TODO: packed classes
 
@@ -63,7 +68,7 @@ begin
 
     // TODO: abstract, sealed
 
-    typeDefToFill.parentClass := nil;
+    classTypeDef.parentClass := nil;
     if PeekReservedWord(ctx, rwOpenParenthesis) then
     begin
         TReservedWord.Create(ctx, rwOpenParenthesis, true);
@@ -84,12 +89,12 @@ begin
             if ident.state <> tsMissing then
             begin
                 symbol := FindSymbol(ident.GetStr(), ctx.Cursor);
-                if (symbol <> nil) and (symbol.kind = skTypeName) and (symbol.typeDef^.kind = tkClass) then
+                if (symbol <> nil) and (symbol.kind = skTypeName) and (symbol.typeDef <> nil) and (symbol.typeDef.kind = tkClass) then
                     isDeclaredClass := true
                 else
                 begin
                     found := TypesList.Find(LowerCase(ident.GetStr()));
-                    if (found <> nil) and (PTypeDef(found)^.kind = tkClass) then
+                    if (found <> nil) and (TTypeDef(found).kind = tkClass) then
                         isDeclaredClass := true;
                 end;
             end;
@@ -106,14 +111,14 @@ begin
                 if isDeclaredClass then
                 begin
                     symbol := FindSymbol(ident.GetStr(), ctx.Cursor);
-                    if (symbol <> nil) and (symbol.kind = skTypeName) and (symbol.typeDef^.kind = tkClass) then
+                    if (symbol <> nil) and (symbol.kind = skTypeName) and (symbol.typeDef <> nil) and (symbol.typeDef.kind = tkClass) then
                         parentTypeDef := symbol.typeDef
                     else
                     begin
                         symbol := nil;
                         found := TypesList.Find(LowerCase(ident.GetStr()));
-                        if (found <> nil) and (PTypeDef(found)^.kind = tkClass) then
-                            parentTypeDef := PTypeDef(found)
+                        if (found <> nil) and (TTypeDef(found).kind = tkClass) then
+                            parentTypeDef := TTypeDef(found)
                         else
                             parentTypeDef := nil;
                     end;
@@ -126,12 +131,15 @@ begin
                         while (currParent <> nil) and (depth < 100) do
                         begin
                             inc(depth);
-                            if currParent = @typeDefToFill then
+                            if currParent = typeDefToFill then
                             begin
                                 isCircular := true;
                                 break;
                             end;
-                            currParent := currParent^.parentClass;
+                            if currParent is TClassTypeDef then
+                                currParent := TClassTypeDef(currParent).parentClass
+                            else
+                                currParent := nil;
                         end;
 
                         if isCircular then
@@ -141,7 +149,7 @@ begin
                         end
                         else
                         begin
-                            typeDefToFill.parentClass := parentTypeDef;
+                            classTypeDef.parentClass := parentTypeDef;
                             if symbol <> nil then
                                 symbol.AddReference(ident);
                         end;
@@ -206,9 +214,16 @@ begin
                 fieldDecl := TVarDecl.Create(ctx, parentSymbols);
                 for i := 0 to length(fieldDecl.idents) - 1 do
                 begin
-                    typeDefToFill.classFields.Add(fieldDecl.idents[i].GetStr(), @fieldDecl.varType);
-                    fieldDecl.varType.visibility := visibility;
-                    inc(typeDefToFill.size, fieldDecl.varType.size);
+                    if fieldDecl.varType <> nil then
+                    begin
+                        if fieldDecl.varType.visibility <> visibility then
+                        begin
+                            fieldDecl.varType := fieldDecl.varType.Clone;
+                            fieldDecl.varType.visibility := visibility;
+                        end;
+                        inc(classTypeDef.size, fieldDecl.varType.size);
+                    end;
+                    classTypeDef.classFields.Add(fieldDecl.idents[i].GetStr(), fieldDecl.varType);
                 end;
                 TReservedWord.Create(ctx, rwSemiColon, false);
             end;
@@ -218,8 +233,9 @@ begin
         else if nextTokenKind.reservedWordKind in [rwProcedure, rwFunction, rwConstructor, rwDestructor] then
         begin
             funcDecl := TFunctionDecl.Create(ctx, nextTokenKind.reservedWordKind, parentSymbols);
-            funcDecl.funcType.visibility := visibility;
-            typeDefToFill.classFields.Add(funcDecl.nameIdent.GetStr(), @funcDecl.funcType);
+            if funcDecl.funcType <> nil then
+                funcDecl.funcType.visibility := visibility;
+            classTypeDef.classFields.Add(funcDecl.nameIdent.GetStr(), funcDecl.funcType);
         end;
 
         nextTokenKind := DetermineNextTokenKind(ctx);

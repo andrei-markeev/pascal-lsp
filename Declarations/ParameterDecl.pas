@@ -95,7 +95,7 @@ begin
     SetLength(symbols, l);
     for i := 0 to l - 1 do
     begin
-        symbols[i] := RegisterSymbol(idents[i], nil, symbolKind, @typeDef, ctx.Cursor);
+        symbols[i] := RegisterSymbol(idents[i], nil, symbolKind, typeDef, ctx.Cursor);
         symbols[i].isParameter := true;
     end;
 
@@ -107,6 +107,8 @@ begin
         // do we even need any special treatment?
 
         TTypeSpec.Create(ctx, symbols, typeDef);
+        for i := 0 to l - 1 do
+            symbols[i].typeDef := typeDef;
     end
     else if parameterKind in [ptkConst, ptkVar] then
     begin

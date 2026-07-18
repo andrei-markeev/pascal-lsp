@@ -1,6 +1,7 @@
 unit SystemUnit;
 
 {$mode objfpc}
+{$longstrings on}
 
 interface
 
@@ -18,15 +19,18 @@ type
         procedure Load(ctx: TParserContext); virtual;
     end;
 
-function CreateFunctionType(params: TParameterList; returnType: PTypeDef): TTypeDef;
-function CreateOneParamFunctionType(paramName: shortstring; paramType, returnType: PTypeDef): TTypeDef;
-function CreateTwoParamFunctionType(param1Name: shortstring; param1Type: PTypeDef; param2Name: shortstring; param2Type: PTypeDef; returnType: PTypeDef): TTypeDef;
-function CreateTwoParamVarFunctionType(param1Name: shortstring; param1Type: PTypeDef; param2Name: shortstring; param2Type: PTypeDef; returnType: PTypeDef): TTypeDef;
+function CreateFunctionType(params: TParameterList; returnType: TTypeDef): TTypeDef;
+function CreateOneParamFunctionType(paramName: shortstring; paramType, returnType: TTypeDef): TTypeDef;
+function CreateTwoParamFunctionType(param1Name: shortstring; param1Type: TTypeDef; param2Name: shortstring; param2Type: TTypeDef; returnType: TTypeDef): TTypeDef;
+function CreateTwoParamVarFunctionType(param1Name: shortstring; param1Type: TTypeDef; param2Name: shortstring; param2Type: TTypeDef; returnType: TTypeDef): TTypeDef;
 function CreateProcedureType(params: TParameterList): TTypeDef;
-function CreateOneParamProcedureType(paramName: shortstring; paramType: PTypeDef): TTypeDef;
-function CreateTwoParamProcedureType(param1Name: shortstring; param1Type: PTypeDef; param2Name: shortstring; param2Type: PTypeDef): TTypeDef;
+function CreateOneParamProcedureType(paramName: shortstring; paramType: TTypeDef): TTypeDef;
+function CreateTwoParamProcedureType(param1Name: shortstring; param1Type: TTypeDef; param2Name: shortstring; param2Type: TTypeDef): TTypeDef;
 
 implementation
+
+uses
+    TypeDef, RoutineTypeDef;
 
 constructor TSystemUnit.Create;
 begin
@@ -51,22 +55,17 @@ begin
     end;
 end;
 
-function CreateFunctionType(params: TParameterList; returnType: PTypeDef): TTypeDef;
+function CreateFunctionType(params: TParameterList; returnType: TTypeDef): TTypeDef;
 begin
-    CreateFunctionType.kind := tkFunction;
-    CreateFunctionType.visibility := vPublic;
-    CreateFunctionType.size := 0;
-    CreateFunctionType.parameters := params;
-    CreateFunctionType.returnType := returnType;
-    CreateFunctionType.overloads := nil;
+    CreateFunctionType := TRoutineTypeDef.Create(tkFunction, params, returnType, nil);
 end;
 
-function CreateOneParamFunctionType(paramName: shortstring; paramType, returnType: PTypeDef): TTypeDef;
+function CreateOneParamFunctionType(paramName: shortstring; paramType, returnType: TTypeDef): TTypeDef;
 begin
     CreateOneParamFunctionType := CreateFunctionType(TParameterList.Create([CreateParam(ptkValue, paramName, paramType)]), returnType);
 end;
 
-function CreateTwoParamFunctionType(param1Name: shortstring; param1Type: PTypeDef; param2Name: shortstring; param2Type: PTypeDef; returnType: PTypeDef): TTypeDef;
+function CreateTwoParamFunctionType(param1Name: shortstring; param1Type: TTypeDef; param2Name: shortstring; param2Type: TTypeDef; returnType: TTypeDef): TTypeDef;
 begin
     CreateTwoParamFunctionType := CreateFunctionType(TParameterList.Create([
         CreateParam(ptkValue, param1Name, param1Type),
@@ -74,7 +73,7 @@ begin
     ]), returnType);
 end;
 
-function CreateTwoParamVarFunctionType(param1Name: shortstring; param1Type: PTypeDef; param2Name: shortstring; param2Type: PTypeDef; returnType: PTypeDef): TTypeDef;
+function CreateTwoParamVarFunctionType(param1Name: shortstring; param1Type: TTypeDef; param2Name: shortstring; param2Type: TTypeDef; returnType: TTypeDef): TTypeDef;
 begin
     CreateTwoParamVarFunctionType := CreateFunctionType(TParameterList.Create([
         CreateParam(ptkConst, param1Name, param1Type),
@@ -84,21 +83,17 @@ end;
 
 function CreateProcedureType(params: TParameterList): TTypeDef;
 begin
-    CreateProcedureType.kind := tkProcedure;
-    CreateProcedureType.visibility := vPublic;
-    CreateProcedureType.size := 0;
-    CreateProcedureType.parameters := params;
-    CreateProcedureType.overloads := nil;
+    CreateProcedureType := TRoutineTypeDef.Create(tkProcedure, params, nil, nil);
 end;
 
-function CreateOneParamProcedureType(paramName: shortstring; paramType: PTypeDef): TTypeDef;
+function CreateOneParamProcedureType(paramName: shortstring; paramType: TTypeDef): TTypeDef;
 begin
     CreateOneParamProcedureType := CreateProcedureType(TParameterList.Create([
         CreateParam(ptkValue, paramName, paramType)
     ]));
 end;
 
-function CreateTwoParamProcedureType(param1Name: shortstring; param1Type: PTypeDef; param2Name: shortstring; param2Type: PTypeDef): TTypeDef;
+function CreateTwoParamProcedureType(param1Name: shortstring; param1Type: TTypeDef; param2Name: shortstring; param2Type: TTypeDef): TTypeDef;
 begin
     CreateTwoParamProcedureType := CreateProcedureType(TParameterList.Create([
         CreateParam(ptkValue, param1Name, param1Type),

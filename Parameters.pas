@@ -14,7 +14,7 @@ type
     TParameter = record
         kind: TParameterKind;
         name: shortstring;
-        typeDef: PTypeDef;
+        typeDef: TTypeDef;
     end;
 
     TParameterDynArray = array of TParameter;
@@ -29,11 +29,11 @@ type
         destructor Destroy; override;
     end;
 
-function CreateParam(kind: TParameterKind; name: shortstring; typeDef: PTypeDef): TParameter;
+function CreateParam(kind: TParameterKind; name: shortstring; typeDef: TTypeDef): TParameter;
 
 implementation
 
-function CreateParam(kind: TParameterKind; name: shortstring; typeDef: PTypeDef): TParameter;
+function CreateParam(kind: TParameterKind; name: shortstring; typeDef: TTypeDef): TParameter;
 begin
     CreateParam.kind := kind;
     CreateParam.name := name;

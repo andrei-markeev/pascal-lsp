@@ -17,10 +17,14 @@ type
 
 implementation
 
+uses
+    EnumTypeDef, EnumMemberTypeDef;
+
 constructor TEnumSpec.Create(ctx: TParserContext; var typeDefToFill: TTypeDef);
 var
     hasMoreMembers: boolean;
     ident: TIdentifier;
+    enumTypeDef: TEnumTypeDef;
 begin
     ctx.Add(Self);
     tokenName := 'EnumSpec';
@@ -28,15 +32,13 @@ begin
 
     TReservedWord.Create(ctx, rwOpenParenthesis, true);
 
-    typeDefToFill.kind := tkEnum;
-    typeDefToFill.enumType := @typeDefToFill;
-    typeDefToFill.enumSpec := Self;
-    memberTypeDef.kind := tkEnumMember;
-    memberTypeDef.enumType := @typeDefToFill;
-    memberTypeDef.enumSpec := Self;
+    enumTypeDef := TEnumTypeDef.Create(Self);
+    typeDefToFill := enumTypeDef;
+
+    memberTypeDef := TEnumMemberTypeDef.Create(enumTypeDef, Self);
     repeat
         ident := TIdentifier.Create(ctx, false);
-        RegisterSymbol(ident, nil, skConstant, @memberTypeDef, ctx.Cursor);
+        RegisterSymbol(ident, nil, skConstant, memberTypeDef, ctx.Cursor);
 
         ctx.SkipTrivia;
         // TODO: support number assignments

@@ -1,0 +1,14 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadIfExpression</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>a</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <If><RW>if</RW> <Factor><RW>(</RW><Expression ERROR="Comparing integer with (unknown) is not supported!"><SymbRef>a</SymbRef> <RW>></RW> <Ident ERROR="Identifier has not been declared!">x</Ident></Expression><RW>)</RW></Factor> <RW>then</RW>
+        <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <Num>1</Num></Assignment></If><RW>;</RW>
+
+    <If ERROR="Condition expression returns (unknown) but must return a boolean value!"><RW>if</RW> <Factor><RW>(</RW><SimpleExpression ERROR="Cannot apply operator '+': expected integer or real, but  is (unknown)"><SymbRef>a</SymbRef> <RW>+</RW><Factor MISSING="" /></SimpleExpression> <RW>)</RW></Factor> <RW>then</RW>
+        <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <Num>2</Num></Assignment></If><RW>;</RW>
+
+    <If><RW>if</RW> <Expression ERROR="Comparing (unknown) with integer is not supported!"><Ident ERROR="Identifier has not been declared!">x</Ident> <RW>></RW> <Num>10</Num></Expression> <RW>then</RW>
+        <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <Num>3</Num></Assignment></If><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

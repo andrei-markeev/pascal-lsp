@@ -11,15 +11,16 @@ uses
 type
     TBlock = class(TToken)
     public
-        constructor Create(ctx: TParserContext; childSymbols: array of TSymbol; selfType: PTypeDef; resultType: PTypeDef);
+        constructor Create(ctx: TParserContext; childSymbols: array of TSymbol; selfType: TTypeDef; resultType: TTypeDef);
     end;
 
 implementation
 
 uses
-    CompilationMode, Scopes, ConstSection, TypeSection, VarSection, FunctionImpl, CompoundStatement;
+    CompilationMode, Scopes, ConstSection, TypeSection, VarSection, FunctionImpl, CompoundStatement,
+    TypeDef, ClassTypeDef, ObjectTypeDef;
 
-function FindClassSymbol(typeDef: PTypeDef): TSymbol;
+function FindClassSymbol(typeDef: TTypeDef): TSymbol;
 var
     i, j: integer;
     scope: TScope;
@@ -41,9 +42,9 @@ begin
     end;
 end;
 
-procedure RegisterInheritedMembers(selfType: PTypeDef; start: PChar);
+procedure RegisterInheritedMembers(selfType: TTypeDef; start: PChar);
 var
-    currClass: PTypeDef;
+    currClass: TTypeDef;
     classSym: TSymbol;
     childName: shortstring;
     i: integer;
@@ -51,10 +52,10 @@ begin
     if selfType = nil then
         exit;
 
-    if selfType^.kind = tkClass then
-        currClass := selfType^.parentClass
-    else if selfType^.kind = tkObject then
-        currClass := selfType^.parentObject
+    if (selfType.kind = tkClass) and (selfType is TClassTypeDef) then
+        currClass := TClassTypeDef(selfType).parentClass
+    else if (selfType.kind = tkObject) and (selfType is TObjectTypeDef) then
+        currClass := TObjectTypeDef(selfType).parentObject
     else
         currClass := nil;
 
@@ -70,16 +71,16 @@ begin
                     RegisterSymbol(classSym.children[i].declaration, nil, classSym.children[i].kind, classSym.children[i].typeDef, start);
             end;
         end;
-        if currClass^.kind = tkClass then
-            currClass := currClass^.parentClass
-        else if currClass^.kind = tkObject then
-            currClass := currClass^.parentObject
+        if (currClass.kind = tkClass) and (currClass is TClassTypeDef) then
+            currClass := TClassTypeDef(currClass).parentClass
+        else if (currClass.kind = tkObject) and (currClass is TObjectTypeDef) then
+            currClass := TObjectTypeDef(currClass).parentObject
         else
             currClass := nil;
     end;
 end;
 
-constructor TBlock.Create(ctx: TParserContext; childSymbols: array of TSymbol; selfType: PTypeDef; resultType: PTypeDef);
+constructor TBlock.Create(ctx: TParserContext; childSymbols: array of TSymbol; selfType: TTypeDef; resultType: TTypeDef);
 var
     nextTokenKind: TTokenKind;
     i: integer;

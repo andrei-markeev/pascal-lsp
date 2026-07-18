@@ -17,9 +17,12 @@ type
 implementation
 
 uses
-    ReservedWord, TypeSpec;
+    ReservedWord, TypeSpec, PointerTypeDef;
 
 constructor TPointerSpec.Create(ctx: TParserContext; var typeDefToFill: TTypeDef);
+var
+    targetType: TTypeDef;
+    ptrTypeDef: TPointerTypeDef;
 begin
     ctx.Add(Self);
     tokenName := 'PointerSpec';
@@ -27,11 +30,12 @@ begin
 
     TReservedWord.Create(ctx, rwHat, true);
 
-    typeDefToFill.kind := tkPointer;
-    typeDefToFill.size := 8; // TODO: detect arch size
-    typeDefToFill.isTyped := true;
-    typeDefToFill.pointerToType := new(PTypeDef); // TODO: free memory
-    CreateTypeSpec(ctx, typeDefToFill.pointerToType^);
+    targetType := unknownType;
+    ptrTypeDef := TPointerTypeDef.Create(true, targetType, 8);
+    typeDefToFill := ptrTypeDef;
+
+    CreateTypeSpec(ctx, targetType);
+    ptrTypeDef.pointerToType := targetType;
 
     state := tsCorrect;
     ctx.MarkEndOfToken(Self);

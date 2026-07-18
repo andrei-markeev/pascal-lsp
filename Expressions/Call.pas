@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    sysutils, classes, TypeDefs, Parameters, ReservedWord, Expression;
+    sysutils, classes, TypeDefs, Parameters, ReservedWord, Expression, RoutineTypeDef;
 
 constructor TCall.Create(ctx: TParserContext; ref: TTypedToken);
 var
@@ -33,12 +33,12 @@ begin
     state := tsCorrect;
 
     match := -1;
-    if ref <> nil then
+    if (ref <> nil) and (ref.typeDef is TRoutineTypeDef) then
     begin
-        overloads := TFPList(ref.typeDef.overloads);
-        params := TParameterList(ref.typeDef.parameters);
-        if ref.typeDef.returnType <> nil then
-            typeDef := ref.typeDef.returnType^
+        overloads := TRoutineTypeDef(ref.typeDef).overloads;
+        params := TParameterList(TRoutineTypeDef(ref.typeDef).parameters);
+        if TRoutineTypeDef(ref.typeDef).returnType <> nil then
+            typeDef := TRoutineTypeDef(ref.typeDef).returnType
         else
             typeDef := unknownType;
     end
@@ -73,16 +73,19 @@ begin
                     inc(match);
                     if (overloads = nil) or (match >= overloads.Count) then
                     begin
-                        expr.state := tsError;
-                        expr.errorMessage := 'Too many parameters.';
+                        if expr <> nil then
+                        begin
+                            expr.state := tsError;
+                            expr.errorMessage := 'Too many parameters.';
+                        end;
                         TReservedWord.Create(ctx, rwCloseParenthesis, false);
                         ctx.MarkEndOfToken(Self);
                         exit;
                     end;
-                    params := TParameterList(PTypeDef(overloads.Items[match])^.parameters);
+                    params := TParameterList(TRoutineTypeDef(overloads.Items[match]).parameters);
                 end;
 
-                if not TypesAreAssignable(params.items[n].typeDef^, expr.typeDef, expr.errorMessage) then
+                if (expr <> nil) and (params.items[n].typeDef <> nil) and not TypesAreAssignable(params.items[n].typeDef, expr.typeDef, expr.errorMessage) then
                 begin
                     inc(match);
                     if (overloads = nil) or (match >= overloads.Count) then
@@ -91,7 +94,7 @@ begin
                         expr.errorMessage := 'Invalid parameter: ' + expr.errorMessage;
                         break;
                     end;
-                    params := TParameterList(PTypeDef(overloads.Items[match])^.parameters);
+                    params := TParameterList(TRoutineTypeDef(overloads.Items[match]).parameters);
                 end;
 
             until params.count > n;
@@ -119,7 +122,7 @@ begin
             errorMessage := 'Expected ' + IntToStr(params.count) + ' parameters, but got ' + IntToStr(n);
             break;
         end;
-        params := TParameterList(PTypeDef(overloads.Items[match])^.parameters);
+        params := TParameterList(TRoutineTypeDef(overloads.Items[match]).parameters);
     end;
 
     ctx.MarkEndOfToken(Self);

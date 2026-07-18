@@ -1,5 +1,8 @@
 unit SystemUnits;
 
+{$mode objfpc}
+{$longstrings on}
+
 interface
 
 uses
@@ -11,7 +14,7 @@ procedure LoadSystemUnit(unitName: string; ctx: TParserContext);
 implementation
 
 uses
-    classes, contnrs, CompilationMode, Symbols, TypeDefs, Parameters,
+    classes, contnrs, CompilationMode, Symbols, TypeDefs, Parameters, RoutineTypeDef,
     SystemUnit, ClassesUnit, ContnrsUnit, MathUnit, SysutilsUnit, StringsUnit;
 
 var
@@ -40,25 +43,25 @@ procedure RegisterSystemSymbols(ctx: TParserContext);
 begin
     if ctx.mode >= cmStandardPascal then
     begin
-        RegisterSymbolByName('True', nil, skConstant, @booleanType, ctx.Cursor);
-        RegisterSymbolByName('False', nil, skConstant, @booleanType, ctx.Cursor);
-        RegisterSymbolByName('Abs', nil, skFunction, @functionType_Ordinal_Ordinal, ctx.Cursor);
-        RegisterSymbolByName('ArcTan', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
-        RegisterSymbolByName('Chr', nil, skFunction, @functionType_Byte_Char, ctx.Cursor);
-        RegisterSymbolByName('Cos', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
+        RegisterSymbolByName('True', nil, skConstant, booleanType, ctx.Cursor);
+        RegisterSymbolByName('False', nil, skConstant, booleanType, ctx.Cursor);
+        RegisterSymbolByName('Abs', nil, skFunction, functionType_Ordinal_Ordinal, ctx.Cursor);
+        RegisterSymbolByName('ArcTan', nil, skFunction, functionType_Real_Real, ctx.Cursor);
+        RegisterSymbolByName('Chr', nil, skFunction, functionType_Byte_Char, ctx.Cursor);
+        RegisterSymbolByName('Cos', nil, skFunction, functionType_Real_Real, ctx.Cursor);
         // TODO: Eof
         // TODO: Eoln
-        RegisterSymbolByName('Exp', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
-        RegisterSymbolByName('Ln', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
-        RegisterSymbolByName('Odd', nil, skFunction, @functionType_LongInt_Boolean, ctx.Cursor);
-        RegisterSymbolByName('Ord', nil, skFunction, @functionType_Ordinal_LongInt, ctx.Cursor);
-        RegisterSymbolByName('Pred', nil, skFunction, @functionType_Ordinal_Ordinal, ctx.Cursor);
-        RegisterSymbolByName('Round', nil, skFunction, @functionType_Real_LongInt, ctx.Cursor);
-        RegisterSymbolByName('Sin', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
-        RegisterSymbolByName('Sqr', nil, skFunction, @functionType_Ordinal_Ordinal, ctx.Cursor);
-        RegisterSymbolByName('Sqrt', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
-        RegisterSymbolByName('Succ', nil, skFunction, @functionType_Ordinal_Ordinal, ctx.Cursor);
-        RegisterSymbolByName('Trunc', nil, skFunction, @functionType_Real_LongInt, ctx.Cursor);
+        RegisterSymbolByName('Exp', nil, skFunction, functionType_Real_Real, ctx.Cursor);
+        RegisterSymbolByName('Ln', nil, skFunction, functionType_Real_Real, ctx.Cursor);
+        RegisterSymbolByName('Odd', nil, skFunction, functionType_LongInt_Boolean, ctx.Cursor);
+        RegisterSymbolByName('Ord', nil, skFunction, functionType_Ordinal_LongInt, ctx.Cursor);
+        RegisterSymbolByName('Pred', nil, skFunction, functionType_Ordinal_Ordinal, ctx.Cursor);
+        RegisterSymbolByName('Round', nil, skFunction, functionType_Real_LongInt, ctx.Cursor);
+        RegisterSymbolByName('Sin', nil, skFunction, functionType_Real_Real, ctx.Cursor);
+        RegisterSymbolByName('Sqr', nil, skFunction, functionType_Ordinal_Ordinal, ctx.Cursor);
+        RegisterSymbolByName('Sqrt', nil, skFunction, functionType_Real_Real, ctx.Cursor);
+        RegisterSymbolByName('Succ', nil, skFunction, functionType_Ordinal_Ordinal, ctx.Cursor);
+        RegisterSymbolByName('Trunc', nil, skFunction, functionType_Real_LongInt, ctx.Cursor);
 
         // TODO: Dispose
         // TODO: Get
@@ -77,30 +80,30 @@ begin
     if ctx.mode >= cmTurboPascal then
     begin
         // Flow control procedures
-        RegisterSymbolByName('Break', nil, skProcedure, @voidProcedureType, ctx.Cursor);
-        RegisterSymbolByName('Continue', nil, skProcedure, @voidProcedureType, ctx.Cursor);
+        RegisterSymbolByName('Break', nil, skProcedure, voidProcedureType, ctx.Cursor);
+        RegisterSymbolByName('Continue', nil, skProcedure, voidProcedureType, ctx.Cursor);
         // TODO: Exit 
         // TODO: Halt 
         // TODO: RunError 
 
         // Ordinal procedures & functions
-        RegisterSymbolByName('Dec', nil, skProcedure, @procedureType_Ordinal1, ctx.Cursor);
-        RegisterSymbolByName('Inc', nil, skProcedure, @procedureType_Ordinal1, ctx.Cursor);
-        RegisterSymbolByName('High', nil, skFunction, @functionType_HighLow, ctx.Cursor);
-        RegisterSymbolByName('Low', nil, skFunction, @functionType_HighLow, ctx.Cursor);
+        RegisterSymbolByName('Dec', nil, skProcedure, procedureType_Ordinal1, ctx.Cursor);
+        RegisterSymbolByName('Inc', nil, skProcedure, procedureType_Ordinal1, ctx.Cursor);
+        RegisterSymbolByName('High', nil, skFunction, functionType_HighLow, ctx.Cursor);
+        RegisterSymbolByName('Low', nil, skFunction, functionType_HighLow, ctx.Cursor);
 
         // Arithmetic functions
-        RegisterSymbolByName('Frac', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
-        RegisterSymbolByName('Int', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
-        RegisterSymbolByName('Pi', nil, skFunction, @functionType_Real, ctx.Cursor);
+        RegisterSymbolByName('Frac', nil, skFunction, functionType_Real_Real, ctx.Cursor);
+        RegisterSymbolByName('Int', nil, skFunction, functionType_Real_Real, ctx.Cursor);
+        RegisterSymbolByName('Pi', nil, skFunction, functionType_Real, ctx.Cursor);
 
         // String procedures & functions
         // TODO: Concat
         // TODO: Copy
         // TODO: Delete
         // TODO: Insert
-        RegisterSymbolByName('Length', nil, skFunction, @functionType_String_Integer, ctx.Cursor);
-        RegisterSymbolByName('Pos', nil, skFunction, @functionType_constString_constString_LongInt, ctx.Cursor);
+        RegisterSymbolByName('Length', nil, skFunction, functionType_String_Integer, ctx.Cursor);
+        RegisterSymbolByName('Pos', nil, skFunction, functionType_constString_constString_LongInt, ctx.Cursor);
         // TODO: Str
         // TODO: Val
 
@@ -138,60 +141,60 @@ begin
         // TODO: UpCase
 
         // Predeclared variables in the System unit
-        RegisterSymbolByName('ErrorAddr', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('ExitCode', nil, skVariable, @smallintType, ctx.Cursor);
-        RegisterSymbolByName('ExitProc', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('FileMode', nil, skVariable, @byteType, ctx.Cursor);
-        RegisterSymbolByName('FreeList', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('FreeZero', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('HeapEnd', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('HeapError', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('HeapOrg', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('HeapPtr', nil, skVariable, @pointer32Type, ctx.Cursor);
-        // TODO: RegisterSymbolByName('Input', nil, skVariable, @textFileType, ctx.Cursor);
-        RegisterSymbolByName('InOutRes', nil, skVariable, @smallintType, ctx.Cursor);
-        // TODO: RegisterSymbolByName('Output', nil, skVariable, @textFileType, ctx.Cursor);
-        RegisterSymbolByName('OvrCodeList', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('OvrDebugPtr', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('OvrDosHandle', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('OvrEmsHandle', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('OvrHeapEnd', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('OvrHeapOrg', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('OvrHeapPtr', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('OvrHeapsize', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('OvrLoadList', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('Prefixseg', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('Randseed', nil, skVariable, @longintType, ctx.Cursor);
-        RegisterSymbolByName('SaveIntOO', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt02', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveIntlB', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt21', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt23', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt24', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt34', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt35', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt36', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt37', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt38', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt39', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt3A', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt3B', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt3C', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt3D', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt3E', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt3F', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('SaveInt75', nil, skVariable, @pointer32Type, ctx.Cursor);
-        RegisterSymbolByName('Seg0040', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('SegAOOO', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('SegBOOO', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('SegB800', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('SelectorInc', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('StackLimit', nil, skVariable, @wordType, ctx.Cursor);
-        RegisterSymbolByName('Test8087', nil, skVariable, @byteType, ctx.Cursor);
+        RegisterSymbolByName('ErrorAddr', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('ExitCode', nil, skVariable, smallintType, ctx.Cursor);
+        RegisterSymbolByName('ExitProc', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('FileMode', nil, skVariable, byteType, ctx.Cursor);
+        RegisterSymbolByName('FreeList', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('FreeZero', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('HeapEnd', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('HeapError', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('HeapOrg', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('HeapPtr', nil, skVariable, pointer32Type, ctx.Cursor);
+        // TODO: RegisterSymbolByName('Input', nil, skVariable, textFileType, ctx.Cursor);
+        RegisterSymbolByName('InOutRes', nil, skVariable, smallintType, ctx.Cursor);
+        // TODO: RegisterSymbolByName('Output', nil, skVariable, textFileType, ctx.Cursor);
+        RegisterSymbolByName('OvrCodeList', nil, skVariable, wordType, ctx.Cursor);
+        RegisterSymbolByName('OvrDebugPtr', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('OvrDosHandle', nil, skVariable, wordType, ctx.Cursor);
+        RegisterSymbolByName('OvrEmsHandle', nil, skVariable, wordType, ctx.Cursor);
+        RegisterSymbolByName('OvrHeapEnd', nil, skVariable, wordType, ctx.Cursor);
+        RegisterSymbolByName('OvrHeapOrg', nil, skVariable, wordType, ctx.Cursor);
+        RegisterSymbolByName('OvrHeapPtr', nil, skVariable, wordType, ctx.Cursor);
+        RegisterSymbolByName('OvrHeapsize', nil, skVariable, wordType, ctx.Cursor);
+        RegisterSymbolByName('OvrLoadList', nil, skVariable, wordType, ctx.Cursor);
+        RegisterSymbolByName('Prefixseg', nil, skVariable, wordType, ctx.Cursor);
+        RegisterSymbolByName('Randseed', nil, skVariable, longintType, ctx.Cursor);
+        RegisterSymbolByName('SaveIntOO', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt02', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveIntlB', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt21', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt23', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt24', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt34', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt35', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt36', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt37', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt38', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt39', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt3A', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt3B', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt3C', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt3D', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt3E', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt3F', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('SaveInt75', nil, skVariable, pointer32Type, ctx.Cursor);
+        RegisterSymbolByName('Seg0040', nil, skVariable, wordType, ctx.Cursor);
+        RegisterSymbolByName('SegAOOO', nil, skVariable, wordType, ctx.Cursor);
+        RegisterSymbolByName('SegBOOO', nil, skVariable, wordType, ctx.Cursor);
+        RegisterSymbolByName('SegB800', nil, skVariable, wordType, ctx.Cursor);
+        RegisterSymbolByName('SelectorInc', nil, skVariable, wordType, ctx.Cursor);
+        RegisterSymbolByName('StackLimit', nil, skVariable, wordType, ctx.Cursor);
+        RegisterSymbolByName('Test8087', nil, skVariable, byteType, ctx.Cursor);
     end;
     if ctx.mode >= cmFreePascal then
     begin
-        RegisterSymbolByName('SetString', nil, skProcedure, @procedureType_outString_PChar_LongInt, ctx.Cursor);
+        RegisterSymbolByName('SetString', nil, skProcedure, procedureType_outString_PChar_LongInt, ctx.Cursor);
     end;
 end;
 
@@ -209,41 +212,44 @@ end;
 procedure InitFunctionTypes;
 begin
 
-    functionType_Real := CreateFunctionType(TParameterList.Create, @realType);
+    functionType_Real := CreateFunctionType(TParameterList.Create, realType);
 
-    functionType_LongInt_LongInt := CreateOneParamFunctionType('v', @longintType, @longintType);
-    functionType_Ordinal_LongInt := CreateOneParamFunctionType('v', @unknownType, @longintType);
-    functionType_Ordinal_Ordinal := CreateOneParamFunctionType('v', @unknownType, @unknownType);
-    functionType_String_Integer := CreateOneParamFunctionType('s', @ansiString64Type, @longintType);
-    functionType_LongInt_Boolean := CreateOneParamFunctionType('v', @longintType, @booleanType);
-    functionType_Byte_Char := CreateOneParamFunctionType('b', @byteType, @charType);
-    functionType_Real_Real := CreateOneParamFunctionType('x', @realType, @realType);
-    functionType_Real_Longint := CreateOneParamFunctionType('x', @realType, @longintType);
+    functionType_LongInt_LongInt := CreateOneParamFunctionType('v', longintType, longintType);
+    functionType_Ordinal_LongInt := CreateOneParamFunctionType('v', unknownType, longintType);
+    functionType_Ordinal_Ordinal := CreateOneParamFunctionType('v', unknownType, unknownType);
+    functionType_String_Integer := CreateOneParamFunctionType('s', ansiString64Type, longintType);
+    functionType_LongInt_Boolean := CreateOneParamFunctionType('v', longintType, booleanType);
+    functionType_Byte_Char := CreateOneParamFunctionType('b', byteType, charType);
+    functionType_Real_Real := CreateOneParamFunctionType('x', realType, realType);
+    functionType_Real_Longint := CreateOneParamFunctionType('x', realType, longintType);
 
     functionType_constString_constString_LongInt := CreateFunctionType(TParameterList.Create([
-        CreateParam(ptkConst, 'substr', @shortstringType),
-        CreateParam(ptkConst, 's', @shortstringType)
-    ]), @longintType);
+        CreateParam(ptkConst, 'substr', shortstringType),
+        CreateParam(ptkConst, 's', shortstringType)
+    ]), longintType);
 
     procedureType_outString_PChar_LongInt := CreateProcedureType(TParameterList.Create([
-        CreateParam(ptkOut, 's', @ansiString64Type),
-        CreateParam(ptkValue, 'buf', @pcharType),
-        CreateParam(ptkValue, 'l', @longintType)
+        CreateParam(ptkOut, 's', ansiString64Type),
+        CreateParam(ptkValue, 'buf', pcharType),
+        CreateParam(ptkValue, 'l', longintType)
     ]));
 
     procedureType_Ordinal1 := CreateProcedureType(TParameterList.Create([
-        CreateParam(ptkVar, 'x', @unknownType)
+        CreateParam(ptkVar, 'x', unknownType)
     ]));
     procedureType_Ordinal2 := CreateProcedureType(TParameterList.Create([
-        CreateParam(ptkVar, 'x', @unknownType),
-        CreateParam(ptkValue, 'n', @longintType)
+        CreateParam(ptkVar, 'x', unknownType),
+        CreateParam(ptkValue, 'n', longintType)
     ]));
-    procedureType_Ordinal1.overloads := TFPList.Create;
-    procedureType_Ordinal1.overloads.Add(@procedureType_Ordinal2);
+    if procedureType_Ordinal1 is TRoutineTypeDef then
+    begin
+        TRoutineTypeDef(procedureType_Ordinal1).overloads := TFPList.Create;
+        TRoutineTypeDef(procedureType_Ordinal1).overloads.Add(procedureType_Ordinal2);
+    end;
 
     functionType_HighLow := CreateFunctionType(TParameterList.Create([
-        CreateParam(ptkValue, 'x', @unknownType)
-    ]), @unknownType);
+        CreateParam(ptkValue, 'x', unknownType)
+    ]), unknownType);
 
 end;
 
@@ -255,7 +261,8 @@ initialization
     sysutilsMock := TSysutilsUnit.Create;
     stringsMock := TStringsUnit.Create;
 finalization
-    procedureType_Ordinal1.overloads.Free;
+    if (procedureType_Ordinal1 <> nil) and (procedureType_Ordinal1 is TRoutineTypeDef) and (TRoutineTypeDef(procedureType_Ordinal1).overloads <> nil) then
+        TRoutineTypeDef(procedureType_Ordinal1).overloads.Free;
     classesMock.Free;
     contnrsMock.Free;
     mathMock.Free;

@@ -215,7 +215,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="Declarations;Statements;Types;File;Expressions"/>
+      <OtherUnitFiles Value="Declarations;Statements;Types;Types\TypeDefs;File;Expressions"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

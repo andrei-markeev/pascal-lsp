@@ -17,9 +17,12 @@ type
 implementation
 
 uses
-    ReservedWord, TypeSpec;
+    TypeDef, ReservedWord, TypeSpec, SetTypeDef;
 
 constructor TSetSpec.Create(ctx: TParserContext; var typeDefToFill: TTypeDef);
+var
+    baseType: TTypeDef;
+    setTypeDef: TSetTypeDef;
 begin
     ctx.Add(Self);
     tokenName := 'SetSpec';
@@ -28,17 +31,22 @@ begin
     TReservedWord.Create(ctx, rwSet, true);
     TReservedWord.Create(ctx, rwOf, false);
 
-    typeDefToFill.size := 1;
-    typeDefToFill.kind := tkSet;
-    typeDefToFill.typeOfSet := new(PTypeDef); // TODO: free memory
-    CreateTypeSpec(ctx, typeDefToFill.typeOfSet^);
+    baseType := unknownType;
+    setTypeDef := TSetTypeDef.Create(baseType, 1);
+    typeDefToFill := setTypeDef;
 
-    if not (typeDefToFill.typeOfSet^.kind in [tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum]) then
+    CreateTypeSpec(ctx, baseType);
+    setTypeDef.typeOfSet := baseType;
+
+    if (baseType = nil) or not (baseType.kind in [tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum]) then
     begin
         state := tsError;
-        errorMessage := 'Expected set of ordinal type. Type of set cannot be ' + TypeKindStr[ord(typeDefToFill.typeOfSet^.kind)];
+        if (baseType <> nil) and (ord(baseType.kind) >= 0) and (ord(baseType.kind) < NUM_OF_TYPE_KINDS) then
+            errorMessage := 'Expected set of ordinal type. Type of set cannot be ' + TypeKindStr[ord(baseType.kind)]
+        else
+            errorMessage := 'Expected set of ordinal type.';
     end
-    else if typeDefToFill.typeOfSet^.size > 1 then
+    else if baseType.size > 1 then
     begin
         state := tsError;
         errorMessage := 'The base type of the set must not have more than 256 possible values!';

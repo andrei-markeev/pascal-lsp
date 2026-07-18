@@ -14,7 +14,7 @@ type
         typeIdent: TIdentifier;
         nameIdent: TIdentifier;
         funcType: TTypeDef;
-        selfType: PTypeDef;
+        selfType: TTypeDef;
         returnType: TTypeDef;
         constructor Create(ctx: TParserContext);
     end;
@@ -22,7 +22,7 @@ type
 implementation
 
 uses
-    ReservedWord, Scopes, Symbols, Parameters, TypeSpec, ParameterDecl, Block;
+    ReservedWord, Scopes, Symbols, Parameters, TypeSpec, ParameterDecl, Block, FunctionDecl, TypeDef, RoutineTypeDef;
 
 constructor TFunctionImpl.Create(ctx: TParserContext);
 var
@@ -37,6 +37,7 @@ var
     hasMoreParams: boolean;
     s: string;
     overrideResult: TTryAddOverrideResult;
+    routineTypeDef: TRoutineTypeDef;
 begin
     ctx.Add(Self);
     tokenName := 'Function';
@@ -53,6 +54,9 @@ begin
     end;
 
     needsReturnType := nextReservedWordKind = rwFunction;
+    routineTypeDef := TRoutineTypeDef.Create;
+    funcType := routineTypeDef;
+
     TReservedWord.Create(ctx, nextReservedWordKind, true);
     case nextReservedWordKind of
         rwFunction:
@@ -94,7 +98,7 @@ begin
         begin
             TReservedWord.Create(ctx, rwDot, true);
             nameIdent := TIdentifier.Create(ctx, false);
-            if symbolParent.typeDef^.kind in [tkObject, tkClass] then
+            if (symbolParent.typeDef <> nil) and (symbolParent.typeDef.kind in [tkObject, tkClass]) then
             begin
                 if (nameIdent.state = tsCorrect) then
                 begin
@@ -118,7 +122,10 @@ begin
             else
             begin
                 typeIdent.state := tsError;
-                typeIdent.errorMessage :=  typeIdent.name + ' is of type ' + TypeKindStr[ord(symbolParent.typeDef^.kind)] + ' which is not a structured type. Expected class or object!';
+                if symbolParent.typeDef <> nil then
+                    typeIdent.errorMessage :=  typeIdent.name + ' is of type ' + TypeKindStr[ord(symbolParent.typeDef.kind)] + ' which is not a structured type. Expected class or object!'
+                else
+                    typeIdent.errorMessage :=  typeIdent.name + ' is not a structured type. Expected class or object!';
             end;
         end
         else
@@ -141,7 +148,7 @@ begin
             for i := 0 to length(paramDecl.idents) - 1 do
             begin
                 SetString(s, paramDecl.idents[i].start, paramDecl.idents[i].len);
-                params.Add(CreateParam(paramDecl.parameterKind, s, @paramDecl.typeDef));
+                params.Add(CreateParam(paramDecl.parameterKind, s, paramDecl.typeDef));
             end;
 
             if PeekReservedWord(ctx, rwComma) then
@@ -163,18 +170,19 @@ begin
         TReservedWord.Create(ctx, rwCloseParenthesis, false);
     end;
 
-    funcType.parameters := params;
+    routineTypeDef.parameters := params;
 
+    returnType := unknownType;
     if needsReturnType then
     begin
         TReservedWord.Create(ctx, rwColon, false);
         CreateTypeSpec(ctx, returnType);
-        funcType.returnType := @returnType;
+        routineTypeDef.returnType := returnType;
     end
     else
-        funcType.returnType := nil;
+        routineTypeDef.returnType := nil;
 
-    overrideResult := TryAddOverride(nameIdent, @funcType, ctx.Cursor);
+    overrideResult := TryAddOverride(nameIdent, funcType, ctx.Cursor);
     if overrideResult = ovExactDuplicate then
     begin
         nameIdent.state := tsError;
@@ -182,7 +190,7 @@ begin
     end
     else if overrideResult <> ovAdded then
     begin
-        symbol := RegisterSymbol(nameIdent, symbolParent, symbolKind, @funcType, ctx.Cursor);
+        symbol := RegisterSymbol(nameIdent, symbolParent, symbolKind, funcType, ctx.Cursor);
         symbol.rangeToken := Self;
         if symbolParent <> nil then
             symbol.displayName := symbolParent.displayName + '.' + symbol.displayName;
@@ -191,25 +199,15 @@ begin
     // TODO: result variable variable
 
     // TODO: modifiers
-{
-        case s of
-            // TODO: external
-            'far': funcModifiers.far := true;
-            'forward': funcModifiers.forward := true; // TODO: forward is replacing body in FunctionImpl
-            'interrupt': funcModifiers.interrupt := true; // TODO: interrupt can only be applied to procedures
-            'near': funcModifiers.near := true;
-            // TODO: public
-        end;
-}
 
     TReservedWord.Create(ctx, rwSemiColon, false);
 
     // TODO: asm
 
-    if needsToAddChildSymbols then
-        TBlock.Create(ctx, symbolParent.children, selfType, funcType.returnType)
+    if needsToAddChildSymbols and (symbolParent <> nil) then
+        TBlock.Create(ctx, symbolParent.children, selfType, routineTypeDef.returnType)
     else
-        TBlock.Create(ctx, [], selfType, funcType.returnType);
+        TBlock.Create(ctx, [], selfType, routineTypeDef.returnType);
 
     TReservedWord.Create(ctx, rwSemiColon, false);
 

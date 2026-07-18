@@ -21,7 +21,8 @@ function CreateVarRef(ctx: TParserContext): TTypedToken;
 implementation
 
 uses
-    sysutils, Symbols, TypeDefs, CompilationMode, Token, ReservedWord, Expression;
+    sysutils, Symbols, CompilationMode, Token, ReservedWord, Expression,
+    TypeDefs, TypeDef, ClassTypeDef, PointerTypeDef, ArrayTypeDef, DynamicArrayTypeDef, RecordTypeDef, ObjectTypeDef;
 
 function CreateVarRef(ctx: TParserContext): TTypedToken;
 var
@@ -52,7 +53,7 @@ var
     text: string;
     canBeTypecast: boolean;
     nextIsComma: boolean;
-    currType: PTypeDef;
+    currType: TTypeDef;
 begin
     ctx.Add(Self);
     tokenName := 'VarRef';
@@ -68,12 +69,15 @@ begin
     begin
         if symbol.typeDef <> nil then
         begin
-            typeDef := symbol.typeDef^;
-            firstIdent.typeDef := symbol.typeDef^;
+            typeDef := symbol.typeDef;
+            firstIdent.typeDef := symbol.typeDef;
         end;
     end
     else
-        typeDef.kind := tkUnknown;
+    begin
+        typeDef := unknownType;
+        firstIdent.typeDef := unknownType;
+    end;
 
     canBeTypecast := ctx.mode >= cmTurboPascal;
 
@@ -88,7 +92,7 @@ begin
                 begin
                     TReservedWord.Create(ctx, rwOpenParenthesis, true);
                     varRef := TVarRef.Create(ctx);
-                    if (varRef.state <> tsError) and (varRef.typeDef.size <> typeDef.size) then
+                    if (varRef.state <> tsError) and (typeDef <> nil) and (varRef.typeDef <> nil) and (varRef.typeDef.size <> typeDef.size) then
                     begin
                         state := tsError;
                         errorMessage := 'Invalid typecast: type ' + firstIdent.name + '(' + TypeKindStr[ord(typeDef.kind)] + ') has size ' + IntToStr(typeDef.size) + ' but the typecasted variable reference has size ' + IntToStr(varRef.typeDef.size);
@@ -104,31 +108,31 @@ begin
                 begin
                     reservedWordToken := TReservedWord.Create(ctx, rwOpenSquareBracket, true);
 
-                    if typeDef.kind = tkClass then
+                    if (typeDef <> nil) and (typeDef.kind = tkClass) then
                     begin
-                        currType := @typeDef;
+                        currType := typeDef;
                         found := nil;
                         while currType <> nil do
                         begin
-                            if currType^.kind = tkClass then
+                            if (currType.kind = tkClass) and (currType is TClassTypeDef) then
                             begin
-                                found := currType^.classFields.Find('strings');
+                                found := TClassTypeDef(currType).classFields.Find('strings');
                                 if found = nil then
-                                    found := currType^.classFields.Find('items');
+                                    found := TClassTypeDef(currType).classFields.Find('items');
                                 if found <> nil then
                                     break;
-                                currType := currType^.parentClass;
+                                currType := TClassTypeDef(currType).parentClass;
                             end
                             else
                                 break;
                         end;
                         if found <> nil then
-                            typeDef := PTypeDef(found)^;
+                            typeDef := TTypeDef(found);
                     end;
 
-                    if not (
+                    if (typeDef = nil) or not (
                         (typeDef.kind in [tkArray, tkDynamicArray, tkString]) or
-                        ((typeDef.kind = tkPointer) and typeDef.isTyped and (typeDef.pointerToType <> nil) and (typeDef.pointerToType^.kind = tkChar))
+                        ((typeDef.kind = tkPointer) and (typeDef is TPointerTypeDef) and TPointerTypeDef(typeDef).isTyped and (TPointerTypeDef(typeDef).pointerToType <> nil) and (TPointerTypeDef(typeDef).pointerToType.kind = tkChar))
                     ) then
                     begin
                         reservedWordToken.state := tsError;
@@ -143,17 +147,17 @@ begin
 
                     repeat
                         expr := CreateExpression(ctx);
-                        if (typeDef.kind = tkArray) and (typeDef.typeOfIndex <> nil) and not TypesAreAssignable(typeDef.typeOfIndex^, expr.typeDef, error) then
+                        if (typeDef <> nil) and (typeDef.kind = tkArray) and (typeDef is TArrayTypeDef) and (TArrayTypeDef(typeDef).typeOfIndex <> nil) and not TypesAreAssignable(TArrayTypeDef(typeDef).typeOfIndex, expr.typeDef, error) then
                         begin
                             expr.state := tsError;
                             expr.errorMessage := 'Index expression is not compatible with the array type: ' + error;
                         end;
 
-                        if (typeDef.kind = tkArray) and (typeDef.typeOfValues <> nil) then
-                            typeDef := typeDef.typeOfValues^
-                        else if (typeDef.kind = tkDynamicArray) and (typeDef.typeOfDynValues <> nil) then
-                            typeDef := typeDef.typeOfDynValues^
-                        else if (typeDef.kind = tkString) or ((typeDef.kind = tkPointer) and typeDef.isTyped and (typeDef.pointerToType <> nil) and (typeDef.pointerToType^.kind = tkChar)) then
+                        if (typeDef <> nil) and (typeDef.kind = tkArray) and (typeDef is TArrayTypeDef) and (TArrayTypeDef(typeDef).typeOfValues <> nil) then
+                            typeDef := TArrayTypeDef(typeDef).typeOfValues
+                        else if (typeDef <> nil) and (typeDef.kind = tkDynamicArray) and (typeDef is TDynamicArrayTypeDef) and (TDynamicArrayTypeDef(typeDef).typeOfDynValues <> nil) then
+                            typeDef := TDynamicArrayTypeDef(typeDef).typeOfDynValues
+                        else if (typeDef <> nil) and ((typeDef.kind = tkString) or ((typeDef.kind = tkPointer) and (typeDef is TPointerTypeDef) and TPointerTypeDef(typeDef).isTyped and (TPointerTypeDef(typeDef).pointerToType <> nil) and (TPointerTypeDef(typeDef).pointerToType.kind = tkChar))) then
                             typeDef := charType
                         else
                             typeDef := unknownType;
@@ -168,7 +172,7 @@ begin
                 end;
             rwHat:
                 begin
-                    if typeDef.kind <> tkPointer then
+                    if (typeDef = nil) or (typeDef.kind <> tkPointer) then
                     begin
                         state := tsError;
                         if isSimple then
@@ -181,16 +185,19 @@ begin
                         else
                         begin
                             SetString(text, start, ctx.Cursor - start);
-                            errorMessage := 'Cannot dereference ' + TypeKindStr[ord(typeDef.kind)] + ' ' + text + ' because it is not a pointer!';
+                            if typeDef <> nil then
+                                errorMessage := 'Cannot dereference ' + TypeKindStr[ord(typeDef.kind)] + ' ' + text + ' because it is not a pointer!'
+                            else
+                                errorMessage := 'Cannot dereference ' + text + ' because it is not a pointer!';
                         end;
                     end
-                    else if (typeDef.kind = tkPointer) and not typeDef.isTyped then
+                    else if (typeDef is TPointerTypeDef) and not TPointerTypeDef(typeDef).isTyped then
                     begin
                         state := tsError;
                         errorMessage := 'Cannot dereference an untyped pointer! You might want to typecast it to a typed pointer first.';
                     end
-                    else if typeDef.pointerToType <> nil then
-                        typeDef := typeDef.pointerToType^
+                    else if (typeDef is TPointerTypeDef) and (TPointerTypeDef(typeDef).pointerToType <> nil) then
+                        typeDef := TPointerTypeDef(typeDef).pointerToType
                     else
                         typeDef := unknownType;
 
@@ -202,7 +209,7 @@ begin
                 begin
                     reservedWordToken := TReservedWord.Create(ctx, rwDot, true);
 
-                    if not (typeDef.kind in [tkRecord, tkClass, tkObject]) then
+                    if (typeDef = nil) or not (typeDef.kind in [tkRecord, tkClass, tkObject]) then
                     begin
                         SetString(text, start, ctx.Cursor - start - 1);
                         reservedWordToken.state := tsError;
@@ -210,39 +217,52 @@ begin
                     end;
 
                     ident := TIdentifier.Create(ctx, false);
-                    if typeDef.kind in [tkRecord, tkClass, tkObject] then
+                    if (typeDef <> nil) and (typeDef.kind in [tkRecord, tkClass, tkObject]) then
                     begin
                         text := ident.GetStr();
                         
                         found := nil;
-                        currType := @typeDef;
+                        currType := typeDef;
                         while currType <> nil do
                         begin
-                            case currType^.kind of
+                            case currType.kind of
                                 tkRecord:
                                     begin
-                                        found := currType^.recordFields.Find(text);
-                                        if found = nil then
-                                            found := currType^.recordFields.Find(LowerCase(text));
+                                        if currType is TRecordTypeDef then
+                                        begin
+                                            found := TRecordTypeDef(currType).recordFields.Find(text);
+                                            if found = nil then
+                                                found := TRecordTypeDef(currType).recordFields.Find(LowerCase(text));
+                                        end;
                                         break;
                                     end;
                                 tkObject:
                                     begin
-                                        found := currType^.objectFields.Find(text);
-                                        if found = nil then
-                                            found := currType^.objectFields.Find(LowerCase(text));
-                                        if found <> nil then
+                                        if currType is TObjectTypeDef then
+                                        begin
+                                            found := TObjectTypeDef(currType).objectFields.Find(text);
+                                            if found = nil then
+                                                found := TObjectTypeDef(currType).objectFields.Find(LowerCase(text));
+                                            if found <> nil then
+                                                break;
+                                            currType := TObjectTypeDef(currType).parentObject;
+                                        end
+                                        else
                                             break;
-                                        currType := currType^.parentObject;
                                     end;
                                 tkClass:
                                     begin
-                                        found := currType^.classFields.Find(text);
-                                        if found = nil then
-                                            found := currType^.classFields.Find(LowerCase(text));
-                                        if found <> nil then
+                                        if currType is TClassTypeDef then
+                                        begin
+                                            found := TClassTypeDef(currType).classFields.Find(text);
+                                            if found = nil then
+                                                found := TClassTypeDef(currType).classFields.Find(LowerCase(text));
+                                            if found <> nil then
+                                                break;
+                                            currType := TClassTypeDef(currType).parentClass;
+                                        end
+                                        else
                                             break;
-                                        currType := currType^.parentClass;
                                     end;
                             else
                                 currType := nil;
@@ -253,15 +273,14 @@ begin
                         begin
                             ident.state := tsError;
                             ident.errorMessage := 'Field or method with the name ''' + text + ''' was not found!';
-                            typeDef.size := 1;
-                            typeDef.kind := tkUnknown;
+                            typeDef := unknownType;
                         end
                         else
                         begin
-                            typeDef := PTypeDef(found)^;
+                            typeDef := TTypeDef(found);
 
                             // TODO: handle valid cases such as Self.privateField
-                            if typeDef.visibility in [vPrivate, vProtected] then
+                            if (typeDef <> nil) and (typeDef.visibility in [vPrivate, vProtected]) then
                             begin
                                 ident.state := tsError;
                                 ident.errorMessage := text + ' is not public, it cannot be used here!';

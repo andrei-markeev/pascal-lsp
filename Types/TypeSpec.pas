@@ -69,7 +69,7 @@ begin
                         exit;
                     end;
 
-                    typeDefToFill := PTypeDef(found)^;
+                    typeDefToFill := TTypeDef(found);
                     TIdentifier.Create(ctx, false);
                     state := tsCorrect;
                     ctx.MarkEndOfToken(Self);
@@ -79,7 +79,7 @@ begin
                 case symbol.kind of
                     skTypeName:
                         begin
-                            typeDefToFill := symbol.typeDef^;
+                            typeDefToFill := symbol.typeDef;
                             ident := TIdentifier.Create(ctx, false);
                             symbol.AddReference(ident);
                             state := tsCorrect;
@@ -204,7 +204,7 @@ begin
             exit;
         end;
 
-        typeDefToFill := PTypeDef(found)^;
+        typeDefToFill := TTypeDef(found);
         state := tsCorrect;
         ctx.MarkEndOfToken(Self);
         exit;
@@ -213,7 +213,7 @@ begin
     case symbol.kind of
         skTypeName:
             begin
-                typeDefToFill := symbol.typeDef^;
+                typeDefToFill := symbol.typeDef;
                 symbol.AddReference(ident);
                 state := tsCorrect;
                 ctx.MarkEndOfToken(Self);

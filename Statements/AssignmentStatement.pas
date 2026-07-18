@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    TypeDefs, ReservedWord, Expression, VarRef, Identifier;
+    TypeDefs, ReservedWord, Expression, VarRef, Identifier, RoutineTypeDef;
 
 constructor TAssignmentStatement.Create(ctx: TParserContext; ref: TTypedToken);
 var
@@ -44,8 +44,8 @@ begin
         errorMessage := 'Cannot modify a constant!';
     end;
 
-    if (symbol <> nil) and (symbol.kind = skFunction) and (symbol.typeDef <> nil) and (symbol.typeDef^.returnType <> nil) then
-        leftTypeDef := symbol.typeDef^.returnType^
+    if (symbol <> nil) and (symbol.kind = skFunction) and (symbol.typeDef <> nil) and (symbol.typeDef is TRoutineTypeDef) and (TRoutineTypeDef(symbol.typeDef).returnType <> nil) then
+        leftTypeDef := TRoutineTypeDef(symbol.typeDef).returnType
     else if ref <> nil then
         leftTypeDef := ref.typeDef
     else

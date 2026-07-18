@@ -7,33 +7,34 @@ interface
 
 uses
   sysutils, classes, fpjson, jsonparser,
-  ParserContext, Symbols, TypeDefs,
+  ParserContext, Symbols, TypeDefs, TypeDef, ClassTypeDef, ObjectTypeDef,
+  RecordTypeDef, PointerTypeDef, ArrayTypeDef, DynamicArrayTypeDef, RoutineTypeDef,
   LspUtils, LspState;
 
 procedure HandleCompletion(WriteStream: TStream; Id: TJSONData; Params: TJSONData);
 
 implementation
 
-function IsSameOrSubclass(CurrentClass, TargetClass: PTypeDef): boolean;
+function IsSameOrSubclass(CurrentClass, TargetClass: TTypeDef): boolean;
 var
-  c: PTypeDef;
+  c: TTypeDef;
 begin
   if (CurrentClass = nil) or (TargetClass = nil) then exit(false);
   c := CurrentClass;
   while c <> nil do
   begin
     if c = TargetClass then exit(true);
-    if c^.kind = tkClass then
-      c := c^.parentClass
-    else if c^.kind = tkObject then
-      c := c^.parentObject
+    if (c.kind = tkClass) and (c is TClassTypeDef) then
+      c := TClassTypeDef(c).parentClass
+    else if (c.kind = tkObject) and (c is TObjectTypeDef) then
+      c := TObjectTypeDef(c).parentObject
     else
       break;
   end;
   Result := false;
 end;
 
-procedure AddCompletionItem(var ItemsJson: string; AddedNames: TStringList; const MemberName: string; MemberType, CurrentClassType, TargetClassType: PTypeDef);
+procedure AddCompletionItem(var ItemsJson: string; AddedNames: TStringList; const MemberName: string; MemberType, CurrentClassType, TargetClassType: TTypeDef);
 var
   LowerName: string;
   ItemKind: integer;
@@ -42,7 +43,7 @@ begin
   LowerName := LowerCase(MemberName);
   if AddedNames.IndexOf(LowerName) >= 0 then exit;
 
-  if (MemberType <> nil) and (MemberType^.visibility in [vPrivate, vProtected]) then
+  if (MemberType <> nil) and (MemberType.visibility in [vPrivate, vProtected]) then
   begin
     if not IsSameOrSubclass(CurrentClassType, TargetClassType) then
       exit;
@@ -52,12 +53,12 @@ begin
 
   if MemberType <> nil then
   begin
-    if MemberType^.kind in [tkProcedure, tkFunction] then
+    if MemberType.kind in [tkProcedure, tkFunction] then
     begin
       ItemKind := 2; // Method
-      if (MemberType^.kind = tkFunction) and (MemberType^.returnType <> nil) then
-        Detail := 'function: ' + TypeKindStr[ord(MemberType^.returnType^.kind)]
-      else if MemberType^.kind = tkFunction then
+      if (MemberType.kind = tkFunction) and (MemberType is TRoutineTypeDef) and (TRoutineTypeDef(MemberType).returnType <> nil) then
+        Detail := 'function: ' + TypeKindStr[ord(TRoutineTypeDef(MemberType).returnType.kind)]
+      else if MemberType.kind = tkFunction then
         Detail := 'function'
       else
         Detail := 'procedure';
@@ -65,7 +66,7 @@ begin
     else
     begin
       ItemKind := 5; // Field
-      Detail := TypeKindStr[ord(MemberType^.kind)];
+      Detail := TypeKindStr[ord(MemberType.kind)];
     end;
   end
   else
@@ -96,7 +97,7 @@ var
   CursorPChar: PChar;
   Sym, SelfSym: TSymbol;
   Found: pointer;
-  CurrType, CType, OType, MemberType, CurrentClassType: PTypeDef;
+  CurrType, CType, OType, MemberType, CurrentClassType: TTypeDef;
   AddedNames: TStringList;
 begin
   Response := '{"jsonrpc":"2.0",';
@@ -206,8 +207,8 @@ begin
             if (SelfSym <> nil) and (SelfSym.typeDef <> nil) then
             begin
               CurrentClassType := SelfSym.typeDef;
-              if (CurrentClassType^.kind = tkPointer) and (CurrentClassType^.pointerToType <> nil) then
-                CurrentClassType := CurrentClassType^.pointerToType;
+              if (CurrentClassType.kind = tkPointer) and (CurrentClassType is TPointerTypeDef) and (TPointerTypeDef(CurrentClassType).pointerToType <> nil) then
+                CurrentClassType := TPointerTypeDef(CurrentClassType).pointerToType;
             end;
 
             CurrType := nil;
@@ -217,34 +218,34 @@ begin
             begin
               Found := TypesList.Find(LowerCase(RootIdent));
               if Found <> nil then
-                CurrType := PTypeDef(Found);
+                CurrType := TTypeDef(Found);
             end;
 
             for k := chainCount - 2 downto 0 do
             begin
               if CurrType = nil then break;
 
-              if (CurrType^.kind = tkPointer) and (CurrType^.pointerToType <> nil) then
-                CurrType := CurrType^.pointerToType;
+              if (CurrType.kind = tkPointer) and (CurrType is TPointerTypeDef) and (TPointerTypeDef(CurrType).pointerToType <> nil) then
+                CurrType := TPointerTypeDef(CurrType).pointerToType;
 
-              if (CurrType^.kind = tkFunction) and (CurrType^.returnType <> nil) then
-                CurrType := CurrType^.returnType
-              else if (CurrType^.kind = tkArray) and (CurrType^.typeOfValues <> nil) then
-                CurrType := CurrType^.typeOfValues
-              else if (CurrType^.kind = tkDynamicArray) and (CurrType^.typeOfDynValues <> nil) then
-                CurrType := CurrType^.typeOfDynValues;
+              if (CurrType.kind = tkFunction) and (CurrType is TRoutineTypeDef) and (TRoutineTypeDef(CurrType).returnType <> nil) then
+                CurrType := TRoutineTypeDef(CurrType).returnType
+              else if (CurrType.kind = tkArray) and (CurrType is TArrayTypeDef) and (TArrayTypeDef(CurrType).typeOfValues <> nil) then
+                CurrType := TArrayTypeDef(CurrType).typeOfValues
+              else if (CurrType.kind = tkDynamicArray) and (CurrType is TDynamicArrayTypeDef) and (TDynamicArrayTypeDef(CurrType).typeOfDynValues <> nil) then
+                CurrType := TDynamicArrayTypeDef(CurrType).typeOfDynValues;
 
               NextIdent := Chain[k];
               Found := nil;
 
-              case CurrType^.kind of
+              case CurrType.kind of
                 tkRecord:
                   begin
-                    if CurrType^.recordFields <> nil then
+                    if (CurrType is TRecordTypeDef) and (TRecordTypeDef(CurrType).recordFields <> nil) then
                     begin
-                      Found := CurrType^.recordFields.Find(NextIdent);
+                      Found := TRecordTypeDef(CurrType).recordFields.Find(NextIdent);
                       if Found = nil then
-                        Found := CurrType^.recordFields.Find(LowerCase(NextIdent));
+                        Found := TRecordTypeDef(CurrType).recordFields.Find(LowerCase(NextIdent));
                     end;
                   end;
                 tkClass:
@@ -252,13 +253,13 @@ begin
                     CType := CurrType;
                     while CType <> nil do
                     begin
-                      if (CType^.kind = tkClass) and (CType^.classFields <> nil) then
+                      if (CType.kind = tkClass) and (CType is TClassTypeDef) and (TClassTypeDef(CType).classFields <> nil) then
                       begin
-                        Found := CType^.classFields.Find(NextIdent);
+                        Found := TClassTypeDef(CType).classFields.Find(NextIdent);
                         if Found = nil then
-                          Found := CType^.classFields.Find(LowerCase(NextIdent));
+                          Found := TClassTypeDef(CType).classFields.Find(LowerCase(NextIdent));
                         if Found <> nil then break;
-                        CType := CType^.parentClass;
+                        CType := TClassTypeDef(CType).parentClass;
                       end
                       else
                         break;
@@ -269,13 +270,13 @@ begin
                     OType := CurrType;
                     while OType <> nil do
                     begin
-                      if (OType^.kind = tkObject) and (OType^.objectFields <> nil) then
+                      if (OType.kind = tkObject) and (OType is TObjectTypeDef) and (TObjectTypeDef(OType).objectFields <> nil) then
                       begin
-                        Found := OType^.objectFields.Find(NextIdent);
+                        Found := TObjectTypeDef(OType).objectFields.Find(NextIdent);
                         if Found = nil then
-                          Found := OType^.objectFields.Find(LowerCase(NextIdent));
+                          Found := TObjectTypeDef(OType).objectFields.Find(LowerCase(NextIdent));
                         if Found <> nil then break;
-                        OType := OType^.parentObject;
+                        OType := TObjectTypeDef(OType).parentObject;
                       end
                       else
                         break;
@@ -284,7 +285,7 @@ begin
               end;
 
               if Found <> nil then
-                CurrType := PTypeDef(Found)
+                CurrType := TTypeDef(Found)
               else
               begin
                 CurrType := nil;
@@ -294,27 +295,27 @@ begin
 
             if CurrType <> nil then
             begin
-              if (CurrType^.kind = tkPointer) and (CurrType^.pointerToType <> nil) then
-                CurrType := CurrType^.pointerToType;
+              if (CurrType.kind = tkPointer) and (CurrType is TPointerTypeDef) and (TPointerTypeDef(CurrType).pointerToType <> nil) then
+                CurrType := TPointerTypeDef(CurrType).pointerToType;
 
-              if (CurrType^.kind = tkFunction) and (CurrType^.returnType <> nil) then
-                CurrType := CurrType^.returnType
-              else if (CurrType^.kind = tkArray) and (CurrType^.typeOfValues <> nil) then
-                CurrType := CurrType^.typeOfValues
-              else if (CurrType^.kind = tkDynamicArray) and (CurrType^.typeOfDynValues <> nil) then
-                CurrType := CurrType^.typeOfDynValues;
+              if (CurrType.kind = tkFunction) and (CurrType is TRoutineTypeDef) and (TRoutineTypeDef(CurrType).returnType <> nil) then
+                CurrType := TRoutineTypeDef(CurrType).returnType
+              else if (CurrType.kind = tkArray) and (CurrType is TArrayTypeDef) and (TArrayTypeDef(CurrType).typeOfValues <> nil) then
+                CurrType := TArrayTypeDef(CurrType).typeOfValues
+              else if (CurrType.kind = tkDynamicArray) and (CurrType is TDynamicArrayTypeDef) and (TDynamicArrayTypeDef(CurrType).typeOfDynValues <> nil) then
+                CurrType := TDynamicArrayTypeDef(CurrType).typeOfDynValues;
 
               AddedNames := TStringList.Create;
               try
-                case CurrType^.kind of
+                case CurrType.kind of
                   tkRecord:
                     begin
-                      if CurrType^.recordFields <> nil then
+                      if (CurrType is TRecordTypeDef) and (TRecordTypeDef(CurrType).recordFields <> nil) then
                       begin
-                        for i := 0 to CurrType^.recordFields.Count - 1 do
+                        for i := 0 to TRecordTypeDef(CurrType).recordFields.Count - 1 do
                         begin
-                          IdentStr := CurrType^.recordFields.NameOfIndex(i);
-                          MemberType := PTypeDef(CurrType^.recordFields.Items[i]);
+                          IdentStr := TRecordTypeDef(CurrType).recordFields.NameOfIndex(i);
+                          MemberType := TTypeDef(TRecordTypeDef(CurrType).recordFields.Items[i]);
                           AddCompletionItem(ItemsJson, AddedNames, IdentStr, MemberType, CurrentClassType, CurrType);
                         end;
                       end;
@@ -324,15 +325,15 @@ begin
                       CType := CurrType;
                       while CType <> nil do
                       begin
-                        if (CType^.kind = tkClass) and (CType^.classFields <> nil) then
+                        if (CType.kind = tkClass) and (CType is TClassTypeDef) and (TClassTypeDef(CType).classFields <> nil) then
                         begin
-                          for i := 0 to CType^.classFields.Count - 1 do
+                          for i := 0 to TClassTypeDef(CType).classFields.Count - 1 do
                           begin
-                            IdentStr := CType^.classFields.NameOfIndex(i);
-                            MemberType := PTypeDef(CType^.classFields.Items[i]);
+                            IdentStr := TClassTypeDef(CType).classFields.NameOfIndex(i);
+                            MemberType := TTypeDef(TClassTypeDef(CType).classFields.Items[i]);
                             AddCompletionItem(ItemsJson, AddedNames, IdentStr, MemberType, CurrentClassType, CType);
                           end;
-                          CType := CType^.parentClass;
+                          CType := TClassTypeDef(CType).parentClass;
                         end
                         else
                           break;
@@ -343,15 +344,15 @@ begin
                       OType := CurrType;
                       while OType <> nil do
                       begin
-                        if (OType^.kind = tkObject) and (OType^.objectFields <> nil) then
+                        if (OType.kind = tkObject) and (OType is TObjectTypeDef) and (TObjectTypeDef(OType).objectFields <> nil) then
                         begin
-                          for i := 0 to OType^.objectFields.Count - 1 do
+                          for i := 0 to TObjectTypeDef(OType).objectFields.Count - 1 do
                           begin
-                            IdentStr := OType^.objectFields.NameOfIndex(i);
-                            MemberType := PTypeDef(OType^.objectFields.Items[i]);
+                            IdentStr := TObjectTypeDef(OType).objectFields.NameOfIndex(i);
+                            MemberType := TTypeDef(TObjectTypeDef(OType).objectFields.Items[i]);
                             AddCompletionItem(ItemsJson, AddedNames, IdentStr, MemberType, CurrentClassType, OType);
                           end;
-                          OType := OType^.parentObject;
+                          OType := TObjectTypeDef(OType).parentObject;
                         end
                         else
                           break;

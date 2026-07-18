@@ -27,7 +27,7 @@ begin
     ctx.Add(Self);
     tokenName := 'ConstValue';
     start := ctx.Cursor;
-    typeDef := default(TTypeDef);
+    typeDef := unknownType;
 
     // TODO: support turbo pascal constant expressions
 
@@ -35,17 +35,20 @@ begin
         pkNumber:
             begin
                 valueToken := TNumber.Create(ctx);
-                typeDef := valueToken.typeDef;
+                if valueToken <> nil then
+                    typeDef := valueToken.typeDef;
             end;
         pkString:
             begin
                 valueToken := TStringToken.Create(ctx);
-                typeDef := valueToken.typeDef;
+                if valueToken <> nil then
+                    typeDef := valueToken.typeDef;
             end;
         pkIdentifier:
             begin
                 valueToken := TIdentifier.Create(ctx, true);
-                typeDef := valueToken.typeDef;
+                if valueToken <> nil then
+                    typeDef := valueToken.typeDef;
 
                 symbol := TSymbol(TIdentifier(valueToken).symbol);
                 if (symbol <> nil) and (symbol.kind <> skConstant) then

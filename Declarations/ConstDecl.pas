@@ -83,7 +83,7 @@ begin
     end;
 
     ctx.MarkEndOfToken(Self);
-    RegisterSymbol(ident, nil, symbolKind, @typeDef, ctx.Cursor);
+    RegisterSymbol(ident, nil, symbolKind, typeDef, ctx.Cursor);
 end;
 
 end.

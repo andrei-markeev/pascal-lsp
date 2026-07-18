@@ -22,7 +22,7 @@ type
 implementation
 
 uses
-    Scopes, TypeSpec, ParameterDecl;
+    Scopes, TypeSpec, ParameterDecl, TypeDef, RoutineTypeDef;
 
 constructor TFunctionDecl.Create(ctx: TParserContext; functionRWKind: TReservedWordKind; parentSymbols: array of TSymbol);
 var
@@ -39,6 +39,7 @@ var
     isMethodModifier, isFunctionModifier: boolean;
     overrideResult: TTryAddOverrideResult;
     symbol: TSymbol;
+    routineTypeDef: TRoutineTypeDef;
 begin
     ctx.Add(Self);
     tokenName := 'FunctionDecl';
@@ -54,6 +55,8 @@ begin
     end;
 
     needsReturnType := functionRWKind = rwFunction;
+    routineTypeDef := TRoutineTypeDef.Create;
+    funcType := routineTypeDef;
 
     TReservedWord.Create(ctx, functionRWKind, true);
     case functionRWKind of
@@ -104,7 +107,7 @@ begin
             for i := 0 to length(paramDecl.idents) - 1 do
             begin
                 SetString(s, paramDecl.idents[i].start, paramDecl.idents[i].len);
-                params.Add(CreateParam(paramDecl.parameterKind, s, @paramDecl.typeDef));
+                params.Add(CreateParam(paramDecl.parameterKind, s, paramDecl.typeDef));
             end;
 
             if PeekReservedWord(ctx, rwComma) then
@@ -126,19 +129,20 @@ begin
         TReservedWord.Create(ctx, rwCloseParenthesis, false);
     end;
 
-    funcType.parameters := params;
+    routineTypeDef.parameters := params;
 
+    returnType := unknownType;
     if needsReturnType then
     begin
         TReservedWord.Create(ctx, rwColon, false);
         CreateTypeSpec(ctx, returnType);
     end
-    else if (symbolKind = skConstructor) and (length(parentSymbols) > 0) then
-        returnType := parentSymbols[0].typeDef^;
+    else if (symbolKind = skConstructor) and (length(parentSymbols) > 0) and (parentSymbols[0] <> nil) then
+        returnType := parentSymbols[0].typeDef;
 
-    funcType.returnType := @returnType;
+    routineTypeDef.returnType := returnType;
 
-    overrideResult := TryAddOverride(nameIdent, @funcType, ctx.Cursor);
+    overrideResult := TryAddOverride(nameIdent, funcType, ctx.Cursor);
     if overrideResult = ovExactDuplicate then
     begin
         nameIdent.state := tsError;
@@ -147,7 +151,7 @@ begin
     else if overrideResult <> ovAdded then
         for p := 0 to length(parentSymbols) - 1 do
         begin
-            symbol := RegisterSymbol(nameIdent, parentSymbols[p], symbolKind, @funcType, ctx.Cursor);
+            symbol := RegisterSymbol(nameIdent, parentSymbols[p], symbolKind, funcType, ctx.Cursor);
             symbol.rangeToken := Self;
         end;
 

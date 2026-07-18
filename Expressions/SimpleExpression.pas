@@ -20,6 +20,8 @@ function CreateSimpleExpression(ctx: TParserContext): TTypedToken;
 
 implementation
 
+uses TypeDef;
+
 function CreateSimpleExpression(ctx: TParserContext): TTypedToken;
 var
     simple: TSimpleExpression;
@@ -42,6 +44,7 @@ var
     nextOperand: TTypedToken;
     str: string;
     savedPos: PChar;
+    myKind, nextKind: TTypeKind;
 begin
     ctx.Add(Self);
     tokenName := 'SimpleExpression';
@@ -52,7 +55,10 @@ begin
     state := tsCorrect;
     lastAddOp := rwUnknown;
     leftOperand := CreateTerm(ctx);
-    typeDef := leftOperand.typeDef;
+    if (leftOperand <> nil) and (leftOperand.typeDef <> nil) then
+        typeDef := leftOperand.typeDef
+    else
+        typeDef := unknownType;
 
     savedPos := ctx.Cursor;
     nextTokenKind := DetermineNextTokenKind(ctx);
@@ -63,78 +69,88 @@ begin
         lastAddOp := nextTokenKind.reservedWordKind;
         nextOperand := CreateTerm(ctx);
 
-        if state <> tsError then
+        if (typeDef <> nil) then
+            myKind := typeDef.kind
+        else
+            myKind := tkUnknown;
+
+        if (nextOperand <> nil) and (nextOperand.typeDef <> nil) then
+            nextKind := nextOperand.typeDef.kind
+        else
+            nextKind := tkUnknown;
+
+        if (state <> tsError) and (nextOperand <> nil) then
         case lastAddOp of
             rwPlus:
-                if not (typeDef.kind in [tkString, tkChar, tkCharRange, tkInteger, tkReal, tkSet]) then
+                if not (myKind in [tkString, tkChar, tkCharRange, tkInteger, tkReal, tkSet]) then
                 begin
                     state := tsError;
                     SetString(str, start, savedPos - start);
-                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected string, char, integer, real or set, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected string, char, integer, real or set, but ' + str + ' is ' + TypeKindStr[ord(myKind)];
                 end
-                else if (typeDef.kind in [tkInteger, tkReal]) and not (nextOperand.typeDef.kind in [tkInteger, tkReal]) then
+                else if (myKind in [tkInteger, tkReal]) and not (nextKind in [tkInteger, tkReal]) then
                 begin
                     state := tsError;
                     SetString(str, nextOperand.start, nextOperand.len);
-                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected integer or real, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected integer or real, but ' + str + ' is ' + TypeKindStr[ord(nextKind)];
                 end
-                else if (typeDef.kind in [tkString, tkChar, tkCharRange]) and not (nextOperand.typeDef.kind in [tkString, tkChar, tkCharRange]) then
+                else if (myKind in [tkString, tkChar, tkCharRange]) and not (nextKind in [tkString, tkChar, tkCharRange]) then
                 begin
                     state := tsError;
                     SetString(str, nextOperand.start, nextOperand.len);
-                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected string or char, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected string or char, but ' + str + ' is ' + TypeKindStr[ord(nextKind)];
                 end
-                else if (typeDef.kind = tkSet) and not TypesAreAssignable(typeDef, nextOperand.typeDef, str) then
+                else if (myKind = tkSet) and not TypesAreAssignable(typeDef, nextOperand.typeDef, str) then
                 begin
                     state := tsError;
                     errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': ' + str;
                 end;
             rwMinus:
-                if not (typeDef.kind in [tkInteger, tkReal, tkSet]) then
+                if not (myKind in [tkInteger, tkReal, tkSet]) then
                 begin
                     state := tsError;
                     SetString(str, start, savedPos - start);
-                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected integer or real operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected integer or real operands, but ' + str + ' is ' + TypeKindStr[ord(myKind)];
                 end
-                else if (typeDef.kind in [tkInteger, tkReal]) and not (nextOperand.typeDef.kind in [tkInteger, tkReal]) then
+                else if (myKind in [tkInteger, tkReal]) and not (nextKind in [tkInteger, tkReal]) then
                 begin
                     state := tsError;
                     SetString(str, nextOperand.start, nextOperand.len);
-                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected integer or real operands, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected integer or real operands, but ' + str + ' is ' + TypeKindStr[ord(nextKind)];
                 end
-                else if (typeDef.kind = tkSet) and not TypesAreAssignable(typeDef, nextOperand.typeDef, str) then
+                else if (myKind = tkSet) and not TypesAreAssignable(typeDef, nextOperand.typeDef, str) then
                 begin
                     state := tsError;
                     errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': ' + str;
                 end;
             rwOr, rwXor:
-                if not (typeDef.kind in [tkInteger, tkBoolean]) then
+                if not (myKind in [tkInteger, tkBoolean]) then
                 begin
                     state := tsError;
                     SetString(str, start, savedPos - start);
-                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected integer or boolean operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected integer or boolean operands, but ' + str + ' is ' + TypeKindStr[ord(myKind)];
                 end
-                else if (typeDef.kind = tkInteger) and (nextOperand.typeDef.kind <> tkInteger) then
+                else if (myKind = tkInteger) and (nextKind <> tkInteger) then
                 begin
                     state := tsError;
                     SetString(str, nextOperand.start, nextOperand.len);
-                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected integer, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected integer, but ' + str + ' is ' + TypeKindStr[ord(nextKind)];
                 end
-                else if (typeDef.kind = tkBoolean) and (nextOperand.typeDef.kind <> tkBoolean) then
+                else if (myKind = tkBoolean) and (nextKind <> tkBoolean) then
                 begin
                     state := tsError;
                     SetString(str, nextOperand.start, nextOperand.len);
-                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected boolean, but ' + str + ' is ' + TypeKindStr[ord(nextOperand.typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected boolean, but ' + str + ' is ' + TypeKindStr[ord(nextKind)];
                 end;
             rwSymmetricDifference:
-                if (typeDef.kind <> tkSet) or (nextOperand.typeDef.kind <> tkSet) then
+                if (myKind <> tkSet) or (nextKind <> tkSet) then
                 begin
                     state := tsError;
-                    if typeDef.kind <> tkSet then
+                    if myKind <> tkSet then
                         SetString(str, start, savedPos - start)
                     else
                         SetString(str, nextOperand.start, nextOperand.len);
-                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected set operands, but ' + str + ' is ' + TypeKindStr[ord(typeDef.kind)];
+                    errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected set operands, but ' + str + ' is ' + TypeKindStr[ord(myKind)];
                 end
                 else if not TypesAreAssignable(typeDef, nextOperand.typeDef, str) then
                 begin
@@ -144,10 +160,10 @@ begin
         end;
 
         if state = tsError then
-            typeDef.kind := tkUnknown
-        else if (lastAddOp in [rwPlus, rwMinus]) and (typeDef.kind = tkInteger) and (nextOperand.typeDef.kind = tkReal) then
+            typeDef := unknownType
+        else if (nextOperand <> nil) and (nextOperand.typeDef <> nil) and (lastAddOp in [rwPlus, rwMinus]) and (myKind = tkInteger) and (nextKind = tkReal) then
             typeDef := nextOperand.typeDef // TODO: handle type size expansion
-        else if (lastAddOp = rwPlus) and (typeDef.kind in [tkChar, tkCharRange]) and (nextOperand.typeDef.kind in [tkString, tkChar, tkCharRange]) then
+        else if (nextOperand <> nil) and (nextOperand.typeDef <> nil) and (lastAddOp = rwPlus) and (myKind in [tkChar, tkCharRange]) and (nextKind in [tkString, tkChar, tkCharRange]) then
             typeDef := shortstringType; // TODO: use a more precise string type
 
         savedPos := ctx.Cursor;

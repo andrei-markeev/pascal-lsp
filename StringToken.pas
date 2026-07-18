@@ -100,10 +100,7 @@ begin
     if stringLen = 1 then
         typeDef := charType
     else
-    begin
-        typeDef.size := stringLen;
-        typeDef.kind := tkString;
-    end;
+        typeDef := ansiString64Type;
 
     ctx.Add(Self);
 end;

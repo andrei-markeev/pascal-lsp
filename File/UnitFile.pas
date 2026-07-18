@@ -18,7 +18,7 @@ type
 implementation
 
 uses
-    Symbols, TypeDefs, ReservedWord, Identifier,
+    Symbols, TypeDefs, TypeDef, PrimitiveTypeDef, ReservedWord, Identifier,
     UsesClause, InterfaceBlock, ImplementationBlock;
 
 constructor TUnitFile.Create(ctx: TParserContext);
@@ -34,8 +34,8 @@ begin
 
     ident := TIdentifier.Create(ctx, false);
     // TODO: namespaced units
-    typeDef.kind := tkUnitName;
-    RegisterSymbol(ident, nil, skUnitName, @typeDef, ctx.Cursor);
+    typeDef := TPrimitiveTypeDef.Create(tkUnitName);
+    RegisterSymbol(ident, nil, skUnitName, typeDef, ctx.Cursor);
 
     if LoadedUnits.Find(LowerCase(ident.GetStr)) = nil then
         LoadedUnits.Add(LowerCase(ident.GetStr), ctx);

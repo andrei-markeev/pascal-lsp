@@ -17,9 +17,7 @@ type
 implementation
 
 uses
-    Anchors, Token, ReservedWord, VarDecl, Identifier, Number, StringToken, TypeSpec, CompilationMode, CaseBranch;
-
-
+    Anchors, Token, ReservedWord, VarDecl, Identifier, Number, StringToken, TypeSpec, CompilationMode, CaseBranch, RecordTypeDef;
 
 procedure ParseFields(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef; endKind: TReservedWordKind);
 var
@@ -31,7 +29,9 @@ var
     tagSymbols: array of TSymbol;
     dummySymbols: array of TSymbol;
     rangeRW: TReservedWord;
+    recTypeDef: TRecordTypeDef;
 begin
+    recTypeDef := TRecordTypeDef(typeDefToFill);
     nextTokenKind := DetermineNextTokenKind(ctx);
     while not nextTokenKind.isEOF and (nextTokenKind.reservedWordKind <> endKind) do
     begin
@@ -40,8 +40,9 @@ begin
             fieldDecl := TVarDecl.Create(ctx, parentSymbols);
             for i := 0 to length(fieldDecl.idents) - 1 do
             begin
-                typeDefToFill.recordFields.Add(fieldDecl.idents[i].GetStr(), @fieldDecl.varType);
-                inc(typeDefToFill.size, fieldDecl.varType.size);
+                recTypeDef.recordFields.Add(fieldDecl.idents[i].GetStr(), fieldDecl.varType);
+                if fieldDecl.varType <> nil then
+                    inc(recTypeDef.size, fieldDecl.varType.size);
             end;
             nextTokenKind := DetermineNextTokenKind(ctx);
             if nextTokenKind.reservedWordKind in [endKind, rwEnd] then
@@ -56,6 +57,7 @@ begin
         begin
             TReservedWord.Create(ctx, rwCase, true);
             
+            tagType := unknownType;
             nextTokenKind := DetermineNextTokenKind(ctx);
             if nextTokenKind.primitiveKind = pkIdentifier then
             begin
@@ -66,11 +68,12 @@ begin
                     
                     SetLength(tagSymbols, length(parentSymbols));
                     for p := 0 to length(parentSymbols) - 1 do
-                        tagSymbols[p] := RegisterSymbol(tagIdent, parentSymbols[p], skVariable, @tagType, ctx.Cursor);
+                        tagSymbols[p] := RegisterSymbol(tagIdent, parentSymbols[p], skVariable, tagType, ctx.Cursor);
                     
                     TTypeSpec.Create(ctx, tagSymbols, tagType);
-                    typeDefToFill.recordFields.Add(tagIdent.GetStr(), @tagType);
-                    inc(typeDefToFill.size, tagType.size);
+                    recTypeDef.recordFields.Add(tagIdent.GetStr(), tagType);
+                    if tagType <> nil then
+                        inc(recTypeDef.size, tagType.size);
                 end
                 else
                 begin
@@ -144,9 +147,8 @@ begin
     tokenName := 'RecordSpec';
     start := ctx.Cursor;
     state := tsCorrect;
-    typeDefToFill.size := 0;
-    typeDefToFill.kind := tkRecord;
-    typeDefToFill.recordFields := TFPHashList.Create; // TODO: free memory
+
+    typeDefToFill := TRecordTypeDef.Create;
 
     TReservedWord.Create(ctx, rwRecord, true);
 

@@ -18,8 +18,8 @@ type
 implementation
 
 uses
-    Symbols, TypeDefs, Token, ReservedWord, Identifier, UsesClause,
-    Block;
+    Symbols, TypeDefs, TypeDef, PrimitiveTypeDef, Token, ReservedWord, Identifier,
+    UsesClause, Block;
 
 constructor TProgramFile.Create(ctx: TParserContext);
 var
@@ -34,8 +34,8 @@ begin
     TReservedWord.Create(ctx, rwProgram, false);
 
     ident := TIdentifier.Create(ctx, false);
-    typeDef.kind := tkUnitName;
-    RegisterSymbol(ident, nil, skUnitName, @typeDef, ctx.Cursor);
+    typeDef := TPrimitiveTypeDef.Create(tkUnitName);
+    RegisterSymbol(ident, nil, skUnitName, typeDef, ctx.Cursor);
 
     // programs parameters are ignored by FPC so we also ignore them
     if PeekReservedWord(ctx, rwOpenParenthesis) then
