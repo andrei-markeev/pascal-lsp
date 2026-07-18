@@ -1,0 +1,12 @@
+{$mode objfpc}
+<ProgramFile><RW>program</RW> <SymbDecl>GoodPointerIndexing</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>p</SymbDecl><RW>:</RW> <TypeSpec><Ident>PChar</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>ch</SymbDecl><RW>:</RW> <TypeSpec><Ident>char</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>ch</SymbRef> <RW>:=</RW> <VarRef><SymbRef>p</SymbRef><RW>[</RW><Num>0</Num><RW>]</RW></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>ch</SymbRef> <RW>:=</RW> <VarRef><SymbRef>s</SymbRef><RW>[</RW><Num>1</Num><RW>]</RW></VarRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

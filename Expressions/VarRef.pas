@@ -126,7 +126,10 @@ begin
                             typeDef := PTypeDef(found)^;
                     end;
 
-                    if not (typeDef.kind in [tkArray, tkDynamicArray]) then
+                    if not (
+                        (typeDef.kind in [tkArray, tkDynamicArray, tkString]) or
+                        ((typeDef.kind = tkPointer) and typeDef.isTyped and (typeDef.pointerToType <> nil) and (typeDef.pointerToType^.kind = tkChar))
+                    ) then
                     begin
                         reservedWordToken.state := tsError;
                         if isSimple then
@@ -140,16 +143,20 @@ begin
 
                     repeat
                         expr := CreateExpression(ctx);
-                        if (typeDef.kind = tkArray) and not TypesAreAssignable(typeDef.typeOfIndex^, expr.typeDef, error) then
+                        if (typeDef.kind = tkArray) and (typeDef.typeOfIndex <> nil) and not TypesAreAssignable(typeDef.typeOfIndex^, expr.typeDef, error) then
                         begin
                             expr.state := tsError;
                             expr.errorMessage := 'Index expression is not compatible with the array type: ' + error;
                         end;
 
-                        if typeDef.kind = tkArray then
+                        if (typeDef.kind = tkArray) and (typeDef.typeOfValues <> nil) then
                             typeDef := typeDef.typeOfValues^
-                        else if typeDef.kind = tkDynamicArray then
-                            typeDef := typeDef.typeOfDynValues^;
+                        else if (typeDef.kind = tkDynamicArray) and (typeDef.typeOfDynValues <> nil) then
+                            typeDef := typeDef.typeOfDynValues^
+                        else if (typeDef.kind = tkString) or ((typeDef.kind = tkPointer) and typeDef.isTyped and (typeDef.pointerToType <> nil) and (typeDef.pointerToType^.kind = tkChar)) then
+                            typeDef := charType
+                        else
+                            typeDef := unknownType;
 
                         nextIsComma := PeekReservedWord(ctx, rwComma);
                         if nextIsComma then
@@ -182,8 +189,10 @@ begin
                         state := tsError;
                         errorMessage := 'Cannot dereference an untyped pointer! You might want to typecast it to a typed pointer first.';
                     end
+                    else if typeDef.pointerToType <> nil then
+                        typeDef := typeDef.pointerToType^
                     else
-                        typeDef := typeDef.pointerToType^;
+                        typeDef := unknownType;
 
                     TReservedWord.Create(ctx, rwHat, true);
 

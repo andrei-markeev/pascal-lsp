@@ -102,6 +102,11 @@ begin
         TypesList.Add('real', @realType);
     end;
 
+    if mode >= cmExtendedPascal then
+    begin
+        TypesList.Add('string', @shortstringType);
+    end;
+
     if mode >= cmTurboPascal then
     begin
         TypesList.Add('byte', @byteType);
@@ -120,7 +125,6 @@ begin
 
         TypesList.Add('pointer', @pointer64Type);
         TypesList.Add('pchar', @pcharType);
-        TypesList.Add('string', @shortstringType);
     end;
 
     if mode >= cmFreePascal then

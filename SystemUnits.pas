@@ -18,6 +18,8 @@ var
     functionType_Real: TTypeDef;
     functionType_String_Integer: TTypeDef;
     functionType_LongInt_LongInt: TTypeDef;
+    functionType_Ordinal_LongInt: TTypeDef;
+    functionType_Ordinal_Ordinal: TTypeDef;
     functionType_Byte_Char: TTypeDef;
     functionType_LongInt_Boolean: TTypeDef;
     functionType_Real_Real: TTypeDef;
@@ -40,7 +42,7 @@ begin
     begin
         RegisterSymbolByName('True', nil, skConstant, @booleanType, ctx.Cursor);
         RegisterSymbolByName('False', nil, skConstant, @booleanType, ctx.Cursor);
-        RegisterSymbolByName('Abs', nil, skFunction, @functionType_LongInt_LongInt, ctx.Cursor);
+        RegisterSymbolByName('Abs', nil, skFunction, @functionType_Ordinal_Ordinal, ctx.Cursor);
         RegisterSymbolByName('ArcTan', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
         RegisterSymbolByName('Chr', nil, skFunction, @functionType_Byte_Char, ctx.Cursor);
         RegisterSymbolByName('Cos', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
@@ -49,13 +51,13 @@ begin
         RegisterSymbolByName('Exp', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
         RegisterSymbolByName('Ln', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
         RegisterSymbolByName('Odd', nil, skFunction, @functionType_LongInt_Boolean, ctx.Cursor);
-        RegisterSymbolByName('Ord', nil, skFunction, @functionType_LongInt_LongInt, ctx.Cursor);
-        RegisterSymbolByName('Pred', nil, skFunction, @functionType_LongInt_LongInt, ctx.Cursor);
+        RegisterSymbolByName('Ord', nil, skFunction, @functionType_Ordinal_LongInt, ctx.Cursor);
+        RegisterSymbolByName('Pred', nil, skFunction, @functionType_Ordinal_Ordinal, ctx.Cursor);
         RegisterSymbolByName('Round', nil, skFunction, @functionType_Real_LongInt, ctx.Cursor);
         RegisterSymbolByName('Sin', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
-        RegisterSymbolByName('Sqr', nil, skFunction, @functionType_LongInt_LongInt, ctx.Cursor);
+        RegisterSymbolByName('Sqr', nil, skFunction, @functionType_Ordinal_Ordinal, ctx.Cursor);
         RegisterSymbolByName('Sqrt', nil, skFunction, @functionType_Real_Real, ctx.Cursor);
-        RegisterSymbolByName('Succ', nil, skFunction, @functionType_LongInt_LongInt, ctx.Cursor);
+        RegisterSymbolByName('Succ', nil, skFunction, @functionType_Ordinal_Ordinal, ctx.Cursor);
         RegisterSymbolByName('Trunc', nil, skFunction, @functionType_Real_LongInt, ctx.Cursor);
 
         // TODO: Dispose
@@ -210,6 +212,8 @@ begin
     functionType_Real := CreateFunctionType(TParameterList.Create, @realType);
 
     functionType_LongInt_LongInt := CreateOneParamFunctionType('v', @longintType, @longintType);
+    functionType_Ordinal_LongInt := CreateOneParamFunctionType('v', @unknownType, @longintType);
+    functionType_Ordinal_Ordinal := CreateOneParamFunctionType('v', @unknownType, @unknownType);
     functionType_String_Integer := CreateOneParamFunctionType('s', @ansiString64Type, @longintType);
     functionType_LongInt_Boolean := CreateOneParamFunctionType('v', @longintType, @booleanType);
     functionType_Byte_Char := CreateOneParamFunctionType('b', @byteType, @charType);

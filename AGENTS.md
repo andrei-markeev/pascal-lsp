@@ -31,7 +31,7 @@ This document provides a high-level guide to the codebase architecture, design p
 - **XML Serialization**: For testing purposes, the internal token stream/AST is serialized by `ParseFile.pas` into an inline-annotated XML representation. This format interleaves structural XML tags directly with the original source code offsets (e.g., `<RW>program</RW> <SymbDecl>MyProgram</SymbDecl>`) to represent the token stream.
 - **Snapshot Diffing**: Each syntax test in the `Tests` directory consists of a `.pas` source file and a `.shouldbe.xml` expected output file. Running the test runner compiles the parser, generates the `.out.xml` files, and compares them against the expected `.shouldbe.xml` snapshots using `git diff --no-index`. Any variance in structure, scope resolution, or errors shows up as a failed diff.
 - **Failure / Recovery Testing**: Every new parser feature MUST include both a successful parsing test case (e.g. `Heritage.pas`) and a dedicated error recovery test case (e.g. `BadHeritage.pas`) containing syntax errors, missing elements, and unexpected tokens to verify correct recovery without cascading errors.
-- **Use ./runtests.sh**: use ./runtests.sh for compiling and running tests (it does both).
+- **Use runtests.sh**: use `bash runtests.sh` for compiling and running tests (it does both).
 
 ---
 ### Key Files:

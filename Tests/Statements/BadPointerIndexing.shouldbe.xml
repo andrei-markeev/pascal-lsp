@@ -1,0 +1,15 @@
+{$mode objfpc}
+<ProgramFile><RW>program</RW> <SymbDecl>BadPointerIndexing</SymbDecl><RW>;</RW>
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>PInteger</SymbDecl> <RW>=</RW> <TypeSpec><PointerSpec><RW>^</RW><TypeSpec><Ident>integer</Ident></TypeSpec></PointerSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>p</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>PInteger</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>ptr</SymbDecl><RW>:</RW> <TypeSpec><Ident>pointer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>ch</SymbDecl><RW>:</RW> <TypeSpec><Ident>char</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>ch</SymbRef> <RW>:=</RW> <VarRef><SymbRef>p</SymbRef><RW ERROR="Cannot index p because it is not an array!">[</RW><Num>0</Num><RW>]</RW></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>ch</SymbRef> <RW>:=</RW> <VarRef><SymbRef>ptr</SymbRef><RW ERROR="Cannot index ptr because it is not an array!">[</RW><Num>0</Num><RW>]</RW></VarRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
