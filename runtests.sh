@@ -2,13 +2,13 @@
 
 mkdir -p build
 touch build/dummyfile
-rm build/*
+rm -f build/*
 
 set -e
 
 FPC=fpc
 MAKE=make
-if ! command -v make &> /dev/null && command -v wsl.exe &> /dev/null; then
+if ! command -v make &> /dev/null && command -v wsl.exe &> /dev/null && [[ "$(uname)" == MINGW* || "$(uname)" == MSYS* || "$(uname)" == CYGWIN* ]]; then
     FPC="wsl fpc"
     MAKE="wsl make"
 fi

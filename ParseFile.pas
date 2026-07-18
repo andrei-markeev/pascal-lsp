@@ -5,7 +5,7 @@ program ParseFile;
 
 uses
     sysutils, ParserContext, Token, Symbols, Scopes, ReservedWord, TypeDecl,
-    ParameterDecl, TypeDefs, ProgramFile, UnitFile;
+    ParameterDecl, TypeDefs, ProgramFile, UnitFile, LspConfig;
 
 procedure Parse(fileName: string);
 var
@@ -90,6 +90,9 @@ begin
         WriteLn('Usage: ParseFile.exe <file1> ... <fileN>');
         exit;
     end;
+
+    GConfig.SetWorkspaceRoot(GetCurrentDir);
+    GConfig.ResolveSearchPaths;
 
     for i := 1 to ParamCount do
         Parse(ParamStr(i));

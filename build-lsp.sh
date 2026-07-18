@@ -4,4 +4,4 @@ rm -f build/LspServer*
 
 set -e
 
-fpc -FEbuild/ -FuDeclarations -FuStatements -FuTypes -FuFile -FuExpressions -FuUnits -gl LspServer.pas
+fpc -FEbuild/ -FuDeclarations -FuStatements -FuTypes -FuFile -FuExpressions -FuUnits -FuLsp -gl LspServer.pas
