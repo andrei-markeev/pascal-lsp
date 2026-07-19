@@ -1,0 +1,24 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadExitStatement</SymbDecl><RW>;</RW>
+
+<Procedure><RW>procedure</RW> <SymbDecl>TestTpError</SymbDecl><RW>;</RW>
+{$mode tp}
+<Block><RW>begin</RW>
+    <Call><SymbRef>Exit</SymbRef><RW>(</RW><Num>123</Num><RW>)</RW></Call><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbDecl>TestMacPasError</SymbDecl><RW>;</RW>
+{$mode macpas}
+<Block><RW>begin</RW>
+    <Call><SymbRef>Exit</SymbRef></Call><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbDecl>TestTooManyArgs</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+    <Call><SymbRef>Exit</SymbRef><RW>(</RW><Num>1</Num><RW>,</RW> <Num ERROR="Too many parameters.">2</Num><RW>)</RW></Call><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Block><RW>begin</RW>
+    <Call><SymbRef>TestTpError</SymbRef></Call><RW>;</RW>
+    <Call><SymbRef>TestMacPasError</SymbRef></Call><RW>;</RW>
+    <Call><SymbRef>TestTooManyArgs</SymbRef></Call><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

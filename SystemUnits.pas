@@ -31,6 +31,8 @@ var
     procedureType_outString_PChar_LongInt: TTypeDef;
     procedureType_Ordinal1: TTypeDef;
     procedureType_Ordinal2: TTypeDef;
+    procedureType_Unknown: TTypeDef;
+    procedureType_Void_Or_Unknown: TTypeDef;
     functionType_HighLow: TTypeDef;
 
     classesMock: TClassesUnit;
@@ -82,7 +84,12 @@ begin
         // Flow control procedures
         RegisterSymbolByName('Break', nil, skProcedure, voidProcedureType, ctx.Cursor);
         RegisterSymbolByName('Continue', nil, skProcedure, voidProcedureType, ctx.Cursor);
-        // TODO: Exit 
+        if ctx.mode = cmMacPascal then
+            RegisterSymbolByName('Exit', nil, skProcedure, procedureType_Unknown, ctx.Cursor)
+        else if ctx.mode = cmTurboPascal then
+            RegisterSymbolByName('Exit', nil, skProcedure, voidProcedureType, ctx.Cursor)
+        else
+            RegisterSymbolByName('Exit', nil, skProcedure, procedureType_Void_Or_Unknown, ctx.Cursor);
         // TODO: Halt 
         // TODO: RunError 
 
@@ -251,6 +258,16 @@ begin
         CreateParam(ptkValue, 'x', unknownType)
     ]), unknownType);
 
+    procedureType_Unknown := CreateProcedureType(TParameterList.Create([
+        CreateParam(ptkValue, 'v', unknownType)
+    ]));
+    procedureType_Void_Or_Unknown := CreateProcedureType(TParameterList.Create);
+    if procedureType_Void_Or_Unknown is TRoutineTypeDef then
+    begin
+        TRoutineTypeDef(procedureType_Void_Or_Unknown).overloads := TFPList.Create;
+        TRoutineTypeDef(procedureType_Void_Or_Unknown).overloads.Add(procedureType_Unknown);
+    end;
+
 end;
 
 initialization
@@ -263,6 +280,8 @@ initialization
 finalization
     if (procedureType_Ordinal1 <> nil) and (procedureType_Ordinal1 is TRoutineTypeDef) and (TRoutineTypeDef(procedureType_Ordinal1).overloads <> nil) then
         TRoutineTypeDef(procedureType_Ordinal1).overloads.Free;
+    if (procedureType_Void_Or_Unknown <> nil) and (procedureType_Void_Or_Unknown is TRoutineTypeDef) and (TRoutineTypeDef(procedureType_Void_Or_Unknown).overloads <> nil) then
+        TRoutineTypeDef(procedureType_Void_Or_Unknown).overloads.Free;
     classesMock.Free;
     contnrsMock.Free;
     mathMock.Free;

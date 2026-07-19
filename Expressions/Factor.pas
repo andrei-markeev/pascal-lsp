@@ -21,7 +21,7 @@ function CreateFactor(ctx: TParserContext; nextTokenKind: TTokenKind): TTypedTok
 implementation
 
 uses
-    Symbols, TypeDefs, TypeDef, Token, Identifier, Number, StringToken,
+    CompilationMode, Symbols, TypeDefs, TypeDef, Token, Identifier, Number, StringToken,
     Expression, VarRef, Call, SetConstructor, RoutineTypeDef;
 
 function CreateFactor(ctx: TParserContext; nextTokenKind: TTokenKind): TTypedToken;
@@ -70,30 +70,28 @@ begin
             begin
                 identName := PeekIdentifier(ctx);
                 symbol := FindSymbol(identName, ctx.Cursor);
+
+                factorToken := CreateVarRef(ctx);
+                if (factorToken <> nil) and (factorToken.typeDef <> nil) then
+                    typeDef := factorToken.typeDef;
+
                 if (symbol <> nil) and (symbol.kind = skUnitName) then
                 begin
                     state := tsError;
                     errorMessage := 'Unit name cannot be used in expressions!';
                 end
-                else if (symbol <> nil) and (symbol.kind = skProcedure) then
+                else if (symbol <> nil) and (symbol.kind = skProcedure) and (ctx.mode <> cmMacPascal) then
                 begin
                     state := tsError;
                     errorMessage := 'Invalid call to ' + identName + ': procedure calls cannot be used in expressions because they don''t have a return value!';
                 end
-                else
+                else if (typeDef <> nil) and (typeDef.kind = tkFunction) and (typeDef is TRoutineTypeDef) then
                 begin
-                    factorToken := CreateVarRef(ctx);
-                    if (factorToken <> nil) and (factorToken.typeDef <> nil) then
-                        typeDef := factorToken.typeDef;
-
-                    if (typeDef <> nil) and (typeDef.kind = tkFunction) and (typeDef is TRoutineTypeDef) then
-                    begin
-                        if TRoutineTypeDef(typeDef).returnType <> nil then
-                            typeDef := TRoutineTypeDef(typeDef).returnType
-                        else
-                            typeDef := unknownType;
-                        factorToken := TCall.Create(ctx, factorToken);
-                    end;
+                    if TRoutineTypeDef(typeDef).returnType <> nil then
+                        typeDef := TRoutineTypeDef(typeDef).returnType
+                    else
+                        typeDef := unknownType;
+                    factorToken := TCall.Create(ctx, factorToken);
                 end;
             end;
         pkUnknown:

@@ -1,0 +1,41 @@
+<ProgramFile><RW>program</RW> <SymbDecl>ExitStatement</SymbDecl><RW>;</RW>
+
+<Function><RW>function</RW> <SymbDecl>TestFpc</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>TestFpc</SymbRef> <RW>:=</RW> <Num>1</Num></Assignment><RW>;</RW>
+    <Call><SymbRef>Exit</SymbRef></Call><RW>;</RW>
+    <Call><SymbRef>Exit</SymbRef><RW>(</RW><Num>42</Num><RW>)</RW></Call><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Procedure><RW>procedure</RW> <SymbDecl>TestTp</SymbDecl><RW>;</RW>
+{$mode tp}
+<Block><RW>begin</RW>
+    <Call><SymbRef>Exit</SymbRef></Call><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbDecl>OuterProc</SymbDecl><RW>;</RW>
+    <Procedure><RW>procedure</RW> <SymbDecl>InnerProc</SymbDecl><RW>;</RW>
+    {$mode macpas}
+    <Block><RW>begin</RW>
+        <Call><SymbRef>Exit</SymbRef><RW>(</RW><SymbRef>OuterProc</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <RW>end</RW></Block><RW>;</RW></Procedure>
+<Block><RW>begin</RW>
+    <Call><SymbRef>InnerProc</SymbRef></Call><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbDecl>OuterProcWithParams</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>a</SymbDecl><RW>,</RW> <SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+    <Procedure><RW>procedure</RW> <SymbDecl>InnerProc</SymbDecl><RW>;</RW>
+    {$mode macpas}
+    <Block><RW>begin</RW>
+        <Call><SymbRef>Exit</SymbRef><RW>(</RW><SymbRef>OuterProcWithParams</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <RW>end</RW></Block><RW>;</RW></Procedure>
+<Block><RW>begin</RW>
+    <Call><SymbRef>InnerProc</SymbRef></Call><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Block><RW>begin</RW>
+    <Call><SymbRef>TestFpc</SymbRef></Call><RW>;</RW>
+    <Call><SymbRef>TestTp</SymbRef></Call><RW>;</RW>
+    <Call><SymbRef>OuterProc</SymbRef></Call><RW>;</RW>
+    <Call><SymbRef>OuterProcWithParams</SymbRef><RW>(</RW><Num>1</Num><RW>,</RW> <Num>2</Num><RW>)</RW></Call><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

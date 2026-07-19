@@ -119,6 +119,8 @@ begin
                         mode := cmExtendedPascal
                     else if (strlicomp(Cursor, PChar('tp'), 2) = 0) and (Cursor[2] in [' ',#9,'}']) then
                         mode := cmTurboPascal
+                    else if (strlicomp(Cursor, PChar('macpas'), 6) = 0) and (Cursor[6] in [' ',#9,'}']) then
+                        mode := cmMacPascal
                     else if (strlicomp(Cursor, PChar('fpc'), 3) = 0) and (Cursor[3] in [' ',#9,'}']) then
                         mode := cmFreePascal
                     else if (strlicomp(Cursor, PChar('objfpc'), 6) = 0) and (Cursor[6] in [' ',#9,'}']) then
