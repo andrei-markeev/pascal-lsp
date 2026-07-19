@@ -164,6 +164,8 @@ begin
   capacity := 256;
   SetLength(tokens, capacity);
   
+  EnsureParsed(WriteStream, Uri);
+  
   if (LastParserContext <> nil) and (LastParsedUri = Uri) then
   begin
     ScanComments(LastParserContext.GetContents, tokens, count, capacity);

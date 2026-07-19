@@ -113,6 +113,8 @@ begin
   implementationChildren := '';
   topLevelJson := '';
   
+  EnsureParsed(WriteStream, Uri);
+  
   if (LastParserContext <> nil) and (LastParsedUri = Uri) then
   begin
     for k := 0 to LastParserContext.tokensLen - 1 do

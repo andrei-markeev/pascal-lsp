@@ -19,6 +19,8 @@ type
         WorkspaceRoot: string;
         ResolvedSearchPaths: TStringList;
 
+        MaxDocumentCacheSize: integer;
+
         constructor Create;
         destructor Destroy; override;
         procedure SetWorkspaceRoot(const ARoot: string);
@@ -52,6 +54,7 @@ begin
     ReadLpi := true;
     ReadDproj := true;
     ScanProjectFolders := true;
+    MaxDocumentCacheSize := 10;
     WorkspaceRoot := '';
     ResolvedSearchPaths := TStringList.Create;
 end;

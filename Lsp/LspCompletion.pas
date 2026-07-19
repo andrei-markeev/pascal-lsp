@@ -108,13 +108,15 @@ begin
 
   ItemsJson := '';
 
-  if (Params <> nil) and (LastParserContext <> nil) then
+  if Params <> nil then
   begin
     Uri := Params.FindPath('textDocument.uri').AsString;
     TargetLine := Params.FindPath('position.line').AsInteger;
     TargetCharacter := Params.FindPath('position.character').AsInteger;
 
-    if LastParsedUri = Uri then
+    EnsureParsed(WriteStream, Uri);
+
+    if (LastParserContext <> nil) and (LastParsedUri = Uri) then
     begin
       Content := LastParserContext.GetContents;
       P := LineCharToOffset(Content, TargetLine, TargetCharacter);

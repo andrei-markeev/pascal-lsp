@@ -25,7 +25,7 @@ var
   Parser: TJSONParser;
   Method, Uri, Content, Response: string;
   Id: TJSONData;
-  RootUriData, RootPathData, InitOptions, OptLpi, OptDproj, OptScan, OptPaths: TJSONData;
+  RootUriData, RootPathData, InitOptions, OptLpi, OptDproj, OptScan, OptPaths, OptMaxCache: TJSONData;
   WorkspaceRoot: string;
   Idx: integer;
 begin
@@ -75,6 +75,10 @@ begin
         OptScan := InitOptions.FindPath('scanProjectFolders');
         if OptScan <> nil then
           GConfig.ScanProjectFolders := OptScan.AsBoolean;
+
+        OptMaxCache := InitOptions.FindPath('maxDocumentCacheSize');
+        if OptMaxCache <> nil then
+          GConfig.MaxDocumentCacheSize := OptMaxCache.AsInteger;
 
         OptPaths := InitOptions.FindPath('configuredPaths');
         if (OptPaths <> nil) and (OptPaths.JSONType = jtArray) then
@@ -127,6 +131,11 @@ begin
       Uri := Json.FindPath('params.textDocument.uri').AsString;
       Content := Json.FindPath('params.contentChanges[0].text').AsString;
       HandleFileChange(WriteStream, Uri, Content);
+    end
+    else if Method = 'textDocument/didClose' then
+    begin
+      Uri := Json.FindPath('params.textDocument.uri').AsString;
+      HandleFileClose(Uri);
     end
     else if Method = 'textDocument/documentSymbol' then
     begin
