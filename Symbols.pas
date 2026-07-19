@@ -19,6 +19,7 @@ type
         uniquePrefix: shortstring;
         parent: TSymbol;
         declaration: TIdentifier;
+        implementationDecl: TIdentifier;
         typeDef: TTypeDef;
         references: array of TIdentifier;
         children: array of TSymbol;
@@ -91,8 +92,6 @@ begin
             tokenNameLen := length(matchedTypeDef.rangeToken.tokenName);
             if (tokenNameLen >= 4) and (Copy(matchedTypeDef.rangeToken.tokenName, tokenNameLen - 3, 4) = 'Decl') then
             begin
-                if symbolType is TRoutineTypeDef then
-                    matchedTypeDef.rangeToken := TRoutineTypeDef(symbolType).rangeToken;
                 overloadedSymbol.AddReference(ident);
                 exit(ovAdded);
             end;
@@ -202,6 +201,8 @@ end;
 
 destructor TSymbol.Destroy;
 begin
+    declaration := nil;
+    implementationDecl := nil;
     SetLength(references, 0);
     SetLength(children, 0);
 end;

@@ -86,6 +86,7 @@ begin
     end;
 
     selfType := nil;
+    symbolField := nil;
 
     nameIdent := TIdentifier.Create(ctx, false);
     typeIdent := nil;
@@ -183,22 +184,33 @@ begin
     else
         routineTypeDef.returnType := nil;
 
-    overrideResult := TryAddOverride(nameIdent, funcType, ctx.Cursor);
-    if overrideResult = ovExactDuplicate then
+    if symbolField <> nil then
     begin
-        nameIdent.state := tsError;
-        nameIdent.errorMessage := 'Duplicate subroutine declaration!';
+        symbol := symbolField;
+        symbol.implementationDecl := nameIdent;
+        nameIdent.symbol := symbol;
+        nameIdent.tokenName := 'SymbDecl';
     end
     else
     begin
-        symbol := FindSymbol(nameIdent.GetStr(), ctx.Cursor);
-        if symbol = nil then
+        overrideResult := TryAddOverride(nameIdent, funcType, ctx.Cursor);
+        if overrideResult = ovExactDuplicate then
         begin
-            symbol := RegisterSymbol(nameIdent, symbolParent, symbolKind, funcType, ctx.Cursor);
-            if symbolParent <> nil then
-                symbol.displayName := symbolParent.displayName + '.' + symbol.displayName;
+            nameIdent.state := tsError;
+            nameIdent.errorMessage := 'Duplicate subroutine declaration!';
+        end
+        else
+        begin
+            symbol := FindSymbol(nameIdent.GetStr(), ctx.Cursor);
+            if symbol = nil then
+            begin
+                symbol := RegisterSymbol(nameIdent, symbolParent, symbolKind, funcType, ctx.Cursor);
+                if symbolParent <> nil then
+                    symbol.displayName := symbolParent.displayName + '.' + symbol.displayName;
+                symbol.rangeToken := Self;
+            end;
+            symbol.implementationDecl := nameIdent;
         end;
-        symbol.rangeToken := Self;
     end;
 
     // TODO: result variable variable

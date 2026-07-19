@@ -7,7 +7,7 @@ interface
 
 uses
   sysutils, classes, fpjson, jsonparser,
-  ParserContext, Token, Identifier, Symbols,
+  ParserContext, Token, Identifier, Symbols, ReservedWord, UsesClause, ImplementationBlock,
   LspUtils, LspState;
 
 procedure HandleDefinition(WriteStream: TStream; Id: TJSONData; Params: TJSONData);
@@ -62,9 +62,13 @@ begin
         if TargetIdent.symbol <> nil then
         begin
           Sym := TSymbol(TargetIdent.symbol);
-          if Sym.declaration <> nil then
-          begin
+          if (Sym.implementationDecl <> nil) and (TargetIdent <> Sym.implementationDecl) then
+            DeclIdent := Sym.implementationDecl
+          else
             DeclIdent := Sym.declaration;
+
+          if DeclIdent <> nil then
+          begin
             DeclCtx := FindContextForCursor(DeclIdent.start);
             if DeclCtx <> nil then
             begin
