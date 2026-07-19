@@ -84,13 +84,15 @@ begin
                 typesAreCompatible := true;
             if (leftKind in [tkString, tkChar, tkCharRange]) and (rightKind in [tkString, tkChar, tkCharRange]) then
                 typesAreCompatible := true;
-            if (leftKind = tkEnumMember) and (rightKind = tkEnumMember) then
-                typesAreCompatible := (leftOperand.typeDef is TEnumMemberTypeDef) and (rightOperand.typeDef is TEnumMemberTypeDef) and (TEnumMemberTypeDef(leftOperand.typeDef).enumSpec = TEnumMemberTypeDef(rightOperand.typeDef).enumSpec);
+            if (leftKind in [tkEnum, tkEnumMember]) and (rightKind in [tkEnum, tkEnumMember]) then
+                typesAreCompatible := (GetEnumSpec(leftOperand.typeDef) <> nil) and (GetEnumSpec(leftOperand.typeDef) = GetEnumSpec(rightOperand.typeDef));
 
             if not typesAreCompatible then
             begin
                 state := tsError;
-                if leftKind <> rightKind then
+                if (leftKind in [tkEnum, tkEnumMember]) and (rightKind in [tkEnum, tkEnumMember]) then
+                    errorMessage := 'Comparing enum values from different enums is not supported! You may use Ord function to compare their numeric representations, if this was the intention.'
+                else if leftKind <> rightKind then
                     errorMessage := 'Comparing ' + TypeKindStr[ord(leftKind)] + ' with ' + TypeKindStr[ord(rightKind)] + ' is not supported!'
                 else
                     errorMessage := 'Comparing enum values from different enums is not supported! You may use Ord function to compare their numeric representations, if this was the intention.';

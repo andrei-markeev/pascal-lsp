@@ -1,7 +1,12 @@
 <ProgramFile><RW>program</RW> <SymbDecl>BadIfExpression</SymbDecl><RW>;</RW>
 
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TFruits</SymbDecl> <RW>=</RW> <TypeSpec><EnumSpec><RW>(</RW><SymbDecl>bananas</SymbDecl><RW>,</RW> <SymbDecl>oranges</SymbDecl><RW>)</RW></EnumSpec></TypeSpec></TypeDecl><RW>;</RW>
+    <TypeDecl><SymbDecl>TColors</SymbDecl> <RW>=</RW> <TypeSpec><EnumSpec><RW>(</RW><SymbDecl>red</SymbDecl><RW>,</RW> <SymbDecl>green</SymbDecl><RW>)</RW></EnumSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
 <VarSection><RW>var</RW>
-    <VarDecl><SymbDecl>a</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+    <VarDecl><SymbDecl>a</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>f</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TFruits</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>c</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TColors</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>
     <If><RW>if</RW> <Factor><RW>(</RW><Expression ERROR="Comparing integer with (unknown) is not supported!"><SymbRef>a</SymbRef> <RW>></RW> <Ident ERROR="Identifier has not been declared!">x</Ident></Expression><RW>)</RW></Factor> <RW>then</RW>
         <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <Num>1</Num></Assignment></If><RW>;</RW>
@@ -11,4 +16,10 @@
 
     <If><RW>if</RW> <Expression ERROR="Comparing (unknown) with integer is not supported!"><Ident ERROR="Identifier has not been declared!">x</Ident> <RW>></RW> <Num>10</Num></Expression> <RW>then</RW>
         <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <Num>3</Num></Assignment></If><RW>;</RW>
+
+    <If><RW>if</RW> <Expression ERROR="Comparing enum values from different enums is not supported! You may use Ord function to compare their numeric representations, if this was the intention."><SymbRef>f</SymbRef> <RW>></RW> <SymbRef>c</SymbRef></Expression> <RW>then</RW>
+        <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <Num>4</Num></Assignment></If><RW>;</RW>
+
+    <If><RW>if</RW> <Expression ERROR="Comparing enumeration with integer is not supported!"><SymbRef>f</SymbRef> <RW>></RW> <Num>10</Num></Expression> <RW>then</RW>
+        <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <Num>5</Num></Assignment></If><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

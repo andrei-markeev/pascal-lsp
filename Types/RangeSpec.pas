@@ -70,8 +70,8 @@ begin
             typesAreCompatible := true;
         if (typeDefToFill <> nil) and (typeDefToFill.kind = tkCharRange) and (symbol.typeDef.kind = tkChar) then
             typesAreCompatible := true;
-        if (typeDefToFill <> nil) and (typeDefToFill.kind = tkEnumMember) and (symbol.typeDef.kind = tkEnumMember) then
-            typesAreCompatible := (typeDefToFill is TEnumMemberTypeDef) and (symbol.typeDef is TEnumMemberTypeDef) and (TEnumMemberTypeDef(typeDefToFill).enumSpec = TEnumMemberTypeDef(symbol.typeDef).enumSpec);
+        if (typeDefToFill <> nil) and (typeDefToFill.kind in [tkEnum, tkEnumMember]) and (symbol.typeDef.kind in [tkEnum, tkEnumMember]) then
+            typesAreCompatible := (GetEnumSpec(typeDefToFill) <> nil) and (GetEnumSpec(typeDefToFill) = GetEnumSpec(symbol.typeDef));
 
         if not typesAreCompatible then
         begin

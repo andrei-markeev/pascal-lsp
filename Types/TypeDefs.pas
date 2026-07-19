@@ -62,6 +62,7 @@ var
     voidProcedureType: TTypeDef;
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
+function GetEnumSpec(typeDef: TTypeDef): Pointer;
 function TypesAreAssignable(left, right: TTypeDef; out errorMessage: string): boolean;
 function HaveSameSignature(a, b: TTypeDef): boolean;
 
@@ -125,6 +126,16 @@ begin
     end;
 end;
 
+function GetEnumSpec(typeDef: TTypeDef): Pointer;
+begin
+    if typeDef is TEnumTypeDef then
+        exit(TEnumTypeDef(typeDef).enumSpec)
+    else if typeDef is TEnumMemberTypeDef then
+        exit(TEnumMemberTypeDef(typeDef).enumSpec)
+    else
+        exit(nil);
+end;
+
 function TypesAreAssignable(left, right: TTypeDef; out errorMessage: string): boolean;
 begin
     if (left = nil) or (right = nil) then
@@ -142,14 +153,7 @@ begin
         TypesAreAssignable := true
     else if (left.kind in [tkEnum, tkEnumMember]) and (right.kind in [tkEnum, tkEnumMember]) then
     begin
-        if (left is TEnumMemberTypeDef) and (right is TEnumMemberTypeDef) then
-            TypesAreAssignable := TEnumMemberTypeDef(left).enumSpec = TEnumMemberTypeDef(right).enumSpec
-        else if (left is TEnumTypeDef) and (right is TEnumMemberTypeDef) then
-            TypesAreAssignable := TEnumTypeDef(left).enumSpec = TEnumMemberTypeDef(right).enumSpec
-        else if (left is TEnumMemberTypeDef) and (right is TEnumTypeDef) then
-            TypesAreAssignable := TEnumMemberTypeDef(left).enumSpec = TEnumTypeDef(right).enumSpec
-        else if (left is TEnumTypeDef) and (right is TEnumTypeDef) then
-            TypesAreAssignable := TEnumTypeDef(left).enumSpec = TEnumTypeDef(right).enumSpec;
+        TypesAreAssignable := (GetEnumSpec(left) <> nil) and (GetEnumSpec(left) = GetEnumSpec(right));
     end
     else if (left.kind = tkSet) and (right.kind = tkSet) then
     begin

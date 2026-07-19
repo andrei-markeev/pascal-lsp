@@ -17,7 +17,7 @@
     <Assignment><SymbRef>fruits</SymbRef> <RW>:=</RW> <SymbRef>oranges</SymbRef></Assignment><RW>;</RW>
 
     <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'this is bananas'</Str></Assignment><RW>;</RW>
-    <If><RW>if</RW> <Expression ERROR="Comparing enumeration with enum value is not supported!"><SymbRef>fruits</SymbRef> <RW>></RW> <SymbRef>bananas</SymbRef></Expression> <RW>then</RW>
+    <If><RW>if</RW> <Expression><SymbRef>fruits</SymbRef> <RW>></RW> <SymbRef>bananas</SymbRef></Expression> <RW>then</RW>
         <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'not bananas but more than bananas!'</Str></Assignment></If><RW>;</RW>
 
     { --- incomplete --- }
