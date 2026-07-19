@@ -162,6 +162,18 @@ begin
         end
         else
             TypesAreAssignable := true;
+    end
+    else if (left.kind = tkArray) and (right.kind = tkArray) then
+    begin
+        if (left is TArrayTypeDef) and (right is TArrayTypeDef) then
+        begin
+            if (TArrayTypeDef(left).typeOfValues = nil) or (TArrayTypeDef(right).typeOfValues = nil) then
+                TypesAreAssignable := true
+            else
+                TypesAreAssignable := TypesAreAssignable(TArrayTypeDef(left).typeOfValues, TArrayTypeDef(right).typeOfValues, errorMessage);
+        end
+        else
+            TypesAreAssignable := true;
     end;
 
     if (left.kind = tkString) and (right.kind = tkChar) then

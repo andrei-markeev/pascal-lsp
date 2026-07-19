@@ -1,0 +1,14 @@
+{$mode objfpc}
+<UnitFile><RW>unit</RW> <SymbDecl>ArrayLiteral</SymbDecl><RW>;</RW>
+
+<RW>interface</RW>
+
+<InterfaceBlock><ConstSection><RW>const</RW>
+    <ConstDecl><SymbDecl>SymbolKindStr</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>[</RW><TypeSpec><RangeSpec><Num>0</Num><RW>..</RW><Num>6</Num></RangeSpec></TypeSpec><RW>]</RW> <RW>of</RW> <TypeSpec><Ident>shortstring</Ident></TypeSpec></ArraySpec></TypeSpec> <RW>=</RW> <ConstValue><ArrayLiteral><RW>(</RW>
+        <ConstValue><Str>''</Str></ConstValue><RW>,</RW> <ConstValue><Str>'constant'</Str></ConstValue><RW>,</RW> <ConstValue><Str>'typed constant'</Str></ConstValue><RW>,</RW> <ConstValue><Str>'type'</Str></ConstValue><RW>,</RW> <ConstValue><Str>'variable'</Str></ConstValue><RW>,</RW> <ConstValue><Str>'procedure'</Str></ConstValue><RW>,</RW> <ConstValue><Str>'function'</Str></ConstValue>
+    <RW>)</RW></ArrayLiteral></ConstValue></ConstDecl><RW>;</RW>
+    <ConstDecl><SymbDecl>Numbers</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>[</RW><TypeSpec><RangeSpec><Num>1</Num><RW>..</RW><Num>3</Num></RangeSpec></TypeSpec><RW>]</RW> <RW>of</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ArraySpec></TypeSpec> <RW>=</RW> <ConstValue><ArrayLiteral><RW>(</RW><ConstValue><Num>1</Num></ConstValue><RW>,</RW> <ConstValue><Num>2</Num></ConstValue><RW>,</RW> <ConstValue><Num>3</Num></ConstValue><RW>)</RW></ArrayLiteral></ConstValue></ConstDecl><RW>;</RW></ConstSection></InterfaceBlock>
+
+<RW>implementation</RW>
+
+<ImplementationBlock><RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

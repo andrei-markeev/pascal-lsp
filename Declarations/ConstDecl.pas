@@ -20,7 +20,7 @@ type
 implementation
 
 uses
-    Anchors, Symbols, Token, ReservedWord, TypeSpec;
+    CompilationMode, Anchors, Symbols, Token, ReservedWord, TypeSpec;
 
 constructor TConstDecl.Create(ctx: TParserContext);
 var
@@ -51,6 +51,8 @@ begin
     AddAnchor(pkNumber);
     AddAnchor(pkString);
     AddAnchor(pkIdentifier);
+    if ctx.mode >= cmTurboPascal then
+        AddAnchor(rwOpenParenthesis);
     nextTokenKind := SkipUntilAnchor(ctx);
 
     if nextTokenKind.reservedWordKind = rwColon then
@@ -64,10 +66,14 @@ begin
     TReservedWord.Create(ctx, rwEquals, false);
     RemoveAnchor(rwEquals);
 
+    if ctx.mode >= cmTurboPascal then
+        AddAnchor(rwOpenParenthesis);
     nextTokenKind := SkipUntilAnchor(ctx);
     RemoveAnchor(pkNumber);
     RemoveAnchor(pkString);
     RemoveAnchor(pkIdentifier);
+    if ctx.mode >= cmTurboPascal then
+        RemoveAnchor(rwOpenParenthesis);
 
     value := TConstValue.Create(ctx, nextTokenKind);
 

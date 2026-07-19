@@ -38,6 +38,10 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
+        <Filename Value="Declarations\ArrayLiteral.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
         <Filename Value="Declarations\ConstDecl.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>

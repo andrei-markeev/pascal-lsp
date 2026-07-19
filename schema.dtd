@@ -61,6 +61,8 @@
 
 <!ELEMENT ConstValue ANY>
 <!ATTLIST ConstValue %commonAttrs;>
+<!ELEMENT ArrayLiteral ANY>
+<!ATTLIST ArrayLiteral %commonAttrs;>
 
 <!ELEMENT RW (#PCDATA)>
 <!ATTLIST RW %commonAttrs;>

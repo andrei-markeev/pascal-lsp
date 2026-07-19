@@ -18,7 +18,7 @@ type
 implementation
 
 uses
-    Symbols, TypeDefs, Token, Identifier, Number, StringToken;
+    CompilationMode, Symbols, TypeDefs, Token, Identifier, Number, StringToken, ReservedWord, ArrayLiteral;
 
 constructor TConstValue.Create(ctx: TParserContext; tokenKind: TTokenKind);
 var
@@ -29,8 +29,13 @@ begin
     start := ctx.Cursor;
     typeDef := unknownType;
 
-    // TODO: support turbo pascal constant expressions
-
+    if (ctx.mode >= cmTurboPascal) and (tokenKind.reservedWordKind = rwOpenParenthesis) then
+    begin
+        valueToken := TArrayLiteral.Create(ctx);
+        if valueToken <> nil then
+            typeDef := valueToken.typeDef;
+    end
+    else
     case tokenKind.primitiveKind of
         pkNumber:
             begin

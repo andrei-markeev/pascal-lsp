@@ -1,0 +1,12 @@
+{$mode objfpc}
+<UnitFile><RW>unit</RW> <SymbDecl>BadArrayLiteral</SymbDecl><RW>;</RW>
+
+<RW>interface</RW>
+
+<InterfaceBlock><ConstSection><RW>const</RW>
+    <ConstDecl><SymbDecl>BadArray1</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>[</RW><TypeSpec><RangeSpec><Num>0</Num><RW>..</RW><Num>2</Num></RangeSpec></TypeSpec><RW>]</RW> <RW>of</RW> <TypeSpec><Ident>shortstring</Ident></TypeSpec></ArraySpec></TypeSpec> <RW>=</RW> <ConstValue><ArrayLiteral ERROR="Expected closing parenthesis ')'"><RW>(</RW> <ConstValue><Str>'one'</Str></ConstValue><RW>,</RW> <ConstValue><Str>'two'</Str></ConstValue> <RW SKIPPED="true">;</RW></ArrayLiteral></ConstValue></ConstDecl><RW MISSING=";" />
+    <ConstDecl><SymbDecl>BadArray2</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>[</RW><TypeSpec><RangeSpec><Num>1</Num><RW>..</RW><Num>2</Num></RangeSpec></TypeSpec><RW>]</RW> <RW>of</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ArraySpec></TypeSpec> <RW>=</RW> <ConstValue><ArrayLiteral ERROR="Expected closing parenthesis ')'"><RW>(</RW><ConstValue><Num>1</Num></ConstValue></ArrayLiteral></ConstValue></ConstDecl><RW MISSING=";" /></ConstSection> <Num SKIPPED="true">2</Num><RW SKIPPED="true">)</RW><RW SKIPPED="true">;</RW></InterfaceBlock>
+
+<RW>implementation</RW>
+
+<ImplementationBlock><RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>
