@@ -25,6 +25,8 @@ var ScopesList: array of TScope;
 
 implementation
 
+uses Symbols;
+
 procedure RegisterScope(scopeToken: TToken);
 var
     l: integer;
@@ -75,8 +77,16 @@ begin
 end;
 
 destructor TScope.Destroy;
+var
+    i: integer;
 begin
-    symbolsList.Free;
+    if symbolsList <> nil then
+    begin
+        for i := 0 to symbolsList.Count - 1 do
+            TSymbol(symbolsList.Items[i]).Free;
+        symbolsList.Free;
+    end;
+    inherited Destroy;
 end;
 
 procedure ResetScopes;
