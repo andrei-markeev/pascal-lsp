@@ -33,10 +33,10 @@ begin
             begin
                 // This is either an assignment or a procedure call
                 varRef := CreateVarRef(ctx);
-                if (varRef <> nil) and (varRef.typeDef <> nil) and (varRef.typeDef.kind in [tkFunction, tkProcedure]) and not PeekReservedWord(ctx, rwAssign) then
-                    CreateStatement := TCall.Create(ctx, varRef)
+                if PeekReservedWord(ctx, rwAssign) then
+                    CreateStatement := TAssignmentStatement.Create(ctx, varRef)
                 else
-                    CreateStatement := TAssignmentStatement.Create(ctx, varRef);
+                    CreateStatement := TCall.Create(ctx, varRef);
             end;
         pkUnknown:
             case nextTokenKind.reservedWordKind of

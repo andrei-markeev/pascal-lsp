@@ -47,12 +47,14 @@ begin
         overloads := nil;
         params := nil;
         typeDef := unknownType;
-    end;
-
-    if params = nil then
-    begin
-        ctx.MarkEndOfToken(Self);
-        exit;
+        if (ref <> nil) and (ref.state <> tsError) and (ref.typeDef <> nil) and (ref.typeDef <> unknownType) then
+        begin
+            state := tsError;
+            if PeekReservedWord(ctx, rwOpenParenthesis) then
+                errorMessage := 'Cannot call expression because it is not a procedure or function!'
+            else
+                errorMessage := 'Only procedure calls and assignments can be used as statements!';
+        end;
     end;
 
     n := 0;
@@ -66,6 +68,7 @@ begin
 
             expr := CreateExpression(ctx);
 
+            if params <> nil then
             repeat
 
                 while params.count <= n do
@@ -113,6 +116,7 @@ begin
         TReservedWord.Create(ctx, rwCloseParenthesis, false);
     end;
 
+    if params <> nil then
     while params.count <> n do
     begin
         inc(match);

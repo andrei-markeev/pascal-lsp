@@ -1,0 +1,9 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadUndeclaredCall</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>a</SymbDecl><RW>,</RW> <SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <Call><Ident ERROR="Identifier has not been declared!">CreateTerm</Ident><RW>(</RW><Ident ERROR="Identifier has not been declared!">ctx</Ident><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Num>10</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

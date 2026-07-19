@@ -1,0 +1,9 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadUndeclaredProcCall</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>a</SymbDecl><RW>,</RW> <SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Call><Ident ERROR="Identifier has not been declared!">UndeclaredProc</Ident><RW>(</RW><SymbRef>a</SymbRef><RW>,</RW> <SymbRef>b</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Num>20</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
