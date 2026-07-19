@@ -18,6 +18,7 @@ type
     protected
         procedure InitTypes; override;
     public
+        destructor Destroy; override;
         procedure Load(ctx: TParserContext); override;
     end;
 
@@ -25,6 +26,18 @@ implementation
 
 uses
     Symbols, Parameters, CompilationMode, SetTypeDef;
+
+destructor TSysutilsUnit.Destroy;
+begin
+    if loaded then
+    begin
+        functionType_String_String.Free;
+        functionType_LongInt_String.Free;
+        setTypeOfReplaceFlags.Free;
+        functionType_StringReplace.Free;
+    end;
+    inherited Destroy;
+end;
 
 procedure TSysutilsUnit.InitTypes;
 begin

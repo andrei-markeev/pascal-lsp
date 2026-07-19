@@ -12,23 +12,21 @@ type
     TRecordTypeDef = class(TTypeDef)
     public
         recordFields: TFPHashList;
-        constructor Create(ARecordFields: TFPHashList = nil; ASize: longword = 0);
+        constructor Create;
         destructor Destroy; override;
     end;
 
 implementation
 
-constructor TRecordTypeDef.Create(ARecordFields: TFPHashList; ASize: longword);
+constructor TRecordTypeDef.Create;
 begin
-    inherited Create(tkRecord, ASize);
-    if ARecordFields <> nil then
-        recordFields := ARecordFields
-    else
-        recordFields := TFPHashList.Create;
+    inherited Create(tkRecord, 0);
+    recordFields := TFPHashList.Create;
 end;
 
 destructor TRecordTypeDef.Destroy;
 begin
+    recordFields.Free;
     inherited Destroy;
 end;
 

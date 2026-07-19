@@ -15,6 +15,7 @@ type
     protected
         procedure InitTypes; override;
     public
+        destructor Destroy; override;
         procedure Load(ctx: TParserContext); override;
     end;
 
@@ -22,6 +23,13 @@ implementation
 
 uses
     Symbols, Parameters, CompilationMode;
+
+destructor TStringsUnit.Destroy;
+begin
+    if loaded then
+        functionType_PChar_PChar_LongInt_LongInt.Free;
+    inherited Destroy;
+end;
 
 procedure TStringsUnit.InitTypes;
 begin

@@ -13,19 +13,22 @@ type
     public
         objectFields: TFPHashList;
         parentObject: TTypeDef;
-        constructor Create(AObjectFields: TFPHashList = nil; AParentObject: TTypeDef = nil; ASize: longword = 0);
+        constructor Create;
+        destructor Destroy; override;
     end;
 
 implementation
 
-constructor TObjectTypeDef.Create(AObjectFields: TFPHashList; AParentObject: TTypeDef; ASize: longword);
+constructor TObjectTypeDef.Create;
 begin
-    inherited Create(tkObject, ASize);
-    if AObjectFields <> nil then
-        objectFields := AObjectFields
-    else
-        objectFields := TFPHashList.Create;
-    parentObject := AParentObject;
+    inherited Create(tkObject, 0);
+    objectFields := TFPHashList.Create;
+end;
+
+destructor TObjectTypeDef.Destroy;
+begin
+    objectFields.Free;
+    inherited Destroy;
 end;
 
 end.

@@ -205,17 +205,6 @@ begin
     end;
 end;
 
-procedure LoadSystemUnit(unitName: string; ctx: TParserContext);
-begin
-    case LowerCase(unitName) of
-        'classes': classesMock.Load(ctx);
-        'contnrs': contnrsMock.Load(ctx);
-        'math': mathMock.Load(ctx);
-        'sysutils': sysutilsMock.Load(ctx);
-        'strings': stringsMock.Load(ctx);
-    end;
-end;
-
 procedure InitFunctionTypes;
 begin
 
@@ -270,21 +259,59 @@ begin
 
 end;
 
-initialization
-    InitFunctionTypes;
+procedure FreeFunctionTypes;
+begin
+    functionType_Real.Free;
+    functionType_String_Integer.Free;
+    functionType_LongInt_LongInt.Free;
+    functionType_Ordinal_LongInt.Free;
+    functionType_Ordinal_Ordinal.Free;
+    functionType_Byte_Char.Free;
+    functionType_LongInt_Boolean.Free;
+    functionType_Real_Real.Free;
+    functionType_Real_Longint.Free;
+    functionType_constString_constString_LongInt.Free;
+    procedureType_outString_PChar_LongInt.Free;
+    procedureType_Ordinal1.Free;
+    procedureType_Ordinal2.Free;
+    procedureType_Unknown.Free;
+    procedureType_Void_Or_Unknown.Free;
+    functionType_HighLow.Free;
+end;
+
+procedure LoadSystemUnit(unitName: string; ctx: TParserContext);
+begin
+    case LowerCase(unitName) of
+        'classes': classesMock.Load(ctx);
+        'contnrs': contnrsMock.Load(ctx);
+        'math': mathMock.Load(ctx);
+        'sysutils': sysutilsMock.Load(ctx);
+        'strings': stringsMock.Load(ctx);
+    end;
+end;
+
+procedure InitSystemUnits;
+begin
     classesMock := TClassesUnit.Create;
     contnrsMock := TContnrsUnit.Create;
     mathMock := TMathUnit.Create;
     sysutilsMock := TSysutilsUnit.Create;
     stringsMock := TStringsUnit.Create;
-finalization
-    if (procedureType_Ordinal1 <> nil) and (procedureType_Ordinal1 is TRoutineTypeDef) and (TRoutineTypeDef(procedureType_Ordinal1).overloads <> nil) then
-        TRoutineTypeDef(procedureType_Ordinal1).overloads.Free;
-    if (procedureType_Void_Or_Unknown <> nil) and (procedureType_Void_Or_Unknown is TRoutineTypeDef) and (TRoutineTypeDef(procedureType_Void_Or_Unknown).overloads <> nil) then
-        TRoutineTypeDef(procedureType_Void_Or_Unknown).overloads.Free;
+end;
+
+procedure FreeSystemUnits;
+begin
     classesMock.Free;
     contnrsMock.Free;
     mathMock.Free;
     sysutilsMock.Free;
     stringsMock.Free;
+end;
+
+initialization
+    InitFunctionTypes;
+    InitSystemUnits;
+finalization
+    FreeFunctionTypes;
+    FreeSystemUnits;
 end.

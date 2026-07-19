@@ -273,5 +273,39 @@ initialization
     voidProcedureType := TRoutineTypeDef.Create(tkProcedure, TParameterList.Create, nil, nil);
 
 finalization
+    unknownType.Free;
+
+    byteType.Free;
+    shortintType.Free;
+    wordType.Free;
+    smallintType.Free;
+    longwordType.Free;
+    longintType.Free;
+    qwordType.Free;
+    int64Type.Free;
+
+    booleanType.Free;
+    boolean16Type.Free;
+    boolean32Type.Free;
+    boolean64Type.Free;
+
+    charType.Free;
+    realType.Free;
+    singleType.Free;
+    doubleType.Free;
+    extendedType.Free;
+    compType.Free;
+    currencyType.Free;
+
+    pointer32Type.Free;
+    pointer64Type.Free;
+    pcharType.Free;
+
+    shortstringType.Free;
+    ansiString32Type.Free;
+    ansiString64Type.Free;
+
+    voidProcedureType.Free;
+
     TypesList.Free;
 end.

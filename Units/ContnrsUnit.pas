@@ -44,8 +44,26 @@ uses
 destructor TContnrsUnit.Destroy;
 begin
     if loaded then
-        if classType_TFPHashList is TClassTypeDef then
-            TClassTypeDef(classType_TFPHashList).classFields.Free;
+    begin
+        classType_TFPHashList.Free;
+        dynArrayOfPointerType.Free;
+
+        func_Create_TFPHashList.Free;
+        func_StringPointer_LongInt.Free;
+        func_Void_TFPHashList.Free;
+        func_Pointer_Pointer.Free;
+        func_String_Pointer.Free;
+        func_String_LongInt.Free;
+        func_StringLongWord_Pointer.Free;
+        func_LongInt_LongInt.Free;
+        func_LongInt_LongWord.Free;
+        func_Pointer_LongInt.Free;
+        func_LongInt_String.Free;
+        func_StringString_LongInt.Free;
+
+        proc_LongInt.Free;
+        proc_Pointer_Pointer.Free;
+    end;
     inherited Destroy;
 end;
 
@@ -53,7 +71,7 @@ procedure TContnrsUnit.InitTypes;
 begin
     dynArrayOfPointerType := TDynamicArrayTypeDef.Create(pointer64Type, 8);
 
-    classType_TFPHashList := TClassTypeDef.Create(TFPHashList.Create, nil, 0);
+    classType_TFPHashList := TClassTypeDef.Create;
 
     func_Create_TFPHashList := CreateFunctionType(TParameterList.Create, classType_TFPHashList);
     func_StringPointer_LongInt := CreateTwoParamFunctionType('aname', ansiString64Type, 'item', pointer64Type, longintType);

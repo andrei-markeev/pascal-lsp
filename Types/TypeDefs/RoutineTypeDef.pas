@@ -16,9 +16,13 @@ type
         overloads: TFPList;
         rangeToken: TToken;
         constructor Create(AKind: TTypeKind = tkProcedure; AParameters: Pointer = nil; AReturnType: TTypeDef = nil; AOverloads: TFPList = nil);
+        destructor Destroy; override;
     end;
 
 implementation
+
+uses
+    Parameters;
 
 constructor TRoutineTypeDef.Create(AKind: TTypeKind; AParameters: Pointer; AReturnType: TTypeDef; AOverloads: TFPList);
 begin
@@ -26,6 +30,15 @@ begin
     parameters := AParameters;
     returnType := AReturnType;
     overloads := AOverloads;
+end;
+
+destructor TRoutineTypeDef.Destroy;
+begin
+    if parameters <> nil then
+        TParameterList(parameters).Free;
+    if overloads <> nil then
+        overloads.Free;
+    inherited Destroy;
 end;
 
 end.

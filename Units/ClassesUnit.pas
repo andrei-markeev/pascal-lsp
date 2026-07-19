@@ -58,12 +58,39 @@ destructor TClassesUnit.Destroy;
 begin
     if loaded then
     begin
-        if classType_TFPList is TClassTypeDef then
-            TClassTypeDef(classType_TFPList).classFields.Free;
-        if classType_TStrings is TClassTypeDef then
-            TClassTypeDef(classType_TStrings).classFields.Free;
-        if classType_TStringList is TClassTypeDef then
-            TClassTypeDef(classType_TStringList).classFields.Free;
+        classType_TFPList.Free;
+        classType_TStrings.Free;
+        classType_TStringList.Free;
+
+        dynArrayOfPointerType.Free;
+        dynArrayOfStringType.Free;
+
+        func_Create_TFPList.Free;
+        func_Create_TStrings.Free;
+        func_Create_TStringList.Free;
+
+        func_Pointer_LongInt.Free;
+        func_ItemDirection_LongInt.Free;
+        func_Void_Pointer.Free;
+        func_Void_TFPList.Free;
+        func_Pointer_Pointer.Free;
+
+        func_String_LongInt.Free;
+        func_StringPointer_LongInt.Free;
+        func_StringString_TStrings.Free;
+        func_String_String.Free;
+        func_Void_String.Free;
+        func_Pointer_Boolean.Free;
+        func_StringVarLongInt_Boolean.Free;
+
+        proc_LongInt.Free;
+        proc_LongInt_LongInt.Free;
+        proc_LongInt_Pointer.Free;
+        proc_LongInt_String.Free;
+        proc_LongIntStringPointer.Free;
+        proc_String.Free;
+        proc_Pointer.Free;
+        proc_Pointer_Pointer.Free;
     end;
     inherited Destroy;
 end;
@@ -74,13 +101,14 @@ begin
     dynArrayOfStringType := TDynamicArrayTypeDef.Create(ansiString64Type, 8);
 
     // TFPList
-    classType_TFPList := TClassTypeDef.Create(TFPHashList.Create, nil, 0);
+    classType_TFPList := TClassTypeDef.Create;
 
     // TStrings
-    classType_TStrings := TClassTypeDef.Create(TFPHashList.Create, nil, 0);
+    classType_TStrings := TClassTypeDef.Create;
 
     // TStringList
-    classType_TStringList := TClassTypeDef.Create(TFPHashList.Create, classType_TStrings, 0);
+    classType_TStringList := TClassTypeDef.Create;
+    TClassTypeDef(classType_TStringList).parentClass := classType_TStrings;
 
     func_Create_TFPList := CreateFunctionType(TParameterList.Create, classType_TFPList);
     func_Create_TStrings := CreateFunctionType(TParameterList.Create, classType_TStrings);
