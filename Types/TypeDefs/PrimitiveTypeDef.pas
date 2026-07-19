@@ -11,14 +11,14 @@ uses
 type
     TPrimitiveTypeDef = class(TTypeDef)
     public
-        constructor Create(AKind: TTypeKind; ASize: longword = 0);
+        constructor Create(ctx: TObject = nil; AKind: TTypeKind = tkUnknown; ASize: longword = 0);
     end;
 
 implementation
 
-constructor TPrimitiveTypeDef.Create(AKind: TTypeKind; ASize: longword);
+constructor TPrimitiveTypeDef.Create(ctx: TObject; AKind: TTypeKind; ASize: longword);
 begin
-    inherited Create(AKind, ASize);
+    inherited Create(ctx, AKind, ASize);
 end;
 
 end.

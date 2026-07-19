@@ -34,7 +34,7 @@ begin
     TReservedWord.Create(ctx, rwProgram, false);
 
     ident := TIdentifier.Create(ctx, false);
-    typeDef := TPrimitiveTypeDef.Create(tkUnitName);
+    typeDef := TPrimitiveTypeDef.Create(ctx, tkUnitName);
     RegisterSymbol(ident, nil, skUnitName, typeDef, ctx.Cursor);
 
     // programs parameters are ignored by FPC so we also ignore them

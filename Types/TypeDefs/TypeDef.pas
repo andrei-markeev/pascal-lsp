@@ -19,23 +19,28 @@ type
         size: longword;
         visibility: TVisibility;
         kind: TTypeKind;
-        constructor Create(AKind: TTypeKind = tkUnknown; ASize: longword = 0; AVisibility: TVisibility = vPublic);
+        constructor Create(ctx: TObject = nil; AKind: TTypeKind = tkUnknown; ASize: longword = 0; AVisibility: TVisibility = vPublic);
         function Clone: TTypeDef; virtual;
     end;
 
 implementation
 
-constructor TTypeDef.Create(AKind: TTypeKind; ASize: longword; AVisibility: TVisibility);
+uses
+    ParserContext;
+
+constructor TTypeDef.Create(ctx: TObject; AKind: TTypeKind; ASize: longword; AVisibility: TVisibility);
 begin
     inherited Create;
     kind := AKind;
     size := ASize;
     visibility := AVisibility;
+    if (ctx <> nil) and (ctx is TParserContext) then
+        TParserContext(ctx).TrackTypeDef(Self);
 end;
 
 function TTypeDef.Clone: TTypeDef;
 begin
-    Result := TTypeDef.Create(kind, size, visibility);
+    Result := TTypeDef.Create(nil, kind, size, visibility);
 end;
 
 end.

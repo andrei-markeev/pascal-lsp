@@ -99,7 +99,7 @@ begin
 
     if elemType = nil then
         elemType := unknownType;
-    typeDef := TArrayTypeDef.Create(nil, elemType);
+    typeDef := TArrayTypeDef.Create(ctx, nil, elemType);
 
     ctx.MarkEndOfToken(Self);
 end;

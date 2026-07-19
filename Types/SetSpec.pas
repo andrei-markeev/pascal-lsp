@@ -32,7 +32,7 @@ begin
     TReservedWord.Create(ctx, rwOf, false);
 
     baseType := unknownType;
-    setTypeDef := TSetTypeDef.Create(baseType, 1);
+    setTypeDef := TSetTypeDef.Create(ctx, baseType, 1);
     typeDefToFill := setTypeDef;
 
     CreateTypeSpec(ctx, baseType);

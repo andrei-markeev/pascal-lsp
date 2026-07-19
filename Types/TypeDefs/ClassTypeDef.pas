@@ -13,15 +13,15 @@ type
     public
         classFields: TFPHashList;
         parentClass: TTypeDef;
-        constructor Create;
+        constructor Create(ctx: TObject = nil);
         destructor Destroy; override;
     end;
 
 implementation    
 
-constructor TClassTypeDef.Create;
+constructor TClassTypeDef.Create(ctx: TObject);
 begin
-    inherited Create(tkClass, 0);
+    inherited Create(ctx, tkClass, 0);
     classFields := TFPHashList.Create;
 end;
 

@@ -69,7 +69,7 @@ end;
 
 procedure TContnrsUnit.InitTypes;
 begin
-    dynArrayOfPointerType := TDynamicArrayTypeDef.Create(pointer64Type, 8);
+    dynArrayOfPointerType := TDynamicArrayTypeDef.Create(nil, pointer64Type, 8);
 
     classType_TFPHashList := TClassTypeDef.Create;
 

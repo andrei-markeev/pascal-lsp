@@ -148,7 +148,7 @@ begin
     start := ctx.Cursor;
     state := tsCorrect;
 
-    typeDefToFill := TRecordTypeDef.Create;
+    typeDefToFill := TRecordTypeDef.Create(ctx);
 
     TReservedWord.Create(ctx, rwRecord, true);
 

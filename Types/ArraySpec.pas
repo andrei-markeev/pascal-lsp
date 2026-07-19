@@ -35,7 +35,7 @@ begin
     if PeekReservedWord(ctx, rwOpenSquareBracket) then
     begin
         TReservedWord.Create(ctx, rwOpenSquareBracket, true);
-        curTypeDef := TArrayTypeDef.Create;
+        curTypeDef := TArrayTypeDef.Create(ctx);
         typeDefToFill := curTypeDef;
         repeat
             indexType := unknownType;
@@ -46,7 +46,7 @@ begin
             if nextIsComma then
             begin
                 TReservedWord.Create(ctx, rwComma, true);
-                nextTypeDef := TArrayTypeDef.Create;
+                nextTypeDef := TArrayTypeDef.Create(ctx);
                 curTypeDef.typeOfValues := nextTypeDef;
                 curTypeDef := nextTypeDef;
             end;
@@ -65,7 +65,7 @@ begin
         TReservedWord.Create(ctx, rwOf, false);
 
         dynValuesType := unknownType;
-        typeDefToFill := TDynamicArrayTypeDef.Create(nil, 8);
+        typeDefToFill := TDynamicArrayTypeDef.Create(ctx, nil, 8);
         CreateTypeSpec(ctx, dynValuesType);
         TDynamicArrayTypeDef(typeDefToFill).typeOfDynValues := dynValuesType;
 

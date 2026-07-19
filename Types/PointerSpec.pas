@@ -31,7 +31,7 @@ begin
     TReservedWord.Create(ctx, rwHat, true);
 
     targetType := unknownType;
-    ptrTypeDef := TPointerTypeDef.Create(true, targetType, 8);
+    ptrTypeDef := TPointerTypeDef.Create(ctx, true, targetType, 8);
     typeDefToFill := ptrTypeDef;
 
     CreateTypeSpec(ctx, targetType);

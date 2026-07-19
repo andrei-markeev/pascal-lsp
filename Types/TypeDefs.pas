@@ -238,39 +238,39 @@ end;
 initialization
     TypesList := TFPHashList.Create;
 
-    unknownType := TPrimitiveTypeDef.Create(tkUnknown, 0);
+    unknownType := TPrimitiveTypeDef.Create(nil, tkUnknown, 0);
 
-    byteType := TIntegerTypeDef.Create(1, false, 0, 255);
-    shortintType := TIntegerTypeDef.Create(1, true, -128, 127);
-    wordType := TIntegerTypeDef.Create(2, false, 0, 65535);
-    smallintType := TIntegerTypeDef.Create(2, true, -32768, 32767);
-    longwordType := TIntegerTypeDef.Create(4, false, 0, 4294967295);
-    longintType := TIntegerTypeDef.Create(4, true, -2147483648, 2147483647);
-    qwordType := TIntegerTypeDef.Create(8, false, 0, 0);
-    int64Type := TIntegerTypeDef.Create(8, true, 0, 0);
+    byteType := TIntegerTypeDef.Create(nil, 1, false, 0, 255);
+    shortintType := TIntegerTypeDef.Create(nil, 1, true, -128, 127);
+    wordType := TIntegerTypeDef.Create(nil, 2, false, 0, 65535);
+    smallintType := TIntegerTypeDef.Create(nil, 2, true, -32768, 32767);
+    longwordType := TIntegerTypeDef.Create(nil, 4, false, 0, 4294967295);
+    longintType := TIntegerTypeDef.Create(nil, 4, true, -2147483648, 2147483647);
+    qwordType := TIntegerTypeDef.Create(nil, 8, false, 0, 0);
+    int64Type := TIntegerTypeDef.Create(nil, 8, true, 0, 0);
 
-    booleanType := TPrimitiveTypeDef.Create(tkBoolean, 1);
-    boolean16Type := TPrimitiveTypeDef.Create(tkBoolean, 2);
-    boolean32Type := TPrimitiveTypeDef.Create(tkBoolean, 4);
-    boolean64Type := TPrimitiveTypeDef.Create(tkBoolean, 8);
+    booleanType := TPrimitiveTypeDef.Create(nil, tkBoolean, 1);
+    boolean16Type := TPrimitiveTypeDef.Create(nil, tkBoolean, 2);
+    boolean32Type := TPrimitiveTypeDef.Create(nil, tkBoolean, 4);
+    boolean64Type := TPrimitiveTypeDef.Create(nil, tkBoolean, 8);
 
-    charType := TPrimitiveTypeDef.Create(tkChar, 1);
-    realType := TPrimitiveTypeDef.Create(tkReal, 4);
-    singleType := TPrimitiveTypeDef.Create(tkReal, 4);
-    doubleType := TPrimitiveTypeDef.Create(tkReal, 4);
-    extendedType := TPrimitiveTypeDef.Create(tkReal, 4);
-    compType := TPrimitiveTypeDef.Create(tkReal, 8);
-    currencyType := TPrimitiveTypeDef.Create(tkReal, 8);
+    charType := TPrimitiveTypeDef.Create(nil, tkChar, 1);
+    realType := TPrimitiveTypeDef.Create(nil, tkReal, 4);
+    singleType := TPrimitiveTypeDef.Create(nil, tkReal, 4);
+    doubleType := TPrimitiveTypeDef.Create(nil, tkReal, 4);
+    extendedType := TPrimitiveTypeDef.Create(nil, tkReal, 4);
+    compType := TPrimitiveTypeDef.Create(nil, tkReal, 8);
+    currencyType := TPrimitiveTypeDef.Create(nil, tkReal, 8);
 
-    pointer32Type := TPointerTypeDef.Create(false, nil, 4);
-    pointer64Type := TPointerTypeDef.Create(false, nil, 8);
-    pcharType := TPointerTypeDef.Create(true, charType, 8);
+    pointer32Type := TPointerTypeDef.Create(nil, false, nil, 4);
+    pointer64Type := TPointerTypeDef.Create(nil, false, nil, 8);
+    pcharType := TPointerTypeDef.Create(nil, true, charType, 8);
 
-    shortstringType := TPrimitiveTypeDef.Create(tkString, 256);
-    ansiString32Type := TPrimitiveTypeDef.Create(tkString, 4);
-    ansiString64Type := TPrimitiveTypeDef.Create(tkString, 8);
+    shortstringType := TPrimitiveTypeDef.Create(nil, tkString, 256);
+    ansiString32Type := TPrimitiveTypeDef.Create(nil, tkString, 4);
+    ansiString64Type := TPrimitiveTypeDef.Create(nil, tkString, 8);
 
-    voidProcedureType := TRoutineTypeDef.Create(tkProcedure, TParameterList.Create, nil, nil);
+    voidProcedureType := TRoutineTypeDef.Create(nil, tkProcedure, TParameterList.Create, nil, nil);
 
 finalization
     unknownType.Free;

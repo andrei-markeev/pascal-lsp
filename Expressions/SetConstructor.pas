@@ -38,7 +38,7 @@ begin
 
     if nextReservedWord = rwCloseSquareBracket then
     begin
-        typeDef := TSetTypeDef.Create(unknownType, 1);
+        typeDef := TSetTypeDef.Create(ctx, unknownType, 1);
         TReservedWord.Create(ctx, rwCloseSquareBracket, false);
         ctx.MarkEndOfToken(Self);
         exit;
@@ -55,7 +55,7 @@ begin
     else
         baseType := unknownType;
 
-    setTypeDef := TSetTypeDef.Create(baseType, 1);
+    setTypeDef := TSetTypeDef.Create(ctx, baseType, 1);
     typeDef := setTypeDef;
 
     if (baseType = nil) or not (baseType.kind in [tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum]) then

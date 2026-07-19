@@ -20,6 +20,8 @@ type
         cursorBeforeTrivia: PChar;
         Tokens: array of TToken;
         tokensLen: integer;
+        typeDefs: array of TTypeDef;
+        typeDefsLen: integer;
         Cursor: PChar;
         parseUnit: TToken;
         mode: TCompilationMode;
@@ -27,6 +29,7 @@ type
         isDependency: boolean;
         constructor Create(AFilePath: string; AFileContents: string);
         destructor Destroy; override;
+        procedure TrackTypeDef(typeDef: TTypeDef);
         function IsSeparator(ch: char): boolean; inline;
         function IsEOF: boolean; inline;
         function GetCursorBeforeTrivia: PChar; inline;
@@ -53,6 +56,8 @@ uses
     sysutils, SystemUnits;
 
 constructor TParserContext.Create(AFilePath: string; AFileContents: string);
+var
+    typeDefsCapacity: integer;
 begin
     filePath := AFilePath;
     contents := AFileContents;
@@ -61,6 +66,11 @@ begin
     triviaSkippedUntil := nil;
     tokensCapacity := 1 + length(contents) div 10;
     SetLength(Tokens, tokensCapacity);
+    typeDefsLen := 0;
+    typeDefsCapacity := 1 + length(contents) div 200;
+    if typeDefsCapacity < 4 then typeDefsCapacity := 4;
+    if typeDefsCapacity > 128 then typeDefsCapacity := 128;
+    SetLength(typeDefs, typeDefsCapacity);
     line := 0;
     lineStart := Cursor;
     mode := cmFreePascal;
@@ -68,6 +78,15 @@ begin
     RegisterSystemSymbols(Self);
     if ActiveContexts <> nil then
         ActiveContexts.Add(Self);
+end;
+
+procedure TParserContext.TrackTypeDef(typeDef: TTypeDef);
+begin
+    if typeDef = nil then exit;
+    if typeDefsLen = length(typeDefs) then
+        SetLength(typeDefs, typeDefsLen + 16);
+    typeDefs[typeDefsLen] := typeDef;
+    inc(typeDefsLen);
 end;
 
 destructor TParserContext.Destroy;
@@ -80,6 +99,9 @@ begin
     for i := 0 to length(Tokens) - 1 do
         Tokens[i].Free;
     SetLength(Tokens, 0);
+    for i := 0 to typeDefsLen - 1 do
+        typeDefs[i].Free;
+    SetLength(typeDefs, 0);
 end;
 
 function TParserContext.GetCursorBeforeTrivia: PChar; inline;

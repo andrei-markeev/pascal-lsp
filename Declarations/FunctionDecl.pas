@@ -55,7 +55,7 @@ begin
     end;
 
     needsReturnType := functionRWKind = rwFunction;
-    routineTypeDef := TRoutineTypeDef.Create;
+    routineTypeDef := TRoutineTypeDef.Create(ctx);
     routineTypeDef.rangeToken := Self;
     funcType := routineTypeDef;
 

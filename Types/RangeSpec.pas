@@ -119,7 +119,7 @@ begin
             exit;
         end;
 
-        typeDefToFill := TCharRangeTypeDef.Create(#0, #255);
+        typeDefToFill := TCharRangeTypeDef.Create(ctx, #0, #255);
 
     end
     else if nextTokenKind.primitiveKind = pkNumber then

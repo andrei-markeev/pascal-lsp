@@ -57,7 +57,7 @@ end;
 
 function CreateFunctionType(params: TParameterList; returnType: TTypeDef): TTypeDef;
 begin
-    CreateFunctionType := TRoutineTypeDef.Create(tkFunction, params, returnType, nil);
+    CreateFunctionType := TRoutineTypeDef.Create(nil, tkFunction, params, returnType, nil);
 end;
 
 function CreateOneParamFunctionType(paramName: shortstring; paramType, returnType: TTypeDef): TTypeDef;
@@ -83,7 +83,7 @@ end;
 
 function CreateProcedureType(params: TParameterList): TTypeDef;
 begin
-    CreateProcedureType := TRoutineTypeDef.Create(tkProcedure, params, nil, nil);
+    CreateProcedureType := TRoutineTypeDef.Create(nil, tkProcedure, params, nil, nil);
 end;
 
 function CreateOneParamProcedureType(paramName: shortstring; paramType: TTypeDef): TTypeDef;

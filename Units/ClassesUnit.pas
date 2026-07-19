@@ -97,8 +97,8 @@ end;
 
 procedure TClassesUnit.InitTypes;
 begin
-    dynArrayOfPointerType := TDynamicArrayTypeDef.Create(pointer64Type, 8);
-    dynArrayOfStringType := TDynamicArrayTypeDef.Create(ansiString64Type, 8);
+    dynArrayOfPointerType := TDynamicArrayTypeDef.Create(nil, pointer64Type, 8);
+    dynArrayOfStringType := TDynamicArrayTypeDef.Create(nil, ansiString64Type, 8);
 
     // TFPList
     classType_TFPList := TClassTypeDef.Create;

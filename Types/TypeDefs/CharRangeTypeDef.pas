@@ -13,14 +13,14 @@ type
     public
         charRangeStart: char;
         charRangeEnd: char;
-        constructor Create(AStart, AEnd: char);
+        constructor Create(ctx: TObject = nil; AStart: char = #0; AEnd: char = #255);
     end;
 
 implementation
 
-constructor TCharRangeTypeDef.Create(AStart, AEnd: char);
+constructor TCharRangeTypeDef.Create(ctx: TObject; AStart, AEnd: char);
 begin
-    inherited Create(tkCharRange, 1);
+    inherited Create(ctx, tkCharRange, 1);
     charRangeStart := AStart;
     charRangeEnd := AEnd;
 end;

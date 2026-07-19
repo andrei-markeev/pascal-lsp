@@ -44,7 +44,7 @@ begin
     functionType_String_String := CreateOneParamFunctionType('s', ansiString64Type, ansiString64Type);
     functionType_LongInt_String := CreateOneParamFunctionType('v', longintType, ansiString64Type);
 
-    setTypeOfReplaceFlags := TSetTypeDef.Create(unknownType, 1);
+    setTypeOfReplaceFlags := TSetTypeDef.Create(nil, unknownType, 1);
 
     functionType_StringReplace := CreateFunctionType(TParameterList.Create([
         CreateParam(ptkConst, 's', ansiString64Type),

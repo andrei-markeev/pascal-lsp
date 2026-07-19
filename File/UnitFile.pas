@@ -34,7 +34,7 @@ begin
 
     ident := TIdentifier.Create(ctx, false);
     // TODO: namespaced units
-    typeDef := TPrimitiveTypeDef.Create(tkUnitName);
+    typeDef := TPrimitiveTypeDef.Create(ctx, tkUnitName);
     RegisterSymbol(ident, nil, skUnitName, typeDef, ctx.Cursor);
 
     if LoadedUnits.Find(LowerCase(ident.GetStr)) = nil then

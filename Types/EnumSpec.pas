@@ -32,10 +32,10 @@ begin
 
     TReservedWord.Create(ctx, rwOpenParenthesis, true);
 
-    enumTypeDef := TEnumTypeDef.Create(Self);
+    enumTypeDef := TEnumTypeDef.Create(ctx, Self);
     typeDefToFill := enumTypeDef;
 
-    memberTypeDef := TEnumMemberTypeDef.Create(enumTypeDef, Self);
+    memberTypeDef := TEnumMemberTypeDef.Create(ctx, enumTypeDef, Self);
     repeat
         ident := TIdentifier.Create(ctx, false);
         RegisterSymbol(ident, nil, skConstant, memberTypeDef, ctx.Cursor);

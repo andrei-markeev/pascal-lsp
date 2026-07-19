@@ -54,7 +54,7 @@ begin
     start := ctx.Cursor;
     state := tsCorrect;
 
-    classTypeDef := TClassTypeDef.Create;
+    classTypeDef := TClassTypeDef.Create(ctx);
     typeDefToFill := classTypeDef;
     for i := 0 to high(parentSymbols) do
         if parentSymbols[i] <> nil then
