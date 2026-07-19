@@ -1,0 +1,14 @@
+<ProgramFile><RW>program</RW> <SymbDecl>StringCast</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>ItemJson</SymbDecl><RW>,</RW> <SymbDecl>MemberName</SymbDecl><RW>,</RW> <SymbDecl>Detail</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>ItemKind</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>ItemJson</SymbRef> <RW>:=</RW> <SimpleExpression><Str>'{'</Str> <RW>+</RW>
+        <Str>'"label":'</Str> <RW>+</RW> <Str>'"'</Str> <RW>+</RW> <Factor><RW>string</RW><RW>(</RW><SymbRef>MemberName</SymbRef><RW>)</RW></Factor> <RW>+</RW> <Str>'",'</Str> <RW>+</RW>
+        <Str>'"kind":'</Str> <RW>+</RW> <Factor><RW>string</RW><RW>(</RW><SymbRef>Detail</SymbRef><RW>)</RW></Factor></SimpleExpression></Assignment><RW>;</RW>
+    <If><RW>if</RW> <Expression><SymbRef>Detail</SymbRef> <RW><></RW> <Str>''</Str></Expression> <RW>then</RW>
+        <Assignment><SymbRef>ItemJson</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>ItemJson</SymbRef> <RW>+</RW> <Str>',"detail":'</Str> <RW>+</RW> <Str>'"'</Str> <RW>+</RW> <Factor><RW>string</RW><RW>(</RW><SymbRef>Detail</SymbRef><RW>)</RW></Factor> <RW>+</RW> <Str>'"'</Str></SimpleExpression></Assignment></If><RW>;</RW>
+    <Assignment><SymbRef>ItemJson</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>ItemJson</SymbRef> <RW>+</RW> <Str>'}'</Str></SimpleExpression></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

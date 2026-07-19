@@ -1,0 +1,25 @@
+<UnitFile><RW>unit</RW> <SymbDecl>BadInterfaceRoutineDecl</SymbDecl><RW>;</RW>
+
+<RW>interface</RW>
+
+<InterfaceBlock><FunctionDecl><RW>function</RW> <SymbDecl>FindSymbol</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>name</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></ParameterDecl><RW MISSING=")" /><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW> <Ident>overload</Ident><RW>;</RW></FunctionDecl>
+<FunctionDecl><RW>function</RW> <SymbRef>FindSymbol</SymbRef><RW>(</RW><ParameterDecl><SymbDecl>id</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW> <Ident>overload</Ident><RW>;</RW></FunctionDecl></InterfaceBlock>
+
+<RW>implementation</RW>
+
+<ImplementationBlock><Function><RW>function</RW> <SymbDecl>Helper</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>Helper</SymbRef> <RW>:=</RW> <Call><SymbRef>FindSymbol</SymbRef><RW>(</RW><Str>'test'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Function><RW>function</RW> <SymbRef>FindSymbol</SymbRef><RW>(</RW><ParameterDecl><SymbDecl>name</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>FindSymbol</SymbRef> <RW>:=</RW> <Num>1</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Function><RW>function</RW> <SymbRef>FindSymbol</SymbRef><RW>(</RW><ParameterDecl><SymbDecl>id</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>FindSymbol</SymbRef> <RW>:=</RW> <SymbRef>id</SymbRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

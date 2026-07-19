@@ -57,6 +57,8 @@ var
     overloadedSymbol: TSymbol;
     overloads: TFPList;
     i: integer;
+    matchedTypeDef: TRoutineTypeDef;
+    tokenNameLen: integer;
 begin
     if (symbolType = nil) or not (symbolType.kind in [tkProcedure, tkFunction]) then
         exit(ovNotApplicable);
@@ -70,13 +72,33 @@ begin
     else
         overloads := nil;
 
-    if HaveSameSignature(symbolType, overloadedSymbol.typeDef) then
-        exit(ovExactDuplicate);
+    matchedTypeDef := nil;
+    if (overloadedSymbol.typeDef is TRoutineTypeDef) and HaveSameSignature(symbolType, overloadedSymbol.typeDef) then
+        matchedTypeDef := TRoutineTypeDef(overloadedSymbol.typeDef);
 
-    if overloads <> nil then
+    if (matchedTypeDef = nil) and (overloads <> nil) then
         for i := 0 to overloads.Count - 1 do
-            if HaveSameSignature(symbolType, TTypeDef(overloads.Items[i])) then
-                exit(ovExactDuplicate);
+            if (TObject(overloads.Items[i]) is TRoutineTypeDef) and HaveSameSignature(symbolType, TTypeDef(overloads.Items[i])) then
+            begin
+                matchedTypeDef := TRoutineTypeDef(overloads.Items[i]);
+                break;
+            end;
+
+    if matchedTypeDef <> nil then
+    begin
+        if matchedTypeDef.rangeToken <> nil then
+        begin
+            tokenNameLen := length(matchedTypeDef.rangeToken.tokenName);
+            if (tokenNameLen >= 4) and (Copy(matchedTypeDef.rangeToken.tokenName, tokenNameLen - 3, 4) = 'Decl') then
+            begin
+                if symbolType is TRoutineTypeDef then
+                    matchedTypeDef.rangeToken := TRoutineTypeDef(symbolType).rangeToken;
+                overloadedSymbol.AddReference(ident);
+                exit(ovAdded);
+            end;
+        end;
+        exit(ovExactDuplicate);
+    end;
 
     if (overloads = nil) and (overloadedSymbol.typeDef is TRoutineTypeDef) then
     begin

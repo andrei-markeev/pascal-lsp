@@ -133,6 +133,29 @@ begin
                             typeDef := factorToken.typeDef;
                         TReservedWord.Create(ctx, rwCloseParenthesis, false);
                     end;
+                rwString:
+                    begin
+                        TReservedWord.Create(ctx, rwString, true);
+                        if (ctx.mode >= cmObjectFreePascal) or (ctx.mode >= cmFreePascal) then
+                            typeDef := ansiString64Type
+                        else
+                            typeDef := shortstringType;
+
+                        if PeekReservedWord(ctx, rwOpenSquareBracket) then
+                        begin
+                            TReservedWord.Create(ctx, rwOpenSquareBracket, true);
+                            CreateExpression(ctx);
+                            TReservedWord.Create(ctx, rwCloseSquareBracket, false);
+                            typeDef := shortstringType;
+                        end;
+
+                        if PeekReservedWord(ctx, rwOpenParenthesis) then
+                        begin
+                            TReservedWord.Create(ctx, rwOpenParenthesis, true);
+                            CreateExpression(ctx);
+                            TReservedWord.Create(ctx, rwCloseParenthesis, false);
+                        end;
+                    end;
             else
                 start := ctx.GetCursorBeforeTrivia;
                 state := tsMissing;

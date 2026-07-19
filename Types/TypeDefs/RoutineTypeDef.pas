@@ -6,7 +6,7 @@ unit RoutineTypeDef;
 interface
 
 uses
-    classes, TypeDef;
+    classes, TypeDef, Token;
 
 type
     TRoutineTypeDef = class(TTypeDef)
@@ -14,6 +14,7 @@ type
         parameters: Pointer;
         returnType: TTypeDef;
         overloads: TFPList;
+        rangeToken: TToken;
         constructor Create(AKind: TTypeKind = tkProcedure; AParameters: Pointer = nil; AReturnType: TTypeDef = nil; AOverloads: TFPList = nil);
     end;
 

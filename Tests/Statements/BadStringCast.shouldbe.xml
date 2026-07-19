@@ -1,0 +1,9 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadStringCast</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>ItemJson</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>ItemJson</SymbRef> <RW>:=</RW> <Factor><RW>string</RW><RW>(</RW><Factor MISSING="" /><RW MISSING=")" /></Factor></Assignment><RW>;</RW>
+    <Assignment><SymbRef>ItemJson</SymbRef> <RW>:=</RW> <Factor><RW>string</RW><RW>[</RW><Num>10</Num><RW MISSING="]" /></Factor></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

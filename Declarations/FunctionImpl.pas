@@ -55,6 +55,7 @@ begin
 
     needsReturnType := nextReservedWordKind = rwFunction;
     routineTypeDef := TRoutineTypeDef.Create;
+    routineTypeDef.rangeToken := Self;
     funcType := routineTypeDef;
 
     TReservedWord.Create(ctx, nextReservedWordKind, true);
@@ -188,12 +189,16 @@ begin
         nameIdent.state := tsError;
         nameIdent.errorMessage := 'Duplicate subroutine declaration!';
     end
-    else if overrideResult <> ovAdded then
+    else
     begin
-        symbol := RegisterSymbol(nameIdent, symbolParent, symbolKind, funcType, ctx.Cursor);
+        symbol := FindSymbol(nameIdent.GetStr(), ctx.Cursor);
+        if symbol = nil then
+        begin
+            symbol := RegisterSymbol(nameIdent, symbolParent, symbolKind, funcType, ctx.Cursor);
+            if symbolParent <> nil then
+                symbol.displayName := symbolParent.displayName + '.' + symbol.displayName;
+        end;
         symbol.rangeToken := Self;
-        if symbolParent <> nil then
-            symbol.displayName := symbolParent.displayName + '.' + symbol.displayName;
     end;
 
     // TODO: result variable variable

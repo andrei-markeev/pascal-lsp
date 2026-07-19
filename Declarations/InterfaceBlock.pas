@@ -43,7 +43,7 @@ begin
             rwConst: TConstSection.Create(ctx);
             rwType: TTypeSection.Create(ctx);
             rwVar: TVarSection.Create(ctx);
-            rwProcedure, rwFunction: TFunctionDecl.Create(ctx, nextTokenKind.reservedWordKind, []);
+            rwProcedure, rwFunction: TFunctionDecl.Create(ctx, nextTokenKind.reservedWordKind, [nil]);
         end;
         nextTokenKind := SkipUntilAnchor(ctx);
     end;

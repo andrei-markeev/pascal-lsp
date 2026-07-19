@@ -231,9 +231,7 @@ var
 begin
   WriteLn(StdErr, 'LSP Server starting in stdio mode');
   
-  Close(output);
-  Assign(output, 'stderr');
-  Rewrite(output);
+  output := StdErr;
   
   InStream := THandleStream.Create(GetStdinHandle);
   OutStream := THandleStream.Create(GetStdoutHandle);

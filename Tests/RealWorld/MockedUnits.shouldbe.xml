@@ -17,11 +17,11 @@
     <VarDecl><SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
     <VarDecl><SymbDecl>idx</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
 
-<ProcedureDecl><RW>procedure</RW> <Ident>TestMocked</Ident><RW>;</RW></ProcedureDecl></InterfaceBlock>
+<ProcedureDecl><RW>procedure</RW> <SymbDecl>TestMocked</SymbDecl><RW>;</RW></ProcedureDecl></InterfaceBlock>
 
 <RW>implementation</RW>
 
-<ImplementationBlock><Procedure><RW>procedure</RW> <SymbDecl>TestMocked</SymbDecl><RW>;</RW>
+<ImplementationBlock><Procedure><RW>procedure</RW> <SymbRef>TestMocked</SymbRef><RW>;</RW>
 <Block><RW>begin</RW>
     <Assignment><SymbRef>cnt</SymbRef> <RW>:=</RW> <VarRef><SymbRef>list</SymbRef><RW>.</RW><Ident>count</Ident></VarRef></Assignment><RW>;</RW>
     <Assignment><SymbRef>ptr</SymbRef> <RW>:=</RW> <VarRef><SymbRef>list</SymbRef><RW>.</RW><Ident>items</Ident><RW>[</RW><Num>0</Num><RW>]</RW></VarRef></Assignment><RW>;</RW>
