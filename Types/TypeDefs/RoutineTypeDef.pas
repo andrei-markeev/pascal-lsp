@@ -15,7 +15,7 @@ type
         returnType: TTypeDef;
         overloads: TFPList;
         rangeToken: TToken;
-        constructor Create(ctx: TObject = nil; AKind: TTypeKind = tkProcedure; AParameters: Pointer = nil; AReturnType: TTypeDef = nil; AOverloads: TFPList = nil);
+        constructor Create(ctx: TTypeDefTracker = nil; AKind: TTypeKind = tkProcedure; AParameters: Pointer = nil; AReturnType: TTypeDef = nil; AOverloads: TFPList = nil);
         destructor Destroy; override;
     end;
 
@@ -24,7 +24,7 @@ implementation
 uses
     Parameters;
 
-constructor TRoutineTypeDef.Create(ctx: TObject; AKind: TTypeKind; AParameters: Pointer; AReturnType: TTypeDef; AOverloads: TFPList);
+constructor TRoutineTypeDef.Create(ctx: TTypeDefTracker; AKind: TTypeKind; AParameters: Pointer; AReturnType: TTypeDef; AOverloads: TFPList);
 begin
     inherited Create(ctx, AKind, 0);
     parameters := AParameters;

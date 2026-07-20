@@ -13,13 +13,13 @@ type
     public
         classFields: TFPHashList;
         parentClass: TTypeDef;
-        constructor Create(ctx: TObject = nil);
+        constructor Create(ctx: TTypeDefTracker = nil);
         destructor Destroy; override;
     end;
 
 implementation    
 
-constructor TClassTypeDef.Create(ctx: TObject);
+constructor TClassTypeDef.Create(ctx: TTypeDefTracker);
 begin
     inherited Create(ctx, tkClass, 0);
     classFields := TFPHashList.Create;

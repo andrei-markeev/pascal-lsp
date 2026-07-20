@@ -14,6 +14,7 @@ uses
 type
     TTypeKind = TypeDef.TTypeKind;
     TVisibility = TypeDef.TVisibility;
+    TTypeDefTracker = TypeDef.TTypeDefTracker;
     TTypeDef = TypeDef.TTypeDef;
 
 const

@@ -12,13 +12,13 @@ type
     TRecordTypeDef = class(TTypeDef)
     public
         recordFields: TFPHashList;
-        constructor Create(ctx: TObject = nil);
+        constructor Create(ctx: TTypeDefTracker = nil);
         destructor Destroy; override;
     end;
 
 implementation
 
-constructor TRecordTypeDef.Create(ctx: TObject);
+constructor TRecordTypeDef.Create(ctx: TTypeDefTracker);
 begin
     inherited Create(ctx, tkRecord, 0);
     recordFields := TFPHashList.Create;

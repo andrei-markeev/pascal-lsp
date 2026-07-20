@@ -12,12 +12,12 @@ type
     TEnumTypeDef = class(TTypeDef)
     public
         enumSpec: Pointer;
-        constructor Create(ctx: TObject = nil; AEnumSpec: Pointer = nil);
+        constructor Create(ctx: TTypeDefTracker = nil; AEnumSpec: Pointer = nil);
     end;
 
 implementation
 
-constructor TEnumTypeDef.Create(ctx: TObject; AEnumSpec: Pointer);
+constructor TEnumTypeDef.Create(ctx: TTypeDefTracker; AEnumSpec: Pointer);
 begin
     inherited Create(ctx, tkEnum, 1);
     enumSpec := AEnumSpec;

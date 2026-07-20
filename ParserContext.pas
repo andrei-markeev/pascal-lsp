@@ -9,7 +9,7 @@ uses
     classes, strings, contnrs, Token, CompilationMode, TypeDefs;
 
 type
-    TParserContext = class
+    TParserContext = class(TTypeDefTracker)
     private
         triviaSkippedUntil: PChar;
         tokensCapacity: integer;
@@ -29,7 +29,7 @@ type
         isDependency: boolean;
         constructor Create(AFilePath: string; AFileContents: string);
         destructor Destroy; override;
-        procedure TrackTypeDef(typeDef: TTypeDef);
+        procedure TrackTypeDef(typeDef: TObject); override;
         function IsSeparator(ch: char): boolean; inline;
         function IsEOF: boolean; inline;
         function GetCursorBeforeTrivia: PChar; inline;
@@ -80,12 +80,12 @@ begin
         ActiveContexts.Add(Self);
 end;
 
-procedure TParserContext.TrackTypeDef(typeDef: TTypeDef);
+procedure TParserContext.TrackTypeDef(typeDef: TObject);
 begin
     if typeDef = nil then exit;
     if typeDefsLen = length(typeDefs) then
         SetLength(typeDefs, typeDefsLen + 16);
-    typeDefs[typeDefsLen] := typeDef;
+    typeDefs[typeDefsLen] := TTypeDef(typeDef);
     inc(typeDefsLen);
 end;
 
