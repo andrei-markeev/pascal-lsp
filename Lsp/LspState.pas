@@ -268,7 +268,12 @@ begin
           '"severity":1,';
 
         if cur.state = tsError then
-          DiagnosticsJson := DiagnosticsJson + '"message":' + '"' + string(StringToJSONString(cur.errorMessage)) + '"'
+        begin
+          if cur.errorMessage <> '' then
+            DiagnosticsJson := DiagnosticsJson + '"message":' + '"' + string(StringToJSONString(cur.errorMessage)) + '"'
+          else
+            DiagnosticsJson := DiagnosticsJson + '"message":' + '"' + string(StringToJSONString('Syntax error in ' + cur.tokenName)) + '"';
+        end
         else
           if cur.GetStr() <> '' then
             DiagnosticsJson := DiagnosticsJson + '"message":' + '"' + string(StringToJSONString('Missing ''' + cur.GetStr() + '''')) + '"'
