@@ -16,7 +16,7 @@ implementation
 uses
     TypeDefs, TypeDef, TypedToken, ReservedWord, VarRef, Call,
     AssignmentStatement, CaseStatement, IfStatement, WithStatement, ForStatement,
-    WhileStatement, RepeatStatement, CompoundStatement;
+    WhileStatement, RepeatStatement, TryStatement, CompoundStatement;
 
 function CreateStatement(ctx: TParserContext): TToken;
 begin
@@ -46,6 +46,7 @@ begin
                 rwIf: CreateStatement := TIfStatement.Create(ctx);
                 rwWhile: CreateStatement := TWhileStatement.Create(ctx);
                 rwRepeat: CreateStatement := TRepeatStatement.Create(ctx);
+                rwTry: CreateStatement := TTryStatement.Create(ctx);
                 rwGoto: exit(nil); // TODO: CreateStatement := TGotoStatement.Create(ctx);
                 rwBegin: CreateStatement := CreateCompoundStatement(ctx);
             end;

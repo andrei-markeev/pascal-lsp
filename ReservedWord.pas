@@ -240,7 +240,7 @@ begin
                     if ctx.Cursor[2] in ['l','L'] then maybe := rwFile
                     else if (ctx.Cursor[2] in ['n','N']) and (ctx.Cursor[3] in ['a','A']) and (ctx.Cursor[4] in ['l','L']) then
                         if ctx.Cursor[5] in ['i','I'] then maybe := rwFinalization
-                        else if ctx.Cursor[6] in ['l','L'] then maybe := rwFinally;
+                        else if ctx.Cursor[6] in ['y','Y'] then maybe := rwFinally;
                 'o','O': maybe := rwFor;
                 'u','U': maybe := rwFunction;
             end;

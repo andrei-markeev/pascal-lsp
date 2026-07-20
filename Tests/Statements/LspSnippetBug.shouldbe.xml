@@ -1,0 +1,33 @@
+<ProgramFile><RW>program</RW> <SymbDecl>LspSnippetBug</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+  <TypeDecl><SymbDecl>TJSONData</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+  <Ident>public</Ident>
+    <FunctionDecl><RW>function</RW> <SymbDecl>FindPath</SymbDecl><RW>(</RW><ParameterDecl><RW>const</RW> <SymbDecl>APath</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><SymbRef>TJSONData</SymbRef></TypeSpec><RW>;</RW></FunctionDecl>
+    <FunctionDecl><RW>function</RW> <SymbDecl>AsString</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec><RW>;</RW></FunctionDecl>
+  <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Procedure><RW>procedure</RW> <SymbDecl>ProcessRequest</SymbDecl><RW>;</RW>
+<VarSection><RW>var</RW>
+  <VarDecl><SymbDecl>Json</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TJSONData</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+  <VarDecl><SymbDecl>Method</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+  <TryStatement><RW>try</RW>
+    <Call><SymbRef>exit</SymbRef></Call><RW>;</RW>
+  <RW>except</RW>
+    <Call><SymbRef>exit</SymbRef></Call><RW>;</RW>
+  <RW>end</RW></TryStatement><RW>;</RW>
+
+  <TryStatement><RW>try</RW>
+    <If><RW>if</RW> <Expression><Call><VarRef><SymbRef>Json</SymbRef><RW>.</RW><Ident>FindPath</Ident></VarRef><RW>(</RW><Str>'method'</Str><RW>)</RW></Call> <RW><></RW> <Factor><RW>nil</RW></Factor></Expression> <RW>then</RW>
+      <Assignment ERROR="Invalid assignment: expected string or assignment-compatible, but found class!"><SymbRef>Method</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>Json</SymbRef><RW>.</RW><Ident>FindPath</Ident></VarRef><RW>(</RW><Str>'method'</Str><RW>)</RW></Call></Assignment></If><RW SKIPPED="true">.</RW><Call><Ident ERROR="Identifier has not been declared!">AsString</Ident></Call>
+    <RW SKIPPED="true">else</RW>
+      <Assignment><SymbRef>Method</SymbRef> <RW>:=</RW> <Str>''</Str></Assignment><RW>;</RW>
+  <RW>finally</RW>
+  <RW>end</RW></TryStatement><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
