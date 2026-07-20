@@ -1,8 +1,7 @@
 #!/bin/bash
 
 mkdir -p build
-touch build/dummyfile
-rm -f build/*
+rm -f build/ParseFile*
 
 set -e
 
