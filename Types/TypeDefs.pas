@@ -178,6 +178,10 @@ begin
     if (left.kind = tkString) and (right.kind = tkChar) then
         TypesAreAssignable := true
     else if (left.kind = tkPointer) and (left is TPointerTypeDef) and (TPointerTypeDef(left).pointerToType <> nil) and (TPointerTypeDef(left).pointerToType.kind = tkChar) and (right.kind = tkString) then
+        TypesAreAssignable := true
+    else if (left.kind in [tkClass, tkProcedure, tkFunction, tkDynamicArray]) and (right.kind = tkPointer) and (right is TPointerTypeDef) and (TPointerTypeDef(right).pointerToType = nil) then
+        TypesAreAssignable := true
+    else if (left.kind = tkPointer) and (left is TPointerTypeDef) and (TPointerTypeDef(left).pointerToType = nil) and (right.kind in [tkClass, tkProcedure, tkFunction, tkDynamicArray]) then
         TypesAreAssignable := true;
 
     // TODO: functions

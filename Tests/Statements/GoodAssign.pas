@@ -1,6 +1,10 @@
 program GoodAssign;
 
+{$mode objfpc}
+
 type
+    TMyClass = class
+    end;
     TFruits = (bananas, oranges, apples, grapes);
 
 var
@@ -11,6 +15,8 @@ var
     storageHas: set of TFruits;
     ticTacToe: array [0..2, 0..2] of (markX, markO);
     dynArr: array of string;
+    c: TMyClass;
+    ptr: Pointer;
 
 begin
     a := 1;
@@ -34,4 +40,9 @@ begin
     dynArr[0] := 'hello';
     dynArr[1] := 'world';
     s := dynArr[12];
+
+    c := nil;
+    ptr := nil;
+    dynArr := nil;
+    ptr := c;
 end.
