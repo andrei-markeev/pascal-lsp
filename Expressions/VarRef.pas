@@ -13,22 +13,22 @@ type
     public
         firstIdent: TIdentifier;
         isSimple: boolean;
-        constructor Create(ctx: TParserContext);
+        constructor Create(ctx: TParserContext; baseRef: TTypedToken = nil);
     end;
 
-function CreateVarRef(ctx: TParserContext): TTypedToken;
+function CreateVarRef(ctx: TParserContext; baseRef: TTypedToken = nil): TTypedToken;
 
 implementation
 
 uses
-    sysutils, Symbols, CompilationMode, Token, ReservedWord, Expression,
+    sysutils, Symbols, CompilationMode, Token, ReservedWord, Expression, Call,
     TypeDefs, TypeDef, ClassTypeDef, PointerTypeDef, ArrayTypeDef, DynamicArrayTypeDef, RecordTypeDef, ObjectTypeDef;
 
-function CreateVarRef(ctx: TParserContext): TTypedToken;
+function CreateVarRef(ctx: TParserContext; baseRef: TTypedToken = nil): TTypedToken;
 var
     ref: TVarRef;
 begin
-    ref := TVarRef.Create(ctx);
+    ref := TVarRef.Create(ctx, baseRef);
     if ref.isSimple then
     begin
         CreateVarRef := ref.firstIdent;
@@ -40,7 +40,7 @@ begin
         CreateVarRef := ref;
 end;
 
-constructor TVarRef.Create(ctx: TParserContext);
+constructor TVarRef.Create(ctx: TParserContext; baseRef: TTypedToken = nil);
 var
     symbol: TSymbol;
     found: pointer;
@@ -55,31 +55,52 @@ var
     nextIsComma: boolean;
     currType: TTypeDef;
 begin
-    ctx.Add(Self);
     tokenName := 'VarRef';
-    start := ctx.Cursor;
-    state := tsCorrect;
-    isSimple := true;
-
-    // TODO: allow using expressions
-
-    firstIdent := TIdentifier.Create(ctx, true);
-    symbol := TSymbol(firstIdent.symbol);
-    if symbol <> nil then
+    if baseRef <> nil then
     begin
-        if symbol.typeDef <> nil then
+        ctx.InsertBefore(baseRef, Self);
+        start := baseRef.start;
+    end
+    else
+    begin
+        ctx.Add(Self);
+        start := ctx.Cursor;
+    end;
+    state := tsCorrect;
+
+    if baseRef = nil then
+    begin
+        isSimple := true;
+        firstIdent := TIdentifier.Create(ctx, true);
+        symbol := TSymbol(firstIdent.symbol);
+        if symbol <> nil then
         begin
-            typeDef := symbol.typeDef;
-            firstIdent.typeDef := symbol.typeDef;
+            if symbol.typeDef <> nil then
+            begin
+                typeDef := symbol.typeDef;
+                firstIdent.typeDef := symbol.typeDef;
+            end;
+        end
+        else
+        begin
+            typeDef := unknownType;
+            firstIdent.typeDef := unknownType;
         end;
     end
     else
     begin
-        typeDef := unknownType;
-        firstIdent.typeDef := unknownType;
+        isSimple := false;
+        firstIdent := nil;
+        symbol := nil;
+        typeDef := baseRef.typeDef;
+        if (baseRef is TCall) and not (ctx.mode in [cmExtendedPascal, cmFreePascal, cmObjectFreePascal, cmDelphi]) then
+        begin
+            state := tsError;
+            errorMessage := 'Cannot access members or index return value of a function call in this compiler mode!';
+        end;
     end;
 
-    canBeTypecast := ctx.mode >= cmTurboPascal;
+    canBeTypecast := (ctx.mode >= cmTurboPascal) and (baseRef = nil);
 
     nextReservedWord := DetermineReservedWord(ctx);
 

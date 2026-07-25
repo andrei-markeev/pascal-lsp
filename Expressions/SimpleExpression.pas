@@ -60,7 +60,7 @@ begin
     else
         typeDef := unknownType;
 
-    savedPos := ctx.Cursor;
+    savedPos := ctx.GetCursorBeforeTrivia;
     nextTokenKind := DetermineNextTokenKind(ctx);
 
     while nextTokenKind.reservedWordKind in [rwPlus, rwMinus, rwOr, rwXor, rwSymmetricDifference] do
@@ -166,7 +166,7 @@ begin
         else if (nextOperand <> nil) and (nextOperand.typeDef <> nil) and (lastAddOp = rwPlus) and (myKind in [tkChar, tkCharRange]) and (nextKind in [tkString, tkChar, tkCharRange]) then
             typeDef := shortstringType; // TODO: use a more precise string type
 
-        savedPos := ctx.Cursor;
+        savedPos := ctx.GetCursorBeforeTrivia;
         nextTokenKind := DetermineNextTokenKind(ctx);
     end;
 

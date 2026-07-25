@@ -60,7 +60,7 @@ begin
     else
         typeDef := unknownType;
 
-    savedPos := ctx.Cursor;
+    savedPos := ctx.GetCursorBeforeTrivia;
 
     nextTokenKind := DetermineNextTokenKind(ctx);
     while nextTokenKind.reservedWordKind in [rwMultiply, rwDivide, rwDiv, rwMod, rwAnd, rwShl, rwShr, rwShl2, rwShr2] do
@@ -158,7 +158,7 @@ begin
         else if (nextOperand <> nil) and (nextOperand.typeDef <> nil) and (lastMultiplyOp in [rwMultiply, rwDivide]) and (myKind = tkInteger) and (nextKind = tkReal) then
             typeDef := nextOperand.typeDef; // TODO: handle type size expansion
 
-        savedPos := ctx.Cursor;
+        savedPos := ctx.GetCursorBeforeTrivia;
         nextTokenKind := DetermineNextTokenKind(ctx);
     end;
 

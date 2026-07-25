@@ -1,0 +1,30 @@
+<ProgramFile><RW>program</RW> <SymbDecl>ChainedCall</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+  <TypeDecl><SymbDecl>THelper</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+  <Ident>public</Ident>
+    <ProcedureDecl><RW>procedure</RW> <SymbDecl>DoSomething</SymbDecl><RW>;</RW></ProcedureDecl>
+  <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+  <TypeDecl><SymbDecl>TMyClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+  <Ident>public</Ident>
+    <FunctionDecl><RW>function</RW> <SymbDecl>GetHelper</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>THelper</SymbRef></TypeSpec><RW>;</RW></FunctionDecl>
+  <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Procedure><RW>procedure</RW> <SymbRef>THelper</SymbRef><RW>.</RW><SymbDecl>DoSomething</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Function><RW>function</RW> <SymbRef>TMyClass</SymbRef><RW>.</RW><SymbDecl>GetHelper</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>THelper</SymbRef></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+  <Assignment><SymbRef>GetHelper</SymbRef> <RW>:=</RW> <Factor><RW>nil</RW></Factor></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<VarSection><RW>var</RW>
+  <VarDecl><SymbDecl>Obj</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TMyClass</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+  <Assignment><SymbRef>Obj</SymbRef> <RW>:=</RW> <VarRef><SymbRef>TMyClass</SymbRef><RW>.</RW><Ident ERROR="Field or method with the name 'Create' was not found!">Create</Ident></VarRef></Assignment><RW>;</RW>
+  <Call><VarRef><Call><VarRef><SymbRef>Obj</SymbRef><RW>.</RW><Ident>GetHelper</Ident></VarRef><RW>(</RW><RW>)</RW></Call><RW>.</RW><Ident>DoSomething</Ident></VarRef></Call><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

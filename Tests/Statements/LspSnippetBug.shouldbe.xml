@@ -22,9 +22,9 @@
 
   <TryStatement><RW>try</RW>
     <If><RW>if</RW> <Expression><Call><VarRef><SymbRef>Json</SymbRef><RW>.</RW><Ident>FindPath</Ident></VarRef><RW>(</RW><Str>'method'</Str><RW>)</RW></Call> <RW><></RW> <Factor><RW>nil</RW></Factor></Expression> <RW>then</RW>
-      <Assignment ERROR="Invalid assignment: expected string or assignment-compatible, but found class!"><SymbRef>Method</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>Json</SymbRef><RW>.</RW><Ident>FindPath</Ident></VarRef><RW>(</RW><Str>'method'</Str><RW>)</RW></Call></Assignment></If><RW SKIPPED="true">.</RW><Call><Ident ERROR="Identifier has not been declared!">AsString</Ident></Call>
-    <RW SKIPPED="true">else</RW>
-      <Assignment><SymbRef>Method</SymbRef> <RW>:=</RW> <Str>''</Str></Assignment><RW>;</RW>
+      <Assignment><SymbRef>Method</SymbRef> <RW>:=</RW> <Call><VarRef><Call><VarRef><SymbRef>Json</SymbRef><RW>.</RW><Ident>FindPath</Ident></VarRef><RW>(</RW><Str>'method'</Str><RW>)</RW></Call><RW>.</RW><Ident>AsString</Ident></VarRef></Call></Assignment>
+    <RW>else</RW>
+      <Assignment><SymbRef>Method</SymbRef> <RW>:=</RW> <Str>''</Str></Assignment></If><RW>;</RW>
   <RW>finally</RW>
   <RW>end</RW></TryStatement><RW>;</RW>
 <RW>end</RW></Block><RW>;</RW></Procedure>

@@ -31,12 +31,18 @@ begin
     start := ref.start;
     state := tsCorrect;
 
-    if ref is TVarRef then
+    if (ref is TVarRef) and (TVarRef(ref).firstIdent <> nil) then
         symbol := TSymbol(TVarRef(ref).firstIdent.symbol)
     else if ref is TIdentifier then
         symbol := TSymbol(TIdentifier(ref).symbol)
     else
         symbol := nil;
+
+    if not ((ref is TVarRef) or (ref is TIdentifier)) then
+    begin
+        state := tsError;
+        errorMessage := 'Left side of assignment must be a variable!';
+    end;
 
     if (symbol <> nil) and (symbol.kind in [skConstant, skTypedConstant]) then
     begin
@@ -55,7 +61,7 @@ begin
 
     expr := CreateExpression(ctx);
 
-    if (expr <> nil) and not TypesAreAssignable(leftTypeDef, expr.typeDef, typeError) then
+    if (state <> tsError) and (expr <> nil) and not TypesAreAssignable(leftTypeDef, expr.typeDef, typeError) then
     begin
         state := tsError;
         errorMessage := 'Invalid assignment: ' + typeError;
