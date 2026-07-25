@@ -19,7 +19,7 @@ type
 implementation
 
 uses
-    TypeDefs, ReservedWord, TypeSpec;
+    CompilationMode, TypeDefs, ReservedWord, TypeSpec, ConstValue;
 
 constructor TParameterDecl.Create(ctx: TParserContext);
 var
@@ -109,6 +109,18 @@ begin
         TTypeSpec.Create(ctx, symbols, typeDef);
         for i := 0 to l - 1 do
             symbols[i].typeDef := typeDef;
+
+        if PeekReservedWord(ctx, rwEquals) then
+        begin
+            TReservedWord.Create(ctx, rwEquals, true);
+            nextTokenKind := DetermineNextTokenKind(ctx);
+            TConstValue.Create(ctx, nextTokenKind);
+            if not (ctx.mode in [cmDelphi, cmFreePascal, cmObjectFreePascal]) then
+            begin
+                state := tsError;
+                errorMessage := 'Default parameter values are not supported in this compilation mode!';
+            end;
+        end;
     end
     else if parameterKind in [ptkConst, ptkVar] then
     begin

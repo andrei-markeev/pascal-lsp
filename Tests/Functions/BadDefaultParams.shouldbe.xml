@@ -1,0 +1,10 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadDefaultParams</SymbDecl><RW>;</RW>
+
+{$mode tp}
+
+<Procedure><RW>procedure</RW> <SymbDecl>SetValue</SymbDecl><RW>(</RW><ParameterDecl ERROR="Default parameter values are not supported in this compilation mode!"><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>=</RW> <ConstValue><Num>10</Num></ConstValue></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

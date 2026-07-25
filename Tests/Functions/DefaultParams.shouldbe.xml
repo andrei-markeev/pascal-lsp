@@ -1,0 +1,15 @@
+<ProgramFile><RW>program</RW> <SymbDecl>DefaultParams</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TTest</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <ConstructorDecl><RW>constructor</RW> <SymbDecl>Create</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>=</RW> <ConstValue><Num>10</Num></ConstValue></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec> <RW>=</RW> <ConstValue><Str>'hello'</Str></ConstValue></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec> <RW>=</RW> <ConstValue><SymbRef>true</SymbRef></ConstValue></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>p</SymbDecl><RW>:</RW> <TypeSpec><Ident>pointer</Ident></TypeSpec> <RW>=</RW> <ConstValue><RW>nil</RW></ConstValue></ParameterDecl><RW>)</RW><RW>;</RW></ConstructorDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Constructor><RW>constructor</RW> <SymbRef>TTest</SymbRef><RW>.</RW><SymbDecl>Create</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>=</RW> <ConstValue><Num>10</Num></ConstValue></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec> <RW>=</RW> <ConstValue><Str>'hello'</Str></ConstValue></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec> <RW>=</RW> <ConstValue><SymbRef>true</SymbRef></ConstValue></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>p</SymbDecl><RW>:</RW> <TypeSpec><Ident>pointer</Ident></TypeSpec> <RW>=</RW> <ConstValue><RW>nil</RW></ConstValue></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Constructor>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

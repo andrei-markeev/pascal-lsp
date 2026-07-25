@@ -35,6 +35,11 @@ begin
         if valueToken <> nil then
             typeDef := valueToken.typeDef;
     end
+    else if tokenKind.reservedWordKind = rwNil then
+    begin
+        TReservedWord.Create(ctx, rwNil, true);
+        typeDef := pointer64Type;
+    end
     else
     case tokenKind.primitiveKind of
         pkNumber:
