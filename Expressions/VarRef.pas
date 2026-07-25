@@ -168,7 +168,7 @@ begin
 
                     repeat
                         expr := CreateExpression(ctx);
-                        if (typeDef <> nil) and (typeDef.kind = tkArray) and (typeDef is TArrayTypeDef) and (TArrayTypeDef(typeDef).typeOfIndex <> nil) and not TypesAreAssignable(TArrayTypeDef(typeDef).typeOfIndex, expr.typeDef, error) then
+                        if (typeDef <> nil) and (typeDef.kind = tkArray) and (typeDef is TArrayTypeDef) and (TArrayTypeDef(typeDef).typeOfIndex <> nil) and not TypesAreAssignable(ctx, TArrayTypeDef(typeDef).typeOfIndex, expr.typeDef, error) then
                         begin
                             expr.state := tsError;
                             expr.errorMessage := 'Index expression is not compatible with the array type: ' + error;

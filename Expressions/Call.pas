@@ -89,7 +89,7 @@ begin
                     params := TParameterList(TRoutineTypeDef(overloads.Items[match]).parameters);
                 end;
 
-                if (expr <> nil) and (params.items[n].typeDef <> nil) and not TypesAreAssignable(params.items[n].typeDef, expr.typeDef, paramError) then
+                if (expr <> nil) and (params.items[n].typeDef <> nil) and not TypesAreAssignable(ctx, params.items[n].typeDef, expr.typeDef, paramError) then
                 begin
                     inc(match);
                     if (overloads = nil) or (match >= overloads.Count) then

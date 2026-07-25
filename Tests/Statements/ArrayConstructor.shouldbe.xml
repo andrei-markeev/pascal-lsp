@@ -1,0 +1,31 @@
+<ProgramFile><RW>program</RW> <SymbDecl>ArrayConstructor</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TMyRecord</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW>
+    <TypeDecl><SymbDecl>TMyRecordDynArray</SymbDecl> <RW>=</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>of</RW> <TypeSpec><SymbRef>TMyRecord</SymbRef></TypeSpec></ArraySpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    <TypeDecl><SymbDecl>TMyClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Procedure><RW>procedure</RW> <SymbDecl>TestParams</SymbDecl><RW>(</RW><ParameterDecl><RW>const</RW> <SymbDecl>arr</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>of</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ArraySpec></TypeSpec></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>dynArr</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TMyRecordDynArray</SymbRef></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>dynArrInt</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>of</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ArraySpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>dynArrRecord</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>of</RW> <TypeSpec><SymbRef>TMyRecord</SymbRef></TypeSpec></ArraySpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>dynArrClass</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>of</RW> <TypeSpec><SymbRef>TMyClass</SymbRef></TypeSpec></ArraySpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>rec</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TMyRecord</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>c</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TMyClass</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>dynArrInt</SymbRef> <RW>:=</RW> <SetConstructor><RW>[</RW><Num>1</Num><RW>,</RW> <Num>2</Num><RW>,</RW> <Num>3</Num><RW>]</RW></SetConstructor></Assignment><RW>;</RW>
+    <Assignment><SymbRef>dynArrRecord</SymbRef> <RW>:=</RW> <ArrayConstructor><RW>[</RW><SymbRef>rec</SymbRef><RW>]</RW></ArrayConstructor></Assignment><RW>;</RW>
+    <Assignment><SymbRef>dynArrClass</SymbRef> <RW>:=</RW> <ArrayConstructor><RW>[</RW><SymbRef>c</SymbRef><RW>]</RW></ArrayConstructor></Assignment><RW>;</RW>
+    <Assignment><SymbRef>dynArrInt</SymbRef> <RW>:=</RW> <ArrayConstructor><RW>[</RW><RW>]</RW></ArrayConstructor></Assignment><RW>;</RW>
+    <Call><SymbRef>TestParams</SymbRef><RW>(</RW><SetConstructor><RW>[</RW><Num>1</Num><RW>,</RW> <Num>2</Num><RW>,</RW> <Num>3</Num><RW>]</RW></SetConstructor><RW>,</RW> <ArrayConstructor><RW>[</RW><SymbRef>rec</SymbRef><RW>]</RW></ArrayConstructor><RW>)</RW></Call><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

@@ -61,7 +61,7 @@ begin
 
     expr := CreateExpression(ctx);
 
-    if (state <> tsError) and (expr <> nil) and not TypesAreAssignable(leftTypeDef, expr.typeDef, typeError) then
+    if (state <> tsError) and (expr <> nil) and not TypesAreAssignable(ctx, leftTypeDef, expr.typeDef, typeError) then
     begin
         state := tsError;
         errorMessage := 'Invalid assignment: ' + typeError;

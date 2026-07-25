@@ -100,7 +100,7 @@ begin
                     SetString(str, nextOperand.start, nextOperand.len);
                     errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected string or char, but ' + str + ' is ' + TypeKindStr[ord(nextKind)];
                 end
-                else if (myKind = tkSet) and not TypesAreAssignable(typeDef, nextOperand.typeDef, str) then
+                else if (myKind = tkSet) and not TypesAreAssignable(ctx, typeDef, nextOperand.typeDef, str) then
                 begin
                     state := tsError;
                     errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': ' + str;
@@ -118,7 +118,7 @@ begin
                     SetString(str, nextOperand.start, nextOperand.len);
                     errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected integer or real operands, but ' + str + ' is ' + TypeKindStr[ord(nextKind)];
                 end
-                else if (myKind = tkSet) and not TypesAreAssignable(typeDef, nextOperand.typeDef, str) then
+                else if (myKind = tkSet) and not TypesAreAssignable(ctx, typeDef, nextOperand.typeDef, str) then
                 begin
                     state := tsError;
                     errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': ' + str;
@@ -152,7 +152,7 @@ begin
                         SetString(str, nextOperand.start, nextOperand.len);
                     errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected set operands, but ' + str + ' is ' + TypeKindStr[ord(myKind)];
                 end
-                else if not TypesAreAssignable(typeDef, nextOperand.typeDef, str) then
+                else if not TypesAreAssignable(ctx, typeDef, nextOperand.typeDef, str) then
                 begin
                     state := tsError;
                     errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': ' + str;

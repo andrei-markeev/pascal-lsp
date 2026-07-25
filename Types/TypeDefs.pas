@@ -58,13 +58,13 @@ var
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
 function GetEnumSpec(typeDef: TTypeDef): Pointer;
-function TypesAreAssignable(left, right: TTypeDef; out errorMessage: string): boolean;
+function TypesAreAssignable(ctx: TTypeDefTracker; left, right: TTypeDef; out errorMessage: string): boolean;
 function HaveSameSignature(a, b: TTypeDef): boolean;
 
 implementation
 
 uses
-    Parameters;
+    Parameters, ParserContext;
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
 begin
@@ -131,13 +131,17 @@ begin
         exit(nil);
 end;
 
-function TypesAreAssignable(left, right: TTypeDef; out errorMessage: string): boolean;
+function TypesAreAssignable(ctx: TTypeDefTracker; left, right: TTypeDef; out errorMessage: string): boolean;
+var
+    isDelphiOrObjFpc: boolean;
 begin
     if (left = nil) or (right = nil) then
     begin
         TypesAreAssignable := true;
         exit;
     end;
+
+    isDelphiOrObjFpc := TParserContext(ctx).mode in [cmObjectFreePascal, cmDelphi];
 
     TypesAreAssignable := left.kind = right.kind;
     if (left.kind = tkUnknown) or (right.kind = tkUnknown) then
@@ -157,7 +161,7 @@ begin
             if (TSetTypeDef(left).typeOfSet = nil) or (TSetTypeDef(right).typeOfSet = nil) then
                 TypesAreAssignable := true
             else
-                TypesAreAssignable := TypesAreAssignable(TSetTypeDef(left).typeOfSet, TSetTypeDef(right).typeOfSet, errorMessage);
+                TypesAreAssignable := TypesAreAssignable(ctx, TSetTypeDef(left).typeOfSet, TSetTypeDef(right).typeOfSet, errorMessage);
         end
         else
             TypesAreAssignable := true;
@@ -169,8 +173,50 @@ begin
             if (TArrayTypeDef(left).typeOfValues = nil) or (TArrayTypeDef(right).typeOfValues = nil) then
                 TypesAreAssignable := true
             else
-                TypesAreAssignable := TypesAreAssignable(TArrayTypeDef(left).typeOfValues, TArrayTypeDef(right).typeOfValues, errorMessage);
+                TypesAreAssignable := TypesAreAssignable(ctx, TArrayTypeDef(left).typeOfValues, TArrayTypeDef(right).typeOfValues, errorMessage);
         end
+        else
+            TypesAreAssignable := true;
+    end
+    else if isDelphiOrObjFpc and (left.kind = tkDynamicArray) and (right.kind = tkSet) then
+    begin
+        if (left is TDynamicArrayTypeDef) and (right is TSetTypeDef) then
+            TypesAreAssignable := TypesAreAssignable(ctx, TDynamicArrayTypeDef(left).typeOfDynValues, TSetTypeDef(right).typeOfSet, errorMessage)
+        else
+            TypesAreAssignable := true;
+    end
+    else if isDelphiOrObjFpc and (left.kind = tkSet) and (right.kind = tkDynamicArray) then
+    begin
+        if (left is TSetTypeDef) and (right is TDynamicArrayTypeDef) then
+            TypesAreAssignable := TypesAreAssignable(ctx, TSetTypeDef(left).typeOfSet, TDynamicArrayTypeDef(right).typeOfDynValues, errorMessage)
+        else
+            TypesAreAssignable := true;
+    end
+    else if isDelphiOrObjFpc and (left.kind = tkArray) and (right.kind = tkSet) then
+    begin
+        if (left is TArrayTypeDef) and (right is TSetTypeDef) then
+            TypesAreAssignable := TypesAreAssignable(ctx, TArrayTypeDef(left).typeOfValues, TSetTypeDef(right).typeOfSet, errorMessage)
+        else
+            TypesAreAssignable := true;
+    end
+    else if isDelphiOrObjFpc and (left.kind = tkSet) and (right.kind = tkArray) then
+    begin
+        if (left is TSetTypeDef) and (right is TArrayTypeDef) then
+            TypesAreAssignable := TypesAreAssignable(ctx, TSetTypeDef(left).typeOfSet, TArrayTypeDef(right).typeOfValues, errorMessage)
+        else
+            TypesAreAssignable := true;
+    end
+    else if (left.kind = tkArray) and (right.kind = tkDynamicArray) then
+    begin
+        if (left is TArrayTypeDef) and (right is TDynamicArrayTypeDef) then
+            TypesAreAssignable := TypesAreAssignable(ctx, TArrayTypeDef(left).typeOfValues, TDynamicArrayTypeDef(right).typeOfDynValues, errorMessage)
+        else
+            TypesAreAssignable := true;
+    end
+    else if (left.kind = tkDynamicArray) and (right.kind = tkArray) then
+    begin
+        if (left is TDynamicArrayTypeDef) and (right is TArrayTypeDef) then
+            TypesAreAssignable := TypesAreAssignable(ctx, TDynamicArrayTypeDef(left).typeOfDynValues, TArrayTypeDef(right).typeOfValues, errorMessage)
         else
             TypesAreAssignable := true;
     end;

@@ -101,7 +101,7 @@ begin
                     SetString(str, nextOperand.start, nextOperand.len);
                     errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastMultiplyOp)] + ''': expected a set, but ' + str + ' is ' + TypeKindStr[ord(nextKind)];
                 end
-                else if (myKind = tkSet) and (nextOperand.typeDef <> nil) and not TypesAreAssignable(typeDef, nextOperand.typeDef, str) then
+                else if (myKind = tkSet) and (nextOperand.typeDef <> nil) and not TypesAreAssignable(ctx, typeDef, nextOperand.typeDef, str) then
                 begin
                     state := tsError;
                     errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastMultiplyOp)] + ''': ' + str;

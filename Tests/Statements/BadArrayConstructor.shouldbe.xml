@@ -1,0 +1,18 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadArrayConstructor</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TMyRecord</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>dynArrInt</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>of</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ArraySpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>dynArrRecord</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>of</RW> <TypeSpec><SymbRef>TMyRecord</SymbRef></TypeSpec></ArraySpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>rec</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TMyRecord</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>dynArrInt</SymbRef> <RW>:=</RW> <SetConstructor ERROR="'hello' is not assignable to the type of the set (integer): expected integer or assignment-compatible, but found string!"><RW>[</RW><Num>1</Num><RW>,</RW> <Str>'hello'</Str><RW>]</RW></SetConstructor></Assignment><RW>;</RW>
+    <Assignment><SymbRef>dynArrInt</SymbRef> <RW>:=</RW> <ArrayConstructor><RW>[</RW><SymbRef>rec</SymbRef><RW>]</RW></ArrayConstructor></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

@@ -81,7 +81,7 @@ begin
         typeDef := value.typeDef
     else
     begin
-        if not TypesAreAssignable(typeDef, value.typeDef, errorMessage) then
+        if not TypesAreAssignable(ctx, typeDef, value.typeDef, errorMessage) then
         begin
             state := tsError;
             errorMessage := 'Constant value cannot be assigned to the specified type: ' + errorMessage;
