@@ -275,6 +275,8 @@ begin
             exit(false);
         if pa.items[i].typeDef <> pb.items[i].typeDef then
             exit(false);
+        if pa.items[i].hasDefaultValue <> pb.items[i].hasDefaultValue then
+            exit(false);
     end;
 
     HaveSameSignature := true;

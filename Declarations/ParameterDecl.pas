@@ -13,6 +13,7 @@ type
     public
         parameterKind: TParameterKind;
         idents: array of TIdentifier;
+        hasDefaultValue: boolean;
         constructor Create(ctx: TParserContext);
     end;
 
@@ -31,6 +32,8 @@ var
 begin
     tokenName := 'ParameterDecl';
     ctx.Add(Self);
+
+    hasDefaultValue := false;
 
     start := ctx.Cursor;
 
@@ -112,6 +115,7 @@ begin
 
         if PeekReservedWord(ctx, rwEquals) then
         begin
+            hasDefaultValue := true;
             TReservedWord.Create(ctx, rwEquals, true);
             nextTokenKind := DetermineNextTokenKind(ctx);
             TConstValue.Create(ctx, nextTokenKind);

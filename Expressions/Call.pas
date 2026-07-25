@@ -123,13 +123,16 @@ begin
     end;
 
     if params <> nil then
-    while params.count <> n do
+    while (n < params.GetMinRequiredCount) or (n > params.count) do
     begin
         inc(match);
         if (overloads = nil) or (match >= overloads.Count) then
         begin
             state := tsError;
-            errorMessage := 'Expected ' + IntToStr(params.count) + ' parameters, but got ' + IntToStr(n);
+            if params.GetMinRequiredCount = params.count then
+                errorMessage := 'Expected ' + IntToStr(params.count) + ' parameters, but got ' + IntToStr(n)
+            else
+                errorMessage := 'Expected at least ' + IntToStr(params.GetMinRequiredCount) + ' parameters, but got ' + IntToStr(n);
             break;
         end;
         params := TParameterList(TRoutineTypeDef(overloads.Items[match]).parameters);

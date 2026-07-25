@@ -15,6 +15,7 @@ type
         kind: TParameterKind;
         name: shortstring;
         typeDef: TTypeDef;
+        hasDefaultValue: boolean;
     end;
 
     TParameterDynArray = array of TParameter;
@@ -26,18 +27,20 @@ type
         constructor Create;
         constructor Create(initialItems: TParameterDynArray);
         procedure Add(item: TParameter);
+        function GetMinRequiredCount: integer;
         destructor Destroy; override;
     end;
 
-function CreateParam(kind: TParameterKind; name: shortstring; typeDef: TTypeDef): TParameter;
+function CreateParam(kind: TParameterKind; name: shortstring; typeDef: TTypeDef; hasDefault: boolean = false): TParameter;
 
 implementation
 
-function CreateParam(kind: TParameterKind; name: shortstring; typeDef: TTypeDef): TParameter;
+function CreateParam(kind: TParameterKind; name: shortstring; typeDef: TTypeDef; hasDefault: boolean = false): TParameter;
 begin
     CreateParam.kind := kind;
     CreateParam.name := name;
     CreateParam.typeDef := typeDef;
+    CreateParam.hasDefaultValue := hasDefault;
 end;
 
 constructor TParameterList.Create;
@@ -59,6 +62,13 @@ begin
     count := l + 1;
     SetLength(items, l + 1);
     items[l] := item;
+end;
+
+function TParameterList.GetMinRequiredCount: integer;
+begin
+    Result := 0;
+    while (Result < count) and not items[Result].hasDefaultValue do
+        inc(Result);
 end;
 
 destructor TParameterList.Destroy;

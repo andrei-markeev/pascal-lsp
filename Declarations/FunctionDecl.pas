@@ -108,7 +108,7 @@ begin
             for i := 0 to length(paramDecl.idents) - 1 do
             begin
                 SetString(s, paramDecl.idents[i].start, paramDecl.idents[i].len);
-                params.Add(CreateParam(paramDecl.parameterKind, s, paramDecl.typeDef));
+                params.Add(CreateParam(paramDecl.parameterKind, s, paramDecl.typeDef, paramDecl.hasDefaultValue));
             end;
 
             if PeekReservedWord(ctx, rwComma) then
