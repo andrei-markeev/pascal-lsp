@@ -37,7 +37,7 @@ const
         '', 'constant', 'typed constant', 'type', 'variable', 'procedure', 'function'
     );
 
-function TryAddOverride(ident: TIdentifier; symbolType: TTypeDef; cursor: PChar): TTryAddOverrideResult;
+function TryAddOverride(ident: TIdentifier; symbolType: TTypeDef; cursor: PChar; symbolParent: TSymbol = nil): TTryAddOverrideResult;
 function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
 function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
 function FindSymbol(findName: shortstring; cursor: PChar): TSymbol;
@@ -53,7 +53,7 @@ var
     lastId: longword = 0;
 
 
-function TryAddOverride(ident: TIdentifier; symbolType: TTypeDef; cursor: PChar): TTryAddOverrideResult;
+function TryAddOverride(ident: TIdentifier; symbolType: TTypeDef; cursor: PChar; symbolParent: TSymbol): TTryAddOverrideResult;
 var
     overloadedSymbol: TSymbol;
     overloads: TFPList;
@@ -64,7 +64,10 @@ begin
     if (symbolType = nil) or not (symbolType.kind in [tkProcedure, tkFunction]) then
         exit(ovNotApplicable);
 
-    overloadedSymbol := FindSymbol(ident.GetStr(), cursor);
+    if symbolParent <> nil then
+        overloadedSymbol := FindSymbol(symbolParent, ident.GetStr(), cursor)
+    else
+        overloadedSymbol := FindSymbol(ident.GetStr(), cursor);
     if overloadedSymbol = nil then
         exit(ovNotFound);
 

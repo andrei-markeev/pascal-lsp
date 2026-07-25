@@ -193,7 +193,10 @@ begin
     end
     else
     begin
-        overrideResult := TryAddOverride(nameIdent, funcType, ctx.Cursor);
+        if (symbolParent <> nil) and (symbolParent.kind = skTypeName) then
+            overrideResult := TryAddOverride(nameIdent, funcType, ctx.Cursor, symbolParent)
+        else
+            overrideResult := TryAddOverride(nameIdent, funcType, ctx.Cursor, nil);
         if overrideResult = ovExactDuplicate then
         begin
             nameIdent.state := tsError;

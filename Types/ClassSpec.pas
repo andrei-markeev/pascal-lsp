@@ -235,7 +235,8 @@ begin
             funcDecl := TFunctionDecl.Create(ctx, nextTokenKind.reservedWordKind, parentSymbols);
             if funcDecl.funcType <> nil then
                 funcDecl.funcType.visibility := visibility;
-            classTypeDef.classFields.Add(funcDecl.nameIdent.GetStr(), funcDecl.funcType);
+            if classTypeDef.classFields.Find(funcDecl.nameIdent.GetStr()) = nil then
+                classTypeDef.classFields.Add(funcDecl.nameIdent.GetStr(), funcDecl.funcType);
         end;
 
         nextTokenKind := DetermineNextTokenKind(ctx);

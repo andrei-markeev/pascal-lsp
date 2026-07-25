@@ -38,7 +38,7 @@ var
     hasMoreParams: boolean;
     isMethodModifier, isFunctionModifier: boolean;
     overrideResult: TTryAddOverrideResult;
-    symbol: TSymbol;
+    symbol, firstParent: TSymbol;
     routineTypeDef: TRoutineTypeDef;
 begin
     ctx.Add(Self);
@@ -132,18 +132,22 @@ begin
 
     routineTypeDef.parameters := params;
 
+    firstParent := nil;
+    if length(parentSymbols) > 0 then
+        firstParent := parentSymbols[0];
+
     returnType := unknownType;
     if needsReturnType then
     begin
         TReservedWord.Create(ctx, rwColon, false);
         CreateTypeSpec(ctx, returnType);
     end
-    else if (symbolKind = skConstructor) and (length(parentSymbols) > 0) and (parentSymbols[0] <> nil) then
-        returnType := parentSymbols[0].typeDef;
+    else if (symbolKind = skConstructor) and (firstParent <> nil) then
+        returnType := firstParent.typeDef;
 
     routineTypeDef.returnType := returnType;
 
-    overrideResult := TryAddOverride(nameIdent, funcType, ctx.Cursor);
+    overrideResult := TryAddOverride(nameIdent, funcType, ctx.Cursor, firstParent);
     if overrideResult = ovExactDuplicate then
     begin
         nameIdent.state := tsError;

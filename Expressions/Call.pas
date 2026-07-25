@@ -26,6 +26,7 @@ var
     overloads: TFPList;
     n, match: integer;
     hasMoreParams: boolean;
+    paramError: string;
 begin    
     ctx.InsertBefore(ref, Self);
     tokenName := 'Call';
@@ -88,13 +89,18 @@ begin
                     params := TParameterList(TRoutineTypeDef(overloads.Items[match]).parameters);
                 end;
 
-                if (expr <> nil) and (params.items[n].typeDef <> nil) and not TypesAreAssignable(params.items[n].typeDef, expr.typeDef, expr.errorMessage) then
+                if (expr <> nil) and (params.items[n].typeDef <> nil) and not TypesAreAssignable(params.items[n].typeDef, expr.typeDef, paramError) then
                 begin
                     inc(match);
                     if (overloads = nil) or (match >= overloads.Count) then
                     begin
                         expr.state := tsError;
-                        expr.errorMessage := 'Invalid parameter: ' + expr.errorMessage;
+                        if expr.errorMessage <> '' then
+                            expr.errorMessage := 'Invalid parameter: ' + expr.errorMessage
+                        else if paramError <> '' then
+                            expr.errorMessage := 'Invalid parameter: ' + paramError
+                        else
+                            expr.errorMessage := 'Invalid parameter.';
                         break;
                     end;
                     params := TParameterList(TRoutineTypeDef(overloads.Items[match]).parameters);
