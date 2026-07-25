@@ -6,7 +6,7 @@ unit SystemUnit;
 interface
 
 uses
-    ParserContext, TypeDefs, Parameters;
+    ParserContext, TypeDef, TypeDefs, Parameters;
 
 type
     TSystemUnit = class
@@ -30,7 +30,7 @@ function CreateTwoParamProcedureType(param1Name: shortstring; param1Type: TTypeD
 implementation
 
 uses
-    TypeDef, RoutineTypeDef;
+    RoutineTypeDef;
 
 constructor TSystemUnit.Create;
 begin

@@ -6,7 +6,7 @@ unit RecordSpec;
 interface
 
 uses
-    contnrs, ParserContext, Symbols, TypeDefs, TypedToken;
+    contnrs, ParserContext, Symbols, TypeDef, TypeDefs, TypedToken;
 
 type
     TRecordSpec = class(TTypedToken)

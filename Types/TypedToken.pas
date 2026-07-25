@@ -6,7 +6,7 @@ unit TypedToken;
 interface
 
 uses
-    Token, TypeDefs;
+    Token, TypeDefs, TypeDef;
 
 type
     TTypedToken = class(TToken)

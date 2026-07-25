@@ -6,7 +6,7 @@ unit PointerSpec;
 interface
 
 uses
-    ParserContext, TypeDefs, Token;
+    ParserContext, TypeDef, TypeDefs, Token;
 
 type
     TPointerSpec = class(TToken)

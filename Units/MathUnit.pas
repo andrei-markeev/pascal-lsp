@@ -6,7 +6,7 @@ unit MathUnit;
 interface
 
 uses
-    ParserContext, SystemUnit, TypeDefs;
+    ParserContext, SystemUnit, TypeDef, TypeDefs;
 
 type
     TMathUnit = class(TSystemUnit)

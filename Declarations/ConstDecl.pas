@@ -6,7 +6,7 @@ unit ConstDecl;
 interface
 
 uses
-    ParserContext, TypeDefs, TypedToken, Identifier, ConstValue;
+    ParserContext, TypeDef, TypeDefs, TypedToken, Identifier, ConstValue;
 
 type
     TConstDecl = class(TTypedToken)

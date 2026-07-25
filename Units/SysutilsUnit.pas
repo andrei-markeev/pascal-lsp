@@ -6,7 +6,7 @@ unit SysutilsUnit;
 interface
 
 uses
-    ParserContext, SystemUnit, TypeDefs;
+    ParserContext, SystemUnit, TypeDef, TypeDefs;
 
 type
     TSysutilsUnit = class(TSystemUnit)

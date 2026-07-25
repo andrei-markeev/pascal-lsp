@@ -14,7 +14,7 @@ procedure LoadSystemUnit(unitName: string; ctx: TParserContext);
 implementation
 
 uses
-    classes, contnrs, CompilationMode, Symbols, TypeDefs, Parameters, RoutineTypeDef,
+    classes, contnrs, CompilationMode, Symbols, TypeDefs, TypeDef, Parameters, RoutineTypeDef,
     SystemUnit, ClassesUnit, ContnrsUnit, MathUnit, SysutilsUnit, StringsUnit;
 
 var

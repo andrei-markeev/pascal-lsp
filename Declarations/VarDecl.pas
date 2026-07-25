@@ -6,7 +6,7 @@ unit VarDecl;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord, Identifier, TypeSpec;
+    ParserContext, Anchors, Symbols, TypeDef, TypeDefs, Token, ReservedWord, Identifier, TypeSpec;
 
 type
     TVarDecl = class(TToken)

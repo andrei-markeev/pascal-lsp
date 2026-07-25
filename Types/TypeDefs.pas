@@ -11,12 +11,6 @@ uses
     PointerTypeDef, ArrayTypeDef, DynamicArrayTypeDef, SetTypeDef, RecordTypeDef,
     ObjectTypeDef, ClassTypeDef, RoutineTypeDef, PrimitiveTypeDef;
 
-type
-    TTypeKind = TypeDef.TTypeKind;
-    TVisibility = TypeDef.TVisibility;
-    TTypeDefTracker = TypeDef.TTypeDefTracker;
-    TTypeDef = TypeDef.TTypeDef;
-
 const
     NUM_OF_TYPE_KINDS = 20;
     TypeKindStr: array[0..NUM_OF_TYPE_KINDS - 1] of shortstring = (

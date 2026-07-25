@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    TypeDefs, ReservedWord, Expression, VarRef, Identifier, RoutineTypeDef;
+    TypeDef, TypeDefs, ReservedWord, Expression, VarRef, Identifier, RoutineTypeDef;
 
 constructor TAssignmentStatement.Create(ctx: TParserContext; ref: TTypedToken);
 var

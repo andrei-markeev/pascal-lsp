@@ -6,7 +6,7 @@ unit EnumSpec;
 interface
 
 uses
-    ParserContext, Symbols, TypeDefs, Token, ReservedWord, Identifier;
+    ParserContext, Symbols, TypeDef, TypeDefs, Token, ReservedWord, Identifier;
 
 type
     TEnumSpec = class(TToken)

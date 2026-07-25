@@ -6,7 +6,7 @@ unit Symbols;
 interface
 
 uses
-    math, contnrs, Token, Identifier, TypeDefs;
+    math, contnrs, Token, Identifier, TypeDefs, TypeDef;
 
 type
     TSymbolKind = (skUnknown, skConstant, skTypedConstant, skTypeName, skVariable, skProcedure, skFunction, skConstructor, skDestructor, skUnitName);
@@ -47,7 +47,7 @@ function FindSymbol(ident: TIdentifier): TSymbol;
 implementation
 
 uses
-    sysutils, classes, Scopes, TypeDef, RoutineTypeDef;
+    sysutils, classes, Scopes, RoutineTypeDef;
 
 var
     lastId: longword = 0;
@@ -79,7 +79,7 @@ begin
 
     if (matchedTypeDef = nil) and (overloads <> nil) then
         for i := 0 to overloads.Count - 1 do
-            if (TObject(overloads.Items[i]) is TRoutineTypeDef) and HaveSameSignature(symbolType, TTypeDef(overloads.Items[i])) then
+            if (TTypeDef(overloads.Items[i]) is TRoutineTypeDef) and HaveSameSignature(symbolType, TTypeDef(overloads.Items[i])) then
             begin
                 matchedTypeDef := TRoutineTypeDef(overloads.Items[i]);
                 break;

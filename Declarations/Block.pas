@@ -6,7 +6,7 @@ unit Block;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord;
+    ParserContext, Anchors, Symbols, TypeDef, TypeDefs, Token, ReservedWord;
 
 type
     TBlock = class(TToken)
@@ -17,8 +17,7 @@ type
 implementation
 
 uses
-    CompilationMode, Scopes, ConstSection, TypeSection, VarSection, FunctionImpl, CompoundStatement,
-    TypeDef, ClassTypeDef, ObjectTypeDef;
+    CompilationMode, Scopes, ConstSection, TypeSection, VarSection, FunctionImpl, CompoundStatement, ClassTypeDef, ObjectTypeDef;
 
 function FindClassSymbol(typeDef: TTypeDef): TSymbol;
 var

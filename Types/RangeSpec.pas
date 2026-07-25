@@ -6,7 +6,7 @@ unit RangeSpec;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, TypeDefs, Token, ReservedWord, Identifier, StringToken, Number;
+    ParserContext, Anchors, Symbols, TypeDef, TypeDefs, Token, ReservedWord, Identifier, StringToken, Number;
 
 type
     TRangeSpec = class(TToken)
@@ -21,7 +21,7 @@ type
 implementation
 
 uses
-    TypeDef, CharRangeTypeDef, EnumMemberTypeDef;
+    CharRangeTypeDef, EnumMemberTypeDef;
 
 procedure TRangeSpec.ParseBoundary(ctx: TParserContext; nextTokenKind: TTokenKind; var typeDefToFill: TTypeDef; var outToken: TToken);
 var

@@ -6,7 +6,7 @@ unit SetSpec;
 interface
 
 uses
-    ParserContext, TypeDefs, Token;
+    ParserContext, TypeDef, TypeDefs, Token;
 
 type
     TSetSpec = class(TToken)
@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    TypeDef, ReservedWord, TypeSpec, SetTypeDef;
+    ReservedWord, TypeSpec, SetTypeDef;
 
 constructor TSetSpec.Create(ctx: TParserContext; var typeDefToFill: TTypeDef);
 var

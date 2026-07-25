@@ -6,7 +6,7 @@ unit TypeSpec;
 interface
 
 uses
-    ParserContext, Symbols, Token, TypeDefs, Identifier;
+    ParserContext, Symbols, Token, TypeDef, TypeDefs, Identifier;
 
 type
     TTypeSpec = class(TToken)

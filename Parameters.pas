@@ -6,7 +6,7 @@ unit Parameters;
 interface
 
 uses
-    TypeDefs;
+    TypeDefs, TypeDef;
 
 type
     TParameterKind = (ptkValue, ptkConst, ptkVar, ptkOut, ptkUntyped);

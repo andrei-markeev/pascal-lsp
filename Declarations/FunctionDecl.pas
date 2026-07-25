@@ -6,7 +6,7 @@ unit FunctionDecl;
 interface
 
 uses
-    ParserContext, Modifiers, Symbols, Parameters, Token, ReservedWord, TypedToken, TypeDefs, Identifier;
+    ParserContext, Modifiers, Symbols, Parameters, Token, ReservedWord, TypedToken, TypeDef, TypeDefs, Identifier;
 
 type
     TFunctionDecl = class(TToken)
@@ -22,7 +22,7 @@ type
 implementation
 
 uses
-    Scopes, TypeSpec, ParameterDecl, TypeDef, RoutineTypeDef;
+    Scopes, TypeSpec, ParameterDecl, RoutineTypeDef;
 
 constructor TFunctionDecl.Create(ctx: TParserContext; functionRWKind: TReservedWordKind; parentSymbols: array of TSymbol);
 var

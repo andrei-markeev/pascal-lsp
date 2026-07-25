@@ -6,7 +6,7 @@ unit ParserContext;
 interface
 
 uses
-    classes, strings, contnrs, Token, CompilationMode, TypeDefs;
+    classes, strings, contnrs, Token, CompilationMode, TypeDefs, TypeDef;
 
 type
     TParserContext = class(TTypeDefTracker)

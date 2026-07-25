@@ -6,7 +6,7 @@ unit FunctionImpl;
 interface
 
 uses
-    ParserContext, Token, TypedToken, TypeDefs, Identifier;
+    ParserContext, Token, TypedToken, TypeDef, TypeDefs, Identifier;
 
 type
     TFunctionImpl = class(TToken)
@@ -22,7 +22,7 @@ type
 implementation
 
 uses
-    ReservedWord, Scopes, Symbols, Parameters, TypeSpec, ParameterDecl, Block, FunctionDecl, TypeDef, RoutineTypeDef;
+    ReservedWord, Scopes, Symbols, Parameters, TypeSpec, ParameterDecl, Block, FunctionDecl, RoutineTypeDef;
 
 constructor TFunctionImpl.Create(ctx: TParserContext);
 var

@@ -6,7 +6,7 @@ unit ClassesUnit;
 interface
 
 uses
-    ParserContext, SystemUnit, TypeDefs;
+    ParserContext, SystemUnit, TypeDef, TypeDefs;
 
 type
     TClassesUnit = class(TSystemUnit)

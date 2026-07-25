@@ -6,7 +6,7 @@ unit TypeDecl;
 interface
 
 uses
-    ParserContext, TypeDefs, Token, Identifier;
+    ParserContext, TypeDef, TypeDefs, Token, Identifier;
 
 type
     TTypeDecl = class(TToken)

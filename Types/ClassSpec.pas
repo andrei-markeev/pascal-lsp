@@ -6,7 +6,7 @@ unit ClassSpec;
 interface
 
 uses
-    contnrs, ParserContext, Symbols, TypeDefs, Token;
+    contnrs, ParserContext, Symbols, TypeDef, TypeDefs, Token;
 
 type
     TClassSpec = class(TToken)
@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    CompilationMode, Anchors, ReservedWord, Identifier, VarDecl, FunctionDecl, TypeDef, ClassTypeDef;
+    CompilationMode, Anchors, ReservedWord, Identifier, VarDecl, FunctionDecl, ClassTypeDef;
 
 procedure SetVisibility(ctx: TParserContext; const value: TVisibility; out res: TVisibility);
 begin

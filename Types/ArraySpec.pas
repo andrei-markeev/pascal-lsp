@@ -6,7 +6,7 @@ unit ArraySpec;
 interface
 
 uses
-    ParserContext, Token, TypeDefs;
+    ParserContext, Token, TypeDef, TypeDefs;
 
 type
     TArraySpec = class(TToken)

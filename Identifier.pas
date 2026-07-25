@@ -21,7 +21,7 @@ function PeekIdentifier(ctx: TParserContext): shortstring;
 implementation
 
 uses
-    Symbols, TypeDefs, Token;
+    Symbols, TypeDefs, TypeDef, Token;
 
 function PeekIdentifier(ctx: TParserContext): shortstring;
 var

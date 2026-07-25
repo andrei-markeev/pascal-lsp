@@ -18,7 +18,7 @@ type
 implementation
 
 uses
-    CompilationMode, Anchors, Token, ReservedWord, ConstValue, ArrayTypeDef;
+    TypeDef, CompilationMode, Anchors, Token, ReservedWord, ConstValue, ArrayTypeDef;
 
 constructor TArrayLiteral.Create(ctx: TParserContext);
 var
