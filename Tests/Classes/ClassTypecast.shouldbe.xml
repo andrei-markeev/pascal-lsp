@@ -1,0 +1,36 @@
+<ProgramFile><RW>program</RW> <SymbDecl>ClassTypecast</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TParentClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <VarDecl><SymbDecl>parentField</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <ConstructorDecl><RW>constructor</RW> <SymbDecl>Create</SymbDecl><RW>;</RW></ConstructorDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    <TypeDecl><SymbDecl>TChildClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW><RW>(</RW><SymbRef>TParentClass</SymbRef><RW>)</RW>
+        <VarDecl><SymbDecl>childField</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Constructor><RW>constructor</RW> <SymbRef>TParentClass</SymbRef><RW>.</RW><SymbDecl>Create</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Constructor>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>parentObj</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TParentClass</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>childObj</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TChildClass</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>otherChild</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TChildClass</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>parentObj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TParentClass</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>childObj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TChildClass</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+
+    // Typecast child class variable to parent class
+    <Assignment><SymbRef>parentObj</SymbRef> <RW>:=</RW> <VarRef><SymbRef>TParentClass</SymbRef><RW>(</RW><VarRef><SymbRef>childObj</SymbRef></VarRef><RW>)</RW></VarRef></Assignment><RW>;</RW>
+
+    // Typecast parent class variable to child class
+    <Assignment><SymbRef>otherChild</SymbRef> <RW>:=</RW> <VarRef><SymbRef>TChildClass</SymbRef><RW>(</RW><VarRef><SymbRef>parentObj</SymbRef></VarRef><RW>)</RW></VarRef></Assignment><RW>;</RW>
+
+    // Typecast class to generic Pointer
+    <Assignment><SymbRef>parentObj</SymbRef> <RW>:=</RW> <VarRef><SymbRef>TParentClass</SymbRef><RW>(</RW><VarRef><Ident>Pointer</Ident><RW>(</RW><VarRef><SymbRef>childObj</SymbRef></VarRef><RW>)</RW></VarRef><RW>)</RW></VarRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

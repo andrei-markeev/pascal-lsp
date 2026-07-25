@@ -83,8 +83,17 @@ begin
         end
         else
         begin
-            typeDef := unknownType;
-            firstIdent.typeDef := unknownType;
+            found := TypesList.Find(LowerCase(firstIdent.name));
+            if found <> nil then
+            begin
+                typeDef := TTypeDef(found);
+                firstIdent.typeDef := TTypeDef(found);
+            end
+            else
+            begin
+                typeDef := unknownType;
+                firstIdent.typeDef := unknownType;
+            end;
         end;
     end
     else
@@ -111,7 +120,10 @@ begin
 
         case nextReservedWord of
             rwOpenParenthesis:
-                if isSimple and canBeTypecast and (symbol <> nil) and (symbol.kind = skTypeName) then
+                if isSimple and canBeTypecast and (
+                    ((symbol <> nil) and (symbol.kind = skTypeName)) or
+                    ((symbol = nil) and (TypesList.Find(LowerCase(firstIdent.name)) <> nil))
+                ) then
                 begin
                     TReservedWord.Create(ctx, rwOpenParenthesis, true);
                     varRef := TVarRef.Create(ctx);

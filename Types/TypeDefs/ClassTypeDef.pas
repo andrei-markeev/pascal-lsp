@@ -21,7 +21,7 @@ implementation
 
 constructor TClassTypeDef.Create(ctx: TTypeDefTracker);
 begin
-    inherited Create(ctx, tkClass, 0);
+    inherited Create(ctx, tkClass, 8);
     classFields := TFPHashList.Create;
 end;
 

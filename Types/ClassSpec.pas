@@ -221,7 +221,6 @@ begin
                             fieldDecl.varType := fieldDecl.varType.Clone;
                             fieldDecl.varType.visibility := visibility;
                         end;
-                        inc(classTypeDef.size, fieldDecl.varType.size);
                     end;
                     classTypeDef.classFields.Add(fieldDecl.idents[i].GetStr(), fieldDecl.varType);
                 end;
