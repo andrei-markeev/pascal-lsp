@@ -1,0 +1,42 @@
+<ProgramFile><RW>program</RW> <SymbDecl>ForwardFunctionFieldAssign</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TRec</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>kind</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>name</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    <TypeDecl><SymbDecl>TMyClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <ConstructorDecl><RW>constructor</RW> <SymbDecl>Create</SymbDecl><RW>;</RW></ConstructorDecl>
+        <FunctionDecl><RW>function</RW> <SymbDecl>TestMethod</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>k</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><SymbRef>TRec</SymbRef></TypeSpec><RW>;</RW></FunctionDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Constructor><RW>constructor</RW> <SymbRef>TMyClass</SymbRef><RW>.</RW><SymbDecl>Create</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Constructor>
+
+<FunctionDecl><RW>function</RW> <SymbDecl>TestForward</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>k</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><SymbRef>TRec</SymbRef></TypeSpec><RW>;</RW> <Ident>forward</Ident><RW>;</RW></FunctionDecl>
+
+<Function><RW>function</RW> <SymbRef>TestForward</SymbRef><RW>(</RW><ParameterDecl><SymbDecl>k</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><SymbRef>TRec</SymbRef></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><VarRef><SymbRef>TestForward</SymbRef><RW>.</RW><Ident>kind</Ident></VarRef> <RW>:=</RW> <SymbRef>k</SymbRef></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>TestForward</SymbRef><RW>.</RW><Ident>name</Ident></VarRef> <RW>:=</RW> <Str>'test'</Str></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Function><RW>function</RW> <SymbRef>TMyClass</SymbRef><RW>.</RW><SymbDecl>TestMethod</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>k</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><SymbRef>TRec</SymbRef></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><VarRef><SymbRef>TestMethod</SymbRef><RW>.</RW><Ident>kind</Ident></VarRef> <RW>:=</RW> <SymbRef>k</SymbRef></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>TestMethod</SymbRef><RW>.</RW><Ident>name</Ident></VarRef> <RW>:=</RW> <Str>'test'</Str></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>obj</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TMyClass</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>r1</SymbDecl><RW>,</RW> <SymbDecl>r2</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TRec</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>obj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TMyClass</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>r1</SymbRef> <RW>:=</RW> <Call><SymbRef>TestForward</SymbRef><RW>(</RW><Num>10</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>r2</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>obj</SymbRef><RW>.</RW><Ident>TestMethod</Ident></VarRef><RW>(</RW><Num>20</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

@@ -50,7 +50,7 @@ begin
         errorMessage := 'Cannot modify a constant!';
     end;
 
-    if (symbol <> nil) and (symbol.kind = skFunction) and (symbol.typeDef <> nil) and (symbol.typeDef is TRoutineTypeDef) and (TRoutineTypeDef(symbol.typeDef).returnType <> nil) then
+    if (symbol <> nil) and (symbol.kind = skFunction) and (symbol.typeDef <> nil) and (symbol.typeDef is TRoutineTypeDef) and (TRoutineTypeDef(symbol.typeDef).returnType <> nil) and (ref is TIdentifier) then
         leftTypeDef := TRoutineTypeDef(symbol.typeDef).returnType
     else if ref <> nil then
         leftTypeDef := ref.typeDef

@@ -32,7 +32,7 @@ begin
         pkIdentifier:
             begin
                 // This is either an assignment or a procedure call
-                varRef := CreateDesignator(ctx);
+                varRef := CreateDesignator(ctx, true);
                 if PeekReservedWord(ctx, rwAssign) then
                     CreateStatement := TAssignmentStatement.Create(ctx, varRef)
                 else if varRef is TCall then

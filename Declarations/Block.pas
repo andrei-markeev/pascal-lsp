@@ -47,6 +47,7 @@ var
     classSym: TSymbol;
     childName: shortstring;
     i: integer;
+    sym: TSymbol;
 begin
     if selfType = nil then
         exit;
@@ -67,7 +68,11 @@ begin
             begin
                 childName := LowerCase(classSym.children[i].displayName);
                 if FindScope(start).symbolsList.Find(childName) = nil then
-                    RegisterSymbol(classSym.children[i].declaration, nil, classSym.children[i].kind, classSym.children[i].typeDef, start);
+                begin
+                    sym := RegisterSymbol(classSym.children[i].declaration, nil, classSym.children[i].kind, classSym.children[i].typeDef, start);
+                    sym.rangeToken := classSym.children[i].rangeToken;
+                    sym.implRangeToken := classSym.children[i].implRangeToken;
+                end;
             end;
         end;
         if (currClass.kind = tkClass) and (currClass is TClassTypeDef) then
@@ -83,6 +88,7 @@ constructor TBlock.Create(ctx: TParserContext; childSymbols: array of TSymbol; s
 var
     nextTokenKind: TTokenKind;
     i: integer;
+    sym: TSymbol;
 begin
     tokenName := 'Block';
     ctx.Add(Self);
@@ -98,7 +104,11 @@ begin
         RegisterSymbolByName('Result', nil, skVariable, resultType, start);
 
     for i := 0 to length(childSymbols) - 1 do
-        RegisterSymbol(childSymbols[i].declaration, nil, childSymbols[i].kind, childSymbols[i].typeDef, start);
+    begin
+        sym := RegisterSymbol(childSymbols[i].declaration, nil, childSymbols[i].kind, childSymbols[i].typeDef, start);
+        sym.rangeToken := childSymbols[i].rangeToken;
+        sym.implRangeToken := childSymbols[i].implRangeToken;
+    end;
 
     RegisterInheritedMembers(selfType, start);
 

@@ -106,6 +106,8 @@ begin
 
     while nextReservedWord in [rwOpenParenthesis, rwOpenSquareBracket, rwHat, rwDot] do
     begin
+        if (typeDef <> nil) and (typeDef.kind in [tkProcedure, tkFunction]) then
+            break;
 
         case nextReservedWord of
             rwOpenParenthesis:

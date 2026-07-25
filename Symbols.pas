@@ -6,7 +6,7 @@ unit Symbols;
 interface
 
 uses
-    math, contnrs, Token, Identifier, TypeDefs, TypeDef;
+    math, contnrs, Token, Identifier, TypeDefs, TypeDef, ParserContext;
 
 type
     TSymbolKind = (skUnknown, skConstant, skTypedConstant, skTypeName, skVariable, skProcedure, skFunction, skConstructor, skDestructor, skUnitName);
@@ -16,6 +16,7 @@ type
         name: shortstring;
         displayName: shortstring;
         rangeToken: TToken;
+        implRangeToken: TToken;
         uniquePrefix: shortstring;
         parent: TSymbol;
         declaration: TIdentifier;
@@ -27,6 +28,7 @@ type
         constructor Create;
         destructor Destroy; override;
         procedure AddReference(ident: TIdentifier);
+        function GetCurrentReturnType(ctx: TParserContext): TTypeDef;
     end;
 
     TTryAddOverrideResult = (ovNotApplicable, ovNotFound, ovExactDuplicate, ovAdded);
@@ -206,6 +208,7 @@ destructor TSymbol.Destroy;
 begin
     declaration := nil;
     implementationDecl := nil;
+    implRangeToken := nil;
     SetLength(references, 0);
     SetLength(children, 0);
 end;
@@ -221,6 +224,19 @@ begin
     ident.name := name;
     ident.typeDef := typeDef;
     ident.tokenName := 'SymbRef';
+end;
+
+function TSymbol.GetCurrentReturnType(ctx: TParserContext): TTypeDef;
+begin
+    Result := nil;
+    if (kind in [skProcedure, skFunction, skConstructor, skDestructor]) and
+       (typeDef <> nil) and (typeDef is TRoutineTypeDef) then
+    begin
+        if (rangeToken <> nil) and (rangeToken.endMarker = nil) and (rangeToken.start <= ctx.Cursor) then
+            Result := TRoutineTypeDef(typeDef).returnType
+        else if (implRangeToken <> nil) and (implRangeToken.endMarker = nil) and (implRangeToken.start <= ctx.Cursor) then
+            Result := TRoutineTypeDef(typeDef).returnType;
+    end;
 end;
 
 end.

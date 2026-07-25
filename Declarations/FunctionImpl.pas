@@ -6,7 +6,7 @@ unit FunctionImpl;
 interface
 
 uses
-    ParserContext, Token, TypedToken, TypeDef, TypeDefs, Identifier;
+    ParserContext, Token, TypedToken, TypeDef, TypeDefs, Identifier, Modifiers;
 
 type
     TFunctionImpl = class(TToken)
@@ -38,6 +38,11 @@ var
     s: string;
     overrideResult: TTryAddOverrideResult;
     routineTypeDef: TRoutineTypeDef;
+    funcModifiers: TFunctionModifiers;
+    methodModifiers: TMethodModifiers;
+    isMethodModifier, isFunctionModifier: boolean;
+    ident: TIdentifier;
+    isMethod: boolean;
 begin
     ctx.Add(Self);
     tokenName := 'Function';
@@ -184,12 +189,95 @@ begin
     else
         routineTypeDef.returnType := nil;
 
+    TReservedWord.Create(ctx, rwSemiColon, false);
+
+    FillChar(funcModifiers, SizeOf(funcModifiers), 0);
+    FillChar(methodModifiers, SizeOf(methodModifiers), 0);
+    isMethod := (symbolParent <> nil) and (symbolParent.kind = skTypeName);
+
+    repeat
+        ctx.SkipTrivia;
+        s := LowerCase(PeekIdentifier(ctx));
+        isMethodModifier := true;
+        case s of
+            'abstract': methodModifiers.abstract := true;
+            'dynamic': methodModifiers.dynamic := true;
+            'override': methodModifiers.override := true;
+            'reintroduce': methodModifiers.reintroduce := true;
+            'virtual': methodModifiers.virtual := true;
+        else
+            isMethodModifier := false;
+        end;
+
+        isFunctionModifier := true;
+        case s of
+            'cdecl': funcModifiers.cdecl := true;
+            'cppdecl': funcModifiers.cppdecl := true;
+            'export': funcModifiers.export := true;
+            'forward': funcModifiers.forward := true;
+            'hardfloat': funcModifiers.hardfloat := true;
+            'inline': funcModifiers.inline := true;
+            'iocheck': funcModifiers.iocheck := true;
+            'local': funcModifiers.local := true;
+            'MS_ABI_Default': funcModifiers.MS_ABI_Default := true;
+            'MS_ABI_CDecl': funcModifiers.MS_ABI_CDecl := true;
+            'MWPascal': funcModifiers.MWPascal := true;
+            'noreturn': funcModifiers.noreturn := true;
+            'nostackframe': funcModifiers.nostackframe := true;
+            'overload': funcModifiers.overload := true;
+            'pascal': funcModifiers.pascal := true;
+            'register': funcModifiers.register := true;
+            'safecall': funcModifiers.safecall := true;
+            'saveregisters': funcModifiers.saveregisters := true;
+            'softload': funcModifiers.softload := true;
+            'stdcall': funcModifiers.stdcall := true;
+            'SYSV_ABI_Default': funcModifiers.SYSV_ABI_Default := true;
+            'SYSV_ABI_CDecl': funcModifiers.SYSV_ABI_CDecl := true;
+            'varargs': funcModifiers.varargs := true;
+            'vectorcall': funcModifiers.vectorcall := true;
+            'winapi': funcModifiers.winapi := true;
+        else
+            isFunctionModifier := false;
+        end;
+
+        if not isMethodModifier and not isFunctionModifier then
+            break;
+
+        ident := TIdentifier.Create(ctx, false);
+        TReservedWord.Create(ctx, rwSemiColon, false);
+
+        if not isMethod and isMethodModifier then
+        begin
+            ident.state := tsError;
+            ident.errorMessage := 'Method modifier ''' + s + ''' can only be used with class and object methods!';
+        end;
+
+        if isMethod and (s = 'export') then
+        begin
+            ident.state := tsError;
+            ident.errorMessage := 'Methods cannot be exported!';
+        end;
+
+    until ctx.IsEOF;
+
+    if funcModifiers.forward then
+    begin
+        case symbolKind of
+            skFunction: tokenName := 'FunctionDecl';
+            skProcedure: tokenName := 'ProcedureDecl';
+            skConstructor: tokenName := 'ConstructorDecl';
+            skDestructor: tokenName := 'DestructorDecl';
+        end;
+    end;
+
     if symbolField <> nil then
     begin
         symbol := symbolField;
         symbol.implementationDecl := nameIdent;
         nameIdent.symbol := symbol;
         nameIdent.tokenName := 'SymbDecl';
+        if not funcModifiers.forward then
+            symbol.implRangeToken := Self;
     end
     else
     begin
@@ -213,14 +301,21 @@ begin
                 symbol.rangeToken := Self;
             end;
             symbol.implementationDecl := nameIdent;
+            if not funcModifiers.forward then
+                symbol.implRangeToken := Self;
         end;
+    end;
+
+    if funcModifiers.forward then
+    begin
+        state := tsCorrect;
+        ctx.MarkEndOfToken(Self);
+        exit;
     end;
 
     // TODO: result variable variable
 
     // TODO: modifiers
-
-    TReservedWord.Create(ctx, rwSemiColon, false);
 
     // TODO: asm
 

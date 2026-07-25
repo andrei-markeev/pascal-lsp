@@ -191,6 +191,7 @@ begin
             'cdecl': funcModifiers.cdecl := true;
             'cppdecl': funcModifiers.cppdecl := true;
             'export': funcModifiers.export := true;
+            'forward': funcModifiers.forward := true;
             'hardfloat': funcModifiers.hardfloat := true;
             'inline': funcModifiers.inline := true;
             'iocheck': funcModifiers.iocheck := true;
