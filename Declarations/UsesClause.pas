@@ -36,7 +36,7 @@ begin
     Close(F);
 end;
 
-procedure LoadAndParseUnit(const UnitName: string; ctx: TParserContext);
+function LoadAndParseUnit(const UnitName: string; ctx: TParserContext): boolean;
 var
     BaseDir, UnitPath, Content: string;
     UnitCtx: TParserContext;
@@ -45,6 +45,7 @@ var
     Found: boolean;
     SearchPath: string;
 begin
+    Result := true;
     if LoadedUnits.Find(LowerCase(UnitName)) <> nil then
         Exit;
 
@@ -75,7 +76,10 @@ begin
     end;
 
     if not Found then
+    begin
+        Result := false;
         Exit;
+    end;
 
     Content := ReadFileToString(UnitPath);
 
@@ -105,8 +109,14 @@ begin
 
     repeat
         ident := TIdentifier.Create(ctx, false);
-        LoadSystemUnit(ident.GetStr, ctx);
-        LoadAndParseUnit(ident.GetStr, ctx);
+        if (ident.state <> tsMissing) and (ident.len > 0) then
+        begin
+            if not LoadSystemUnit(ident.GetStr, ctx) and not LoadAndParseUnit(ident.GetStr, ctx) then
+            begin
+                ident.state := tsError;
+                ident.errorMessage := 'Cannot find unit ''' + ident.GetStr + '''!';
+            end;
+        end;
         nextReservedWord := DetermineReservedWord(ctx);
         if nextReservedWord = rwComma then
             TReservedWord.Create(ctx, rwComma, true);

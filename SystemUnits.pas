@@ -9,7 +9,7 @@ uses
     ParserContext;
 
 procedure RegisterSystemSymbols(ctx: TParserContext);
-procedure LoadSystemUnit(unitName: string; ctx: TParserContext);
+function LoadSystemUnit(unitName: string; ctx: TParserContext): boolean;
 
 implementation
 
@@ -331,14 +331,18 @@ begin
     functionType_Array_Integer.Free;
 end;
 
-procedure LoadSystemUnit(unitName: string; ctx: TParserContext);
+function LoadSystemUnit(unitName: string; ctx: TParserContext): boolean;
 begin
+    Result := true;
     case LowerCase(unitName) of
         'classes': classesMock.Load(ctx);
         'contnrs': contnrsMock.Load(ctx);
         'math': mathMock.Load(ctx);
         'sysutils': sysutilsMock.Load(ctx);
         'strings': stringsMock.Load(ctx);
+        'system': ;
+    else
+        Result := false;
     end;
 end;
 
