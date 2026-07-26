@@ -24,9 +24,12 @@ type
         size: longword;
         visibility: TVisibility;
         kind: TTypeKind;
+        typeSymbol: TObject;
         constructor Create(ctx: TTypeDefTracker = nil; AKind: TTypeKind = tkUnknown; ASize: longword = 0; AVisibility: TVisibility = vPublic);
         function Clone: TTypeDef; virtual;
     end;
+
+
 
 implementation
 
@@ -36,6 +39,7 @@ begin
     kind := AKind;
     size := ASize;
     visibility := AVisibility;
+    typeSymbol := nil;
     if ctx <> nil then
         ctx.TrackTypeDef(Self);
 end;

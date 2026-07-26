@@ -40,7 +40,7 @@ begin
             fieldDecl := TVarDecl.Create(ctx, parentSymbols);
             for i := 0 to length(fieldDecl.idents) - 1 do
             begin
-                recTypeDef.recordFields.Add(fieldDecl.idents[i].GetStr(), fieldDecl.varType);
+                recTypeDef.AddMember(fieldDecl.idents[i].GetStr(), fieldDecl.varType);
                 if fieldDecl.varType <> nil then
                     inc(recTypeDef.size, fieldDecl.varType.size);
             end;
@@ -71,7 +71,7 @@ begin
                         tagSymbols[p] := RegisterSymbol(tagIdent, parentSymbols[p], skVariable, tagType, ctx.Cursor);
                     
                     TTypeSpec.Create(ctx, tagSymbols, tagType);
-                    recTypeDef.recordFields.Add(tagIdent.GetStr(), tagType);
+                    recTypeDef.AddMember(tagIdent.GetStr(), tagType);
                     if tagType <> nil then
                         inc(recTypeDef.size, tagType.size);
                 end

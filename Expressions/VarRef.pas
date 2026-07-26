@@ -53,7 +53,7 @@ var
     text: string;
     canBeTypecast: boolean;
     nextIsComma: boolean;
-    currType: TTypeDef;
+    curType: TTypeDef;
 begin
     tokenName := 'VarRef';
     if baseRef <> nil then
@@ -143,20 +143,20 @@ begin
                 begin
                     reservedWordToken := TReservedWord.Create(ctx, rwOpenSquareBracket, true);
 
-                    if (typeDef <> nil) and (typeDef.kind = tkClass) then
+                     if (typeDef <> nil) and (typeDef.kind = tkClass) then
                     begin
-                        currType := typeDef;
+                        curType := typeDef;
                         found := nil;
-                        while currType <> nil do
+                        while curType <> nil do
                         begin
-                            if (currType.kind = tkClass) and (currType is TClassTypeDef) then
+                            if (curType.kind = tkClass) and (curType is TClassTypeDef) then
                             begin
-                                found := TClassTypeDef(currType).classFields.Find('strings');
+                                found := TClassTypeDef(curType).FindMember('strings');
                                 if found = nil then
-                                    found := TClassTypeDef(currType).classFields.Find('items');
+                                    found := TClassTypeDef(curType).FindMember('items');
                                 if found <> nil then
                                     break;
-                                currType := TClassTypeDef(currType).parentClass;
+                                curType := TClassTypeDef(curType).parentClass;
                             end
                             else
                                 break;
@@ -257,50 +257,42 @@ begin
                         text := ident.GetStr();
                         
                         found := nil;
-                        currType := typeDef;
-                        while currType <> nil do
+                        curType := typeDef;
+                        while curType <> nil do
                         begin
-                            case currType.kind of
+                            case curType.kind of
                                 tkRecord:
                                     begin
-                                        if currType is TRecordTypeDef then
-                                        begin
-                                            found := TRecordTypeDef(currType).recordFields.Find(text);
-                                            if found = nil then
-                                                found := TRecordTypeDef(currType).recordFields.Find(LowerCase(text));
-                                        end;
+                                        if curType is TRecordTypeDef then
+                                            found := TRecordTypeDef(curType).FindMember(text);
                                         break;
                                     end;
                                 tkObject:
                                     begin
-                                        if currType is TObjectTypeDef then
+                                        if curType is TObjectTypeDef then
                                         begin
-                                            found := TObjectTypeDef(currType).objectFields.Find(text);
-                                            if found = nil then
-                                                found := TObjectTypeDef(currType).objectFields.Find(LowerCase(text));
+                                            found := TObjectTypeDef(curType).FindMember(text);
                                             if found <> nil then
                                                 break;
-                                            currType := TObjectTypeDef(currType).parentObject;
+                                            curType := TObjectTypeDef(curType).parentObject;
                                         end
                                         else
                                             break;
                                     end;
                                 tkClass:
                                     begin
-                                        if currType is TClassTypeDef then
+                                        if curType is TClassTypeDef then
                                         begin
-                                            found := TClassTypeDef(currType).classFields.Find(text);
-                                            if found = nil then
-                                                found := TClassTypeDef(currType).classFields.Find(LowerCase(text));
+                                            found := TClassTypeDef(curType).FindMember(text);
                                             if found <> nil then
                                                 break;
-                                            currType := TClassTypeDef(currType).parentClass;
+                                            curType := TClassTypeDef(curType).parentClass;
                                         end
                                         else
                                             break;
                                     end;
                             else
-                                currType := nil;
+                                curType := nil;
                             end;
                         end;
 

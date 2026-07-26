@@ -60,7 +60,7 @@ begin
         if parentSymbols[i] <> nil then
             parentSymbols[i].typeDef := typeDefToFill;
 
-    classTypeDef.classFields.Add('Free', voidProcedureType);
+    classTypeDef.AddMember('Free', voidProcedureType);
 
     // TODO: packed classes
 
@@ -222,7 +222,7 @@ begin
                             fieldDecl.varType.visibility := visibility;
                         end;
                     end;
-                    classTypeDef.classFields.Add(fieldDecl.idents[i].GetStr(), fieldDecl.varType);
+                    classTypeDef.AddMember(fieldDecl.idents[i].GetStr(), fieldDecl.varType);
                 end;
                 TReservedWord.Create(ctx, rwSemiColon, false);
             end;
@@ -234,8 +234,8 @@ begin
             funcDecl := TFunctionDecl.Create(ctx, nextTokenKind.reservedWordKind, parentSymbols);
             if funcDecl.funcType <> nil then
                 funcDecl.funcType.visibility := visibility;
-            if classTypeDef.classFields.Find(funcDecl.nameIdent.GetStr()) = nil then
-                classTypeDef.classFields.Add(funcDecl.nameIdent.GetStr(), funcDecl.funcType);
+            if classTypeDef.FindMember(funcDecl.nameIdent.GetStr()) = nil then
+                classTypeDef.AddMember(funcDecl.nameIdent.GetStr(), funcDecl.funcType);
         end;
 
         nextTokenKind := DetermineNextTokenKind(ctx);

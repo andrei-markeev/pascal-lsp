@@ -13,6 +13,7 @@ type
         token: TToken;
         parentScope: TScope;
         symbolsList: TFPHashList;
+        context: TParserContext;
         constructor Create;
         destructor Destroy; override;
     end;
@@ -38,6 +39,7 @@ begin
     ScopesList[l] := TScope.Create;
     ScopesList[l].token := scopeToken;
     ScopesList[l].parentScope := p;
+    ScopesList[l].context := FindContextForCursor(scopeToken.start);
 end;
 
 function FindScope(cursor: PChar): TScope;
@@ -45,7 +47,7 @@ var
     i: integer;
     unbound: boolean;
     s: TScope;
-    cursorCtx, scopeCtx: TParserContext;
+    cursorCtx: TParserContext;
 begin
 
     Result := ScopesList[0];
@@ -57,8 +59,7 @@ begin
         if s.token = nil then
             continue;
             
-        scopeCtx := FindContextForCursor(s.token.start);
-        if scopeCtx <> cursorCtx then
+        if s.context <> cursorCtx then
             continue;
 
         unbound := not s.token.isPrimitive and (s.token.endMarker = nil);
@@ -74,6 +75,7 @@ end;
 constructor TScope.Create;
 begin
     symbolsList := TFPHashList.Create;
+    context := nil;
 end;
 
 destructor TScope.Destroy;

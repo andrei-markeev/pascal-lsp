@@ -6,12 +6,11 @@ unit RecordTypeDef;
 interface
 
 uses
-    contnrs, TypeDef;
+    TypeDef, StructuredTypeDef;
 
 type
-    TRecordTypeDef = class(TTypeDef)
+    TRecordTypeDef = class(TStructuredTypeDef)
     public
-        recordFields: TFPHashList;
         constructor Create(ctx: TTypeDefTracker = nil);
         destructor Destroy; override;
     end;
@@ -20,13 +19,11 @@ implementation
 
 constructor TRecordTypeDef.Create(ctx: TTypeDefTracker);
 begin
-    inherited Create(ctx, tkRecord, 0);
-    recordFields := TFPHashList.Create;
+    inherited Create(ctx, tkRecord);
 end;
 
 destructor TRecordTypeDef.Destroy;
 begin
-    recordFields.Free;
     inherited Destroy;
 end;
 

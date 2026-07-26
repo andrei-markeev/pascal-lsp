@@ -19,31 +19,9 @@ implementation
 uses
     CompilationMode, Scopes, ConstSection, TypeSection, VarSection, FunctionImpl, CompoundStatement, ClassTypeDef, ObjectTypeDef;
 
-function FindClassSymbol(typeDef: TTypeDef): TSymbol;
-var
-    i, j: integer;
-    scope: TScope;
-    sym: TSymbol;
-begin
-    Result := nil;
-    for i := 0 to length(ScopesList) - 1 do
-    begin
-        scope := ScopesList[i];
-        for j := 0 to scope.symbolsList.Count - 1 do
-        begin
-            sym := TSymbol(scope.symbolsList.Items[j]);
-            if (sym <> nil) and (sym.kind = skTypeName) and (sym.typeDef = typeDef) then
-            begin
-                Result := sym;
-                exit;
-            end;
-        end;
-    end;
-end;
-
 procedure RegisterInheritedMembers(selfType: TTypeDef; start: PChar);
 var
-    currClass: TTypeDef;
+    curClass: TTypeDef;
     classSym: TSymbol;
     childName: shortstring;
     i: integer;
@@ -53,15 +31,15 @@ begin
         exit;
 
     if (selfType.kind = tkClass) and (selfType is TClassTypeDef) then
-        currClass := TClassTypeDef(selfType).parentClass
+        curClass := TClassTypeDef(selfType).parentClass
     else if (selfType.kind = tkObject) and (selfType is TObjectTypeDef) then
-        currClass := TObjectTypeDef(selfType).parentObject
+        curClass := TObjectTypeDef(selfType).parentObject
     else
-        currClass := nil;
+        curClass := nil;
 
-    while currClass <> nil do
+    while curClass <> nil do
     begin
-        classSym := FindClassSymbol(currClass);
+        classSym := TSymbol(curClass.typeSymbol);
         if classSym <> nil then
         begin
             for i := 0 to length(classSym.children) - 1 do
@@ -75,12 +53,12 @@ begin
                 end;
             end;
         end;
-        if (currClass.kind = tkClass) and (currClass is TClassTypeDef) then
-            currClass := TClassTypeDef(currClass).parentClass
-        else if (currClass.kind = tkObject) and (currClass is TObjectTypeDef) then
-            currClass := TObjectTypeDef(currClass).parentObject
+        if (curClass.kind = tkClass) and (curClass is TClassTypeDef) then
+            curClass := TClassTypeDef(curClass).parentClass
+        else if (curClass.kind = tkObject) and (curClass is TObjectTypeDef) then
+            curClass := TObjectTypeDef(curClass).parentObject
         else
-            currClass := nil;
+            curClass := nil;
     end;
 end;
 

@@ -91,8 +91,8 @@ end;
 procedure HandleCompletion(WriteStream: TStream; Id: TJSONData; Params: TJSONData);
 var
   Uri, Content, Response, ItemsJson: string;
-  TargetLine, TargetCharacter, P, idx, depth, chainCount, k, i: integer;
-  FilterPrefix, IdentStr, RootIdent, NextIdent: string;
+  TargetLine, TargetCharacter, P, idx, depth, chainCount, k, i, identEnd: integer;
+  IdentStr, RootIdent, NextIdent: string;
   Chain: array of string;
   CursorPChar: PChar;
   Sym, SelfSym: TSymbol;
@@ -125,12 +125,8 @@ begin
       begin
         idx := P - 1;
 
-        FilterPrefix := '';
         while (idx >= 1) and (Content[idx] in ['a'..'z', 'A'..'Z', '_', '0'..'9']) do
-        begin
-          FilterPrefix := Content[idx] + FilterPrefix;
           dec(idx);
-        end;
 
         while (idx >= 1) and (Content[idx] in [' ', #9]) do
           dec(idx);
@@ -175,12 +171,14 @@ begin
             if (idx >= 1) and (Content[idx] = '^') then
               dec(idx);
 
-            IdentStr := '';
+            identEnd := idx;
             while (idx >= 1) and (Content[idx] in ['a'..'z', 'A'..'Z', '_', '0'..'9']) do
-            begin
-              IdentStr := Content[idx] + IdentStr;
               dec(idx);
-            end;
+
+            if identEnd > idx then
+              IdentStr := Copy(Content, idx + 1, identEnd - idx)
+            else
+              IdentStr := '';
 
             if IdentStr = '' then break;
 
@@ -243,23 +241,17 @@ begin
               case CurrType.kind of
                 tkRecord:
                   begin
-                    if (CurrType is TRecordTypeDef) and (TRecordTypeDef(CurrType).recordFields <> nil) then
-                    begin
-                      Found := TRecordTypeDef(CurrType).recordFields.Find(NextIdent);
-                      if Found = nil then
-                        Found := TRecordTypeDef(CurrType).recordFields.Find(LowerCase(NextIdent));
-                    end;
+                    if CurrType is TRecordTypeDef then
+                      Found := TRecordTypeDef(CurrType).FindMember(NextIdent);
                   end;
                 tkClass:
                   begin
                     CType := CurrType;
                     while CType <> nil do
                     begin
-                      if (CType.kind = tkClass) and (CType is TClassTypeDef) and (TClassTypeDef(CType).classFields <> nil) then
+                      if (CType.kind = tkClass) and (CType is TClassTypeDef) then
                       begin
-                        Found := TClassTypeDef(CType).classFields.Find(NextIdent);
-                        if Found = nil then
-                          Found := TClassTypeDef(CType).classFields.Find(LowerCase(NextIdent));
+                        Found := TClassTypeDef(CType).FindMember(NextIdent);
                         if Found <> nil then break;
                         CType := TClassTypeDef(CType).parentClass;
                       end
@@ -272,11 +264,9 @@ begin
                     OType := CurrType;
                     while OType <> nil do
                     begin
-                      if (OType.kind = tkObject) and (OType is TObjectTypeDef) and (TObjectTypeDef(OType).objectFields <> nil) then
+                      if (OType.kind = tkObject) and (OType is TObjectTypeDef) then
                       begin
-                        Found := TObjectTypeDef(OType).objectFields.Find(NextIdent);
-                        if Found = nil then
-                          Found := TObjectTypeDef(OType).objectFields.Find(LowerCase(NextIdent));
+                        Found := TObjectTypeDef(OType).FindMember(NextIdent);
                         if Found <> nil then break;
                         OType := TObjectTypeDef(OType).parentObject;
                       end
@@ -308,16 +298,18 @@ begin
                 CurrType := TDynamicArrayTypeDef(CurrType).typeOfDynValues;
 
               AddedNames := TStringList.Create;
+              AddedNames.Sorted := true;
+              AddedNames.Duplicates := dupIgnore;
               try
                 case CurrType.kind of
                   tkRecord:
                     begin
-                      if (CurrType is TRecordTypeDef) and (TRecordTypeDef(CurrType).recordFields <> nil) then
+                      if CurrType is TRecordTypeDef then
                       begin
-                        for i := 0 to TRecordTypeDef(CurrType).recordFields.Count - 1 do
+                        for i := 0 to TRecordTypeDef(CurrType).MemberCount - 1 do
                         begin
-                          IdentStr := TRecordTypeDef(CurrType).recordFields.NameOfIndex(i);
-                          MemberType := TTypeDef(TRecordTypeDef(CurrType).recordFields.Items[i]);
+                          IdentStr := TRecordTypeDef(CurrType).GetMemberName(i);
+                          MemberType := TRecordTypeDef(CurrType).GetMemberType(i);
                           AddCompletionItem(ItemsJson, AddedNames, IdentStr, MemberType, CurrentClassType, CurrType);
                         end;
                       end;
@@ -327,12 +319,12 @@ begin
                       CType := CurrType;
                       while CType <> nil do
                       begin
-                        if (CType.kind = tkClass) and (CType is TClassTypeDef) and (TClassTypeDef(CType).classFields <> nil) then
+                        if (CType.kind = tkClass) and (CType is TClassTypeDef) then
                         begin
-                          for i := 0 to TClassTypeDef(CType).classFields.Count - 1 do
+                          for i := 0 to TClassTypeDef(CType).MemberCount - 1 do
                           begin
-                            IdentStr := TClassTypeDef(CType).classFields.NameOfIndex(i);
-                            MemberType := TTypeDef(TClassTypeDef(CType).classFields.Items[i]);
+                            IdentStr := TClassTypeDef(CType).GetMemberName(i);
+                            MemberType := TClassTypeDef(CType).GetMemberType(i);
                             AddCompletionItem(ItemsJson, AddedNames, IdentStr, MemberType, CurrentClassType, CType);
                           end;
                           CType := TClassTypeDef(CType).parentClass;
@@ -346,12 +338,12 @@ begin
                       OType := CurrType;
                       while OType <> nil do
                       begin
-                        if (OType.kind = tkObject) and (OType is TObjectTypeDef) and (TObjectTypeDef(OType).objectFields <> nil) then
+                        if (OType.kind = tkObject) and (OType is TObjectTypeDef) then
                         begin
-                          for i := 0 to TObjectTypeDef(OType).objectFields.Count - 1 do
+                          for i := 0 to TObjectTypeDef(OType).MemberCount - 1 do
                           begin
-                            IdentStr := TObjectTypeDef(OType).objectFields.NameOfIndex(i);
-                            MemberType := TTypeDef(TObjectTypeDef(OType).objectFields.Items[i]);
+                            IdentStr := TObjectTypeDef(OType).GetMemberName(i);
+                            MemberType := TObjectTypeDef(OType).GetMemberType(i);
                             AddCompletionItem(ItemsJson, AddedNames, IdentStr, MemberType, CurrentClassType, OType);
                           end;
                           OType := TObjectTypeDef(OType).parentObject;

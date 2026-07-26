@@ -6,12 +6,11 @@ unit ObjectTypeDef;
 interface
 
 uses
-    contnrs, TypeDef;
+    TypeDef, StructuredTypeDef;
 
 type
-    TObjectTypeDef = class(TTypeDef)
+    TObjectTypeDef = class(TStructuredTypeDef)
     public
-        objectFields: TFPHashList;
         parentObject: TTypeDef;
         constructor Create(ctx: TTypeDefTracker = nil);
         destructor Destroy; override;
@@ -21,13 +20,11 @@ implementation
 
 constructor TObjectTypeDef.Create(ctx: TTypeDefTracker);
 begin
-    inherited Create(ctx, tkObject, 0);
-    objectFields := TFPHashList.Create;
+    inherited Create(ctx, tkObject);
 end;
 
 destructor TObjectTypeDef.Destroy;
 begin
-    objectFields.Free;
     inherited Destroy;
 end;
 

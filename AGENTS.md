@@ -5,6 +5,7 @@ This document provides a high-level guide to the codebase architecture, design p
 ## 1. High-Level Architecture & Design Principles
 - **No External Dependencies**: The parser is written from scratch in Object Pascal using FPC (Free Pascal Compiler) without depending on Lazarus Code Tools or other heavy external libraries. It is designed for maximum speed and minimal memory footprint.
 - **OO Recursive Descent / In-Token Parsing**: Parsing logic is directly embedded in the constructor of `TToken` subclasses (e.g., `ProgramFile.pas`, `UnitFile.pas`, `Block.pas`, `VarDecl.pas`). Instantiating a token parses its corresponding structure from the `TParserContext` by advancing the cursor, skipping trivia (comments, spaces), and appending the token or its children to the context's global token list.
+- **Compatible with Large Codebases**: We should be extremely careful with performance and memory consumption on the hot path. Choose data structures that are fast, preferably O(1). Tokens, symbols and other structures that scale linearly with amount of code in the codebase, should be extremely thin: every byte matters if we're working with a codebase of millions of lines of code.
 
 ## 2. Error Recovery & Safety Guidelines
 - **Landmark Anchors**: To prevent syntax errors from causing cascading failures, the parser uses a synchronization recovery mechanism. Landmarked keywords (like `rwConst`, `rwVar`, `rwBegin`, `rwSemiColon`) are registered as active anchors.

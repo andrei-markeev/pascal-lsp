@@ -6,12 +6,11 @@ unit ClassTypeDef;
 interface
 
 uses
-    contnrs, TypeDef;
+    TypeDef, StructuredTypeDef;
 
 type
-    TClassTypeDef = class(TTypeDef)
+    TClassTypeDef = class(TStructuredTypeDef)
     public
-        classFields: TFPHashList;
         parentClass: TTypeDef;
         constructor Create(ctx: TTypeDefTracker = nil);
         destructor Destroy; override;
@@ -22,12 +21,11 @@ implementation
 constructor TClassTypeDef.Create(ctx: TTypeDefTracker);
 begin
     inherited Create(ctx, tkClass, 8);
-    classFields := TFPHashList.Create;
 end;
 
 destructor TClassTypeDef.Destroy;
 begin
-    classFields.Free;
+    inherited Destroy;
 end;
 
 end.

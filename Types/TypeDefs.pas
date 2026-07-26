@@ -7,7 +7,7 @@ interface
 
 uses
     contnrs, classes, CompilationMode,
-    TypeDef, IntegerTypeDef, CharRangeTypeDef, EnumTypeDef, EnumMemberTypeDef,
+    TypeDef, StructuredTypeDef, IntegerTypeDef, CharRangeTypeDef, EnumTypeDef, EnumMemberTypeDef,
     PointerTypeDef, ArrayTypeDef, DynamicArrayTypeDef, SetTypeDef, RecordTypeDef,
     ObjectTypeDef, ClassTypeDef, RoutineTypeDef, PrimitiveTypeDef;
 
