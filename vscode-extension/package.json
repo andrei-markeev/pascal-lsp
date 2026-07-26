@@ -21,6 +21,13 @@
         "extensions": [".pas", ".pp", ".inc", ".lpr"]
       }
     ],
+    "grammars": [
+      {
+        "language": "pascal",
+        "scopeName": "source.pascal",
+        "path": "./syntaxes/pascal.tmLanguage.json"
+      }
+    ],
     "configuration": {
       "type": "object",
       "title": "Pascal LSP Client Configuration",
@@ -54,7 +61,25 @@
           "description": "Scan workspace subfolders recursively (up to depth of 3, ignoring build/system folders) to discover unit directories."
         }
       }
-    }
+    },
+    "semanticTokenScopes": [
+      {
+        "language": "pascal",
+        "scopes": {
+          "type": ["entity.name.type.pascal"],
+          "class": ["entity.name.type.class.pascal", "entity.name.type.pascal"],
+          "struct": ["entity.name.type.struct.pascal", "entity.name.type.pascal"],
+          "interface": ["entity.name.type.interface.pascal", "entity.name.type.pascal"],
+          "function": ["entity.name.function.pascal"],
+          "method": ["entity.name.function.member.pascal", "entity.name.function.pascal"],
+          "parameter": ["variable.parameter.pascal"],
+          "property": ["variable.other.property.pascal"],
+          "variable": ["variable.other.pascal"],
+          "namespace": ["entity.name.namespace.pascal"],
+          "keyword": ["keyword.control.pascal"]
+        }
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

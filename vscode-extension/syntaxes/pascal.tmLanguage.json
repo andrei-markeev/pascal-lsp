@@ -1,0 +1,183 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Pascal",
+  "scopeName": "source.pascal",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#routine-declarations"
+    },
+    {
+      "include": "#type-declarations"
+    },
+    {
+      "include": "#built-in-types"
+    },
+    {
+      "include": "#custom-types"
+    },
+    {
+      "include": "#routine-calls"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.pascal",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.curly.pascal",
+          "begin": "\\{",
+          "end": "\\}"
+        },
+        {
+          "name": "comment.block.parenthesis.pascal",
+          "begin": "\\(\\*",
+          "end": "\\*\\)"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.single.pascal",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.pascal",
+              "match": "''"
+            }
+          ]
+        },
+        {
+          "name": "constant.character.control.pascal",
+          "match": "#([0-9]+|\\$[0-9a-fA-F]+)"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.hex.pascal",
+          "match": "\\$[0-9a-fA-F]+"
+        },
+        {
+          "name": "constant.numeric.float.pascal",
+          "match": "\\b[0-9]+\\.[0-9]+([eE][+-]?[0-9]+)?\\b"
+        },
+        {
+          "name": "constant.numeric.decimal.pascal",
+          "match": "\\b[0-9]+\\b"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.pascal",
+          "match": "(?i)\\b(begin|end|if|then|else|case|of|while|do|for|to|downto|repeat|until|try|except|finally|raise|with|goto|break|continue|exit|program|unit|library|interface|implementation|initialization|finalization|uses|var|const|type|resourcestring|threadvar|out|label|procedure|function|constructor|destructor|operator|record|class|object|dispinterface|helper|sealed|abstract|generic|specialize|set|array|file|property)\\b"
+        },
+        {
+          "name": "keyword.other.modifier.pascal",
+          "match": "(?i)\\b(public|protected|private|published|strict|overload|override|virtual|dynamic|inline|static|assembler|cdecl|stdcall|register|pascal|safecall|external|reintroduce|forward|deprecated|platform|experimental)\\b"
+        },
+        {
+          "name": "keyword.operator.logical.pascal",
+          "match": "(?i)\\b(and|or|not|xor|shl|shr|div|mod|is|as|in)\\b"
+        },
+        {
+          "name": "keyword.operator.symbol.pascal",
+          "match": ":=|\\+|\\-|\\*|/|\\^|=|<>|<=|>=|<|>|@|\\.\\."
+        },
+        {
+          "name": "constant.language.pascal",
+          "match": "(?i)\\b(true|false|nil|self)\\b"
+        }
+      ]
+    },
+    "type-declarations": {
+      "patterns": [
+        {
+          "match": "(?i)\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*=\\s*(class|record|interface|object|helper|type|set|array|file|procedure|function)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.name.type.pascal"
+            },
+            "2": {
+              "name": "keyword.other.structure.pascal"
+            }
+          }
+        }
+      ]
+    },
+    "built-in-types": {
+      "patterns": [
+        {
+          "name": "entity.name.type.pascal support.type.pascal",
+          "match": "(?i)\\b(integer|cardinal|shortint|smallint|longint|int64|byte|word|longword|uint64|real|single|double|extended|comp|currency|boolean|bytebool|wordbool|longbool|char|widechar|ansichar|string|ansistring|widestring|unicodestring|shortstring|pointer|tobject|tclass|variant)\\b"
+        }
+      ]
+    },
+    "custom-types": {
+      "patterns": [
+        {
+          "name": "entity.name.type.class.pascal entity.name.type.pascal",
+          "match": "\\bT[A-Z][a-zA-Z0-9_]*\\b"
+        },
+        {
+          "name": "entity.name.type.interface.pascal entity.name.type.pascal",
+          "match": "\\bI[A-Z][a-zA-Z0-9_]*\\b"
+        },
+        {
+          "name": "entity.name.type.struct.pascal entity.name.type.pascal",
+          "match": "\\bR[A-Z][a-zA-Z0-9_]*\\b"
+        },
+        {
+          "name": "entity.name.type.pascal",
+          "match": "\\b[PE][A-Z][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    },
+    "routine-declarations": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(procedure|function|constructor|destructor)\\s+(([a-zA-Z_][a-zA-Z0-9_]*\\.)?([a-zA-Z_][a-zA-Z0-9_]*))",
+          "captures": {
+            "1": {
+              "name": "keyword.other.routine.pascal"
+            },
+            "2": {
+              "name": "entity.name.function.pascal"
+            }
+          }
+        }
+      ]
+    },
+    "routine-calls": {
+      "patterns": [
+        {
+          "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?=\\()",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.pascal"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
