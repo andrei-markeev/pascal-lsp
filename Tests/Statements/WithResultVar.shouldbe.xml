@@ -1,0 +1,18 @@
+<ProgramFile><RW>program</RW> <SymbDecl>WithResultVar</SymbDecl><RW>;</RW>
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TPoint</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>x</SymbDecl><RW>,</RW> <SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Function><RW>function</RW> <SymbDecl>MakePoint</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>ax</SymbDecl><RW>,</RW> <SymbDecl>ay</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><SymbRef>TPoint</SymbRef></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <With><RW>with</RW> <SymbRef>MakePoint</SymbRef> <RW>do</RW>
+    <Block><RW>begin</RW>
+        <Assignment><SymbRef>x</SymbRef> <RW>:=</RW> <SymbRef>ax</SymbRef></Assignment><RW>;</RW>
+        <Assignment><SymbRef>y</SymbRef> <RW>:=</RW> <SymbRef>ay</SymbRef></Assignment><RW>;</RW>
+    <RW>end</RW></Block></With><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

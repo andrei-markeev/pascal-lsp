@@ -21,7 +21,8 @@ uses TypeDefs, TypeDef, Scopes, Symbols, ReservedWord, Identifier, Statement;
 constructor TWithStatement.Create(ctx: TParserContext);
 var
     ident: TIdentifier;
-    symbol: TSymbol;
+    symbol, targetSymbol: TSymbol;
+    returnTypeDef, targetTypeDef: TTypeDef;
     i: integer;
 begin
     ctx.Add(Self);
@@ -35,19 +36,40 @@ begin
     start := ctx.Cursor;
     TReservedWord.Create(ctx, rwWith, true);
     ident := TIdentifier.Create(ctx, true);
+
     symbol := TSymbol(ident.symbol);
-    if (symbol <> nil) and (symbol.typeDef <> nil) and not (symbol.typeDef.kind in [tkRecord, tkObject, tkClass]) then
+    targetTypeDef := nil;
+    targetSymbol := nil;
+
+    if symbol <> nil then
+    begin
+        returnTypeDef := symbol.GetCurrentReturnType(ctx);
+        if returnTypeDef <> nil then
+        begin
+            targetTypeDef := returnTypeDef;
+            targetSymbol := TSymbol(targetTypeDef.typeSymbol);
+        end
+        else
+        begin
+            targetTypeDef := symbol.typeDef;
+            targetSymbol := symbol;
+            if (length(targetSymbol.children) = 0) and (targetTypeDef <> nil) then
+                targetSymbol := TSymbol(targetTypeDef.typeSymbol);
+        end;
+    end;
+
+    if (targetTypeDef <> nil) and not (targetTypeDef.kind in [tkRecord, tkObject, tkClass]) then
     begin
         state := tsError;
-        errorMessage := 'Operator ''with'' cannot be applied to a variable of type ' + TypeKindStr[ord(symbol.typeDef.kind)] + '!';
+        errorMessage := 'Operator ''with'' cannot be applied to a variable of type ' + TypeKindStr[ord(targetTypeDef.kind)] + '!';
     end;
     TReservedWord.Create(ctx, rwDo, false);
 
     RegisterScope(Self);
-    if symbol <> nil then
-        for i := 0 to length(symbol.children) - 1 do
-            if (symbol.children[i].typeDef <> nil) and (symbol.children[i].typeDef.visibility = vPublic) then // TODO: handle `with Self`
-                RegisterSymbol(symbol.children[i].declaration, nil, symbol.children[i].kind, symbol.children[i].typeDef, start);
+    if targetSymbol <> nil then
+        for i := 0 to length(targetSymbol.children) - 1 do
+            if (targetSymbol.children[i].typeDef <> nil) and (targetSymbol.children[i].typeDef.visibility = vPublic) then // TODO: handle `with Self`
+                RegisterSymbol(targetSymbol.children[i].declaration, nil, targetSymbol.children[i].kind, targetSymbol.children[i].typeDef, start);
 
     CreateStatement(ctx);
 

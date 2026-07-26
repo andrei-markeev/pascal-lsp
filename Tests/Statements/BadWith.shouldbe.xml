@@ -1,0 +1,18 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadWith</SymbDecl><RW>;</RW>
+
+<Function><RW>function</RW> <SymbDecl>DummyFunc</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>DummyFunc</SymbRef> <RW>:=</RW> <Num>1</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>n</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <With ERROR="Operator 'with' cannot be applied to a variable of type integer!"><RW>with</RW> <SymbRef>n</SymbRef> <RW>do</RW>
+    <Block><RW>begin</RW>
+    <RW>end</RW></Block></With><RW>;</RW>
+
+    <With ERROR="Operator 'with' cannot be applied to a variable of type function!"><RW>with</RW> <SymbRef>DummyFunc</SymbRef> <RW>do</RW>
+    <Block><RW>begin</RW>
+    <RW>end</RW></Block></With><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
