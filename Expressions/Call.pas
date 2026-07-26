@@ -25,7 +25,7 @@ var
     params: TParameterList;
     overloads: TFPList;
     n, match: integer;
-    hasMoreParams: boolean;
+    hasMoreParams, hasMatch: boolean;
     paramError: string;
 begin    
     ctx.InsertBefore(ref, Self);
@@ -70,43 +70,46 @@ begin
             expr := CreateExpression(ctx);
 
             if params <> nil then
-            repeat
-
-                while params.count <= n do
+            begin
+                hasMatch := false;
+                while not hasMatch do
                 begin
-                    inc(match);
-                    if (overloads = nil) or (match >= overloads.Count) then
+                    if params.count <= n then
                     begin
-                        if expr <> nil then
+                        inc(match);
+                        if (overloads = nil) or (match >= overloads.Count) then
+                        begin
+                            if expr <> nil then
+                            begin
+                                expr.state := tsError;
+                                expr.errorMessage := 'Too many parameters.';
+                            end;
+                            TReservedWord.Create(ctx, rwCloseParenthesis, false);
+                            ctx.MarkEndOfToken(Self);
+                            exit;
+                        end;
+                        params := TParameterList(TRoutineTypeDef(overloads.Items[match]).parameters);
+                    end
+                    else if (expr <> nil) and (params.items[n].typeDef <> nil) and not TypesAreAssignable(ctx, params.items[n].typeDef, expr.typeDef, paramError) then
+                    begin
+                        inc(match);
+                        if (overloads = nil) or (match >= overloads.Count) then
                         begin
                             expr.state := tsError;
-                            expr.errorMessage := 'Too many parameters.';
+                            if expr.errorMessage <> '' then
+                                expr.errorMessage := 'Invalid parameter: ' + expr.errorMessage
+                            else if paramError <> '' then
+                                expr.errorMessage := 'Invalid parameter: ' + paramError
+                            else
+                                expr.errorMessage := 'Invalid parameter.';
+                            break;
                         end;
-                        TReservedWord.Create(ctx, rwCloseParenthesis, false);
-                        ctx.MarkEndOfToken(Self);
-                        exit;
-                    end;
-                    params := TParameterList(TRoutineTypeDef(overloads.Items[match]).parameters);
+                        params := TParameterList(TRoutineTypeDef(overloads.Items[match]).parameters);
+                    end
+                    else
+                        hasMatch := true;
                 end;
-
-                if (expr <> nil) and (params.items[n].typeDef <> nil) and not TypesAreAssignable(ctx, params.items[n].typeDef, expr.typeDef, paramError) then
-                begin
-                    inc(match);
-                    if (overloads = nil) or (match >= overloads.Count) then
-                    begin
-                        expr.state := tsError;
-                        if expr.errorMessage <> '' then
-                            expr.errorMessage := 'Invalid parameter: ' + expr.errorMessage
-                        else if paramError <> '' then
-                            expr.errorMessage := 'Invalid parameter: ' + paramError
-                        else
-                            expr.errorMessage := 'Invalid parameter.';
-                        break;
-                    end;
-                    params := TParameterList(TRoutineTypeDef(overloads.Items[match]).parameters);
-                end;
-
-            until params.count > n;
+            end;
 
             inc(n);
 

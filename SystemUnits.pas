@@ -15,6 +15,7 @@ implementation
 
 uses
     classes, contnrs, CompilationMode, Symbols, TypeDefs, TypeDef, Parameters, RoutineTypeDef,
+    ArrayTypeDef, DynamicArrayTypeDef,
     SystemUnit, ClassesUnit, ContnrsUnit, MathUnit, SysutilsUnit, StringsUnit;
 
 procedure InitFunctionTypes; forward;
@@ -39,6 +40,9 @@ var
     functionType_String_String: TTypeDef;
     functionType_Copy: TTypeDef;
     procedureType_SetLength: TTypeDef;
+    functionType_Length_FPC: TTypeDef;
+    functionType_DynArray_Integer: TTypeDef;
+    functionType_Array_Integer: TTypeDef;
 
     classesMock: TClassesUnit;
     contnrsMock: TContnrsUnit;
@@ -117,7 +121,10 @@ begin
         RegisterSymbolByName('Copy', nil, skFunction, functionType_Copy, ctx.Cursor);
         // TODO: Delete
         // TODO: Insert
-        RegisterSymbolByName('Length', nil, skFunction, functionType_String_Integer, ctx.Cursor);
+        if ctx.mode >= cmFreePascal then
+            RegisterSymbolByName('Length', nil, skFunction, functionType_Length_FPC, ctx.Cursor)
+        else
+            RegisterSymbolByName('Length', nil, skFunction, functionType_String_Integer, ctx.Cursor);
         RegisterSymbolByName('Pos', nil, skFunction, functionType_constString_constString_LongInt, ctx.Cursor);
         // TODO: Str
         // TODO: Val
@@ -280,6 +287,22 @@ begin
         CreateParam(ptkValue, 'len', longintType)
     ]));
 
+    functionType_DynArray_Integer := CreateFunctionType(TParameterList.Create([
+        CreateParam(ptkValue, 's', TDynamicArrayTypeDef.Create(nil, nil))
+    ]), longintType);
+
+    functionType_Array_Integer := CreateFunctionType(TParameterList.Create([
+        CreateParam(ptkValue, 's', TArrayTypeDef.Create(nil, nil, nil))
+    ]), longintType);
+
+    functionType_Length_FPC := CreateOneParamFunctionType('s', ansiString64Type, longintType);
+    if functionType_Length_FPC is TRoutineTypeDef then
+    begin
+        TRoutineTypeDef(functionType_Length_FPC).overloads := TFPList.Create;
+        TRoutineTypeDef(functionType_Length_FPC).overloads.Add(functionType_DynArray_Integer);
+        TRoutineTypeDef(functionType_Length_FPC).overloads.Add(functionType_Array_Integer);
+    end;
+
 end;
 
 procedure FreeFunctionTypes;
@@ -303,6 +326,9 @@ begin
     functionType_String_String.Free;
     functionType_Copy.Free;
     procedureType_SetLength.Free;
+    functionType_Length_FPC.Free;
+    functionType_DynArray_Integer.Free;
+    functionType_Array_Integer.Free;
 end;
 
 procedure LoadSystemUnit(unitName: string; ctx: TParserContext);

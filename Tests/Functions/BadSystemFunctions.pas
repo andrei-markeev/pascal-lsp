@@ -14,4 +14,6 @@ begin
     Copy(s);
     Copy(s, 1);
     Copy(s, 'hello', 3);
+    Length();
+    Length(5);
 end.

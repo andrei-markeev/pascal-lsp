@@ -5,11 +5,16 @@
 
 <VarSection><RW>var</RW>
     <VarDecl><SymbDecl>s</SymbDecl><RW>,</RW> <SymbDecl>s2</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
-    <VarDecl><SymbDecl>arr</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>of</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ArraySpec></TypeSpec></VarDecl><RW>;</RW></VarSection>
+    <VarDecl><SymbDecl>arr</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW> <RW>of</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ArraySpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>arrStatic</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW><RW>[</RW><TypeSpec><RangeSpec><Num>0</Num><RW>..</RW><Num>9</Num></RangeSpec></TypeSpec><RW>]</RW> <RW>of</RW> <TypeSpec><Ident>char</Ident></TypeSpec></ArraySpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>len</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>
     <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'Hello'</Str></Assignment><RW>;</RW>
     <Assignment><SymbRef>s2</SymbRef> <RW>:=</RW> <Call><SymbRef>LowerCase</SymbRef><RW>(</RW><SymbRef>s</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
     <Call><SymbRef>SetLength</SymbRef><RW>(</RW><SymbRef>s2</SymbRef><RW>,</RW> <Num>10</Num><RW>)</RW></Call><RW>;</RW>
     <Call><SymbRef>SetLength</SymbRef><RW>(</RW><SymbRef>arr</SymbRef><RW>,</RW> <Num>5</Num><RW>)</RW></Call><RW>;</RW>
     <Assignment><SymbRef>s2</SymbRef> <RW>:=</RW> <Call><SymbRef>Copy</SymbRef><RW>(</RW><SymbRef>s</SymbRef><RW>,</RW> <Num>2</Num><RW>,</RW> <Num>3</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>len</SymbRef> <RW>:=</RW> <Call><SymbRef>Length</SymbRef><RW>(</RW><SymbRef>s</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>len</SymbRef> <RW>:=</RW> <Call><SymbRef>Length</SymbRef><RW>(</RW><SymbRef>arr</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>len</SymbRef> <RW>:=</RW> <Call><SymbRef>Length</SymbRef><RW>(</RW><SymbRef>arrStatic</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>
