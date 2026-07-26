@@ -17,6 +17,8 @@ uses
     classes, contnrs, CompilationMode, Symbols, TypeDefs, TypeDef, Parameters, RoutineTypeDef,
     SystemUnit, ClassesUnit, ContnrsUnit, MathUnit, SysutilsUnit, StringsUnit;
 
+procedure InitFunctionTypes; forward;
+
 var
     functionType_Real: TTypeDef;
     functionType_String_Integer: TTypeDef;
@@ -34,6 +36,9 @@ var
     procedureType_Unknown: TTypeDef;
     procedureType_Void_Or_Unknown: TTypeDef;
     functionType_HighLow: TTypeDef;
+    functionType_String_String: TTypeDef;
+    functionType_Copy: TTypeDef;
+    procedureType_SetLength: TTypeDef;
 
     classesMock: TClassesUnit;
     contnrsMock: TContnrsUnit;
@@ -43,6 +48,9 @@ var
 
 procedure RegisterSystemSymbols(ctx: TParserContext);
 begin
+    if functionType_Real = nil then
+        InitFunctionTypes;
+
     if ctx.mode >= cmStandardPascal then
     begin
         RegisterSymbolByName('True', nil, skConstant, booleanType, ctx.Cursor);
@@ -106,7 +114,7 @@ begin
 
         // String procedures & functions
         // TODO: Concat
-        // TODO: Copy
+        RegisterSymbolByName('Copy', nil, skFunction, functionType_Copy, ctx.Cursor);
         // TODO: Delete
         // TODO: Insert
         RegisterSymbolByName('Length', nil, skFunction, functionType_String_Integer, ctx.Cursor);
@@ -202,6 +210,8 @@ begin
     if ctx.mode >= cmFreePascal then
     begin
         RegisterSymbolByName('SetString', nil, skProcedure, procedureType_outString_PChar_LongInt, ctx.Cursor);
+        RegisterSymbolByName('LowerCase', nil, skFunction, functionType_String_String, ctx.Cursor);
+        RegisterSymbolByName('SetLength', nil, skProcedure, procedureType_SetLength, ctx.Cursor);
     end;
 end;
 
@@ -257,6 +267,19 @@ begin
         TRoutineTypeDef(procedureType_Void_Or_Unknown).overloads.Add(procedureType_Unknown);
     end;
 
+    functionType_String_String := CreateOneParamFunctionType('s', ansiString64Type, ansiString64Type);
+
+    functionType_Copy := CreateFunctionType(TParameterList.Create([
+        CreateParam(ptkValue, 's', unknownType),
+        CreateParam(ptkValue, 'index', longintType),
+        CreateParam(ptkValue, 'count', longintType)
+    ]), unknownType);
+
+    procedureType_SetLength := CreateProcedureType(TParameterList.Create([
+        CreateParam(ptkVar, 's', unknownType),
+        CreateParam(ptkValue, 'len', longintType)
+    ]));
+
 end;
 
 procedure FreeFunctionTypes;
@@ -277,6 +300,9 @@ begin
     procedureType_Unknown.Free;
     procedureType_Void_Or_Unknown.Free;
     functionType_HighLow.Free;
+    functionType_String_String.Free;
+    functionType_Copy.Free;
+    procedureType_SetLength.Free;
 end;
 
 procedure LoadSystemUnit(unitName: string; ctx: TParserContext);
@@ -309,7 +335,6 @@ begin
 end;
 
 initialization
-    InitFunctionTypes;
     InitSystemUnits;
 finalization
     FreeFunctionTypes;
