@@ -89,15 +89,7 @@
       "patterns": [
         {
           "name": "keyword.control.pascal",
-          "match": "(?i)\\b(begin|end|if|then|else|case|of|while|do|for|to|downto|repeat|until|try|except|finally|raise|with|goto|break|continue|exit|program|unit|library|interface|implementation|initialization|finalization|uses|var|const|type|resourcestring|threadvar|out|label|procedure|function|constructor|destructor|operator|record|class|object|dispinterface|helper|sealed|abstract|generic|specialize|set|array|file|property)\\b"
-        },
-        {
-          "name": "keyword.other.modifier.pascal",
-          "match": "(?i)\\b(public|protected|private|published|strict|overload|override|virtual|dynamic|inline|static|assembler|cdecl|stdcall|register|pascal|safecall|external|reintroduce|forward|deprecated|platform|experimental)\\b"
-        },
-        {
-          "name": "keyword.operator.logical.pascal",
-          "match": "(?i)\\b(and|or|not|xor|shl|shr|div|mod|is|as|in)\\b"
+          "match": "(?i)\\b(absolute|abstract|and|array|as|asm|assembler|begin|break|case|cdecl|class|const|constructor|continue|deprecated|destructor|dispinterface|div|do|downto|dynamic|else|end|except|exit|experimental|exports|external|file|finalization|finally|for|forward|function|generic|goto|helper|if|implementation|in|inherited|initialization|inline|interface|is|label|library|mod|nil|not|object|of|on|operator|or|otherwise|out|overload|override|packed|pascal|platform|private|procedure|program|property|protected|public|published|raise|record|register|reintroduce|repeat|resourcestring|safecall|sealed|set|shl|shr|specialize|static|stdcall|strict|string|then|threadvar|to|try|type|unit|until|uses|var|virtual|while|with|xor)\\b"
         },
         {
           "name": "keyword.operator.symbol.pascal",
@@ -105,7 +97,7 @@
         },
         {
           "name": "constant.language.pascal",
-          "match": "(?i)\\b(true|false|nil|self)\\b"
+          "match": "(?i)\\b(true|false|self)\\b"
         }
       ]
     },
@@ -118,7 +110,7 @@
               "name": "entity.name.type.pascal"
             },
             "2": {
-              "name": "keyword.other.structure.pascal"
+              "name": "keyword.control.pascal"
             }
           }
         }
@@ -158,7 +150,7 @@
           "match": "(?i)\\b(procedure|function|constructor|destructor)\\s+(([a-zA-Z_][a-zA-Z0-9_]*\\.)?([a-zA-Z_][a-zA-Z0-9_]*))",
           "captures": {
             "1": {
-              "name": "keyword.other.routine.pascal"
+              "name": "keyword.control.pascal"
             },
             "2": {
               "name": "entity.name.function.pascal"
