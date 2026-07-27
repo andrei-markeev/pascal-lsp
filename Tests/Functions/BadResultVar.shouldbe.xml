@@ -1,0 +1,12 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadResultVar</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<Function><RW>function</RW> <SymbDecl>Add</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>a</SymbDecl><RW>,</RW> <SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment ERROR="Invalid assignment: expected integer or assignment-compatible, but found string!"><SymbRef>Add</SymbRef> <RW>:=</RW> <Str>'invalid string'</Str></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>Add</SymbRef><RW ERROR="Cannot apply '.' on Add because it is not of a structured type (record, class or object)!">.</RW><Ident>nonExistentField</Ident></VarRef> <RW>:=</RW> <Num>123</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

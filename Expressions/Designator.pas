@@ -20,7 +20,7 @@ function CreateDesignator(ctx: TParserContext; isMaybeLeftHandSide: boolean = fa
 implementation
 
 uses
-    Token, ReservedWord, VarRef, Call, TypeDefs, RoutineTypeDef, TypeDef, Anchors, Symbols, Identifier;
+    Token, ReservedWord, VarRef, Call, TypeDefs, RoutineTypeDef, TypeDef, Anchors, Symbols, Identifier, Parameters;
 
 function CreateDesignator(ctx: TParserContext; isMaybeLeftHandSide: boolean = false): TTypedToken;
 var
@@ -38,13 +38,63 @@ begin
         CreateDesignator := designator;
 end;
 
+function GetUnderlyingSymbol(token: TTypedToken): TSymbol;
+begin
+    Result := nil;
+    if token is TIdentifier then
+        Result := TSymbol(TIdentifier(token).symbol)
+    else if (token is TVarRef) and (TVarRef(token).firstIdent <> nil) then
+        Result := TSymbol(TVarRef(token).firstIdent.symbol);
+end;
+
+procedure SetTokenTypeDef(token: TTypedToken; newTypeDef: TTypeDef);
+begin
+    if token = nil then exit;
+    token.typeDef := newTypeDef;
+    if token is TIdentifier then
+        TIdentifier(token).typeDef := newTypeDef
+    else if (token is TVarRef) and (TVarRef(token).firstIdent <> nil) then
+        TVarRef(token).firstIdent.typeDef := newTypeDef;
+end;
+
+function IsResultVariableRef(ctx: TParserContext; symbol: TSymbol; typeDef: TTypeDef; isMaybeLeftHandSide: boolean): boolean;
+var
+    routineType: TRoutineTypeDef;
+    params: TParameterList;
+    nextTokenKind: TTokenKind;
+begin
+    Result := false;
+    if (symbol = nil) or (typeDef = nil) or (symbol.GetCurrentReturnType(ctx) = nil) then
+        exit;
+    if not (typeDef is TRoutineTypeDef) or (typeDef.kind <> tkFunction) then
+        exit;
+
+    if PeekReservedWord(ctx, rwOpenParenthesis) then
+        exit;
+
+    // 1. Assignment to function result variable: MyFunc := val
+    if PeekReservedWord(ctx, rwAssign) then
+        exit(true);
+
+    // 2. Member access on left-hand side: MyFunc.field := val
+    nextTokenKind := DetermineNextTokenKind(ctx);
+    if isMaybeLeftHandSide and (nextTokenKind.reservedWordKind in [rwDot, rwOpenSquareBracket, rwHat]) then
+        exit(true);
+
+    // 3. Routine has required parameters but no '(' was provided: temp := MyFunc
+    routineType := TRoutineTypeDef(typeDef);
+    params := TParameterList(routineType.parameters);
+    if (params <> nil) and (params.GetMinRequiredCount > 0) then
+        exit(true);
+end;
+
 constructor TDesignator.Create(ctx: TParserContext; isMaybeLeftHandSide: boolean = false);
 var
     curToken: TTypedToken;
     oldCursor: PChar;
     symbol: TSymbol;
-    nextTokenKind: TTokenKind;
     returnType: TTypeDef;
+    nextTokenKind: TTokenKind;
 begin
     ctx.Add(Self);
     tokenName := 'Designator';
@@ -60,24 +110,16 @@ begin
         exit;
     end;
 
-    if curToken.typeDef <> nil then
-        typeDef := curToken.typeDef;
+    typeDef := curToken.typeDef;
+    symbol := GetUnderlyingSymbol(curToken);
 
-    symbol := nil;
-    if curToken is TIdentifier then
-        symbol := TSymbol(TIdentifier(curToken).symbol);
-
-    if (symbol <> nil) and isMaybeLeftHandSide then
+    if IsResultVariableRef(ctx, symbol, typeDef, isMaybeLeftHandSide) then
     begin
         returnType := symbol.GetCurrentReturnType(ctx);
-        nextTokenKind := DetermineNextTokenKind(ctx);
-        if (returnType <> nil) and (nextTokenKind.reservedWordKind in [rwDot, rwOpenSquareBracket, rwHat]) then
-        begin
-            typeDef := TRoutineTypeDef(symbol.typeDef).returnType;
-            curToken.typeDef := typeDef;
-            if curToken is TIdentifier then
-                TIdentifier(curToken).typeDef := typeDef;
-        end;
+        if returnType = nil then
+            returnType := unknownType;
+        typeDef := returnType;
+        SetTokenTypeDef(curToken, typeDef);
     end;
 
     while True do

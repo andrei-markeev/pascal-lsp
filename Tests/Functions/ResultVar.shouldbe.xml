@@ -2,9 +2,26 @@
 
 {$mode objfpc}
 
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TSymbol</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>name</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Function><RW>function</RW> <SymbDecl>RegisterSymbolByName</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>name</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>id</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><SymbRef>TSymbol</SymbRef></TypeSpec><RW>;</RW>
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><VarRef><SymbRef>RegisterSymbolByName</SymbRef><RW>.</RW><Ident>name</Ident></VarRef> <RW>:=</RW> <SymbRef>name</SymbRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <VarRef><SymbRef>RegisterSymbolByName</SymbRef><RW>.</RW><Ident>name</Ident></VarRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
 <Function><RW>function</RW> <SymbDecl>Add</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>a</SymbDecl><RW>,</RW> <SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>temp</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>
     <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>a</SymbRef> <RW>+</RW> <SymbRef>b</SymbRef></SimpleExpression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>Add</SymbRef> <RW>:=</RW> <SymbRef>result</SymbRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>temp</SymbRef> <RW>:=</RW> <SymbRef>Add</SymbRef></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>;</RW></Function>
 
 <VarSection><RW>var</RW> <VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
