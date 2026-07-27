@@ -44,7 +44,6 @@ constructor TFactor.Create(ctx: TParserContext; nextTokenKind: TTokenKind);
 var
     identName: shortstring;
     symbol: TSymbol;
-    oldCursor: PChar;
 begin
     ctx.Add(Self);
     tokenName := 'Factor';

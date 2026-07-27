@@ -22,7 +22,6 @@ uses
 constructor TTryStatement.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
-    hasHandler: boolean;
     dummyTypeDef: TTypeDef;
 begin
     ctx.Add(Self);
@@ -66,12 +65,9 @@ begin
         nextTokenKind := SkipUntilAnchor(ctx);
     end;
 
-    hasHandler := false;
-
     if PeekReservedWord(ctx, rwFinally) then
     begin
         TReservedWord.Create(ctx, rwFinally, false);
-        hasHandler := true;
         nextTokenKind := SkipUntilAnchor(ctx);
         while (nextTokenKind.reservedWordKind in [rwWith, rwFor, rwCase, rwIf, rwWhile, rwRepeat, rwTry, rwGoto, rwBegin])
               or (nextTokenKind.primitiveKind = pkIdentifier)
@@ -90,7 +86,6 @@ begin
     else if PeekReservedWord(ctx, rwExcept) then
     begin
         TReservedWord.Create(ctx, rwExcept, false);
-        hasHandler := true;
         nextTokenKind := SkipUntilAnchor(ctx);
         while (nextTokenKind.reservedWordKind in [rwWith, rwFor, rwCase, rwIf, rwWhile, rwRepeat, rwTry, rwGoto, rwBegin, rwOn])
               or (nextTokenKind.primitiveKind = pkIdentifier)

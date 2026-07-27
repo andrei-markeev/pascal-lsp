@@ -40,7 +40,6 @@ function LoadAndParseUnit(const UnitName: string; ctx: TParserContext): boolean;
 var
     BaseDir, UnitPath, Content: string;
     UnitCtx: TParserContext;
-    UnitFileToken: TToken;
     i: integer;
     Found: boolean;
     SearchPath: string;
@@ -89,7 +88,7 @@ begin
     LoadedUnits.Add(LowerCase(UnitName), UnitCtx);
 
     try
-        UnitFileToken := TUnitFile.Create(UnitCtx);
+        TUnitFile.Create(UnitCtx);
     except
         on E: Exception do
             WriteLn('Error parsing unit ', UnitName, ': ', E.Message);

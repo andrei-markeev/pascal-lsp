@@ -29,7 +29,7 @@ var
   WorkspaceRoot: string;
   Idx: integer;
 begin
-  Parser := TJSONParser.Create(JsonStr);
+  Parser := TJSONParser.Create(JsonStr, []);
   try
     Json := Parser.Parse;
   except
