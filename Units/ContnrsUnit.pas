@@ -39,7 +39,7 @@ type
 implementation
 
 uses
-    contnrs, Symbols, CompilationMode, Parameters, ClassTypeDef, DynamicArrayTypeDef;
+    contnrs, Symbols, CompilationMode, Parameters, ClassTypeDef, DynamicArrayTypeDef, SystemUnits;
 
 destructor TContnrsUnit.Destroy;
 begin
@@ -72,6 +72,7 @@ begin
     dynArrayOfPointerType := TDynamicArrayTypeDef.Create(nil, pointer64Type, 8);
 
     classType_TFPHashList := TClassTypeDef.Create;
+    TClassTypeDef(classType_TFPHashList).parentClass := classType_TObject;
 
     func_Create_TFPHashList := CreateFunctionType(TParameterList.Create, classType_TFPHashList);
     func_StringPointer_LongInt := CreateTwoParamFunctionType('aname', ansiString64Type, 'item', pointer64Type, longintType);

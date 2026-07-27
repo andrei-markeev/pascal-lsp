@@ -6,7 +6,10 @@ unit SystemUnits;
 interface
 
 uses
-    ParserContext;
+    ParserContext, TypeDef;
+
+var
+    classType_TObject: TTypeDef;
 
 procedure RegisterSystemSymbols(ctx: TParserContext);
 function LoadSystemUnit(unitName: string; ctx: TParserContext): boolean;
@@ -14,8 +17,8 @@ function LoadSystemUnit(unitName: string; ctx: TParserContext): boolean;
 implementation
 
 uses
-    classes, contnrs, CompilationMode, Symbols, TypeDefs, TypeDef, Parameters, RoutineTypeDef,
-    ArrayTypeDef, DynamicArrayTypeDef,
+    classes, contnrs, CompilationMode, Symbols, TypeDefs, Parameters, RoutineTypeDef,
+    ArrayTypeDef, DynamicArrayTypeDef, ClassTypeDef,
     SystemUnit, ClassesUnit, ContnrsUnit, MathUnit, SysutilsUnit, StringsUnit;
 
 procedure InitFunctionTypes; forward;
@@ -43,6 +46,7 @@ var
     functionType_Length_FPC: TTypeDef;
     functionType_DynArray_Integer: TTypeDef;
     functionType_Array_Integer: TTypeDef;
+    func_Create_TObject: TTypeDef;
 
     classesMock: TClassesUnit;
     contnrsMock: TContnrsUnit;
@@ -219,6 +223,7 @@ begin
         RegisterSymbolByName('SetString', nil, skProcedure, procedureType_outString_PChar_LongInt, ctx.Cursor);
         RegisterSymbolByName('LowerCase', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('SetLength', nil, skProcedure, procedureType_SetLength, ctx.Cursor);
+        RegisterSymbolByName('TObject', nil, skTypeName, classType_TObject, ctx.Cursor);
     end;
 end;
 
@@ -303,6 +308,12 @@ begin
         TRoutineTypeDef(functionType_Length_FPC).overloads.Add(functionType_Array_Integer);
     end;
 
+    classType_TObject := TClassTypeDef.Create;
+    func_Create_TObject := CreateFunctionType(TParameterList.Create, classType_TObject);
+    TClassTypeDef(classType_TObject).AddMember('Create', func_Create_TObject);
+    TClassTypeDef(classType_TObject).AddMember('Destroy', voidProcedureType);
+    TClassTypeDef(classType_TObject).AddMember('Free', voidProcedureType);
+
 end;
 
 procedure FreeFunctionTypes;
@@ -329,10 +340,14 @@ begin
     functionType_Length_FPC.Free;
     functionType_DynArray_Integer.Free;
     functionType_Array_Integer.Free;
+    func_Create_TObject.Free;
+    classType_TObject.Free;
 end;
 
 function LoadSystemUnit(unitName: string; ctx: TParserContext): boolean;
 begin
+    if functionType_Real = nil then
+        InitFunctionTypes;
     Result := true;
     case LowerCase(unitName) of
         'classes': classesMock.Load(ctx);

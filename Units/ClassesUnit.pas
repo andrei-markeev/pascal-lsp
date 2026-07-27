@@ -52,7 +52,7 @@ type
 implementation
 
 uses
-    contnrs, Symbols, CompilationMode, Parameters, ClassTypeDef, DynamicArrayTypeDef;
+    contnrs, Symbols, CompilationMode, Parameters, ClassTypeDef, DynamicArrayTypeDef, SystemUnits;
 
 destructor TClassesUnit.Destroy;
 begin
@@ -102,9 +102,11 @@ begin
 
     // TFPList
     classType_TFPList := TClassTypeDef.Create;
+    TClassTypeDef(classType_TFPList).parentClass := classType_TObject;
 
     // TStrings
     classType_TStrings := TClassTypeDef.Create;
+    TClassTypeDef(classType_TStrings).parentClass := classType_TObject;
 
     // TStringList
     classType_TStringList := TClassTypeDef.Create;

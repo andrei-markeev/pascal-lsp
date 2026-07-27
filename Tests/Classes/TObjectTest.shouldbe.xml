@@ -1,0 +1,18 @@
+<ProgramFile><RW>program</RW> <SymbDecl>TObjectTest</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TCustomObj</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW><RW>(</RW><SymbRef>TObject</SymbRef><RW>)</RW>
+        <VarDecl><SymbDecl>field</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>obj</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TObject</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>custom</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TCustomObj</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>obj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TObject</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>obj</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call><RW>;</RW>
+    <Assignment><SymbRef>custom</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TCustomObj</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>custom</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

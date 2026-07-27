@@ -1,0 +1,11 @@
+<ProgramFile><RW>program</RW> <SymbDecl>TObjectModeTest</SymbDecl><RW>;</RW>
+
+{$mode tp}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TCustomObj</SymbDecl> <RW>=</RW> <TypeSpec ERROR="Identifier has not been declared!"><Ident>class</Ident></TypeSpec></TypeDecl><RW MISSING=";" /></TypeSection><RW SKIPPED="true">(</RW><Ident SKIPPED="true">TObject</Ident><RW SKIPPED="true">)</RW>
+        <Ident SKIPPED="true">field</Ident><RW SKIPPED="true">:</RW> <Ident SKIPPED="true">integer</Ident><RW SKIPPED="true">;</RW><RW MISSING="begin" />
+    <Block><RW>end</RW></Block><RW MISSING="." /></ProgramFile>;
+
+begin
+end.
