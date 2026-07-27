@@ -9,7 +9,7 @@ uses
   sysutils, classes, fpjson, jsonparser, contnrs,
   ParserContext, Token, Identifier, Symbols, ReservedWord, TypeDefs, TypeDef,
   ClassTypeDef, ObjectTypeDef, RecordTypeDef, PointerTypeDef, ArrayTypeDef,
-  DynamicArrayTypeDef, SetTypeDef, RoutineTypeDef, Parameters,
+  DynamicArrayTypeDef, SetTypeDef, RoutineTypeDef, Parameters, EnumTypeDef, EnumMemberTypeDef,
   LspUtils, LspState;
 
 procedure HandleHover(WriteStream: TStream; Id: TJSONData; Params: TJSONData);
@@ -17,6 +17,8 @@ procedure HandleHover(WriteStream: TStream; Id: TJSONData; Params: TJSONData);
 implementation
 
 function GetTypeDefDisplay(typeDef: TTypeDef; IgnoreSymbol: TSymbol = nil): string;
+var
+  i, count, limit: integer;
 begin
   if typeDef = nil then
     exit('unknown');
@@ -29,8 +31,34 @@ begin
     tkBoolean: Result := 'Boolean';
     tkChar: Result := 'Char';
     tkCharRange: Result := 'char range';
-    tkEnum: Result := 'enumeration';
-    tkEnumMember: Result := 'enum';
+    tkEnum:
+      begin
+        if (typeDef is TEnumTypeDef) and (Length(TEnumTypeDef(typeDef).members) > 0) then
+        begin
+          Result := '(';
+          count := Length(TEnumTypeDef(typeDef).members);
+          limit := count;
+          if limit > 10 then
+            limit := 10;
+          for i := 0 to limit - 1 do
+          begin
+            if i > 0 then Result := Result + ', ';
+            Result := Result + TEnumTypeDef(typeDef).members[i];
+          end;
+          if count > 10 then
+            Result := Result + ', ...';
+          Result := Result + ')';
+        end
+        else
+          Result := 'enumeration';
+      end;
+    tkEnumMember:
+      begin
+        if (typeDef is TEnumMemberTypeDef) and (TEnumMemberTypeDef(typeDef).enumType <> nil) then
+          Result := GetTypeDefDisplay(TEnumMemberTypeDef(typeDef).enumType)
+        else
+          Result := 'enum';
+      end;
     tkReal: Result := 'Real';
     tkString: Result := 'String';
     tkPointer:

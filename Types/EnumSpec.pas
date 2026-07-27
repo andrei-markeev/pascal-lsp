@@ -39,6 +39,8 @@ begin
     repeat
         ident := TIdentifier.Create(ctx, false);
         RegisterSymbol(ident, nil, skConstant, memberTypeDef, ctx.Cursor);
+        if (ident <> nil) and (ident.GetStr() <> '') then
+            enumTypeDef.AddMember(ident.GetStr());
 
         ctx.SkipTrivia;
         // TODO: support number assignments
