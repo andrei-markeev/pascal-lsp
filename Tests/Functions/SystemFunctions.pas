@@ -17,4 +17,6 @@ begin
     len := Length(s);
     len := Length(arr);
     len := Length(arrStatic);
+    WriteLn;
+    WriteLn(s, ' world', 123);
 end.

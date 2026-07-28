@@ -39,6 +39,7 @@ var
     procedureType_Ordinal2: TTypeDef;
     procedureType_Unknown: TTypeDef;
     procedureType_Void_Or_Unknown: TTypeDef;
+    varargsProcedureType: TTypeDef;
     functionType_HighLow: TTypeDef;
     functionType_String_String: TTypeDef;
     functionType_Copy: TTypeDef;
@@ -93,7 +94,7 @@ begin
         // TODO: Rewrite
         // TODO: Unpack
         // TODO: Write
-        // TODO: Writeln
+        RegisterSymbolByName('WriteLn', nil, skProcedure, varargsProcedureType, ctx.Cursor);
     end;
     if ctx.mode >= cmTurboPascal then
     begin
@@ -278,6 +279,7 @@ begin
         TRoutineTypeDef(procedureType_Void_Or_Unknown).overloads := TFPList.Create;
         TRoutineTypeDef(procedureType_Void_Or_Unknown).overloads.Add(procedureType_Unknown);
     end;
+    varargsProcedureType := CreateProcedureType(nil);
 
     functionType_String_String := CreateOneParamFunctionType('s', ansiString64Type, ansiString64Type);
 
@@ -333,6 +335,7 @@ begin
     procedureType_Ordinal2.Free;
     procedureType_Unknown.Free;
     procedureType_Void_Or_Unknown.Free;
+    varargsProcedureType.Free;
     functionType_HighLow.Free;
     functionType_String_String.Free;
     functionType_Copy.Free;

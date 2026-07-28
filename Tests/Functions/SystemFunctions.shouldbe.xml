@@ -17,4 +17,6 @@
     <Assignment><SymbRef>len</SymbRef> <RW>:=</RW> <Call><SymbRef>Length</SymbRef><RW>(</RW><SymbRef>s</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>len</SymbRef> <RW>:=</RW> <Call><SymbRef>Length</SymbRef><RW>(</RW><SymbRef>arr</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>len</SymbRef> <RW>:=</RW> <Call><SymbRef>Length</SymbRef><RW>(</RW><SymbRef>arrStatic</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Call><SymbRef>WriteLn</SymbRef></Call><RW>;</RW>
+    <Call><SymbRef>WriteLn</SymbRef><RW>(</RW><SymbRef>s</SymbRef><RW>,</RW> <Str>' world'</Str><RW>,</RW> <Num>123</Num><RW>)</RW></Call><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>
