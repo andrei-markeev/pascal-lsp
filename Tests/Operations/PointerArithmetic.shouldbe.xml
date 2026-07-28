@@ -1,0 +1,10 @@
+<ProgramFile><RW>program</RW> <SymbDecl>PointerArithmetic</SymbDecl><RW>;</RW>
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>p1</SymbDecl><RW>,</RW> <SymbDecl>p2</SymbDecl><RW>,</RW> <SymbDecl>p3</SymbDecl><RW>:</RW> <TypeSpec><Ident>PChar</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>len</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>p3</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>p1</SymbRef> <RW>+</RW> <Num>5</Num></SimpleExpression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>p3</SymbRef> <RW>:=</RW> <SimpleExpression><Num>10</Num> <RW>+</RW> <SymbRef>p1</SymbRef></SimpleExpression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>p3</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>p1</SymbRef> <RW>-</RW> <Num>3</Num></SimpleExpression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>len</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>p2</SymbRef> <RW>-</RW> <SymbRef>p1</SymbRef></SimpleExpression></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

@@ -82,7 +82,20 @@ begin
         if (state <> tsError) and (nextOperand <> nil) then
         case lastAddOp of
             rwPlus:
-                if not (myKind in [tkString, tkChar, tkCharRange, tkInteger, tkReal, tkSet]) then
+                if (myKind = tkPointer) and IsPChar(typeDef) then
+                begin
+                    if nextKind <> tkInteger then
+                    begin
+                        state := tsError;
+                        SetString(str, nextOperand.start, nextOperand.len);
+                        errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected integer, but ' + str + ' is ' + TypeKindStr[ord(nextKind)];
+                    end;
+                end
+                else if (myKind = tkInteger) and (nextKind = tkPointer) and IsPChar(nextOperand.typeDef) then
+                begin
+                    // Valid: Integer + PChar -> PChar
+                end
+                else if not (myKind in [tkString, tkChar, tkCharRange, tkInteger, tkReal, tkSet]) then
                 begin
                     state := tsError;
                     SetString(str, start, savedPos - start);
@@ -106,7 +119,16 @@ begin
                     errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': ' + str;
                 end;
             rwMinus:
-                if not (myKind in [tkInteger, tkReal, tkSet]) then
+                if (myKind = tkPointer) and IsPChar(typeDef) then
+                begin
+                    if (nextKind <> tkInteger) and not ((nextKind = tkPointer) and IsPChar(nextOperand.typeDef)) then
+                    begin
+                        state := tsError;
+                        SetString(str, nextOperand.start, nextOperand.len);
+                        errorMessage := 'Cannot apply operator ''' + ReservedWordStr[ord(lastAddOp)] + ''': expected integer or PChar operands, but ' + str + ' is ' + TypeKindStr[ord(nextKind)];
+                    end;
+                end
+                else if not (myKind in [tkInteger, tkReal, tkSet]) then
                 begin
                     state := tsError;
                     SetString(str, start, savedPos - start);
@@ -161,6 +183,10 @@ begin
 
         if state = tsError then
             typeDef := unknownType
+        else if (nextOperand <> nil) and (nextOperand.typeDef <> nil) and (lastAddOp = rwMinus) and (myKind = tkPointer) and IsPChar(typeDef) and (nextKind = tkPointer) and IsPChar(nextOperand.typeDef) then
+            typeDef := smallintType
+        else if (nextOperand <> nil) and (nextOperand.typeDef <> nil) and (lastAddOp = rwPlus) and (myKind = tkInteger) and (nextKind = tkPointer) and IsPChar(nextOperand.typeDef) then
+            typeDef := nextOperand.typeDef
         else if (nextOperand <> nil) and (nextOperand.typeDef <> nil) and (lastAddOp in [rwPlus, rwMinus]) and (myKind = tkInteger) and (nextKind = tkReal) then
             typeDef := nextOperand.typeDef // TODO: handle type size expansion
         else if (nextOperand <> nil) and (nextOperand.typeDef <> nil) and (lastAddOp = rwPlus) and (myKind in [tkChar, tkCharRange]) and (nextKind in [tkString, tkChar, tkCharRange]) then

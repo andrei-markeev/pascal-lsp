@@ -1,0 +1,12 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadPointerArithmetic</SymbDecl><RW>;</RW>
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>p1</SymbDecl><RW>,</RW> <SymbDecl>p2</SymbDecl><RW>:</RW> <TypeSpec><Ident>PChar</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>ptr</SymbDecl><RW>:</RW> <TypeSpec><Ident>Pointer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>len</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>p1</SymbRef> <RW>:=</RW> <SimpleExpression ERROR="Cannot apply operator '+': expected integer, but p2 is pointer"><SymbRef>p1</SymbRef> <RW>+</RW> <SymbRef>p2</SymbRef></SimpleExpression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>p1</SymbRef> <RW>:=</RW> <SimpleExpression ERROR="Cannot apply operator '-': expected integer or real operands, but p1 is pointer"><Num>5</Num> <RW>-</RW> <SymbRef>p1</SymbRef></SimpleExpression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>ptr</SymbRef> <RW>:=</RW> <SimpleExpression ERROR="Cannot apply operator '+': expected string, char, integer, real or set, but ptr is pointer"><SymbRef>ptr</SymbRef> <RW>+</RW> <Num>1</Num></SimpleExpression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>ptr</SymbRef> <RW>:=</RW> <SimpleExpression ERROR="Cannot apply operator '-': expected integer or real operands, but ptr is pointer"><SymbRef>ptr</SymbRef> <RW>-</RW> <Num>1</Num></SimpleExpression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>len</SymbRef> <RW>:=</RW> <SimpleExpression ERROR="Cannot apply operator '-': expected integer or real operands, but ptr is pointer"><SymbRef>ptr</SymbRef> <RW>-</RW> <SymbRef>ptr</SymbRef></SimpleExpression></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
