@@ -13,22 +13,22 @@ type
     public
         firstIdent: TIdentifier;
         isSimple: boolean;
-        constructor Create(ctx: TParserContext; baseRef: TTypedToken = nil);
+        constructor Create(ctx: TParserContext; baseRef: TTypedToken = nil; isMaybeLeftHandSide: boolean = false);
     end;
 
-function CreateVarRef(ctx: TParserContext; baseRef: TTypedToken = nil): TTypedToken;
+function CreateVarRef(ctx: TParserContext; baseRef: TTypedToken = nil; isMaybeLeftHandSide: boolean = false): TTypedToken;
 
 implementation
 
 uses
-    sysutils, Symbols, CompilationMode, Token, ReservedWord, Expression, Call,
+    sysutils, Symbols, CompilationMode, Token, ReservedWord, Expression, Call, Designator,
     TypeDefs, TypeDef, ClassTypeDef, PointerTypeDef, ArrayTypeDef, DynamicArrayTypeDef, RecordTypeDef, ObjectTypeDef;
 
-function CreateVarRef(ctx: TParserContext; baseRef: TTypedToken = nil): TTypedToken;
+function CreateVarRef(ctx: TParserContext; baseRef: TTypedToken = nil; isMaybeLeftHandSide: boolean = false): TTypedToken;
 var
     ref: TVarRef;
 begin
-    ref := TVarRef.Create(ctx, baseRef);
+    ref := TVarRef.Create(ctx, baseRef, isMaybeLeftHandSide);
     if ref.isSimple then
     begin
         CreateVarRef := ref.firstIdent;
@@ -40,12 +40,12 @@ begin
         CreateVarRef := ref;
 end;
 
-constructor TVarRef.Create(ctx: TParserContext; baseRef: TTypedToken = nil);
+constructor TVarRef.Create(ctx: TParserContext; baseRef: TTypedToken = nil; isMaybeLeftHandSide: boolean = false);
 var
     symbol: TSymbol;
     found: pointer;
     ident: TIdentifier;
-    varRef: TVarRef;
+    innerToken: TTypedToken;
     expr: TTypedToken;
     reservedWordToken: TReservedWord;
     nextReservedWord: TReservedWordKind;
@@ -126,11 +126,15 @@ begin
                 ) then
                 begin
                     TReservedWord.Create(ctx, rwOpenParenthesis, true);
-                    varRef := TVarRef.Create(ctx);
-                    if (varRef.state <> tsError) and (typeDef <> nil) and (varRef.typeDef <> nil) and (varRef.typeDef.size <> typeDef.size) then
+                    if isMaybeLeftHandSide then
+                        innerToken := CreateDesignator(ctx, true)
+                    else
+                        innerToken := CreateExpression(ctx);
+
+                    if (innerToken <> nil) and (innerToken.state <> tsError) and (typeDef <> nil) and (innerToken.typeDef <> nil) and (typeDef.size > 0) and (innerToken.typeDef.size > 0) and (innerToken.typeDef.size <> typeDef.size) then
                     begin
                         state := tsError;
-                        errorMessage := 'Invalid typecast: type ' + firstIdent.name + '(' + TypeKindStr[ord(typeDef.kind)] + ') has size ' + IntToStr(typeDef.size) + ' but the typecasted variable reference has size ' + IntToStr(varRef.typeDef.size);
+                        errorMessage := 'Invalid typecast: type ' + firstIdent.name + '(' + TypeKindStr[ord(typeDef.kind)] + ') has size ' + IntToStr(typeDef.size) + ' but the typecasted variable reference has size ' + IntToStr(innerToken.typeDef.size);
                     end;
 
                     TReservedWord.Create(ctx, rwCloseParenthesis, true);

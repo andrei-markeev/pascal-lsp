@@ -16,6 +16,11 @@ constructor TParentClass.Create;
 begin
 end;
 
+function GetChild(p: TParentClass): TParentClass;
+begin
+    GetChild := p;
+end;
+
 var
     parentObj: TParentClass;
     childObj: TChildClass;
@@ -33,4 +38,10 @@ begin
 
     // Typecast class to generic Pointer
     parentObj := TParentClass(Pointer(childObj));
+
+    // Typecast function call in expression
+    otherChild := TChildClass(GetChild(parentObj));
+
+    // Typecast on LHS of assignment
+    TChildClass(parentObj).childField := 42;
 end.

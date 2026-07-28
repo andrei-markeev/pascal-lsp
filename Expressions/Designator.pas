@@ -103,7 +103,7 @@ begin
     typeDef := nil;
     designatorToken := nil;
 
-    curToken := CreateVarRef(ctx);
+    curToken := CreateVarRef(ctx, nil, isMaybeLeftHandSide);
     if curToken = nil then
     begin
         ctx.MarkEndOfToken(Self);
@@ -138,7 +138,7 @@ begin
         begin
             oldCursor := ctx.Cursor;
             ctx.SkipTrivia;
-            curToken := CreateVarRef(ctx, curToken);
+            curToken := CreateVarRef(ctx, curToken, isMaybeLeftHandSide);
             if curToken <> nil then
                 typeDef := curToken.typeDef;
 

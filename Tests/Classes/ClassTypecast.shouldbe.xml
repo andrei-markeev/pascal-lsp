@@ -16,6 +16,11 @@
 <Block><RW>begin</RW>
 <RW>end</RW></Block><RW>;</RW></Constructor>
 
+<Function><RW>function</RW> <SymbDecl>GetChild</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>p</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TParentClass</SymbRef></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><SymbRef>TParentClass</SymbRef></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>GetChild</SymbRef> <RW>:=</RW> <SymbRef>p</SymbRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
 <VarSection><RW>var</RW>
     <VarDecl><SymbDecl>parentObj</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TParentClass</SymbRef></TypeSpec></VarDecl><RW>;</RW>
     <VarDecl><SymbDecl>childObj</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TChildClass</SymbRef></TypeSpec></VarDecl><RW>;</RW>
@@ -26,11 +31,17 @@
     <Assignment><SymbRef>childObj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TChildClass</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
 
     // Typecast child class variable to parent class
-    <Assignment><SymbRef>parentObj</SymbRef> <RW>:=</RW> <VarRef><SymbRef>TParentClass</SymbRef><RW>(</RW><VarRef><SymbRef>childObj</SymbRef></VarRef><RW>)</RW></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>parentObj</SymbRef> <RW>:=</RW> <VarRef><SymbRef>TParentClass</SymbRef><RW>(</RW><SymbRef>childObj</SymbRef><RW>)</RW></VarRef></Assignment><RW>;</RW>
 
     // Typecast parent class variable to child class
-    <Assignment><SymbRef>otherChild</SymbRef> <RW>:=</RW> <VarRef><SymbRef>TChildClass</SymbRef><RW>(</RW><VarRef><SymbRef>parentObj</SymbRef></VarRef><RW>)</RW></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>otherChild</SymbRef> <RW>:=</RW> <VarRef><SymbRef>TChildClass</SymbRef><RW>(</RW><SymbRef>parentObj</SymbRef><RW>)</RW></VarRef></Assignment><RW>;</RW>
 
     // Typecast class to generic Pointer
-    <Assignment><SymbRef>parentObj</SymbRef> <RW>:=</RW> <VarRef><SymbRef>TParentClass</SymbRef><RW>(</RW><VarRef><Ident>Pointer</Ident><RW>(</RW><VarRef><SymbRef>childObj</SymbRef></VarRef><RW>)</RW></VarRef><RW>)</RW></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>parentObj</SymbRef> <RW>:=</RW> <VarRef><SymbRef>TParentClass</SymbRef><RW>(</RW><VarRef><Ident>Pointer</Ident><RW>(</RW><SymbRef>childObj</SymbRef><RW>)</RW></VarRef><RW>)</RW></VarRef></Assignment><RW>;</RW>
+
+    // Typecast function call in expression
+    <Assignment><SymbRef>otherChild</SymbRef> <RW>:=</RW> <VarRef><SymbRef>TChildClass</SymbRef><RW>(</RW><Call><SymbRef>GetChild</SymbRef><RW>(</RW><SymbRef>parentObj</SymbRef><RW>)</RW></Call><RW>)</RW></VarRef></Assignment><RW>;</RW>
+
+    // Typecast on LHS of assignment
+    <Assignment><VarRef><SymbRef>TChildClass</SymbRef><RW>(</RW><SymbRef>parentObj</SymbRef><RW>)</RW><RW>.</RW><Ident>childField</Ident></VarRef> <RW>:=</RW> <Num>42</Num></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>
