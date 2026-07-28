@@ -18,11 +18,11 @@
 <VarSection><RW>var</RW>
     <VarDecl><SymbDecl>t</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TTest</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>
-    <Assignment><SymbRef>t</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTest</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
-    <Assignment><SymbRef>t</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTest</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef><RW>(</RW><Num>1</Num><RW>)</RW></Call></Assignment><RW>;</RW>
-    <Assignment><SymbRef>t</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTest</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef><RW>(</RW><Num>1</Num><RW>,</RW> <Str>'a'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
-    <Assignment><SymbRef>t</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTest</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef><RW>(</RW><Num>1</Num><RW>,</RW> <Str>'a'</Str><RW>,</RW> <SymbRef>false</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
-    <Assignment><SymbRef>t</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTest</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef><RW>(</RW><Num>1</Num><RW>,</RW> <Str>'a'</Str><RW>,</RW> <SymbRef>false</SymbRef><RW>,</RW> <Factor><RW>nil</RW></Factor><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>t</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTest</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>t</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTest</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef><RW>(</RW><Num>1</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>t</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTest</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef><RW>(</RW><Num>1</Num><RW>,</RW> <Str>'a'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>t</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTest</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef><RW>(</RW><Num>1</Num><RW>,</RW> <Str>'a'</Str><RW>,</RW> <SymbRef>false</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>t</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTest</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef><RW>(</RW><Num>1</Num><RW>,</RW> <Str>'a'</Str><RW>,</RW> <SymbRef>false</SymbRef><RW>,</RW> <Factor><RW>nil</RW></Factor><RW>)</RW></Call></Assignment><RW>;</RW>
     <Call><SymbRef>SetVal</SymbRef><RW>(</RW><Num>10</Num><RW>)</RW></Call><RW>;</RW>
     <Call><SymbRef>SetVal</SymbRef><RW>(</RW><Num>10</Num><RW>,</RW> <Num>20</Num><RW>)</RW></Call><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

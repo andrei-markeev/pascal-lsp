@@ -39,10 +39,10 @@
     <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
 
 <Block><RW>begin</RW>
-    <Assignment><SymbRef>test</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTestVisibility</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>test</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTestVisibility</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef></Call></Assignment><RW>;</RW>
 
-    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <VarRef><SymbRef>test</SymbRef><RW>.</RW><Ident>hello</Ident></VarRef></Assignment><RW>;</RW>
-    <Call><VarRef><SymbRef>test</SymbRef><RW>.</RW><Ident>SayHello</Ident></VarRef></Call><RW>;</RW>
-    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <VarRef><SymbRef>test</SymbRef><RW>.</RW><Ident ERROR="mySecret is not public, it cannot be used here!">mySecret</Ident></VarRef></Assignment><RW>;</RW>
-    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>test</SymbRef><RW>.</RW><Ident ERROR="GetSecret is not public, it cannot be used here!">GetSecret</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <VarRef><SymbRef>test</SymbRef><RW>.</RW><SymbRef>hello</SymbRef></VarRef></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>test</SymbRef><RW>.</RW><SymbRef>SayHello</SymbRef></VarRef></Call><RW>;</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <VarRef><SymbRef>test</SymbRef><RW>.</RW><SymbRef ERROR="mySecret is not public, it cannot be used here!">mySecret</SymbRef></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>test</SymbRef><RW>.</RW><SymbRef ERROR="GetSecret is not public, it cannot be used here!">GetSecret</SymbRef></VarRef></Call></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

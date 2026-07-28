@@ -11,8 +11,8 @@
 <VarSection><RW>var</RW>
     <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>
-    <Assignment><VarRef><SymbRef>RegisterSymbolByName</SymbRef><RW>.</RW><Ident>name</Ident></VarRef> <RW>:=</RW> <SymbRef>name</SymbRef></Assignment><RW>;</RW>
-    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <VarRef><SymbRef>RegisterSymbolByName</SymbRef><RW>.</RW><Ident>name</Ident></VarRef></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>RegisterSymbolByName</SymbRef><RW>.</RW><SymbRef>name</SymbRef></VarRef> <RW>:=</RW> <SymbRef>name</SymbRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <VarRef><SymbRef>RegisterSymbolByName</SymbRef><RW>.</RW><SymbRef>name</SymbRef></VarRef></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>;</RW></Function>
 
 <Function><RW>function</RW> <SymbDecl>Add</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>a</SymbDecl><RW>,</RW> <SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>

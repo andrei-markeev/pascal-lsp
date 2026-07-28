@@ -33,9 +33,9 @@
     <VarDecl><SymbDecl>val1</SymbDecl><RW>,</RW> <SymbDecl>val2</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
 
 <Block><RW>begin</RW>
-    <Assignment><SymbRef>child</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TChildClass</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
-    <Assignment><VarRef><SymbRef>child</SymbRef><RW>.</RW><Ident>parentField</Ident></VarRef> <RW>:=</RW> <Num>100</Num></Assignment><RW>;</RW>
-    <Assignment><VarRef><SymbRef>child</SymbRef><RW>.</RW><Ident>childField</Ident></VarRef> <RW>:=</RW> <Num>200</Num></Assignment><RW>;</RW>
-    <Assignment><SymbRef>val1</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>child</SymbRef><RW>.</RW><Ident>GetParentField</Ident></VarRef><RW>(</RW><RW>)</RW></Call></Assignment><RW>;</RW>
-    <Assignment><SymbRef>val2</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>child</SymbRef><RW>.</RW><Ident>GetChildField</Ident></VarRef><RW>(</RW><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>child</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TChildClass</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>child</SymbRef><RW>.</RW><SymbRef>parentField</SymbRef></VarRef> <RW>:=</RW> <Num>100</Num></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>child</SymbRef><RW>.</RW><SymbRef>childField</SymbRef></VarRef> <RW>:=</RW> <Num>200</Num></Assignment><RW>;</RW>
+    <Assignment><SymbRef>val1</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>child</SymbRef><RW>.</RW><SymbRef>GetParentField</SymbRef></VarRef><RW>(</RW><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>val2</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>child</SymbRef><RW>.</RW><SymbRef>GetChildField</SymbRef></VarRef><RW>(</RW><RW>)</RW></Call></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

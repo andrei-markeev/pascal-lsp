@@ -27,8 +27,8 @@
     <VarDecl><SymbDecl>otherChild</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TChildClass</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
 
 <Block><RW>begin</RW>
-    <Assignment><SymbRef>parentObj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TParentClass</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
-    <Assignment><SymbRef>childObj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TChildClass</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>parentObj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TParentClass</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>childObj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TChildClass</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef></Call></Assignment><RW>;</RW>
 
     // Typecast child class variable to parent class
     <Assignment><SymbRef>parentObj</SymbRef> <RW>:=</RW> <VarRef><SymbRef>TParentClass</SymbRef><RW>(</RW><SymbRef>childObj</SymbRef><RW>)</RW></VarRef></Assignment><RW>;</RW>
@@ -43,5 +43,5 @@
     <Assignment><SymbRef>otherChild</SymbRef> <RW>:=</RW> <VarRef><SymbRef>TChildClass</SymbRef><RW>(</RW><Call><SymbRef>GetChild</SymbRef><RW>(</RW><SymbRef>parentObj</SymbRef><RW>)</RW></Call><RW>)</RW></VarRef></Assignment><RW>;</RW>
 
     // Typecast on LHS of assignment
-    <Assignment><VarRef><SymbRef>TChildClass</SymbRef><RW>(</RW><SymbRef>parentObj</SymbRef><RW>)</RW><RW>.</RW><Ident>childField</Ident></VarRef> <RW>:=</RW> <Num>42</Num></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>TChildClass</SymbRef><RW>(</RW><SymbRef>parentObj</SymbRef><RW>)</RW><RW>.</RW><SymbRef>childField</SymbRef></VarRef> <RW>:=</RW> <Num>42</Num></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

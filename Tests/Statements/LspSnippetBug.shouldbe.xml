@@ -21,8 +21,8 @@
   <RW>end</RW></TryStatement><RW>;</RW>
 
   <TryStatement><RW>try</RW>
-    <If><RW>if</RW> <Expression><Call><VarRef><SymbRef>Json</SymbRef><RW>.</RW><Ident>FindPath</Ident></VarRef><RW>(</RW><Str>'method'</Str><RW>)</RW></Call> <RW><></RW> <Factor><RW>nil</RW></Factor></Expression> <RW>then</RW>
-      <Assignment><SymbRef>Method</SymbRef> <RW>:=</RW> <Call><VarRef><Call><VarRef><SymbRef>Json</SymbRef><RW>.</RW><Ident>FindPath</Ident></VarRef><RW>(</RW><Str>'method'</Str><RW>)</RW></Call><RW>.</RW><Ident>AsString</Ident></VarRef></Call></Assignment>
+    <If><RW>if</RW> <Expression><Call><VarRef><SymbRef>Json</SymbRef><RW>.</RW><SymbRef>FindPath</SymbRef></VarRef><RW>(</RW><Str>'method'</Str><RW>)</RW></Call> <RW><></RW> <Factor><RW>nil</RW></Factor></Expression> <RW>then</RW>
+      <Assignment><SymbRef>Method</SymbRef> <RW>:=</RW> <Call><VarRef><Call><VarRef><SymbRef>Json</SymbRef><RW>.</RW><SymbRef>FindPath</SymbRef></VarRef><RW>(</RW><Str>'method'</Str><RW>)</RW></Call><RW>.</RW><SymbRef>AsString</SymbRef></VarRef></Call></Assignment>
     <RW>else</RW>
       <Assignment><SymbRef>Method</SymbRef> <RW>:=</RW> <Str>''</Str></Assignment></If><RW>;</RW>
   <RW>finally</RW>

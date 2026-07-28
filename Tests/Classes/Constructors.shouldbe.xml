@@ -16,7 +16,7 @@
 
 <Constructor><RW>constructor</RW> <SymbRef>TTestClass</SymbRef><RW>.</RW><SymbDecl>TestSelf</SymbDecl><RW>;</RW>
 <Block><RW>begin</RW>
-    <Assignment><VarRef><SymbRef>Self</SymbRef><RW>.</RW><Ident>someVar</Ident></VarRef> <RW>:=</RW> <Str>'2222222'</Str></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>Self</SymbRef><RW>.</RW><SymbRef>someVar</SymbRef></VarRef> <RW>:=</RW> <Str>'2222222'</Str></Assignment><RW>;</RW>
     <Assignment><VarRef><SymbRef>Self</SymbRef><RW>.</RW><Ident ERROR="Field or method with the name 'nonExistingField' was not found!">nonExistingField</Ident></VarRef> <RW>:=</RW> <Str>'111111'</Str></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>;</RW></Constructor>
 
@@ -26,7 +26,7 @@
     <VarDecl><SymbDecl>wrong</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
 
 <Block><RW>begin</RW>
-    <Assignment><SymbRef>test</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTestClass</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
-    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <VarRef><SymbRef>test</SymbRef><RW>.</RW><Ident>someVar</Ident></VarRef></Assignment><RW>;</RW>
-    <Assignment ERROR="Invalid assignment: expected integer or assignment-compatible, but found string!"><SymbRef>wrong</SymbRef> <RW>:=</RW> <VarRef><SymbRef>test</SymbRef><RW>.</RW><Ident>someVar</Ident></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>test</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TTestClass</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <VarRef><SymbRef>test</SymbRef><RW>.</RW><SymbRef>someVar</SymbRef></VarRef></Assignment><RW>;</RW>
+    <Assignment ERROR="Invalid assignment: expected integer or assignment-compatible, but found string!"><SymbRef>wrong</SymbRef> <RW>:=</RW> <VarRef><SymbRef>test</SymbRef><RW>.</RW><SymbRef>someVar</SymbRef></VarRef></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

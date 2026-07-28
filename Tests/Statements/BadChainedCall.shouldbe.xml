@@ -13,7 +13,7 @@
 
 <Block><RW>begin</RW>
   // Invalid member access on function call in Turbo Pascal mode:
-  <Assignment><VarRef ERROR="Cannot access members or index return value of a function call in this compiler mode!"><Call><SymbRef>GetRecord</SymbRef><RW>(</RW><RW>)</RW></Call><RW>.</RW><Ident>Field</Ident></VarRef> <RW>:=</RW> <Num>1</Num></Assignment><RW>;</RW>
+  <Assignment><VarRef ERROR="Cannot access members or index return value of a function call in this compiler mode!"><Call><SymbRef>GetRecord</SymbRef><RW>(</RW><RW>)</RW></Call><RW>.</RW><SymbRef>Field</SymbRef></VarRef> <RW>:=</RW> <Num>1</Num></Assignment><RW>;</RW>
 
   // Invalid assignment to function call:
   <Assignment ERROR="Left side of assignment must be a variable!"><Call><SymbRef>GetRecord</SymbRef><RW>(</RW><RW>)</RW></Call> <RW>:=</RW> <Num>1</Num></Assignment><RW>;</RW>

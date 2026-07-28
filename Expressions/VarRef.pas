@@ -309,6 +309,13 @@ begin
                         begin
                             typeDef := TTypeDef(found);
 
+                            if (curType <> nil) and (curType.typeSymbol <> nil) then
+                            begin
+                                symbol := FindSymbol(TSymbol(curType.typeSymbol), text, ctx.Cursor);
+                                if symbol <> nil then
+                                    symbol.AddReference(ident);
+                            end;
+
                             // TODO: handle valid cases such as Self.privateField
                             if (typeDef <> nil) and (typeDef.visibility in [vPrivate, vProtected]) then
                             begin

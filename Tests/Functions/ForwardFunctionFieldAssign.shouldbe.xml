@@ -21,14 +21,14 @@
 
 <Function><RW>function</RW> <SymbRef>TestForward</SymbRef><RW>(</RW><ParameterDecl><SymbDecl>k</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><SymbRef>TRec</SymbRef></TypeSpec><RW>;</RW>
 <Block><RW>begin</RW>
-    <Assignment><VarRef><SymbRef>TestForward</SymbRef><RW>.</RW><Ident>kind</Ident></VarRef> <RW>:=</RW> <SymbRef>k</SymbRef></Assignment><RW>;</RW>
-    <Assignment><VarRef><SymbRef>TestForward</SymbRef><RW>.</RW><Ident>name</Ident></VarRef> <RW>:=</RW> <Str>'test'</Str></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>TestForward</SymbRef><RW>.</RW><SymbRef>kind</SymbRef></VarRef> <RW>:=</RW> <SymbRef>k</SymbRef></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>TestForward</SymbRef><RW>.</RW><SymbRef>name</SymbRef></VarRef> <RW>:=</RW> <Str>'test'</Str></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>;</RW></Function>
 
 <Function><RW>function</RW> <SymbRef>TMyClass</SymbRef><RW>.</RW><SymbDecl>TestMethod</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>k</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><SymbRef>TRec</SymbRef></TypeSpec><RW>;</RW>
 <Block><RW>begin</RW>
-    <Assignment><VarRef><SymbRef>TestMethod</SymbRef><RW>.</RW><Ident>kind</Ident></VarRef> <RW>:=</RW> <SymbRef>k</SymbRef></Assignment><RW>;</RW>
-    <Assignment><VarRef><SymbRef>TestMethod</SymbRef><RW>.</RW><Ident>name</Ident></VarRef> <RW>:=</RW> <Str>'test'</Str></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>TestMethod</SymbRef><RW>.</RW><SymbRef>kind</SymbRef></VarRef> <RW>:=</RW> <SymbRef>k</SymbRef></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>TestMethod</SymbRef><RW>.</RW><SymbRef>name</SymbRef></VarRef> <RW>:=</RW> <Str>'test'</Str></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>;</RW></Function>
 
 <VarSection><RW>var</RW>
@@ -36,7 +36,7 @@
     <VarDecl><SymbDecl>r1</SymbDecl><RW>,</RW> <SymbDecl>r2</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TRec</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
 
 <Block><RW>begin</RW>
-    <Assignment><SymbRef>obj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TMyClass</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>obj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TMyClass</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>r1</SymbRef> <RW>:=</RW> <Call><SymbRef>TestForward</SymbRef><RW>(</RW><Num>10</Num><RW>)</RW></Call></Assignment><RW>;</RW>
-    <Assignment><SymbRef>r2</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>obj</SymbRef><RW>.</RW><Ident>TestMethod</Ident></VarRef><RW>(</RW><Num>20</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>r2</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>obj</SymbRef><RW>.</RW><SymbRef>TestMethod</SymbRef></VarRef><RW>(</RW><Num>20</Num><RW>)</RW></Call></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

@@ -11,7 +11,7 @@
 
 <Function><RW>function</RW> <SymbRef>TestForward</SymbRef><RW>(</RW><ParameterDecl><SymbDecl>k</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><SymbRef>TRec</SymbRef></TypeSpec><RW>;</RW>
 <Block><RW>begin</RW>
-    <Assignment><VarRef><SymbRef>TestForward</SymbRef><RW>.</RW><Ident>kind</Ident></VarRef> <RW>:=</RW> <SymbRef>k</SymbRef></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>TestForward</SymbRef><RW>.</RW><SymbRef>kind</SymbRef></VarRef> <RW>:=</RW> <SymbRef>k</SymbRef></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>;</RW></Function>
 
 <Block><RW>begin</RW>
