@@ -1,0 +1,9 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadRecordComparison</SymbDecl><RW>;</RW>
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>R</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW> <VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW> <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>r1</SymbDecl><RW>,</RW> <SymbDecl>r2</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>R</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Expression ERROR="Comparing record with record is not supported!"><SymbRef>r1</SymbRef> <RW><=</RW> <SymbRef>r2</SymbRef></Expression></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

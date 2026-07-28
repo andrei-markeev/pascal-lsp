@@ -1,0 +1,18 @@
+<ProgramFile><RW>program</RW> <SymbDecl>PointerComparison</SymbDecl><RW>;</RW>
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>p1</SymbDecl><RW>,</RW> <SymbDecl>p2</SymbDecl><RW>:</RW> <TypeSpec><Ident>PChar</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>ptr1</SymbDecl><RW>,</RW> <SymbDecl>ptr2</SymbDecl><RW>:</RW> <TypeSpec><Ident>Pointer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Expression><SymbRef>p1</SymbRef> <RW><=</RW> <SymbRef>p2</SymbRef></Expression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Expression><SymbRef>p1</SymbRef> <RW><</RW> <SymbRef>p2</SymbRef></Expression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Expression><SymbRef>p1</SymbRef> <RW>>=</RW> <SymbRef>p2</SymbRef></Expression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Expression><SymbRef>p1</SymbRef> <RW>></RW> <SymbRef>p2</SymbRef></Expression></Assignment><RW>;</RW>
+
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Expression><SymbRef>ptr1</SymbRef> <RW>=</RW> <SymbRef>ptr2</SymbRef></Expression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Expression><SymbRef>ptr1</SymbRef> <RW><></RW> <SymbRef>ptr2</SymbRef></Expression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Expression><SymbRef>p1</SymbRef> <RW>=</RW> <SymbRef>ptr1</SymbRef></Expression></Assignment><RW>;</RW>
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Expression><SymbRef>ptr1</SymbRef> <RW>=</RW> <Factor><RW>nil</RW></Factor></Expression></Assignment><RW>;</RW>
+
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Expression ERROR="Comparing pointer with pointer is not supported!"><SymbRef>ptr1</SymbRef> <RW><=</RW> <SymbRef>ptr2</SymbRef></Expression></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

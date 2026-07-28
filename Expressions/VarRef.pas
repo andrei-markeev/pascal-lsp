@@ -170,8 +170,7 @@ begin
                     end;
 
                     if (typeDef = nil) or not (
-                        (typeDef.kind in [tkArray, tkDynamicArray, tkString]) or
-                        ((typeDef.kind = tkPointer) and (typeDef is TPointerTypeDef) and TPointerTypeDef(typeDef).isTyped and (TPointerTypeDef(typeDef).pointerToType <> nil) and (TPointerTypeDef(typeDef).pointerToType.kind = tkChar))
+                        (typeDef.kind in [tkArray, tkDynamicArray, tkString]) or IsPChar(typeDef)
                     ) then
                     begin
                         reservedWordToken.state := tsError;
@@ -196,7 +195,7 @@ begin
                             typeDef := TArrayTypeDef(typeDef).typeOfValues
                         else if (typeDef <> nil) and (typeDef.kind = tkDynamicArray) and (typeDef is TDynamicArrayTypeDef) and (TDynamicArrayTypeDef(typeDef).typeOfDynValues <> nil) then
                             typeDef := TDynamicArrayTypeDef(typeDef).typeOfDynValues
-                        else if (typeDef <> nil) and ((typeDef.kind = tkString) or ((typeDef.kind = tkPointer) and (typeDef is TPointerTypeDef) and TPointerTypeDef(typeDef).isTyped and (TPointerTypeDef(typeDef).pointerToType <> nil) and (TPointerTypeDef(typeDef).pointerToType.kind = tkChar))) then
+                        else if (typeDef <> nil) and ((typeDef.kind = tkString) or IsPChar(typeDef)) then
                             typeDef := charType
                         else
                             typeDef := unknownType;

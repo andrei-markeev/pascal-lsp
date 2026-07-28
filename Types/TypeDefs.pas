@@ -58,6 +58,7 @@ var
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
 function GetEnumSpec(typeDef: TTypeDef): Pointer;
+function IsPChar(typeDef: TTypeDef): boolean;
 function TypesAreAssignable(ctx: TTypeDefTracker; left, right: TTypeDef; out errorMessage: string): boolean;
 function HaveSameSignature(a, b: TTypeDef): boolean;
 
@@ -65,6 +66,14 @@ implementation
 
 uses
     Parameters, ParserContext;
+
+function IsPChar(typeDef: TTypeDef): boolean;
+begin
+    Result := (typeDef <> nil) and (typeDef.kind = tkPointer) and
+              (typeDef is TPointerTypeDef) and TPointerTypeDef(typeDef).isTyped and
+              (TPointerTypeDef(typeDef).pointerToType <> nil) and
+              (TPointerTypeDef(typeDef).pointerToType.kind in [tkChar, tkCharRange]);
+end;
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
 begin
@@ -223,7 +232,7 @@ begin
 
     if (left.kind = tkString) and (right.kind = tkChar) then
         TypesAreAssignable := true
-    else if (left.kind = tkPointer) and (left is TPointerTypeDef) and (TPointerTypeDef(left).pointerToType <> nil) and (TPointerTypeDef(left).pointerToType.kind = tkChar) and (right.kind = tkString) then
+    else if IsPChar(left) and (right.kind = tkString) then
         TypesAreAssignable := true
     else if (left.kind in [tkClass, tkProcedure, tkFunction, tkDynamicArray]) and (right.kind = tkPointer) and (right is TPointerTypeDef) and (TPointerTypeDef(right).pointerToType = nil) then
         TypesAreAssignable := true

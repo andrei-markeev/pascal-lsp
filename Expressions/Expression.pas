@@ -86,16 +86,16 @@ begin
                 typesAreCompatible := true;
             if (leftKind in [tkEnum, tkEnumMember]) and (rightKind in [tkEnum, tkEnumMember]) then
                 typesAreCompatible := (GetEnumSpec(leftOperand.typeDef) <> nil) and (GetEnumSpec(leftOperand.typeDef) = GetEnumSpec(rightOperand.typeDef));
+            if (leftKind = tkPointer) and (rightKind = tkPointer) then
+                typesAreCompatible := IsPChar(leftOperand.typeDef) and IsPChar(rightOperand.typeDef);
 
             if not typesAreCompatible then
             begin
                 state := tsError;
                 if (leftKind in [tkEnum, tkEnumMember]) and (rightKind in [tkEnum, tkEnumMember]) then
                     errorMessage := 'Comparing enum values from different enums is not supported! You may use Ord function to compare their numeric representations, if this was the intention.'
-                else if leftKind <> rightKind then
-                    errorMessage := 'Comparing ' + TypeKindStr[ord(leftKind)] + ' with ' + TypeKindStr[ord(rightKind)] + ' is not supported!'
                 else
-                    errorMessage := 'Comparing enum values from different enums is not supported! You may use Ord function to compare their numeric representations, if this was the intention.';
+                    errorMessage := 'Comparing ' + TypeKindStr[ord(leftKind)] + ' with ' + TypeKindStr[ord(rightKind)] + ' is not supported!';
             end;
         end
         else if relationalOp = rwIn then
