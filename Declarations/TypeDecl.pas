@@ -58,7 +58,7 @@ begin
 
     // Update registered symbol with final type
     symbol.typeDef := declType;
-    if (declType <> nil) and (declType.typeSymbol = nil) then
+    if (declType <> nil) and (declType <> unknownType) and (declType.typeSymbol = nil) then
         declType.typeSymbol := symbol;
 
     ctx.MarkEndOfToken(Self);

@@ -47,7 +47,7 @@
     <Assignment><SymbRef>valMin</SymbRef> <RW>:=</RW> <Call><SymbRef>Min</SymbRef><RW>(</RW><Num>10</Num><RW>,</RW> <Num>20</Num><RW>)</RW></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>str</SymbRef> <RW>:=</RW> <Call><SymbRef>LowerCase</SymbRef><RW>(</RW><Str>'TEST'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>str</SymbRef> <RW>:=</RW> <Call><SymbRef>IntToStr</SymbRef><RW>(</RW><Num>123</Num><RW>)</RW></Call></Assignment><RW>;</RW>
-    <Assignment><SymbRef>str</SymbRef> <RW>:=</RW> <Call><SymbRef>StringReplace</SymbRef><RW>(</RW><Str>'abc'</Str><RW>,</RW> <Str>'a'</Str><RW>,</RW> <Str>'b'</Str><RW>,</RW> <SetConstructor><RW>[</RW><RW>]</RW></SetConstructor><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>str</SymbRef> <RW>:=</RW> <Call><SymbRef>StringReplace</SymbRef><RW>(</RW><Str>'abc'</Str><RW>,</RW> <Str>'a'</Str><RW>,</RW> <Str>'b'</Str><RW>,</RW> <SetConstructor><RW>[</RW><SymbRef>rfReplaceAll</SymbRef><RW>]</RW></SetConstructor><RW>)</RW></Call></Assignment><RW>;</RW>
     <If><RW>if</RW> <Expression><Call><SymbRef>strlicomp</SymbRef><RW>(</RW><SymbRef>p</SymbRef><RW>,</RW> <Str>'mode'</Str><RW>,</RW> <Num>4</Num><RW>)</RW></Call> <RW>=</RW> <Num>0</Num></Expression> <RW>then</RW>
     <Block><RW>begin</RW>
     <RW>end</RW></Block></If><RW>;</RW>

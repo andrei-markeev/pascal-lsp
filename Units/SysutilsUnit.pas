@@ -13,6 +13,8 @@ type
     private
         functionType_String_String: TTypeDef;
         functionType_LongInt_String: TTypeDef;
+        typeReplaceFlag: TTypeDef;
+        memberTypeOfReplaceFlag: TTypeDef;
         setTypeOfReplaceFlags: TTypeDef;
         functionType_StringReplace: TTypeDef;
     protected
@@ -25,7 +27,7 @@ type
 implementation
 
 uses
-    Symbols, Parameters, CompilationMode, SetTypeDef;
+    Symbols, Parameters, CompilationMode, SetTypeDef, EnumTypeDef, EnumMemberTypeDef;
 
 destructor TSysutilsUnit.Destroy;
 begin
@@ -33,6 +35,8 @@ begin
     begin
         functionType_String_String.Free;
         functionType_LongInt_String.Free;
+        typeReplaceFlag.Free;
+        memberTypeOfReplaceFlag.Free;
         setTypeOfReplaceFlags.Free;
         functionType_StringReplace.Free;
     end;
@@ -44,7 +48,13 @@ begin
     functionType_String_String := CreateOneParamFunctionType('s', ansiString64Type, ansiString64Type);
     functionType_LongInt_String := CreateOneParamFunctionType('v', longintType, ansiString64Type);
 
-    setTypeOfReplaceFlags := TSetTypeDef.Create(nil, unknownType, 1);
+    typeReplaceFlag := TEnumTypeDef.Create(nil, nil);
+    TEnumTypeDef(typeReplaceFlag).AddMember('rfReplaceAll');
+    TEnumTypeDef(typeReplaceFlag).AddMember('rfIgnoreCase');
+
+    memberTypeOfReplaceFlag := TEnumMemberTypeDef.Create(nil, typeReplaceFlag, nil);
+
+    setTypeOfReplaceFlags := TSetTypeDef.Create(nil, typeReplaceFlag, 1);
 
     functionType_StringReplace := CreateFunctionType(TParameterList.Create([
         CreateParam(ptkConst, 's', ansiString64Type),
@@ -59,6 +69,11 @@ begin
     inherited Load(ctx);
     if ctx.mode >= cmFreePascal then
     begin
+        RegisterSymbolByName('TReplaceFlag', nil, skTypeName, typeReplaceFlag, ctx.Cursor);
+        RegisterSymbolByName('rfReplaceAll', nil, skConstant, memberTypeOfReplaceFlag, ctx.Cursor);
+        RegisterSymbolByName('rfIgnoreCase', nil, skConstant, memberTypeOfReplaceFlag, ctx.Cursor);
+        RegisterSymbolByName('TReplaceFlags', nil, skTypeName, setTypeOfReplaceFlags, ctx.Cursor);
+
         RegisterSymbolByName('LowerCase', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('IntToStr', nil, skFunction, functionType_LongInt_String, ctx.Cursor);
         RegisterSymbolByName('StringReplace', nil, skFunction, functionType_StringReplace, ctx.Cursor);

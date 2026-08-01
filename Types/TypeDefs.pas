@@ -133,9 +133,19 @@ end;
 function GetEnumSpec(typeDef: TTypeDef): Pointer;
 begin
     if typeDef is TEnumTypeDef then
-        exit(TEnumTypeDef(typeDef).enumSpec)
+    begin
+        if TEnumTypeDef(typeDef).enumSpec <> nil then
+            exit(TEnumTypeDef(typeDef).enumSpec)
+        else
+            exit(typeDef);
+    end
     else if typeDef is TEnumMemberTypeDef then
-        exit(TEnumMemberTypeDef(typeDef).enumSpec)
+    begin
+        if TEnumMemberTypeDef(typeDef).enumSpec <> nil then
+            exit(TEnumMemberTypeDef(typeDef).enumSpec)
+        else
+            exit(GetEnumSpec(TEnumMemberTypeDef(typeDef).enumType));
+    end
     else
         exit(nil);
 end;

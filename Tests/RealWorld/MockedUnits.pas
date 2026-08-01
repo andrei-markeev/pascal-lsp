@@ -47,7 +47,7 @@ begin
     valMin := Min(10, 20);
     str := LowerCase('TEST');
     str := IntToStr(123);
-    str := StringReplace('abc', 'a', 'b', []);
+    str := StringReplace('abc', 'a', 'b', [rfReplaceAll]);
     if strlicomp(p, 'mode', 4) = 0 then
     begin
     end;

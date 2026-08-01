@@ -153,7 +153,7 @@ begin
     with RegisterSymbolByName do
     begin
         typeDef := symbolType;
-        if (symbolKind = skTypeName) and (symbolType <> nil) then
+        if (symbolKind = skTypeName) and (symbolType <> nil) and (symbolType <> unknownType) then
             symbolType.typeSymbol := RegisterSymbolByName;
         uniquePrefix := IntToStr(lastId) + '.';
         inc(lastId);

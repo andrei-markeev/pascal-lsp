@@ -20,7 +20,7 @@ function GetTypeDefDisplay(typeDef: TTypeDef; IgnoreSymbol: TSymbol = nil): stri
 var
   i, count, limit: integer;
 begin
-  if typeDef = nil then
+  if (typeDef = nil) or (typeDef = unknownType) then
     exit('unknown');
 
   if (typeDef.typeSymbol <> nil) and (TSymbol(typeDef.typeSymbol) <> IgnoreSymbol) and (TSymbol(typeDef.typeSymbol).displayName <> '') then
