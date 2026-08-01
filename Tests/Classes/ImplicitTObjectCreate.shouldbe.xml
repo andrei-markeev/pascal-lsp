@@ -1,0 +1,15 @@
+<ProgramFile><RW>program</RW> <SymbDecl>ImplicitTObjectCreate</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TToken</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+    <Ident>public</Ident>
+        <VarDecl><SymbDecl>endMarker</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TToken</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>endOf</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TToken</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>endOf</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TToken</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

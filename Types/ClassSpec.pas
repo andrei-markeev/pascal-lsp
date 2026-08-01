@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    CompilationMode, Anchors, ReservedWord, Identifier, VarDecl, FunctionDecl, ClassTypeDef;
+    CompilationMode, Anchors, ReservedWord, Identifier, VarDecl, FunctionDecl, ClassTypeDef, SystemUnits;
 
 procedure SetVisibility(ctx: TParserContext; const value: TVisibility; out res: TVisibility);
 begin
@@ -194,9 +194,11 @@ begin
             identToken.start := posBeforeTrivia;
             ctx.Cursor := savedCursor;
             
-            TReservedWord.Create(ctx, rwCloseParenthesis, false);
         end;
     end;
+
+    if (classTypeDef.parentClass = nil) and (classTypeDef <> classType_TObject) then
+        classTypeDef.parentClass := classType_TObject;
 
     visibility := vPublic;
     nextTokenKind := DetermineNextTokenKind(ctx);
