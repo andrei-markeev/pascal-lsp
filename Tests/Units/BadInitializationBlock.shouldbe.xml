@@ -1,0 +1,17 @@
+<UnitFile><RW>unit</RW> <SymbDecl>BadInitializationBlock</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<RW>interface</RW>
+
+<InterfaceBlock><VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>GCount</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection></InterfaceBlock>
+
+<RW>implementation</RW>
+
+<ImplementationBlock><Block><RW>initialization</RW>
+    <Assignment><SymbRef>GCount</SymbRef> <RW>:=</RW><Factor MISSING="" /></Assignment> <RW>;</RW>
+    <Assignment><SymbRef>GCount</SymbRef> <RW>:=</RW> <Num>1</Num></Assignment><RW>;</RW></Block>
+<Block><RW>finalization</RW>
+    <Assignment><SymbRef>GCount</SymbRef> <RW>:=</RW> <Num>2</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block></ImplementationBlock><RW>.</RW></UnitFile>

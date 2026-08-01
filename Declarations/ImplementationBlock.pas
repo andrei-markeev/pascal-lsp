@@ -36,6 +36,8 @@ begin
     AddAnchor(rwConstructor);
     AddAnchor(rwDestructor);
     AddAnchor(rwBegin);
+    AddAnchor(rwInitialization);
+    AddAnchor(rwFinalization);
     AddAnchor(rwEnd);
 
     nextTokenKind := SkipUntilAnchor(ctx);
@@ -58,6 +60,8 @@ begin
     RemoveAnchor(rwConstructor);
     RemoveAnchor(rwDestructor);
     RemoveAnchor(rwBegin);
+    RemoveAnchor(rwInitialization);
+    RemoveAnchor(rwFinalization);
     RemoveAnchor(rwEnd);
 
     if nextTokenKind.reservedWordKind = rwBegin then
