@@ -34,6 +34,6 @@
     <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term><SetConstructor><RW>[</RW><RW>]</RW></SetConstructor> <RW>*</RW> <SymbRef>vegetables</SymbRef></Term></Assignment><RW>;</RW>
 
     <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term ERROR="Cannot apply operator '*': expected integer, real or set operands, but 'test' is string"><Str>'test'</Str> <RW>*</RW> <SetConstructor><RW>[</RW><SymbRef>plum</SymbRef><RW>]</RW></SetConstructor></Term></Assignment><RW>;</RW>
-    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term ERROR="Cannot apply operator '*': expected a set, but  is (unknown)"><SetConstructor><RW>[</RW><SymbRef>orange</SymbRef><RW>]</RW></SetConstructor> <RW>*</RW><Factor MISSING="" /></Term></Assignment><RW MISSING=";" />
+    <Assignment><SymbRef>result</SymbRef> <RW>:=</RW> <Term ERROR="Cannot apply operator '*': expected a set, but  is (unknown)"><SetConstructor><RW>[</RW><SymbRef>orange</SymbRef><RW>]</RW></SetConstructor> <RW>*</RW><Factor MISSING="" /></Term></Assignment>
 
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

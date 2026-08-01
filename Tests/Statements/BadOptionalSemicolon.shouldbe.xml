@@ -1,0 +1,12 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadOptionalSemicolon</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>a</SymbDecl><RW>,</RW> <SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <If><RW>if</RW> <Expression><SymbRef>a</SymbRef> <RW>=</RW> <SymbRef>b</SymbRef></Expression> <RW>then</RW>
+    <Block><RW>begin</RW>
+        <Call><SymbRef>inc</SymbRef><RW>(</RW><SymbRef>a</SymbRef><RW>,</RW> <Num>10</Num><RW>)</RW></Call><RW MISSING=";" />
+        <Call><SymbRef>inc</SymbRef><RW>(</RW><SymbRef>b</SymbRef><RW>,</RW> <Num>10</Num><RW>)</RW></Call>
+    <RW>end</RW></Block></If><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

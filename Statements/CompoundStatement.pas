@@ -60,7 +60,10 @@ begin
         AddAnchor(rwSemiColon);
         nextTokenKind := SkipUntilAnchor(ctx);
         RemoveAnchor(rwSemiColon);
-        TReservedWord.Create(ctx, rwSemiColon, false);
+        if PeekReservedWord(ctx, rwSemiColon) then
+            TReservedWord.Create(ctx, rwSemiColon, false)
+        else if not (nextTokenKind.reservedWordKind in [rwEnd, rwUntil, rwElse, rwOtherwise, rwExcept, rwFinally, rwInitialization, rwFinalization]) then
+            TReservedWord.Create(ctx, rwSemiColon, false);
 
         nextTokenKind := SkipUntilAnchor(ctx);
     end;
@@ -79,7 +82,8 @@ begin
     RemoveAnchor(rwFinalization);
     RemoveAnchor(pkIdentifier);
 
-    TReservedWord.Create(ctx, rwEnd, false);
+    if (beginRW = rwBegin) or (nextTokenKind.reservedWordKind <> rwFinalization) then
+        TReservedWord.Create(ctx, rwEnd, false);
 
     ctx.MarkEndOfToken(Self);
 end;

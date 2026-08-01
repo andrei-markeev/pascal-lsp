@@ -1,0 +1,25 @@
+<ProgramFile><RW>program</RW> <SymbDecl>OptionalSemicolon</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>a</SymbDecl><RW>,</RW> <SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <If><RW>if</RW> <Expression><SymbRef>a</SymbRef> <RW>=</RW> <SymbRef>b</SymbRef></Expression> <RW>then</RW>
+    <Block><RW>begin</RW>
+        <Call><SymbRef>inc</SymbRef><RW>(</RW><SymbRef>a</SymbRef><RW>,</RW> <Num>10</Num><RW>)</RW></Call><RW>;</RW>
+        <Call><SymbRef>inc</SymbRef><RW>(</RW><SymbRef>b</SymbRef><RW>,</RW> <Num>10</Num><RW>)</RW></Call>
+    <RW>end</RW></Block></If><RW>;</RW>
+
+    <Repeat><RW>repeat</RW>
+        <Call><SymbRef>inc</SymbRef><RW>(</RW><SymbRef>a</SymbRef><RW>)</RW></Call><RW>;</RW>
+        <Call><SymbRef>inc</SymbRef><RW>(</RW><SymbRef>b</SymbRef><RW>)</RW></Call>
+    <RW>until</RW> <Expression><SymbRef>a</SymbRef> <RW>></RW> <Num>100</Num></Expression></Repeat><RW>;</RW>
+
+    <Case><RW>case</RW> <SymbRef>a</SymbRef> <RW>of</RW>
+        <CaseBranch><Num>1</Num><RW>:</RW> <Call><SymbRef>inc</SymbRef><RW>(</RW><SymbRef>b</SymbRef><RW>)</RW></Call></CaseBranch><RW>;</RW>
+        <CaseBranch><Num>2</Num><RW>:</RW> <Call><SymbRef>inc</SymbRef><RW>(</RW><SymbRef>b</SymbRef><RW>)</RW></Call></CaseBranch>
+    <RW>else</RW>
+        <Call><SymbRef>inc</SymbRef><RW>(</RW><SymbRef>a</SymbRef><RW>)</RW></Call><RW>;</RW>
+        <Call><SymbRef>inc</SymbRef><RW>(</RW><SymbRef>b</SymbRef><RW>)</RW></Call>
+    <RW>end</RW></Case><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
