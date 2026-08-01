@@ -68,7 +68,7 @@ begin
     RegisterScope(Self);
     if targetSymbol <> nil then
         for i := 0 to length(targetSymbol.children) - 1 do
-            if (targetSymbol.children[i].typeDef <> nil) and (targetSymbol.children[i].typeDef.visibility = vPublic) then // TODO: handle `with Self`
+            if (targetSymbol.children[i].typeDef <> nil) and IsMemberAccessible(ctx, targetTypeDef, targetSymbol.children[i].typeDef.visibility, ctx.Cursor, targetSymbol.children[i]) then
                 RegisterSymbol(targetSymbol.children[i].declaration, nil, targetSymbol.children[i].kind, targetSymbol.children[i].typeDef, start);
 
     CreateStatement(ctx);

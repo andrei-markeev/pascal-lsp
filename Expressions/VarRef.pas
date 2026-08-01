@@ -316,8 +316,7 @@ begin
                                     symbol.AddReference(ident);
                             end;
 
-                            // TODO: handle valid cases such as Self.privateField
-                            if (typeDef <> nil) and (typeDef.visibility in [vPrivate, vProtected]) then
+                            if (typeDef <> nil) and not IsMemberAccessible(ctx, curType, typeDef.visibility, ctx.Cursor, symbol) then
                             begin
                                 ident.state := tsError;
                                 ident.errorMessage := text + ' is not public, it cannot be used here!';

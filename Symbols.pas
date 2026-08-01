@@ -45,11 +45,13 @@ function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolK
 function FindSymbol(findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(parent: TSymbol; findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(ident: TIdentifier): TSymbol;
+function IsSameOrSubclass(currentClass, targetClass: TTypeDef): boolean;
+function IsMemberAccessible(accessCtx: TParserContext; targetClass: TTypeDef; memberVisibility: TVisibility; cursor: PChar; memberSymbol: TSymbol = nil): boolean;
 
 implementation
 
 uses
-    sysutils, classes, Scopes, RoutineTypeDef;
+    sysutils, classes, Scopes, RoutineTypeDef, ClassTypeDef, ObjectTypeDef, PointerTypeDef;
 
 var
     lastId: longword = 0;
@@ -239,6 +241,65 @@ begin
         else if (implRangeToken <> nil) and (implRangeToken.endMarker = nil) and (implRangeToken.start <= ctx.Cursor) then
             Result := TRoutineTypeDef(typeDef).returnType;
     end;
+end;
+
+function IsSameOrSubclass(currentClass, targetClass: TTypeDef): boolean;
+var
+    c: TTypeDef;
+begin
+    if (currentClass = nil) or (targetClass = nil) then exit(false);
+    c := currentClass;
+    if (c.kind = tkPointer) and (c is TPointerTypeDef) and (TPointerTypeDef(c).pointerToType <> nil) then
+        c := TPointerTypeDef(c).pointerToType;
+    while c <> nil do
+    begin
+        if c = targetClass then exit(true);
+        if (c.kind = tkClass) and (c is TClassTypeDef) then
+            c := TClassTypeDef(c).parentClass
+        else if (c.kind = tkObject) and (c is TObjectTypeDef) then
+            c := TObjectTypeDef(c).parentObject
+        else
+            break;
+    end;
+    Result := false;
+end;
+
+function IsMemberAccessible(accessCtx: TParserContext; targetClass: TTypeDef; memberVisibility: TVisibility; cursor: PChar; memberSymbol: TSymbol = nil): boolean;
+var
+    declCtx: TParserContext;
+    selfSym: TSymbol;
+    currentClass: TTypeDef;
+begin
+    if not (memberVisibility in [vPrivate, vProtected]) then
+        exit(true);
+
+    if accessCtx = nil then
+        accessCtx := FindContextForCursor(cursor);
+
+    declCtx := nil;
+    if (memberSymbol <> nil) and (memberSymbol.declaration <> nil) then
+        declCtx := FindContextForCursor(memberSymbol.declaration.start)
+    else if (targetClass <> nil) and (targetClass.typeSymbol <> nil) and (TSymbol(targetClass.typeSymbol).declaration <> nil) then
+        declCtx := FindContextForCursor(TSymbol(targetClass.typeSymbol).declaration.start);
+
+    if (accessCtx <> nil) and (declCtx <> nil) and (accessCtx = declCtx) then
+        exit(true);
+
+    if memberVisibility = vPrivate then
+        exit(false);
+
+    if memberVisibility = vProtected then
+    begin
+        selfSym := FindSymbol('self', cursor);
+        if (selfSym <> nil) and (selfSym.typeDef <> nil) then
+        begin
+            currentClass := selfSym.typeDef;
+            if IsSameOrSubclass(currentClass, targetClass) then
+                exit(true);
+        end;
+    end;
+
+    Result := false;
 end;
 
 end.

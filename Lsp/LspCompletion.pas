@@ -15,26 +15,7 @@ procedure HandleCompletion(WriteStream: TStream; Id: TJSONData; Params: TJSONDat
 
 implementation
 
-function IsSameOrSubclass(CurrentClass, TargetClass: TTypeDef): boolean;
-var
-  c: TTypeDef;
-begin
-  if (CurrentClass = nil) or (TargetClass = nil) then exit(false);
-  c := CurrentClass;
-  while c <> nil do
-  begin
-    if c = TargetClass then exit(true);
-    if (c.kind = tkClass) and (c is TClassTypeDef) then
-      c := TClassTypeDef(c).parentClass
-    else if (c.kind = tkObject) and (c is TObjectTypeDef) then
-      c := TObjectTypeDef(c).parentObject
-    else
-      break;
-  end;
-  Result := false;
-end;
-
-procedure AddCompletionItem(var ItemsJson: string; AddedNames: TStringList; const MemberName: string; MemberType, CurrentClassType, TargetClassType: TTypeDef);
+procedure AddCompletionItem(var ItemsJson: string; AddedNames: TStringList; const MemberName: string; MemberType, CurrentClassType, TargetClassType: TTypeDef; AccessCtx: TParserContext = nil; CursorPChar: PChar = nil);
 var
   LowerName: string;
   ItemKind: integer;
@@ -45,7 +26,7 @@ begin
 
   if (MemberType <> nil) and (MemberType.visibility in [vPrivate, vProtected]) then
   begin
-    if not IsSameOrSubclass(CurrentClassType, TargetClassType) then
+    if not IsMemberAccessible(AccessCtx, TargetClassType, MemberType.visibility, CursorPChar) then
       exit;
   end;
 
@@ -310,7 +291,7 @@ begin
                         begin
                           IdentStr := TRecordTypeDef(CurrType).GetMemberName(i);
                           MemberType := TRecordTypeDef(CurrType).GetMemberType(i);
-                          AddCompletionItem(ItemsJson, AddedNames, IdentStr, MemberType, CurrentClassType, CurrType);
+                          AddCompletionItem(ItemsJson, AddedNames, IdentStr, MemberType, CurrentClassType, CurrType, LastParserContext, CursorPChar);
                         end;
                       end;
                     end;
@@ -325,7 +306,7 @@ begin
                           begin
                             IdentStr := TClassTypeDef(CType).GetMemberName(i);
                             MemberType := TClassTypeDef(CType).GetMemberType(i);
-                            AddCompletionItem(ItemsJson, AddedNames, IdentStr, MemberType, CurrentClassType, CType);
+                            AddCompletionItem(ItemsJson, AddedNames, IdentStr, MemberType, CurrentClassType, CType, LastParserContext, CursorPChar);
                           end;
                           CType := TClassTypeDef(CType).parentClass;
                         end
@@ -344,7 +325,7 @@ begin
                           begin
                             IdentStr := TObjectTypeDef(OType).GetMemberName(i);
                             MemberType := TObjectTypeDef(OType).GetMemberType(i);
-                            AddCompletionItem(ItemsJson, AddedNames, IdentStr, MemberType, CurrentClassType, OType);
+                            AddCompletionItem(ItemsJson, AddedNames, IdentStr, MemberType, CurrentClassType, OType, LastParserContext, CursorPChar);
                           end;
                           OType := TObjectTypeDef(OType).parentObject;
                         end
