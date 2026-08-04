@@ -25,29 +25,42 @@ procedure InitFunctionTypes; forward;
 
 var
     functionType_Real: TTypeDef;
-    functionType_String_Integer: TTypeDef;
+    functionType_String_LongInt: TTypeDef;
     functionType_LongInt_LongInt: TTypeDef;
     functionType_Ordinal_LongInt: TTypeDef;
     functionType_Ordinal_Ordinal: TTypeDef;
     functionType_Byte_Char: TTypeDef;
     functionType_LongInt_Boolean: TTypeDef;
     functionType_Real_Real: TTypeDef;
-    functionType_Real_Longint: TTypeDef;
+    functionType_Real_LongInt: TTypeDef;
     functionType_constString_constString_LongInt: TTypeDef;
     procedureType_outString_PChar_LongInt: TTypeDef;
-    procedureType_Ordinal1: TTypeDef;
-    procedureType_Ordinal2: TTypeDef;
+    procedureType_varOrdinal_LongInt: TTypeDef;
     procedureType_Unknown: TTypeDef;
-    procedureType_Void_Or_Unknown: TTypeDef;
-    varargsProcedureType: TTypeDef;
-    functionType_HighLow: TTypeDef;
+    procedureType_Varargs: TTypeDef;
     functionType_String_String: TTypeDef;
-    functionType_Copy: TTypeDef;
-    procedureType_SetLength: TTypeDef;
+    functionType_Unknown_LongInt_LongInt_Unknown: TTypeDef;
+    functionType_DynArray_LongInt: TTypeDef;
+    functionType_Array_LongInt: TTypeDef;
+    functionType_TObject: TTypeDef;
+    procedureType_File: TTypeDef;
+    procedureType_File_String: TTypeDef;
+    procedureType_File_LongInt: TTypeDef;
+    procedureType_File_Unknown_LongInt: TTypeDef;
+    procedureType_File_Unknown_LongInt_LongInt: TTypeDef;
+    functionType_File_Boolean: TTypeDef;
+    functionType_Boolean: TTypeDef;
+    functionType_SmallInt: TTypeDef;
+    functionType_File_LongInt: TTypeDef;
+
+    // overloads
+    procedureType_Ordinal1: TTypeDef;
+    procedureType_Void_Or_Unknown: TTypeDef;
     functionType_Length_FPC: TTypeDef;
-    functionType_DynArray_Integer: TTypeDef;
-    functionType_Array_Integer: TTypeDef;
-    func_Create_TObject: TTypeDef;
+    procedureType_Reset_Rewrite_Mac: TTypeDef;
+    procedureType_Reset_Rewrite_TP: TTypeDef;
+    procedureType_BlockRead_BlockWrite: TTypeDef;
+    functionType_Eof_Eoln: TTypeDef;
 
     classesMock: TClassesUnit;
     contnrsMock: TContnrsUnit;
@@ -68,8 +81,8 @@ begin
         RegisterSymbolByName('ArcTan', nil, skFunction, functionType_Real_Real, ctx.Cursor);
         RegisterSymbolByName('Chr', nil, skFunction, functionType_Byte_Char, ctx.Cursor);
         RegisterSymbolByName('Cos', nil, skFunction, functionType_Real_Real, ctx.Cursor);
-        // TODO: Eof
-        // TODO: Eoln
+        RegisterSymbolByName('Eof', nil, skFunction, functionType_Eof_Eoln, ctx.Cursor);
+        RegisterSymbolByName('Eoln', nil, skFunction, functionType_Eof_Eoln, ctx.Cursor);
         RegisterSymbolByName('Exp', nil, skFunction, functionType_Real_Real, ctx.Cursor);
         RegisterSymbolByName('Ln', nil, skFunction, functionType_Real_Real, ctx.Cursor);
         RegisterSymbolByName('Odd', nil, skFunction, functionType_LongInt_Boolean, ctx.Cursor);
@@ -90,11 +103,34 @@ begin
         // TODO: Put
         // TODO: Read
         // TODO: Readln
-        // TODO: Reset
-        // TODO: Rewrite
+        if ctx.mode = cmMacPascal then
+        begin
+            RegisterSymbolByName('Reset', nil, skProcedure, procedureType_Reset_Rewrite_Mac, ctx.Cursor);
+            RegisterSymbolByName('Rewrite', nil, skProcedure, procedureType_Reset_Rewrite_Mac, ctx.Cursor);
+        end
+        else if ctx.mode >= cmTurboPascal then
+        begin
+            RegisterSymbolByName('Reset', nil, skProcedure, procedureType_Reset_Rewrite_TP, ctx.Cursor);
+            RegisterSymbolByName('Rewrite', nil, skProcedure, procedureType_Reset_Rewrite_TP, ctx.Cursor);
+        end
+        else
+        begin
+            RegisterSymbolByName('Reset', nil, skProcedure, procedureType_File, ctx.Cursor);
+            RegisterSymbolByName('Rewrite', nil, skProcedure, procedureType_File, ctx.Cursor);
+        end;
         // TODO: Unpack
         // TODO: Write
-        RegisterSymbolByName('WriteLn', nil, skProcedure, varargsProcedureType, ctx.Cursor);
+        RegisterSymbolByName('WriteLn', nil, skProcedure, procedureType_Varargs, ctx.Cursor);
+
+        RegisterSymbolByName('Input', nil, skVariable, textFileType, ctx.Cursor);
+        RegisterSymbolByName('Output', nil, skVariable, textFileType, ctx.Cursor);
+    end;
+    if (ctx.mode = cmMacPascal) or (ctx.mode >= cmTurboPascal) then
+    begin
+        RegisterSymbolByName('Seek', nil, skProcedure, procedureType_File_LongInt, ctx.Cursor);
+        RegisterSymbolByName('FilePos', nil, skFunction, functionType_File_LongInt, ctx.Cursor);
+        RegisterSymbolByName('IOResult', nil, skFunction, functionType_SmallInt, ctx.Cursor);
+        RegisterSymbolByName('Close', nil, skProcedure, procedureType_File, ctx.Cursor);
     end;
     if ctx.mode >= cmTurboPascal then
     begin
@@ -113,8 +149,8 @@ begin
         // Ordinal procedures & functions
         RegisterSymbolByName('Dec', nil, skProcedure, procedureType_Ordinal1, ctx.Cursor);
         RegisterSymbolByName('Inc', nil, skProcedure, procedureType_Ordinal1, ctx.Cursor);
-        RegisterSymbolByName('High', nil, skFunction, functionType_HighLow, ctx.Cursor);
-        RegisterSymbolByName('Low', nil, skFunction, functionType_HighLow, ctx.Cursor);
+        RegisterSymbolByName('High', nil, skFunction, functionType_Ordinal_Ordinal, ctx.Cursor);
+        RegisterSymbolByName('Low', nil, skFunction, functionType_Ordinal_Ordinal, ctx.Cursor);
 
         // Arithmetic functions
         RegisterSymbolByName('Frac', nil, skFunction, functionType_Real_Real, ctx.Cursor);
@@ -123,13 +159,13 @@ begin
 
         // String procedures & functions
         // TODO: Concat
-        RegisterSymbolByName('Copy', nil, skFunction, functionType_Copy, ctx.Cursor);
+        RegisterSymbolByName('Copy', nil, skFunction, functionType_Unknown_LongInt_LongInt_Unknown, ctx.Cursor);
         // TODO: Delete
         // TODO: Insert
         if ctx.mode >= cmFreePascal then
             RegisterSymbolByName('Length', nil, skFunction, functionType_Length_FPC, ctx.Cursor)
         else
-            RegisterSymbolByName('Length', nil, skFunction, functionType_String_Integer, ctx.Cursor);
+            RegisterSymbolByName('Length', nil, skFunction, functionType_String_LongInt, ctx.Cursor);
         RegisterSymbolByName('Pos', nil, skFunction, functionType_constString_constString_LongInt, ctx.Cursor);
         // TODO: Str
         // TODO: Val
@@ -166,6 +202,16 @@ begin
         // TODO: Swap
         // TODO: TypeOf
         // TODO: UpCase
+
+        // File procedures & functions
+        RegisterSymbolByName('Assign', nil, skProcedure, procedureType_File_String, ctx.Cursor);
+        RegisterSymbolByName('FileSize', nil, skFunction, functionType_File_LongInt, ctx.Cursor);
+        RegisterSymbolByName('Rename', nil, skProcedure, procedureType_File_String, ctx.Cursor);
+        RegisterSymbolByName('Erase', nil, skProcedure, procedureType_File, ctx.Cursor);
+        RegisterSymbolByName('Truncate', nil, skProcedure, procedureType_File, ctx.Cursor);
+        RegisterSymbolByName('Flush', nil, skProcedure, procedureType_File, ctx.Cursor);
+        RegisterSymbolByName('BlockRead', nil, skProcedure, procedureType_BlockRead_BlockWrite, ctx.Cursor);
+        RegisterSymbolByName('BlockWrite', nil, skProcedure, procedureType_BlockRead_BlockWrite, ctx.Cursor);
 
         // Predeclared variables in the System unit
         RegisterSymbolByName('ErrorAddr', nil, skVariable, pointer32Type, ctx.Cursor);
@@ -221,9 +267,11 @@ begin
     end;
     if ctx.mode >= cmFreePascal then
     begin
+        RegisterSymbolByName('AssignFile', nil, skProcedure, procedureType_File_String, ctx.Cursor);
+        RegisterSymbolByName('CloseFile', nil, skProcedure, procedureType_File, ctx.Cursor);
         RegisterSymbolByName('SetString', nil, skProcedure, procedureType_outString_PChar_LongInt, ctx.Cursor);
         RegisterSymbolByName('LowerCase', nil, skFunction, functionType_String_String, ctx.Cursor);
-        RegisterSymbolByName('SetLength', nil, skProcedure, procedureType_SetLength, ctx.Cursor);
+        RegisterSymbolByName('SetLength', nil, skProcedure, procedureType_varOrdinal_LongInt, ctx.Cursor);
         RegisterSymbolByName('TObject', nil, skTypeName, classType_TObject, ctx.Cursor);
     end;
 end;
@@ -236,11 +284,11 @@ begin
     functionType_LongInt_LongInt := CreateOneParamFunctionType('v', longintType, longintType);
     functionType_Ordinal_LongInt := CreateOneParamFunctionType('v', unknownType, longintType);
     functionType_Ordinal_Ordinal := CreateOneParamFunctionType('v', unknownType, unknownType);
-    functionType_String_Integer := CreateOneParamFunctionType('s', ansiString64Type, longintType);
+    functionType_String_LongInt := CreateOneParamFunctionType('s', ansiString64Type, longintType);
     functionType_LongInt_Boolean := CreateOneParamFunctionType('v', longintType, booleanType);
     functionType_Byte_Char := CreateOneParamFunctionType('b', byteType, charType);
     functionType_Real_Real := CreateOneParamFunctionType('x', realType, realType);
-    functionType_Real_Longint := CreateOneParamFunctionType('x', realType, longintType);
+    functionType_Real_LongInt := CreateOneParamFunctionType('x', realType, longintType);
 
     functionType_constString_constString_LongInt := CreateFunctionType(TParameterList.Create([
         CreateParam(ptkConst, 'substr', shortstringType),
@@ -256,19 +304,15 @@ begin
     procedureType_Ordinal1 := CreateProcedureType(TParameterList.Create([
         CreateParam(ptkVar, 'x', unknownType)
     ]));
-    procedureType_Ordinal2 := CreateProcedureType(TParameterList.Create([
+    procedureType_varOrdinal_LongInt := CreateProcedureType(TParameterList.Create([
         CreateParam(ptkVar, 'x', unknownType),
         CreateParam(ptkValue, 'n', longintType)
     ]));
     if procedureType_Ordinal1 is TRoutineTypeDef then
     begin
         TRoutineTypeDef(procedureType_Ordinal1).overloads := TFPList.Create;
-        TRoutineTypeDef(procedureType_Ordinal1).overloads.Add(procedureType_Ordinal2);
+        TRoutineTypeDef(procedureType_Ordinal1).overloads.Add(procedureType_varOrdinal_LongInt);
     end;
-
-    functionType_HighLow := CreateFunctionType(TParameterList.Create([
-        CreateParam(ptkValue, 'x', unknownType)
-    ]), unknownType);
 
     procedureType_Unknown := CreateProcedureType(TParameterList.Create([
         CreateParam(ptkValue, 'v', unknownType)
@@ -279,26 +323,21 @@ begin
         TRoutineTypeDef(procedureType_Void_Or_Unknown).overloads := TFPList.Create;
         TRoutineTypeDef(procedureType_Void_Or_Unknown).overloads.Add(procedureType_Unknown);
     end;
-    varargsProcedureType := CreateProcedureType(nil);
+    procedureType_Varargs := CreateProcedureType(nil);
 
     functionType_String_String := CreateOneParamFunctionType('s', ansiString64Type, ansiString64Type);
 
-    functionType_Copy := CreateFunctionType(TParameterList.Create([
+    functionType_Unknown_LongInt_LongInt_Unknown := CreateFunctionType(TParameterList.Create([
         CreateParam(ptkValue, 's', unknownType),
         CreateParam(ptkValue, 'index', longintType),
         CreateParam(ptkValue, 'count', longintType)
     ]), unknownType);
 
-    procedureType_SetLength := CreateProcedureType(TParameterList.Create([
-        CreateParam(ptkVar, 's', unknownType),
-        CreateParam(ptkValue, 'len', longintType)
-    ]));
-
-    functionType_DynArray_Integer := CreateFunctionType(TParameterList.Create([
+    functionType_DynArray_LongInt := CreateFunctionType(TParameterList.Create([
         CreateParam(ptkValue, 's', TDynamicArrayTypeDef.Create(nil, nil))
     ]), longintType);
 
-    functionType_Array_Integer := CreateFunctionType(TParameterList.Create([
+    functionType_Array_LongInt := CreateFunctionType(TParameterList.Create([
         CreateParam(ptkValue, 's', TArrayTypeDef.Create(nil, nil, nil))
     ]), longintType);
 
@@ -306,45 +345,120 @@ begin
     if functionType_Length_FPC is TRoutineTypeDef then
     begin
         TRoutineTypeDef(functionType_Length_FPC).overloads := TFPList.Create;
-        TRoutineTypeDef(functionType_Length_FPC).overloads.Add(functionType_DynArray_Integer);
-        TRoutineTypeDef(functionType_Length_FPC).overloads.Add(functionType_Array_Integer);
+        TRoutineTypeDef(functionType_Length_FPC).overloads.Add(functionType_DynArray_LongInt);
+        TRoutineTypeDef(functionType_Length_FPC).overloads.Add(functionType_Array_LongInt);
     end;
 
     classType_TObject := TClassTypeDef.Create;
-    func_Create_TObject := CreateFunctionType(TParameterList.Create, classType_TObject);
-    TClassTypeDef(classType_TObject).AddMember('Create', func_Create_TObject);
+    functionType_TObject := CreateFunctionType(TParameterList.Create, classType_TObject);
+    TClassTypeDef(classType_TObject).AddMember('Create', functionType_TObject);
     TClassTypeDef(classType_TObject).AddMember('Destroy', voidProcedureType);
     TClassTypeDef(classType_TObject).AddMember('Free', voidProcedureType);
+
+    procedureType_File := CreateProcedureType(TParameterList.Create([
+        CreateParam(ptkVar, 'f', fileType)
+    ]));
+    procedureType_File_String := CreateProcedureType(TParameterList.Create([
+        CreateParam(ptkVar, 'f', fileType),
+        CreateParam(ptkConst, 'name', shortstringType)
+    ]));
+    procedureType_File_LongInt := CreateProcedureType(TParameterList.Create([
+        CreateParam(ptkVar, 'f', fileType),
+        CreateParam(ptkValue, 'recsize', longintType)
+    ]));
+
+    procedureType_Reset_Rewrite_Mac := CreateProcedureType(TParameterList.Create([
+        CreateParam(ptkVar, 'f', fileType)
+    ]));
+    if procedureType_Reset_Rewrite_Mac is TRoutineTypeDef then
+    begin
+        TRoutineTypeDef(procedureType_Reset_Rewrite_Mac).overloads := TFPList.Create;
+        TRoutineTypeDef(procedureType_Reset_Rewrite_Mac).overloads.Add(procedureType_File_String);
+    end;
+
+    procedureType_Reset_Rewrite_TP := CreateProcedureType(TParameterList.Create([
+        CreateParam(ptkVar, 'f', fileType)
+    ]));
+    if procedureType_Reset_Rewrite_TP is TRoutineTypeDef then
+    begin
+        TRoutineTypeDef(procedureType_Reset_Rewrite_TP).overloads := TFPList.Create;
+        TRoutineTypeDef(procedureType_Reset_Rewrite_TP).overloads.Add(procedureType_File_LongInt);
+    end;
+
+    functionType_File_Boolean := CreateOneParamFunctionType('f', fileType, booleanType);
+    functionType_Boolean := CreateFunctionType(TParameterList.Create, booleanType);
+    functionType_Eof_Eoln := CreateOneParamFunctionType('f', fileType, booleanType);
+    if functionType_Eof_Eoln is TRoutineTypeDef then
+    begin
+        TRoutineTypeDef(functionType_Eof_Eoln).overloads := TFPList.Create;
+        TRoutineTypeDef(functionType_Eof_Eoln).overloads.Add(functionType_Boolean);
+    end;
+
+    functionType_File_LongInt := CreateOneParamFunctionType('f', fileType, longintType);
+    functionType_SmallInt := CreateFunctionType(TParameterList.Create, smallintType);
+
+    procedureType_File_Unknown_LongInt := CreateProcedureType(TParameterList.Create([
+        CreateParam(ptkVar, 'f', fileType),
+        CreateParam(ptkVar, 'buf', unknownType),
+        CreateParam(ptkValue, 'count', longintType)
+    ]));
+    procedureType_File_Unknown_LongInt_LongInt := CreateProcedureType(TParameterList.Create([
+        CreateParam(ptkVar, 'f', fileType),
+        CreateParam(ptkVar, 'buf', unknownType),
+        CreateParam(ptkValue, 'count', longintType),
+        CreateParam(ptkVar, 'resultcount', longintType)
+    ]));
+    procedureType_BlockRead_BlockWrite := CreateProcedureType(TParameterList.Create([
+        CreateParam(ptkVar, 'f', fileType),
+        CreateParam(ptkVar, 'buf', unknownType),
+        CreateParam(ptkValue, 'count', longintType)
+    ]));
+    if procedureType_BlockRead_BlockWrite is TRoutineTypeDef then
+    begin
+        TRoutineTypeDef(procedureType_BlockRead_BlockWrite).overloads := TFPList.Create;
+        TRoutineTypeDef(procedureType_BlockRead_BlockWrite).overloads.Add(procedureType_File_Unknown_LongInt_LongInt);
+    end;
 
 end;
 
 procedure FreeFunctionTypes;
 begin
     functionType_Real.Free;
-    functionType_String_Integer.Free;
+    functionType_String_LongInt.Free;
     functionType_LongInt_LongInt.Free;
     functionType_Ordinal_LongInt.Free;
     functionType_Ordinal_Ordinal.Free;
     functionType_Byte_Char.Free;
     functionType_LongInt_Boolean.Free;
     functionType_Real_Real.Free;
-    functionType_Real_Longint.Free;
+    functionType_Real_LongInt.Free;
     functionType_constString_constString_LongInt.Free;
     procedureType_outString_PChar_LongInt.Free;
-    procedureType_Ordinal1.Free;
-    procedureType_Ordinal2.Free;
+    procedureType_varOrdinal_LongInt.Free;
     procedureType_Unknown.Free;
     procedureType_Void_Or_Unknown.Free;
-    varargsProcedureType.Free;
-    functionType_HighLow.Free;
+    procedureType_Varargs.Free;
     functionType_String_String.Free;
-    functionType_Copy.Free;
-    procedureType_SetLength.Free;
+    functionType_Unknown_LongInt_LongInt_Unknown.Free;
     functionType_Length_FPC.Free;
-    functionType_DynArray_Integer.Free;
-    functionType_Array_Integer.Free;
-    func_Create_TObject.Free;
+    functionType_DynArray_LongInt.Free;
+    functionType_Array_LongInt.Free;
+    functionType_TObject.Free;
     classType_TObject.Free;
+
+    procedureType_File.Free;
+    procedureType_File_String.Free;
+    procedureType_File_LongInt.Free;
+    procedureType_Reset_Rewrite_Mac.Free;
+    procedureType_Reset_Rewrite_TP.Free;
+    procedureType_File_Unknown_LongInt.Free;
+    procedureType_File_Unknown_LongInt_LongInt.Free;
+    procedureType_BlockRead_BlockWrite.Free;
+    functionType_File_Boolean.Free;
+    functionType_Boolean.Free;
+    functionType_Eof_Eoln.Free;
+    functionType_File_LongInt.Free;
+    functionType_SmallInt.Free;
 end;
 
 function LoadSystemUnit(unitName: string; ctx: TParserContext): boolean;

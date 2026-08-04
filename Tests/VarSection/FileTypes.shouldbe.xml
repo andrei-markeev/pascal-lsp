@@ -1,0 +1,46 @@
+<ProgramFile><RW>program</RW> <SymbDecl>FileTypes</SymbDecl><RW>;</RW>
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TRec</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>a</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>t</SymbDecl><RW>:</RW> <TypeSpec><Ident>text</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>tf</SymbDecl><RW>:</RW> <TypeSpec><Ident>textfile</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>fInt</SymbDecl><RW>:</RW> <TypeSpec><FileSpec><RW>file</RW> <RW>of</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></FileSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>fRec</SymbDecl><RW>:</RW> <TypeSpec><FileSpec><RW>file</RW> <RW>of</RW> <TypeSpec><SymbRef>TRec</SymbRef></TypeSpec></FileSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>uFile</SymbDecl><RW>:</RW> <TypeSpec><FileSpec><RW>file</RW></FileSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>buf</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW><RW>[</RW><TypeSpec><RangeSpec><Num>1</Num><RW>..</RW><Num>100</Num></RangeSpec></TypeSpec><RW>]</RW> <RW>of</RW> <TypeSpec><Ident>byte</Ident></TypeSpec></ArraySpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>readCount</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Call><SymbRef>Assign</SymbRef><RW>(</RW><SymbRef>t</SymbRef><RW>,</RW> <Str>'input.txt'</Str><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>AssignFile</SymbRef><RW>(</RW><SymbRef>tf</SymbRef><RW>,</RW> <Str>'output.txt'</Str><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>Reset</SymbRef><RW>(</RW><SymbRef>t</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>Reset</SymbRef><RW>(</RW><SymbRef>uFile</SymbRef><RW>,</RW> <Num>512</Num><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>Rewrite</SymbRef><RW>(</RW><SymbRef>tf</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>Rewrite</SymbRef><RW>(</RW><SymbRef>fInt</SymbRef><RW>)</RW></Call><RW>;</RW>
+
+    <If><RW>if</RW> <Factor><RW>not</RW> <Factor><Call><SymbRef>Eof</SymbRef><RW>(</RW><SymbRef>t</SymbRef><RW>)</RW></Call></Factor></Factor> <RW>then</RW>
+        <Call><SymbRef>WriteLn</SymbRef></Call></If><RW>;</RW>
+
+    <If><RW>if</RW> <Factor><RW>not</RW> <Factor><Call><SymbRef>Eoln</SymbRef><RW>(</RW><SymbRef>t</SymbRef><RW>)</RW></Call></Factor></Factor> <RW>then</RW>
+        <Call><SymbRef>WriteLn</SymbRef></Call></If><RW>;</RW>
+
+    <Call><SymbRef>Seek</SymbRef><RW>(</RW><SymbRef>fInt</SymbRef><RW>,</RW> <Num>10</Num><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>WriteLn</SymbRef><RW>(</RW><Call><SymbRef>FilePos</SymbRef><RW>(</RW><SymbRef>fInt</SymbRef><RW>)</RW></Call><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>WriteLn</SymbRef><RW>(</RW><Call><SymbRef>FileSize</SymbRef><RW>(</RW><SymbRef>fInt</SymbRef><RW>)</RW></Call><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>WriteLn</SymbRef><RW>(</RW><Call><SymbRef>IOResult</SymbRef></Call><RW>)</RW></Call><RW>;</RW>
+
+    <Call><SymbRef>BlockRead</SymbRef><RW>(</RW><SymbRef>uFile</SymbRef><RW>,</RW> <SymbRef>buf</SymbRef><RW>,</RW> <Num>100</Num><RW>,</RW> <SymbRef>readCount</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>BlockWrite</SymbRef><RW>(</RW><SymbRef>uFile</SymbRef><RW>,</RW> <SymbRef>buf</SymbRef><RW>,</RW> <Num>100</Num><RW>)</RW></Call><RW>;</RW>
+
+    <Call><SymbRef>Flush</SymbRef><RW>(</RW><SymbRef>t</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>Truncate</SymbRef><RW>(</RW><SymbRef>fInt</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>Rename</SymbRef><RW>(</RW><SymbRef>t</SymbRef><RW>,</RW> <Str>'new.txt'</Str><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>Erase</SymbRef><RW>(</RW><SymbRef>t</SymbRef><RW>)</RW></Call><RW>;</RW>
+
+    <Call><SymbRef>Close</SymbRef><RW>(</RW><SymbRef>t</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>CloseFile</SymbRef><RW>(</RW><SymbRef>tf</SymbRef><RW>)</RW></Call><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

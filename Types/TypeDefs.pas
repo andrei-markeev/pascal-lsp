@@ -9,7 +9,7 @@ uses
     contnrs, classes, CompilationMode,
     TypeDef, StructuredTypeDef, IntegerTypeDef, CharRangeTypeDef, EnumTypeDef, EnumMemberTypeDef,
     PointerTypeDef, ArrayTypeDef, DynamicArrayTypeDef, SetTypeDef, RecordTypeDef,
-    ObjectTypeDef, ClassTypeDef, RoutineTypeDef, PrimitiveTypeDef;
+    ObjectTypeDef, ClassTypeDef, RoutineTypeDef, PrimitiveTypeDef, FileTypeDef;
 
 const
     NUM_OF_TYPE_KINDS = 20;
@@ -54,6 +54,9 @@ var
     ansiString32Type: TTypeDef;
     ansiString64Type: TTypeDef;
 
+    fileType: TTypeDef;
+    textFileType: TTypeDef;
+
     voidProcedureType: TTypeDef;
 
 procedure InitPredefinedTypes(mode: TCompilationMode);
@@ -83,6 +86,7 @@ begin
         TypesList.Add('boolean', booleanType);
         TypesList.Add('char', charType);
         TypesList.Add('real', realType);
+        TypesList.Add('text', textFileType);
     end;
 
     if mode >= cmExtendedPascal then
@@ -108,6 +112,7 @@ begin
 
         TypesList.Add('pointer', pointer64Type);
         TypesList.Add('pchar', pcharType);
+        TypesList.Add('textfile', textFileType);
     end;
 
     if mode >= cmFreePascal then
@@ -336,6 +341,9 @@ initialization
     ansiString32Type := TPrimitiveTypeDef.Create(nil, tkString, 4);
     ansiString64Type := TPrimitiveTypeDef.Create(nil, tkString, 8);
 
+    fileType := TFileTypeDef.Create(nil, false, nil);
+    textFileType := TFileTypeDef.Create(nil, true, charType);
+
     voidProcedureType := TRoutineTypeDef.Create(nil, tkProcedure, TParameterList.Create, nil, nil);
 
 finalization
@@ -370,6 +378,9 @@ finalization
     shortstringType.Free;
     ansiString32Type.Free;
     ansiString64Type.Free;
+
+    fileType.Free;
+    textFileType.Free;
 
     voidProcedureType.Free;
 

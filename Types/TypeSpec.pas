@@ -21,7 +21,7 @@ implementation
 
 uses
     Anchors, ReservedWord,
-    EnumSpec, RangeSpec, ArraySpec, SetSpec, RecordSpec, ClassSpec, PointerSpec;
+    EnumSpec, RangeSpec, ArraySpec, SetSpec, RecordSpec, ClassSpec, PointerSpec, FileSpec;
 
 function CreateTypeSpec(ctx: TParserContext; var typeDefToFill: TTypeDef): TTypeSpec;
 begin
@@ -131,7 +131,14 @@ begin
                         ctx.MarkEndOfToken(Self);
                         exit;
                     end;
-                rwFile: ; // TODO: implement FileSpec
+                rwFile:
+                    begin
+                        start := ctx.Cursor;
+                        TFileSpec.Create(ctx, typeDefToFill);
+                        state := tsCorrect;
+                        ctx.MarkEndOfToken(Self);
+                        exit;
+                    end;
                 rwString:
                     begin
                         start := ctx.Cursor;

@@ -1,0 +1,6 @@
+{$mode iso}
+<ProgramFile><RW>program</RW> <SymbDecl>BadFileTypes</SymbDecl><RW>;</RW>
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>f</SymbDecl><RW>:</RW> <TypeSpec><FileSpec ERROR="Untyped file is not supported in Standard Pascal!"><RW>file</RW></FileSpec></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
