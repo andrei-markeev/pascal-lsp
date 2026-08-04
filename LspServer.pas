@@ -11,7 +11,7 @@ uses
   ParserContext, Token, Identifier, Symbols, Scopes, ReservedWord, TypeDecl,
   ParameterDecl, TypeDefs, ProgramFile, UnitFile, LspConfig,
   LspUtils, LspState, LspDiagnostics, LspDocumentSymbols, LspSemanticTokens,
-  LspDefinition, LspCompletion, LspHover;
+  LspDefinition, LspCompletion, LspHover, LspReferences;
 
 type
   TLspServerApp = class
@@ -109,6 +109,7 @@ begin
           '},' +
           '"documentSymbolProvider":true,' +
           '"definitionProvider":true,' +
+          '"referencesProvider":true,' +
           '"hoverProvider":true,' +
           '"semanticTokensProvider":{' +
             '"legend":{' +
@@ -154,6 +155,10 @@ begin
     else if Method = 'textDocument/hover' then
     begin
       HandleHover(WriteStream, Id, Json.FindPath('params'));
+    end
+    else if Method = 'textDocument/references' then
+    begin
+      HandleReferences(WriteStream, Id, Json.FindPath('params'));
     end
     else if Method = 'textDocument/semanticTokens/full' then
     begin
