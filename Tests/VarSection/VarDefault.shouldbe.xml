@@ -1,0 +1,13 @@
+<ProgramFile><RW>program</RW> <SymbDecl>VarDefault</SymbDecl><RW>;</RW>
+
+<ConstSection><RW>const</RW>
+    <ConstDecl><SymbDecl>MY_INT</SymbDecl> <RW>=</RW> <ConstValue><Num>42</Num></ConstValue></ConstDecl><RW>;</RW></ConstSection>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>a</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>=</RW> <ConstValue><Num>10</Num></ConstValue></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec> <RW>=</RW> <ConstValue><Str>'hello'</Str></ConstValue></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>c</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>=</RW> <ConstValue><SymbRef>MY_INT</SymbRef></ConstValue></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>arr</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW><RW>[</RW><TypeSpec><RangeSpec><Num>1</Num><RW>..</RW><Num>3</Num></RangeSpec></TypeSpec><RW>]</RW> <RW>of</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ArraySpec></TypeSpec> <RW>=</RW> <ConstValue><ArrayLiteral><RW>(</RW><ConstValue><Num>1</Num></ConstValue><RW>,</RW> <ConstValue><Num>2</Num></ConstValue><RW>,</RW> <ConstValue><Num>3</Num></ConstValue><RW>)</RW></ArrayLiteral></ConstValue></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

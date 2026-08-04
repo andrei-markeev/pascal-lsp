@@ -47,7 +47,7 @@ end;
 constructor TIdentifier.Create(ctx: TParserContext; expectDeclared: boolean);
 begin
     tokenName := 'Ident';
-    typeDef := Default(TTypeDef);
+    typeDef := nil;
 
     isPrimitive := true;
     ctx.SkipTrivia;

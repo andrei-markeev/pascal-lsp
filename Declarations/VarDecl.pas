@@ -6,17 +6,51 @@ unit VarDecl;
 interface
 
 uses
-    ParserContext, Anchors, Symbols, TypeDef, TypeDefs, Token, ReservedWord, Identifier, TypeSpec;
+    ParserContext, Anchors, Symbols, TypeDef, TypeDefs, Token, ReservedWord, Identifier, TypeSpec, ConstValue;
 
 type
     TVarDecl = class(TToken)
+    private
+        procedure ParseDefaultValue(ctx: TParserContext);
     public
         idents: array of TIdentifier;
         varType: TTypeDef;
+        defaultValue: TConstValue;
         constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol);
     end;
 
 implementation
+
+uses
+    CompilationMode;
+
+procedure TVarDecl.ParseDefaultValue(ctx: TParserContext);
+var
+    nextTokenKind: TTokenKind;
+    typeError: string;
+    defaultValueIsValid: boolean;
+begin
+    if not PeekReservedWord(ctx, rwEquals) then
+        exit;
+
+    TReservedWord.Create(ctx, rwEquals, true);
+    nextTokenKind := DetermineNextTokenKind(ctx);
+    defaultValue := TConstValue.Create(ctx, nextTokenKind);
+
+    if not (ctx.mode in [cmDelphi, cmFreePascal, cmObjectFreePascal]) then
+    begin
+        state := tsError;
+        errorMessage := 'Default variable values are not supported in this compilation mode!';
+        exit;
+    end;
+
+    defaultValueIsValid := (defaultValue <> nil) and (defaultValue.state <> tsError) and (defaultValue.typeDef <> nil);
+    if (varType <> nil) and defaultValueIsValid and not TypesAreAssignable(ctx, varType, defaultValue.typeDef, typeError) then
+    begin
+        state := tsError;
+        errorMessage := 'Variable default value cannot be assigned to the specified type: ' + typeError;
+    end;
+end;
 
 constructor TVarDecl.Create(ctx: TParserContext; parentSymbols: array of TSymbol);
 var
@@ -27,6 +61,7 @@ var
 begin
     tokenName := 'VarDecl';
     ctx.Add(Self);
+    defaultValue := nil;
 
     start := ctx.Cursor;
 
@@ -72,7 +107,7 @@ begin
         for i := 0 to l - 1 do
             symbols[i + p * l].typeDef := varType;
 
-    // TODO: variable initialization
+    ParseDefaultValue(ctx);
 
     ctx.MarkEndOfToken(Self);
 end;

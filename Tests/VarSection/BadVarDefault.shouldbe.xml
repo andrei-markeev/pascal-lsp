@@ -1,0 +1,13 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadVarDefault</SymbDecl><RW>;</RW>
+
+{$mode macpas}
+<VarSection><RW>var</RW>
+    <VarDecl ERROR="Default variable values are not supported in this compilation mode!"><SymbDecl>badModeVar</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>=</RW> <ConstValue><Num>5</Num></ConstValue></VarDecl><RW>;</RW></VarSection>
+
+{$mode objfpc}
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>missingVal</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>=</RW><ConstValue MISSING="" /></VarDecl> <RW>;</RW>
+    <VarDecl ERROR="Variable default value cannot be assigned to the specified type: expected integer or assignment-compatible, but found string!"><SymbDecl>typeMismatch</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>=</RW> <ConstValue><Str>'hello'</Str></ConstValue></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
