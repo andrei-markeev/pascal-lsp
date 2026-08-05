@@ -85,7 +85,7 @@ end;
 var
     i: integer;
 begin
-    if paramCount = 0 then
+    if ParamCount = 0 then
     begin
         WriteLn('Usage: ParseFile.exe <file1> ... <fileN>');
         exit;

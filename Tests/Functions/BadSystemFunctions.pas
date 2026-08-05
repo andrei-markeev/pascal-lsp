@@ -16,4 +16,6 @@ begin
     Copy(s, 'hello', 3);
     Length();
     Length(5);
+    ParamStr();
+    FileExists();
 end.

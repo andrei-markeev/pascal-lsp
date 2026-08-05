@@ -16,4 +16,6 @@
     <Call><SymbRef>Copy</SymbRef><RW>(</RW><SymbRef>s</SymbRef><RW>,</RW> <Str ERROR="Invalid parameter: expected integer or assignment-compatible, but found string!">'hello'</Str><RW>,</RW> <Num>3</Num><RW>)</RW></Call><RW>;</RW>
     <Call ERROR="Expected 1 parameters, but got 0"><SymbRef>Length</SymbRef><RW>(</RW><RW>)</RW></Call><RW>;</RW>
     <Call><SymbRef>Length</SymbRef><RW>(</RW><Num ERROR="Invalid parameter: expected array or assignment-compatible, but found integer!">5</Num><RW>)</RW></Call><RW>;</RW>
+    <Call ERROR="Expected 1 parameters, but got 0"><SymbRef>ParamStr</SymbRef><RW>(</RW><RW>)</RW></Call><RW>;</RW>
+    <Call><Ident ERROR="Identifier has not been declared!">FileExists</Ident><RW>(</RW><RW>)</RW></Call><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

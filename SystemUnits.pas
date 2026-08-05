@@ -51,6 +51,8 @@ var
     functionType_File_Boolean: TTypeDef;
     functionType_Boolean: TTypeDef;
     functionType_SmallInt: TTypeDef;
+    functionType_LongInt: TTypeDef;
+    functionType_LongInt_String: TTypeDef;
     functionType_File_LongInt: TTypeDef;
 
     // overloads
@@ -102,7 +104,7 @@ begin
         // TODO: Page
         // TODO: Put
         // TODO: Read
-        // TODO: Readln
+        RegisterSymbolByName('Readln', nil, skProcedure, procedureType_Varargs, ctx.Cursor);
         if ctx.mode = cmMacPascal then
         begin
             RegisterSymbolByName('Reset', nil, skProcedure, procedureType_Reset_Rewrite_Mac, ctx.Cursor);
@@ -119,7 +121,7 @@ begin
             RegisterSymbolByName('Rewrite', nil, skProcedure, procedureType_File, ctx.Cursor);
         end;
         // TODO: Unpack
-        // TODO: Write
+        RegisterSymbolByName('Write', nil, skProcedure, procedureType_Varargs, ctx.Cursor);
         RegisterSymbolByName('WriteLn', nil, skProcedure, procedureType_Varargs, ctx.Cursor);
 
         RegisterSymbolByName('Input', nil, skVariable, textFileType, ctx.Cursor);
@@ -194,8 +196,6 @@ begin
         // TODO: Include
         // TODO: Lo
         // TODO: Move
-        // TODO: ParamCount
-        // TODO: ParamStr
         // TODO: Random
         // TODO: Randomize
         // TODO: SizeOf
@@ -264,6 +264,11 @@ begin
         RegisterSymbolByName('SelectorInc', nil, skVariable, wordType, ctx.Cursor);
         RegisterSymbolByName('StackLimit', nil, skVariable, wordType, ctx.Cursor);
         RegisterSymbolByName('Test8087', nil, skVariable, byteType, ctx.Cursor);
+    end;
+    if (ctx.mode = cmExtendedPascal) or (ctx.mode = cmTurboPascal) or (ctx.mode >= cmFreePascal) then
+    begin
+        RegisterSymbolByName('ParamCount', nil, skFunction, functionType_LongInt, ctx.Cursor);
+        RegisterSymbolByName('ParamStr', nil, skFunction, functionType_LongInt_String, ctx.Cursor);
     end;
     if ctx.mode >= cmFreePascal then
     begin
@@ -396,6 +401,8 @@ begin
 
     functionType_File_LongInt := CreateOneParamFunctionType('f', fileType, longintType);
     functionType_SmallInt := CreateFunctionType(TParameterList.Create, smallintType);
+    functionType_LongInt := CreateFunctionType(TParameterList.Create, longintType);
+    functionType_LongInt_String := CreateOneParamFunctionType('l', longintType, ansiString64Type);
 
     procedureType_File_Unknown_LongInt := CreateProcedureType(TParameterList.Create([
         CreateParam(ptkVar, 'f', fileType),
@@ -459,6 +466,8 @@ begin
     functionType_Eof_Eoln.Free;
     functionType_File_LongInt.Free;
     functionType_SmallInt.Free;
+    functionType_LongInt.Free;
+    functionType_LongInt_String.Free;
 end;
 
 function LoadSystemUnit(unitName: string; ctx: TParserContext): boolean;
