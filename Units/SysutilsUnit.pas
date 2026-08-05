@@ -19,6 +19,10 @@ type
         functionType_StringReplace: TTypeDef;
         functionType_String: TTypeDef;
         functionType_String_Boolean: TTypeDef;
+        recordType_TSearchRec: TTypeDef;
+        functionType_FindFirst: TTypeDef;
+        functionType_FindNext: TTypeDef;
+        procedureType_FindClose: TTypeDef;
     protected
         procedure InitTypes; override;
     public
@@ -29,7 +33,7 @@ type
 implementation
 
 uses
-    Symbols, Parameters, CompilationMode, SetTypeDef, EnumTypeDef, EnumMemberTypeDef;
+    Symbols, Parameters, CompilationMode, SetTypeDef, EnumTypeDef, EnumMemberTypeDef, RecordTypeDef;
 
 destructor TSysutilsUnit.Destroy;
 begin
@@ -43,6 +47,10 @@ begin
         functionType_StringReplace.Free;
         functionType_String.Free;
         functionType_String_Boolean.Free;
+        recordType_TSearchRec.Free;
+        functionType_FindFirst.Free;
+        functionType_FindNext.Free;
+        procedureType_FindClose.Free;
     end;
     inherited Destroy;
 end;
@@ -69,6 +77,28 @@ begin
 
     functionType_String := CreateFunctionType(TParameterList.Create, ansiString64Type);
     functionType_String_Boolean := CreateOneParamFunctionType('s', ansiString64Type, booleanType);
+
+    recordType_TSearchRec := TRecordTypeDef.Create(nil);
+    TRecordTypeDef(recordType_TSearchRec).AddMember('Time', longintType);
+    TRecordTypeDef(recordType_TSearchRec).AddMember('Size', longintType);
+    TRecordTypeDef(recordType_TSearchRec).AddMember('Attr', longintType);
+    TRecordTypeDef(recordType_TSearchRec).AddMember('Name', ansiString64Type);
+    TRecordTypeDef(recordType_TSearchRec).AddMember('ExcludeAttr', longintType);
+    TRecordTypeDef(recordType_TSearchRec).AddMember('FindHandle', pointer64Type);
+
+    functionType_FindFirst := CreateFunctionType(TParameterList.Create([
+        CreateParam(ptkConst, 'path', ansiString64Type),
+        CreateParam(ptkValue, 'attr', longintType),
+        CreateParam(ptkVar, 'f', recordType_TSearchRec)
+    ]), longintType);
+
+    functionType_FindNext := CreateFunctionType(TParameterList.Create([
+        CreateParam(ptkVar, 'f', recordType_TSearchRec)
+    ]), longintType);
+
+    procedureType_FindClose := CreateProcedureType(TParameterList.Create([
+        CreateParam(ptkVar, 'f', recordType_TSearchRec)
+    ]));
 end;
 
 procedure TSysutilsUnit.Load(ctx: TParserContext);
@@ -87,6 +117,20 @@ begin
         RegisterSymbolByName('GetCurrentDir', nil, skFunction, functionType_String, ctx.Cursor);
         RegisterSymbolByName('FileExists', nil, skFunction, functionType_String_Boolean, ctx.Cursor);
         RegisterSymbolByName('DirectoryExists', nil, skFunction, functionType_String_Boolean, ctx.Cursor);
+
+        RegisterSymbolByName('TSearchRec', nil, skTypeName, recordType_TSearchRec, ctx.Cursor);
+
+        RegisterSymbolByName('faReadOnly', nil, skConstant, longintType, ctx.Cursor);
+        RegisterSymbolByName('faHidden', nil, skConstant, longintType, ctx.Cursor);
+        RegisterSymbolByName('faSysFile', nil, skConstant, longintType, ctx.Cursor);
+        RegisterSymbolByName('faVolumeID', nil, skConstant, longintType, ctx.Cursor);
+        RegisterSymbolByName('faDirectory', nil, skConstant, longintType, ctx.Cursor);
+        RegisterSymbolByName('faArchive', nil, skConstant, longintType, ctx.Cursor);
+        RegisterSymbolByName('faAnyFile', nil, skConstant, longintType, ctx.Cursor);
+
+        RegisterSymbolByName('FindFirst', nil, skFunction, functionType_FindFirst, ctx.Cursor);
+        RegisterSymbolByName('FindNext', nil, skFunction, functionType_FindNext, ctx.Cursor);
+        RegisterSymbolByName('FindClose', nil, skProcedure, procedureType_FindClose, ctx.Cursor);
     end;
 end;
 

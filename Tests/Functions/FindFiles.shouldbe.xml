@@ -1,0 +1,34 @@
+<ProgramFile><RW>program</RW> <SymbDecl>FindFiles</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+{$longstrings on}
+
+<TUsesClause><RW>uses</RW> <Ident>dos</Ident><RW>,</RW> <Ident>sysutils</Ident><RW>;</RW></TUsesClause>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>srDos</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>SearchRec</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>srSys</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TSearchRec</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>res</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>n</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>sz</SymbDecl><RW>:</RW> <TypeSpec><Ident>longint</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>a</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Call><SymbRef>FindFirst</SymbRef><RW>(</RW><Str>'*.pas'</Str><RW>,</RW> <SymbRef>AnyFile</SymbRef><RW>,</RW> <SymbRef>srDos</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <Call><SymbRef>FindNext</SymbRef><RW>(</RW><SymbRef>srDos</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <If><RW>if</RW> <Expression><SymbRef>DosError</SymbRef> <RW>=</RW> <Num>0</Num></Expression> <RW>then</RW>
+    <Block><RW>begin</RW>
+        <Assignment><SymbRef>n</SymbRef> <RW>:=</RW> <VarRef><SymbRef>srDos</SymbRef><RW>.</RW><Ident>Name</Ident></VarRef></Assignment><RW>;</RW>
+        <Assignment><SymbRef>sz</SymbRef> <RW>:=</RW> <VarRef><SymbRef>srDos</SymbRef><RW>.</RW><Ident>Size</Ident></VarRef></Assignment><RW>;</RW>
+        <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <VarRef><SymbRef>srDos</SymbRef><RW>.</RW><Ident>Attr</Ident></VarRef></Assignment><RW>;</RW>
+    <RW>end</RW></Block></If><RW>;</RW>
+
+    <Assignment><SymbRef>res</SymbRef> <RW>:=</RW> <Call><SymbRef>FindFirst</SymbRef><RW>(</RW><Str>'*.pas'</Str><RW>,</RW> <SimpleExpression><SymbRef>faAnyFile</SymbRef> <RW>or</RW> <SymbRef>faReadOnly</SymbRef> <RW>or</RW> <SymbRef>faHidden</SymbRef> <RW>or</RW> <SymbRef>faSysFile</SymbRef> <RW>or</RW> <SymbRef>faVolumeID</SymbRef> <RW>or</RW> <SymbRef>faDirectory</SymbRef> <RW>or</RW> <SymbRef>faArchive</SymbRef></SimpleExpression><RW>,</RW> <SymbRef>srSys</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>res</SymbRef> <RW>:=</RW> <Call><SymbRef>FindNext</SymbRef><RW>(</RW><SymbRef>srSys</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <If><RW>if</RW> <Expression><SymbRef>res</SymbRef> <RW>=</RW> <Num>0</Num></Expression> <RW>then</RW>
+    <Block><RW>begin</RW>
+        <Assignment><SymbRef>n</SymbRef> <RW>:=</RW> <VarRef><SymbRef>srSys</SymbRef><RW>.</RW><Ident>Name</Ident></VarRef></Assignment><RW>;</RW>
+        <Assignment><SymbRef>sz</SymbRef> <RW>:=</RW> <VarRef><SymbRef>srSys</SymbRef><RW>.</RW><Ident>Size</Ident></VarRef></Assignment><RW>;</RW>
+        <Assignment><SymbRef>a</SymbRef> <RW>:=</RW> <VarRef><SymbRef>srSys</SymbRef><RW>.</RW><Ident>Attr</Ident></VarRef></Assignment><RW>;</RW>
+    <RW>end</RW></Block></If><RW>;</RW>
+    <Call><SymbRef>FindClose</SymbRef><RW>(</RW><SymbRef>srSys</SymbRef><RW>)</RW></Call><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

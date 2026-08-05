@@ -19,7 +19,7 @@ implementation
 uses
     classes, contnrs, CompilationMode, Symbols, TypeDefs, Parameters, RoutineTypeDef,
     ArrayTypeDef, DynamicArrayTypeDef, ClassTypeDef,
-    SystemUnit, ClassesUnit, ContnrsUnit, MathUnit, SysutilsUnit, StringsUnit;
+    SystemUnit, ClassesUnit, ContnrsUnit, MathUnit, SysutilsUnit, StringsUnit, DosUnit;
 
 procedure InitFunctionTypes; forward;
 
@@ -69,6 +69,7 @@ var
     mathMock: TMathUnit;
     sysutilsMock: TSysutilsUnit;
     stringsMock: TStringsUnit;
+    dosMock: TDosUnit;
 
 procedure RegisterSystemSymbols(ctx: TParserContext);
 begin
@@ -481,6 +482,7 @@ begin
         'math': mathMock.Load(ctx);
         'sysutils': sysutilsMock.Load(ctx);
         'strings': stringsMock.Load(ctx);
+        'dos': dosMock.Load(ctx);
         'system': ;
     else
         Result := false;
@@ -494,6 +496,7 @@ begin
     mathMock := TMathUnit.Create;
     sysutilsMock := TSysutilsUnit.Create;
     stringsMock := TStringsUnit.Create;
+    dosMock := TDosUnit.Create;
 end;
 
 procedure FreeSystemUnits;
@@ -503,6 +506,7 @@ begin
     mathMock.Free;
     sysutilsMock.Free;
     stringsMock.Free;
+    dosMock.Free;
 end;
 
 initialization

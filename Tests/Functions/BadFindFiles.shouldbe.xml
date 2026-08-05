@@ -1,0 +1,16 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadFindFiles</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+{$longstrings on}
+
+<TUsesClause><RW>uses</RW> <Ident>dos</Ident><RW>,</RW> <Ident>sysutils</Ident><RW>;</RW></TUsesClause>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>srDos</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>SearchRec</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>srSys</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TSearchRec</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Call ERROR="Expected 3 parameters, but got 2"><SymbRef>FindFirst</SymbRef><RW>(</RW><Str>'*.pas'</Str><RW>,</RW> <SymbRef>AnyFile</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <Call ERROR="Expected 1 parameters, but got 0"><SymbRef>FindNext</SymbRef></Call><RW>;</RW>
+    <Call ERROR="Expected 3 parameters, but got 0"><SymbRef>FindFirst</SymbRef></Call><RW>;</RW>
+    <Call><SymbRef>FindNext</SymbRef><RW>(</RW><SymbRef>srSys</SymbRef><RW>,</RW> <Num ERROR="Too many parameters.">123</Num><RW>)</RW></Call><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
