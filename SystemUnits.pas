@@ -38,6 +38,7 @@ var
     procedureType_varOrdinal_LongInt: TTypeDef;
     procedureType_Unknown: TTypeDef;
     procedureType_Varargs: TTypeDef;
+    procedureType_varUnknown_LongInt_Unknown: TTypeDef;
     functionType_String_String: TTypeDef;
     functionType_Unknown_LongInt_LongInt_Unknown: TTypeDef;
     functionType_DynArray_LongInt: TTypeDef;
@@ -192,14 +193,14 @@ begin
 
         // Miscellaneous procedures & functions
         // TODO: Exclude
-        // TODO: FillChar
+        RegisterSymbolByName('FillChar', nil, skProcedure, procedureType_varUnknown_LongInt_Unknown, ctx.Cursor);
         // TODO: Hi
         // TODO: Include
         // TODO: Lo
         // TODO: Move
         // TODO: Random
         // TODO: Randomize
-        // TODO: SizeOf
+        RegisterSymbolByName('SizeOf', nil, skFunction, functionType_Ordinal_LongInt, ctx.Cursor);
         // TODO: Swap
         // TODO: TypeOf
         // TODO: UpCase
@@ -430,6 +431,12 @@ begin
         TRoutineTypeDef(procedureType_BlockRead_BlockWrite).overloads.Add(procedureType_File_Unknown_LongInt_LongInt);
     end;
 
+    procedureType_varUnknown_LongInt_Unknown := CreateProcedureType(TParameterList.Create([
+        CreateParam(ptkVar, 'x', unknownType),
+        CreateParam(ptkValue, 'n', longintType),
+        CreateParam(ptkValue, 'v', unknownType)
+    ]));
+
 end;
 
 procedure FreeFunctionTypes;
@@ -449,6 +456,7 @@ begin
     procedureType_Unknown.Free;
     procedureType_Void_Or_Unknown.Free;
     procedureType_Varargs.Free;
+    procedureType_varUnknown_LongInt_Unknown.Free;
     functionType_String_String.Free;
     functionType_Unknown_LongInt_LongInt_Unknown.Free;
     functionType_Length_FPC.Free;

@@ -32,6 +32,8 @@ var
     longintType: TTypeDef;
     qwordType: TTypeDef;
     int64Type: TTypeDef;
+    ptruintType: TTypeDef;
+    ptrintType: TTypeDef;
 
     booleanType: TTypeDef;
     boolean16Type: TTypeDef;
@@ -122,6 +124,8 @@ begin
         TypesList.Add('cardinal', longwordType);        
         TypesList.Add('qword', qwordType);
         TypesList.Add('int64', int64Type);
+        TypesList.Add('ptruint', ptruintType);
+        TypesList.Add('ptrint', ptrintType);
 
         TypesList.Add('boolean16', boolean16Type);
         TypesList.Add('boolean32', boolean32Type);
@@ -319,6 +323,8 @@ initialization
     longintType := TIntegerTypeDef.Create(nil, 4, true, -2147483648, 2147483647);
     qwordType := TIntegerTypeDef.Create(nil, 8, false, 0, 0);
     int64Type := TIntegerTypeDef.Create(nil, 8, true, 0, 0);
+    ptruintType := TIntegerTypeDef.Create(nil, 8, false, 0, 0);
+    ptrintType := TIntegerTypeDef.Create(nil, 8, true, 0, 0);
 
     booleanType := TPrimitiveTypeDef.Create(nil, tkBoolean, 1);
     boolean16Type := TPrimitiveTypeDef.Create(nil, tkBoolean, 2);
@@ -357,6 +363,8 @@ finalization
     longintType.Free;
     qwordType.Free;
     int64Type.Free;
+    ptruintType.Free;
+    ptrintType.Free;
 
     booleanType.Free;
     boolean16Type.Free;

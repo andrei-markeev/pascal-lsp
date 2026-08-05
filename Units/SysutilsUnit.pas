@@ -23,6 +23,7 @@ type
         functionType_FindFirst: TTypeDef;
         functionType_FindNext: TTypeDef;
         procedureType_FindClose: TTypeDef;
+        functionType_PChar_LongInt: TTypeDef;
     protected
         procedure InitTypes; override;
     public
@@ -51,6 +52,7 @@ begin
         functionType_FindFirst.Free;
         functionType_FindNext.Free;
         procedureType_FindClose.Free;
+        functionType_PChar_LongInt.Free;
     end;
     inherited Destroy;
 end;
@@ -99,6 +101,7 @@ begin
     procedureType_FindClose := CreateProcedureType(TParameterList.Create([
         CreateParam(ptkVar, 'f', recordType_TSearchRec)
     ]));
+    functionType_PChar_LongInt := CreateOneParamFunctionType('p', pcharType, longintType);
 end;
 
 procedure TSysutilsUnit.Load(ctx: TParserContext);
@@ -122,6 +125,7 @@ begin
         RegisterSymbolByName('ExtractFileExt', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('ExtractFilePath', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('ExpandFileName', nil, skFunction, functionType_String_String, ctx.Cursor);
+        RegisterSymbolByName('StrLen', nil, skFunction, functionType_PChar_LongInt, ctx.Cursor);
         RegisterSymbolByName('PathDelim', nil, skConstant, charType, ctx.Cursor);
         RegisterSymbolByName('DriveDelim', nil, skConstant, charType, ctx.Cursor);
         RegisterSymbolByName('PathSep', nil, skConstant, charType, ctx.Cursor);

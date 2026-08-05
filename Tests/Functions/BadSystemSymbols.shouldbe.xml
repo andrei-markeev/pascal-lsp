@@ -1,0 +1,15 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadSystemSymbols</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+{$longstrings on}
+
+<TUsesClause><RW>uses</RW> <Ident>sysutils</Ident><RW>;</RW></TUsesClause>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>u</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>PtrUInt</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Call ERROR="Expected 3 parameters, but got 1"><SymbRef>FillChar</SymbRef><RW>(</RW><Factor MISSING="" /><RW MISSING=")" /></Call><RW>;</RW>
+    <Call><SymbRef>SizeOf</SymbRef><RW>(</RW><Factor MISSING="" /><RW MISSING=")" /></Call><RW>;</RW>
+    <Call><SymbRef>StrLen</SymbRef><RW>(</RW><Factor MISSING="" /><RW MISSING=")" /></Call><RW>;</RW>
+    <Assignment><SymbRef>u</SymbRef> <RW>:=</RW> <VarRef><SymbRef>PtrUInt</SymbRef><RW>(</RW><Factor MISSING="" /><RW>;</RW></VarRef></Assignment>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

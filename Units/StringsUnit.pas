@@ -12,6 +12,7 @@ type
     TStringsUnit = class(TSystemUnit)
     private
         functionType_PChar_PChar_LongInt_LongInt: TTypeDef;
+        functionType_PChar_LongInt: TTypeDef;
     protected
         procedure InitTypes; override;
     public
@@ -27,7 +28,10 @@ uses
 destructor TStringsUnit.Destroy;
 begin
     if loaded then
+    begin
         functionType_PChar_PChar_LongInt_LongInt.Free;
+        functionType_PChar_LongInt.Free;
+    end;
     inherited Destroy;
 end;
 
@@ -38,6 +42,7 @@ begin
         CreateParam(ptkValue, 'str2', pcharType),
         CreateParam(ptkValue, 'len', longintType)
     ]), longintType);
+    functionType_PChar_LongInt := CreateOneParamFunctionType('str', pcharType, longintType);
 end;
 
 procedure TStringsUnit.Load(ctx: TParserContext);
@@ -46,6 +51,7 @@ begin
     if ctx.mode >= cmFreePascal then
     begin
         RegisterSymbolByName('strlicomp', nil, skFunction, functionType_PChar_PChar_LongInt_LongInt, ctx.Cursor);
+        RegisterSymbolByName('StrLen', nil, skFunction, functionType_PChar_LongInt, ctx.Cursor);
     end;
 end;
 
