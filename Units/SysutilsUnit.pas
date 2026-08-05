@@ -117,6 +117,11 @@ begin
         RegisterSymbolByName('GetCurrentDir', nil, skFunction, functionType_String, ctx.Cursor);
         RegisterSymbolByName('FileExists', nil, skFunction, functionType_String_Boolean, ctx.Cursor);
         RegisterSymbolByName('DirectoryExists', nil, skFunction, functionType_String_Boolean, ctx.Cursor);
+        RegisterSymbolByName('ExcludeTrailingPathDelimiter', nil, skFunction, functionType_String_String, ctx.Cursor);
+        RegisterSymbolByName('IncludeTrailingPathDelimiter', nil, skFunction, functionType_String_String, ctx.Cursor);
+        RegisterSymbolByName('ExtractFileExt', nil, skFunction, functionType_String_String, ctx.Cursor);
+        RegisterSymbolByName('ExtractFilePath', nil, skFunction, functionType_String_String, ctx.Cursor);
+        RegisterSymbolByName('ExpandFileName', nil, skFunction, functionType_String_String, ctx.Cursor);
 
         RegisterSymbolByName('TSearchRec', nil, skTypeName, recordType_TSearchRec, ctx.Cursor);
 
