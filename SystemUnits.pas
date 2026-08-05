@@ -279,6 +279,9 @@ begin
         RegisterSymbolByName('LowerCase', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('SetLength', nil, skProcedure, procedureType_varOrdinal_LongInt, ctx.Cursor);
         RegisterSymbolByName('TObject', nil, skTypeName, classType_TObject, ctx.Cursor);
+        RegisterSymbolByName('DirectorySeparator', nil, skConstant, charType, ctx.Cursor);
+        RegisterSymbolByName('DriveSeparator', nil, skConstant, charType, ctx.Cursor);
+        RegisterSymbolByName('PathSeparator', nil, skConstant, charType, ctx.Cursor);
     end;
 end;
 

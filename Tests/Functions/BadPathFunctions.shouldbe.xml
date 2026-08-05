@@ -13,4 +13,5 @@
     <Assignment><SymbRef>p</SymbRef> <RW>:=</RW> <Call><SymbRef>ExtractFileExt</SymbRef><RW>(</RW><Str>'a'</Str><RW>,</RW> <Str ERROR="Too many parameters.">'b'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>p</SymbRef> <RW>:=</RW> <Call><SymbRef>ExtractFilePath</SymbRef><RW>(</RW><Factor MISSING="" /><RW MISSING=")" /></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>p</SymbRef> <RW>:=</RW> <Call ERROR="Expected 1 parameters, but got 0"><SymbRef>ExpandFileName</SymbRef></Call></Assignment><RW>;</RW>
+    <Assignment ERROR="Cannot modify a constant!"><SymbRef>PathDelim</SymbRef> <RW>:=</RW> <Str>'/'</Str></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

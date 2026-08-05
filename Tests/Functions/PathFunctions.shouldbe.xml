@@ -6,12 +6,19 @@
 <TUsesClause><RW>uses</RW> <Ident>sysutils</Ident><RW>;</RW></TUsesClause>
 
 <VarSection><RW>var</RW>
-    <VarDecl><SymbDecl>p</SymbDecl><RW>,</RW> <SymbDecl>s</SymbDecl><RW>,</RW> <SymbDecl>ext</SymbDecl><RW>,</RW> <SymbDecl>fp</SymbDecl><RW>,</RW> <SymbDecl>exp</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+    <VarDecl><SymbDecl>p</SymbDecl><RW>,</RW> <SymbDecl>s</SymbDecl><RW>,</RW> <SymbDecl>ext</SymbDecl><RW>,</RW> <SymbDecl>fp</SymbDecl><RW>,</RW> <SymbDecl>exp</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>c1</SymbDecl><RW>,</RW> <SymbDecl>c2</SymbDecl><RW>,</RW> <SymbDecl>c3</SymbDecl><RW>,</RW> <SymbDecl>c4</SymbDecl><RW>,</RW> <SymbDecl>c5</SymbDecl><RW>,</RW> <SymbDecl>c6</SymbDecl><RW>:</RW> <TypeSpec><Ident>char</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>
-    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'C:\path\to\file.txt'</Str></Assignment><RW>;</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <SimpleExpression><Str>'C'</Str> <RW>+</RW> <SymbRef>DriveDelim</SymbRef> <RW>+</RW> <SymbRef>DriveSeparator</SymbRef> <RW>+</RW> <SymbRef>PathDelim</SymbRef> <RW>+</RW> <Str>'path'</Str> <RW>+</RW> <SymbRef>DirectorySeparator</SymbRef> <RW>+</RW> <Str>'to'</Str> <RW>+</RW> <SymbRef>PathSep</SymbRef> <RW>+</RW> <SymbRef>PathSeparator</SymbRef> <RW>+</RW> <Str>'file.txt'</Str></SimpleExpression></Assignment><RW>;</RW>
     <Assignment><SymbRef>p</SymbRef> <RW>:=</RW> <Call><SymbRef>ExcludeTrailingPathDelimiter</SymbRef><RW>(</RW><Str>'C:\path\to\'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>p</SymbRef> <RW>:=</RW> <Call><SymbRef>IncludeTrailingPathDelimiter</SymbRef><RW>(</RW><Str>'C:\path\to'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>ext</SymbRef> <RW>:=</RW> <Call><SymbRef>ExtractFileExt</SymbRef><RW>(</RW><SymbRef>s</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>fp</SymbRef> <RW>:=</RW> <Call><SymbRef>ExtractFilePath</SymbRef><RW>(</RW><SymbRef>s</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>exp</SymbRef> <RW>:=</RW> <Call><SymbRef>ExpandFileName</SymbRef><RW>(</RW><Str>'relative/path.txt'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>c1</SymbRef> <RW>:=</RW> <SymbRef>PathDelim</SymbRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>c2</SymbRef> <RW>:=</RW> <SymbRef>DirectorySeparator</SymbRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>c3</SymbRef> <RW>:=</RW> <SymbRef>DriveDelim</SymbRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>c4</SymbRef> <RW>:=</RW> <SymbRef>DriveSeparator</SymbRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>c5</SymbRef> <RW>:=</RW> <SymbRef>PathSep</SymbRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>c6</SymbRef> <RW>:=</RW> <SymbRef>PathSeparator</SymbRef></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

@@ -13,4 +13,5 @@ begin
     p := ExtractFileExt('a', 'b');
     p := ExtractFilePath(;
     p := ExpandFileName;
+    PathDelim := '/';
 end.

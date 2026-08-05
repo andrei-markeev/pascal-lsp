@@ -122,6 +122,9 @@ begin
         RegisterSymbolByName('ExtractFileExt', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('ExtractFilePath', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('ExpandFileName', nil, skFunction, functionType_String_String, ctx.Cursor);
+        RegisterSymbolByName('PathDelim', nil, skConstant, charType, ctx.Cursor);
+        RegisterSymbolByName('DriveDelim', nil, skConstant, charType, ctx.Cursor);
+        RegisterSymbolByName('PathSep', nil, skConstant, charType, ctx.Cursor);
 
         RegisterSymbolByName('TSearchRec', nil, skTypeName, recordType_TSearchRec, ctx.Cursor);
 
