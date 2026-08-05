@@ -320,9 +320,9 @@ begin
     // TODO: asm
 
     if needsToAddChildSymbols and (symbolParent <> nil) then
-        TBlock.Create(ctx, symbolParent.children, selfType, routineTypeDef.returnType)
+        TBlock.Create(ctx, symbolParent.children, selfType, routineTypeDef.returnType, Self)
     else
-        TBlock.Create(ctx, [], selfType, routineTypeDef.returnType);
+        TBlock.Create(ctx, [], selfType, routineTypeDef.returnType, Self);
 
     TReservedWord.Create(ctx, rwSemiColon, false);
 

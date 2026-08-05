@@ -24,7 +24,9 @@
 <VarSection><RW>var</RW>
     <VarDecl><SymbDecl>parentObj</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TParentClass</SymbRef></TypeSpec></VarDecl><RW>;</RW>
     <VarDecl><SymbDecl>childObj</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TChildClass</SymbRef></TypeSpec></VarDecl><RW>;</RW>
-    <VarDecl><SymbDecl>otherChild</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TChildClass</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+    <VarDecl><SymbDecl>otherChild</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TChildClass</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>idx</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>ptr</SymbDecl><RW>:</RW> <TypeSpec><Ident>pointer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
 
 <Block><RW>begin</RW>
     <Assignment><SymbRef>parentObj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TParentClass</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef></Call></Assignment><RW>;</RW>
@@ -44,4 +46,8 @@
 
     // Typecast on LHS of assignment
     <Assignment><VarRef><SymbRef>TChildClass</SymbRef><RW>(</RW><SymbRef>parentObj</SymbRef><RW>)</RW><RW>.</RW><SymbRef>childField</SymbRef></VarRef> <RW>:=</RW> <Num>42</Num></Assignment><RW>;</RW>
+
+    // Ordinal to PtrUInt and Pointer typecast widening
+    <Assignment><SymbRef>idx</SymbRef> <RW>:=</RW> <Num>1</Num></Assignment><RW>;</RW>
+    <Assignment><SymbRef>ptr</SymbRef> <RW>:=</RW> <VarRef><Ident>Pointer</Ident><RW>(</RW><VarRef><Ident>PtrUInt</Ident><RW>(</RW><SimpleExpression><SymbRef>idx</SymbRef> <RW>+</RW> <Num>1</Num></SimpleExpression><RW>)</RW></VarRef><RW>)</RW></VarRef></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

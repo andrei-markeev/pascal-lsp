@@ -1,0 +1,60 @@
+<ProgramFile><RW>program</RW> <SymbDecl>InheritedCall</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TParentClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <VarDecl><SymbDecl>parentVal</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <ConstructorDecl><RW>constructor</RW> <SymbDecl>Create</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>aVal</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW></ConstructorDecl>
+        <ProcedureDecl><RW>procedure</RW> <SymbDecl>DoSomething</SymbDecl><RW>;</RW> <Ident>virtual</Ident><RW>;</RW></ProcedureDecl>
+        <FunctionDecl><RW>function</RW> <SymbDecl>GetValue</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW> <Ident>virtual</Ident><RW>;</RW></FunctionDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    <TypeDecl><SymbDecl>TChildClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW><RW>(</RW><SymbRef>TParentClass</SymbRef><RW>)</RW>
+        <VarDecl><SymbDecl>childVal</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <ConstructorDecl><RW>constructor</RW> <SymbDecl>Create</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>aVal</SymbDecl><RW>,</RW> <SymbDecl>bVal</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW></ConstructorDecl>
+        <ProcedureDecl><RW>procedure</RW> <SymbDecl>DoSomething</SymbDecl><RW>;</RW> <Ident>override</Ident><RW>;</RW></ProcedureDecl>
+        <FunctionDecl><RW>function</RW> <SymbDecl>GetValue</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW> <Ident>override</Ident><RW>;</RW></FunctionDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Constructor><RW>constructor</RW> <SymbRef>TParentClass</SymbRef><RW>.</RW><SymbDecl>Create</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>aVal</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>parentVal</SymbRef> <RW>:=</RW> <SymbRef>aVal</SymbRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Constructor>
+
+<Procedure><RW>procedure</RW> <SymbRef>TParentClass</SymbRef><RW>.</RW><SymbDecl>DoSomething</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Function><RW>function</RW> <SymbRef>TParentClass</SymbRef><RW>.</RW><SymbDecl>GetValue</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>GetValue</SymbRef> <RW>:=</RW> <SymbRef>parentVal</SymbRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Constructor><RW>constructor</RW> <SymbRef>TChildClass</SymbRef><RW>.</RW><SymbDecl>Create</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>aVal</SymbDecl><RW>,</RW> <SymbDecl>bVal</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+    <Call><VarRef><RW>inherited</RW> <SymbRef>Create</SymbRef></VarRef><RW>(</RW><SymbRef>aVal</SymbRef><RW>)</RW></Call><RW>;</RW>
+    <Assignment><SymbRef>childVal</SymbRef> <RW>:=</RW> <SymbRef>bVal</SymbRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Constructor>
+
+<Procedure><RW>procedure</RW> <SymbRef>TChildClass</SymbRef><RW>.</RW><SymbDecl>DoSomething</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+    <Call><VarRef><RW>inherited</RW> <SymbRef>DoSomething</SymbRef></VarRef></Call><RW>;</RW>
+    <Call><VarRef><RW>inherited</RW></VarRef></Call><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Function><RW>function</RW> <SymbRef>TChildClass</SymbRef><RW>.</RW><SymbDecl>GetValue</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>GetValue</SymbRef> <RW>:=</RW> <SimpleExpression><Call><VarRef><RW>inherited</RW> <SymbRef>GetValue</SymbRef></VarRef></Call> <RW>+</RW> <SymbRef>childVal</SymbRef></SimpleExpression></Assignment><RW>;</RW>
+    <Call><VarRef><RW>inherited</RW> <SymbRef>TParentClass</SymbRef><RW>.</RW><SymbRef>DoSomething</SymbRef></VarRef></Call><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>c</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TChildClass</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>v</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>c</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TChildClass</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef><RW>(</RW><Num>10</Num><RW>,</RW> <Num>20</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>c</SymbRef><RW>.</RW><SymbRef>DoSomething</SymbRef></VarRef><RW>(</RW><RW>)</RW></Call><RW>;</RW>
+    <Assignment><SymbRef>v</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>c</SymbRef><RW>.</RW><SymbRef>GetValue</SymbRef></VarRef><RW>(</RW><RW>)</RW></Call></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

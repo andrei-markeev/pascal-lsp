@@ -11,7 +11,7 @@ uses
 type
     TBlock = class(TToken)
     public
-        constructor Create(ctx: TParserContext; childSymbols: array of TSymbol; selfType: TTypeDef; resultType: TTypeDef);
+        constructor Create(ctx: TParserContext; childSymbols: array of TSymbol; selfType: TTypeDef; resultType: TTypeDef; funcImpl: TObject = nil);
     end;
 
 implementation
@@ -62,7 +62,7 @@ begin
     end;
 end;
 
-constructor TBlock.Create(ctx: TParserContext; childSymbols: array of TSymbol; selfType: TTypeDef; resultType: TTypeDef);
+constructor TBlock.Create(ctx: TParserContext; childSymbols: array of TSymbol; selfType: TTypeDef; resultType: TTypeDef; funcImpl: TObject = nil);
 var
     nextTokenKind: TTokenKind;
     i: integer;
@@ -74,6 +74,7 @@ begin
     start := ctx.Cursor;
 
     RegisterScope(Self);
+    FindScope(Self.start).funcImpl := funcImpl;
 
     if selfType <> nil then
         RegisterSymbolByName('Self', nil, skVariable, selfType, start);

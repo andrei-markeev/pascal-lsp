@@ -1,0 +1,46 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadInheritedCall</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TParentClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+    <Ident>private</Ident>
+        <ProcedureDecl><RW>procedure</RW> <SymbDecl>PrivateParentMethod</SymbDecl><RW>;</RW></ProcedureDecl>
+    <Ident>public</Ident>
+        <ConstructorDecl><RW>constructor</RW> <SymbDecl>Create</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>aVal</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW></ConstructorDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    <TypeDecl><SymbDecl>TChildClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW><RW>(</RW><SymbRef>TParentClass</SymbRef><RW>)</RW>
+        <ConstructorDecl><RW>constructor</RW> <SymbDecl>Create</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>aVal</SymbDecl><RW>,</RW> <SymbDecl>bVal</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW></ConstructorDecl>
+        <ProcedureDecl><RW>procedure</RW> <SymbDecl>CallPrivate</SymbDecl><RW>;</RW></ProcedureDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    <TypeDecl><SymbDecl>TUnrelatedClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Procedure><RW>procedure</RW> <SymbRef>TParentClass</SymbRef><RW>.</RW><SymbDecl>PrivateParentMethod</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Constructor><RW>constructor</RW> <SymbRef>TParentClass</SymbRef><RW>.</RW><SymbDecl>Create</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>aVal</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Constructor>
+
+<Constructor><RW>constructor</RW> <SymbRef>TChildClass</SymbRef><RW>.</RW><SymbDecl>Create</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>aVal</SymbDecl><RW>,</RW> <SymbDecl>bVal</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+    <Call><VarRef><RW>inherited</RW> <Ident ERROR="Identifier has not been declared!">NonExistentMethod</Ident></VarRef></Call><RW>;</RW>
+    <Call ERROR="Only procedure calls and assignments can be used as statements!"><VarRef><RW>inherited</RW> <SymbRef ERROR="TUnrelatedClass is not an ancestor of current class!">TUnrelatedClass</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef></Call><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Constructor>
+
+<Procedure><RW>procedure</RW> <SymbRef>TChildClass</SymbRef><RW>.</RW><SymbDecl>CallPrivate</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+    <Call><VarRef><RW>inherited</RW> <SymbRef>PrivateParentMethod</SymbRef></VarRef></Call><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbDecl>StandaloneProc</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+    <Call><VarRef ERROR="Cannot use 'inherited' outside of a method!"><RW>inherited</RW></VarRef></Call><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

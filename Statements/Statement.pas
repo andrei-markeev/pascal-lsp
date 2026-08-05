@@ -23,25 +23,28 @@ begin
     CreateStatement := CreateStatement(ctx, DetermineNextTokenKind(ctx));
 end;
 
-function CreateStatement(ctx: TParserContext; nextTokenKind: TTokenKind): TToken;
+function CreateDesignatorStatement(ctx: TParserContext): TToken;
 var
     varRef: TTypedToken;
 begin
+    // This is either an assignment or a procedure call
+    varRef := CreateDesignator(ctx, true);
+    if PeekReservedWord(ctx, rwAssign) then
+        CreateDesignatorStatement := TAssignmentStatement.Create(ctx, varRef)
+    else if varRef is TCall then
+        CreateDesignatorStatement := varRef
+    else
+        CreateDesignatorStatement := TCall.Create(ctx, varRef);
+end;
+
+function CreateStatement(ctx: TParserContext; nextTokenKind: TTokenKind): TToken;
+begin
     CreateStatement := nil;
     case nextTokenKind.primitiveKind of
-        pkIdentifier:
-            begin
-                // This is either an assignment or a procedure call
-                varRef := CreateDesignator(ctx, true);
-                if PeekReservedWord(ctx, rwAssign) then
-                    CreateStatement := TAssignmentStatement.Create(ctx, varRef)
-                else if varRef is TCall then
-                    CreateStatement := varRef
-                else
-                    CreateStatement := TCall.Create(ctx, varRef);
-            end;
+        pkIdentifier: CreateStatement := CreateDesignatorStatement(ctx);
         pkUnknown:
             case nextTokenKind.reservedWordKind of
+                rwInherited: CreateStatement := CreateDesignatorStatement(ctx);
                 rwWith: CreateStatement := TWithStatement.Create(ctx);
                 rwFor: CreateStatement := TForStatement.Create(ctx);
                 rwCase: CreateStatement := TCaseStatement.Create(ctx);

@@ -87,12 +87,7 @@ begin
 
     LoadedUnits.Add(LowerCase(UnitName), UnitCtx);
 
-    try
-        TUnitFile.Create(UnitCtx);
-    except
-        on E: Exception do
-            WriteLn('Error parsing unit ', UnitName, ': ', E.Message);
-    end;
+    TUnitFile.Create(UnitCtx);
 end;
 
 constructor TUsesClause.Create(ctx: TParserContext);

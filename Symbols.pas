@@ -45,6 +45,7 @@ function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolK
 function FindSymbol(findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(parent: TSymbol; findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(ident: TIdentifier): TSymbol;
+function FindInheritedMemberSymbol(parentType: TTypeDef; findName: shortstring; cursor: PChar): TSymbol;
 function IsSameOrSubclass(currentClass, targetClass: TTypeDef): boolean;
 function IsMemberAccessible(accessCtx: TParserContext; targetClass: TTypeDef; memberVisibility: TVisibility; cursor: PChar; memberSymbol: TSymbol = nil): boolean;
 
@@ -300,6 +301,32 @@ begin
     end;
 
     Result := false;
+end;
+
+function FindInheritedMemberSymbol(parentType: TTypeDef; findName: shortstring; cursor: PChar): TSymbol;
+var
+    curClass: TTypeDef;
+    classSym: TSymbol;
+    sym: TSymbol;
+begin
+    Result := nil;
+    curClass := parentType;
+    while curClass <> nil do
+    begin
+        classSym := TSymbol(curClass.typeSymbol);
+        if classSym <> nil then
+        begin
+            sym := FindSymbol(classSym, findName, cursor);
+            if sym <> nil then
+                exit(sym);
+        end;
+        if (curClass.kind = tkClass) and (curClass is TClassTypeDef) then
+            curClass := TClassTypeDef(curClass).parentClass
+        else if (curClass.kind = tkObject) and (curClass is TObjectTypeDef) then
+            curClass := TObjectTypeDef(curClass).parentObject
+        else
+            curClass := nil;
+    end;
 end;
 
 end.

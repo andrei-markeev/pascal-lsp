@@ -88,6 +88,12 @@ begin
             end;
         pkUnknown:
             case nextTokenKind.reservedWordKind of
+                rwInherited:
+                    begin
+                        factorToken := CreateDesignator(ctx);
+                        if factorToken <> nil then
+                            typeDef := factorToken.typeDef;
+                    end;
                 rwNot, rwPlus, rwMinus, rwAt:
                     begin
                         TReservedWord.Create(ctx, nextTokenKind.reservedWordKind, true);

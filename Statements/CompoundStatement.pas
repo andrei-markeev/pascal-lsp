@@ -47,12 +47,13 @@ begin
     AddAnchor(rwTry);
     AddAnchor(rwGoto);
     AddAnchor(rwBegin);
+    AddAnchor(rwInherited);
     AddAnchor(rwInitialization);
     AddAnchor(rwFinalization);
     AddAnchor(pkIdentifier);
 
     nextTokenKind := SkipUntilAnchor(ctx);
-    while (nextTokenKind.reservedWordKind in [rwWith, rwFor, rwCase, rwIf, rwWhile, rwRepeat, rwTry, rwGoto, rwBegin])
+    while (nextTokenKind.reservedWordKind in [rwWith, rwFor, rwCase, rwIf, rwWhile, rwRepeat, rwTry, rwGoto, rwBegin, rwInherited])
           or (nextTokenKind.primitiveKind = pkIdentifier)
     do
     begin
@@ -78,6 +79,7 @@ begin
     RemoveAnchor(rwTry);
     RemoveAnchor(rwGoto);
     RemoveAnchor(rwBegin);
+    RemoveAnchor(rwInherited);
     RemoveAnchor(rwInitialization);
     RemoveAnchor(rwFinalization);
     RemoveAnchor(pkIdentifier);

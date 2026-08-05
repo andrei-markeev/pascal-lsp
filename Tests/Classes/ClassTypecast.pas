@@ -25,6 +25,8 @@ var
     parentObj: TParentClass;
     childObj: TChildClass;
     otherChild: TChildClass;
+    idx: integer;
+    ptr: pointer;
 
 begin
     parentObj := TParentClass.Create;
@@ -44,4 +46,8 @@ begin
 
     // Typecast on LHS of assignment
     TChildClass(parentObj).childField := 42;
+
+    // Ordinal to PtrUInt and Pointer typecast widening
+    idx := 1;
+    ptr := Pointer(PtrUInt(idx + 1));
 end.

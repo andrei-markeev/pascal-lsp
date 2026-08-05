@@ -6,10 +6,16 @@ unit VarRef;
 interface
 
 uses
-    ParserContext, TypedToken, Identifier;
+    ParserContext, TypedToken, Identifier, TypeDef, TypeDefs;
 
 type
     TVarRef = class(TTypedToken)
+    private
+        procedure DetermineMethodTypes(ctx: TParserContext; out selfType, parentType: TTypeDef);
+        function FindEnclosingFunctionName(ctx: TParserContext): shortstring;
+        procedure ParseExplicitInherited(ctx: TParserContext; selfType, parentType: TTypeDef);
+        procedure ParseImplicitInherited(ctx: TParserContext; selfType, parentType: TTypeDef);
+        procedure ParseInherited(ctx: TParserContext);
     public
         firstIdent: TIdentifier;
         isSimple: boolean;
@@ -22,7 +28,8 @@ implementation
 
 uses
     sysutils, Symbols, CompilationMode, Token, ReservedWord, Expression, Call, Designator,
-    TypeDefs, TypeDef, ClassTypeDef, PointerTypeDef, ArrayTypeDef, DynamicArrayTypeDef, RecordTypeDef, ObjectTypeDef;
+    ClassTypeDef, PointerTypeDef, ArrayTypeDef, DynamicArrayTypeDef, RecordTypeDef, ObjectTypeDef,
+    FunctionImpl, Scopes, Anchors;
 
 function CreateVarRef(ctx: TParserContext; baseRef: TTypedToken = nil; isMaybeLeftHandSide: boolean = false): TTypedToken;
 var
@@ -38,6 +45,193 @@ begin
     end
     else
         CreateVarRef := ref;
+end;
+
+function IsValidTypecastSize(ctx: TParserContext; targetType, sourceType: TTypeDef; isLHS: boolean): boolean;
+var
+    targetIsOrdinal, sourceIsOrdinal: boolean;
+    targetIsPointer, sourceIsPointer: boolean;
+    targetIsClass, sourceIsClass: boolean;
+begin
+    if (targetType = nil) or (sourceType = nil) then
+        exit(true);
+
+    if (targetType.size = 0) or (sourceType.size = 0) or (targetType.size = sourceType.size) then
+        exit(true);
+
+    if isLHS then
+        exit(false);
+
+    targetIsClass := targetType.kind in [tkClass, tkObject];
+    sourceIsClass := sourceType.kind in [tkClass, tkObject];
+    targetIsPointer := targetType.kind = tkPointer;
+    sourceIsPointer := sourceType.kind = tkPointer;
+
+    if (targetIsClass and sourceIsClass) or
+       (targetIsPointer and sourceIsClass) or
+       (targetIsClass and sourceIsPointer) then
+        exit(true);
+
+    targetIsOrdinal := targetType.kind in [tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum];
+    sourceIsOrdinal := sourceType.kind in [tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum];
+
+    if ctx.mode in [cmFreePascal, cmObjectFreePascal, cmDelphi] then
+    begin
+        if (targetIsOrdinal or targetIsPointer) and (sourceIsOrdinal or sourceIsPointer) then
+            exit(true);
+    end
+    else if ctx.mode in [cmTurboPascal, cmMacPascal] then
+    begin
+        if targetIsOrdinal and sourceIsOrdinal then
+            exit(true);
+
+        if targetIsPointer and sourceIsOrdinal and (sourceType.size = 4) then
+            exit(true);
+    end;
+
+    Result := false;
+end;
+
+function TVarRef.FindEnclosingFunctionName(ctx: TParserContext): shortstring;
+var
+    enclosingScope: TScope;
+    enclosingFunc: TFunctionImpl;
+begin
+    Result := '';
+    enclosingScope := FindScope(ctx.Cursor);
+    while enclosingScope <> nil do
+    begin
+        if enclosingScope.funcImpl <> nil then
+        begin
+            enclosingFunc := TFunctionImpl(enclosingScope.funcImpl);
+            if enclosingFunc.nameIdent <> nil then
+                exit(enclosingFunc.nameIdent.GetStr());
+        end;
+        enclosingScope := enclosingScope.parentScope;
+    end;
+end;
+
+procedure TVarRef.ParseExplicitInherited(ctx: TParserContext; selfType, parentType: TTypeDef);
+var
+    identName: shortstring;
+    typeSym, foundSym: TSymbol;
+    targetType: TTypeDef;
+    typeIdent: TIdentifier;
+    pCursor: PChar;
+begin
+    identName := PeekIdentifier(ctx);
+    typeSym := FindSymbol(identName, ctx.Cursor);
+
+    pCursor := ctx.Cursor + length(identName);
+    while pCursor[0] in [#9, #10, #13, ' '] do inc(pCursor);
+
+    if (typeSym <> nil) and (typeSym.kind = skTypeName) and (typeSym.typeDef <> nil) and (typeSym.typeDef.kind in [tkClass, tkObject]) and (pCursor[0] = '.') then
+    begin
+        targetType := typeSym.typeDef;
+        typeIdent := TIdentifier.Create(ctx, true);
+        if (selfType <> nil) and not IsSameOrSubclass(selfType, targetType) then
+        begin
+            typeIdent.state := tsError;
+            typeIdent.errorMessage := identName + ' is not an ancestor of current class!';
+            targetType := nil;
+        end;
+        TReservedWord.Create(ctx, rwDot, true);
+        identName := PeekIdentifier(ctx);
+    end
+    else
+        targetType := parentType;
+
+    if targetType <> nil then
+        foundSym := FindInheritedMemberSymbol(targetType, identName, ctx.Cursor)
+    else
+        foundSym := nil;
+
+    if foundSym <> nil then
+    begin
+        firstIdent := TIdentifier.Create(ctx, false);
+        foundSym.AddReference(firstIdent);
+        typeDef := foundSym.typeDef;
+        firstIdent.typeDef := foundSym.typeDef;
+        if (typeDef <> nil) and not IsMemberAccessible(ctx, targetType, typeDef.visibility, ctx.Cursor, foundSym) then
+        begin
+            firstIdent.state := tsError;
+            firstIdent.errorMessage := identName + ' is not public, it cannot be used here!';
+        end;
+    end
+    else
+    begin
+        if (parentType = nil) and (selfType = nil) then
+        begin
+            state := tsError;
+            errorMessage := 'Cannot use ''inherited'' outside of a method!';
+        end;
+        firstIdent := TIdentifier.Create(ctx, true);
+        typeDef := firstIdent.typeDef;
+    end;
+end;
+
+procedure TVarRef.ParseImplicitInherited(ctx: TParserContext; selfType, parentType: TTypeDef);
+var
+    enclosingName: shortstring;
+    foundSym: TSymbol;
+begin
+    enclosingName := FindEnclosingFunctionName(ctx);
+
+    if (parentType <> nil) and (enclosingName <> '') then
+        foundSym := FindInheritedMemberSymbol(parentType, enclosingName, ctx.Cursor)
+    else
+        foundSym := nil;
+
+    if foundSym <> nil then
+    begin
+        typeDef := foundSym.typeDef;
+        firstIdent := TIdentifier.Create(ctx, false);
+        firstIdent.state := tsInvisible;
+        foundSym.AddReference(firstIdent);
+        if (typeDef <> nil) and not IsMemberAccessible(ctx, parentType, typeDef.visibility, ctx.Cursor, foundSym) then
+        begin
+            state := tsError;
+            errorMessage := enclosingName + ' is not public, it cannot be used here!';
+        end;
+    end
+    else
+    begin
+        state := tsError;
+        if parentType = nil then
+            errorMessage := 'Cannot use ''inherited'' outside of a method!'
+        else
+            errorMessage := 'No inherited method found to call!';
+    end;
+end;
+
+procedure TVarRef.ParseInherited(ctx: TParserContext);
+var
+    selfSym: TSymbol;
+    selfType, parentType: TTypeDef;
+    nextTokenKind: TTokenKind;
+begin
+    isSimple := false;
+    TReservedWord.Create(ctx, rwInherited, true);
+
+    selfType := nil;
+    parentType := nil;
+    selfSym := FindSymbol('Self', ctx.Cursor);
+    if (selfSym <> nil) and (selfSym.typeDef <> nil) then
+    begin
+        selfType := selfSym.typeDef;
+        if (selfType.kind = tkClass) and (selfType is TClassTypeDef) then
+            parentType := TClassTypeDef(selfType).parentClass
+        else if (selfType.kind = tkObject) and (selfType is TObjectTypeDef) then
+            parentType := TObjectTypeDef(selfType).parentObject
+        else
+            parentType := nil;
+    end;
+
+    nextTokenKind := DetermineNextTokenKind(ctx);
+    if nextTokenKind.primitiveKind = pkIdentifier then
+        ParseExplicitInherited(ctx, selfType, parentType)
+    else
+        ParseImplicitInherited(ctx, selfType, parentType);
 end;
 
 constructor TVarRef.Create(ctx: TParserContext; baseRef: TTypedToken = nil; isMaybeLeftHandSide: boolean = false);
@@ -68,7 +262,9 @@ begin
     end;
     state := tsCorrect;
 
-    if baseRef = nil then
+    if (baseRef = nil) and PeekReservedWord(ctx, rwInherited) then
+        ParseInherited(ctx)
+    else if baseRef = nil then
     begin
         isSimple := true;
         firstIdent := TIdentifier.Create(ctx, true);
@@ -131,7 +327,7 @@ begin
                     else
                         innerToken := CreateExpression(ctx);
 
-                    if (innerToken <> nil) and (innerToken.state <> tsError) and (typeDef <> nil) and (innerToken.typeDef <> nil) and (typeDef.size > 0) and (innerToken.typeDef.size > 0) and (innerToken.typeDef.size <> typeDef.size) then
+                    if (innerToken <> nil) and (innerToken.state <> tsError) and (typeDef <> nil) and (innerToken.typeDef <> nil) and not IsValidTypecastSize(ctx, typeDef, innerToken.typeDef, isMaybeLeftHandSide) then
                     begin
                         state := tsError;
                         errorMessage := 'Invalid typecast: type ' + firstIdent.name + '(' + TypeKindStr[ord(typeDef.kind)] + ') has size ' + IntToStr(typeDef.size) + ' but the typecasted variable reference has size ' + IntToStr(innerToken.typeDef.size);

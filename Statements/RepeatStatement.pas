@@ -46,10 +46,11 @@ begin
     AddAnchor(rwRepeat);
     AddAnchor(rwGoto);
     AddAnchor(rwBegin);
+    AddAnchor(rwInherited);
     AddAnchor(pkIdentifier);
 
     nextTokenKind := SkipUntilAnchor(ctx);
-    while (nextTokenKind.reservedWordKind in [rwWith, rwFor, rwCase, rwIf, rwWhile, rwRepeat, rwGoto, rwBegin])
+    while (nextTokenKind.reservedWordKind in [rwWith, rwFor, rwCase, rwIf, rwWhile, rwRepeat, rwGoto, rwBegin, rwInherited])
           or (nextTokenKind.primitiveKind = pkIdentifier)
     do
     begin
@@ -74,6 +75,7 @@ begin
     RemoveAnchor(rwRepeat);
     RemoveAnchor(rwGoto);
     RemoveAnchor(rwBegin);
+    RemoveAnchor(rwInherited);
     RemoveAnchor(pkIdentifier);
 
     TReservedWord.Create(ctx, rwUntil, false);

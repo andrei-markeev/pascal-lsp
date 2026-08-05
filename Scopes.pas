@@ -14,6 +14,7 @@ type
         parentScope: TScope;
         symbolsList: TFPHashList;
         context: TParserContext;
+        funcImpl: TObject;
         constructor Create;
         destructor Destroy; override;
     end;
