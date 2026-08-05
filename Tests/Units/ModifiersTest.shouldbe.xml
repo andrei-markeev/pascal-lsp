@@ -1,0 +1,54 @@
+<UnitFile><RW>unit</RW> <SymbDecl>ModifiersTest</SymbDecl><RW>;</RW>
+
+<RW>interface</RW>
+
+<InterfaceBlock><TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TMethodModifiers</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>abstract</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>dynamic</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>reintroduce</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>message</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>override</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>virtual</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW>
+    <TypeDecl><SymbDecl>TFunctionModifiers</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>alias</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>cdecl</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>cppdecl</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>export</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>external</SymbDecl><RW>:</RW> <TypeSpec><RecordSpec><RW>record</RW>
+            <VarDecl><SymbDecl>libraryName</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+            <VarDecl><SymbDecl>name</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+            <VarDecl><SymbDecl>index</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+        <RW>end</RW></RecordSpec></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>far</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>forward</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>hardfloat</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>inline</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>interrupt</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>iocheck</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>local</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>MS_ABI_Default</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>MS_ABI_CDecl</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>MWPascal</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>near</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>noreturn</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>nostackframe</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>overload</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>pascal</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>public</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>register</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>safecall</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>saveregisters</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>softload</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>stdcall</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>SYSV_ABI_Default</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>SYSV_ABI_CDecl</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>varargs</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>vectorcall</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>winapi</SymbDecl><RW>:</RW> <TypeSpec><Ident>boolean</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection></InterfaceBlock>
+
+<RW>implementation</RW>
+
+<ImplementationBlock><RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

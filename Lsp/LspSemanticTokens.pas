@@ -282,7 +282,27 @@ begin
           identName := LowerCase(ident.GetStr());
           if (identName = 'public') or (identName = 'protected') or
              (identName = 'private') or (identName = 'published') or
-             (identName = 'strict') then
+             (identName = 'strict') or (identName = 'abstract') or
+             (identName = 'dynamic') or (identName = 'override') or
+             (identName = 'reintroduce') or (identName = 'virtual') or
+             (identName = 'overload') or (identName = 'cdecl') or
+             (identName = 'cppdecl') or (identName = 'pascal') or
+             (identName = 'register') or (identName = 'stdcall') or
+             (identName = 'safecall') or (identName = 'inline') or
+             (identName = 'forward') or (identName = 'export') or
+             (identName = 'static') or (identName = 'sealed') or
+             (identName = 'helper') or (identName = 'experimental') or
+             (identName = 'platform') or (identName = 'deprecated') or
+             (identName = 'alias') or (identName = 'external') or
+             (identName = 'far') or (identName = 'near') or
+             (identName = 'interrupt') or (identName = 'iocheck') or
+             (identName = 'local') or (identName = 'noreturn') or
+             (identName = 'nostackframe') or (identName = 'varargs') or
+             (identName = 'vectorcall') or (identName = 'winapi') or
+             (identName = 'hardfloat') or (identName = 'saveregisters') or
+             (identName = 'softload') or (identName = 'ms_abi_default') or
+             (identName = 'ms_abi_cdecl') or (identName = 'sysv_abi_default') or
+             (identName = 'sysv_abi_cdecl') or (identName = 'mwpascal') then
             tokenType := 10 // keyword
           else if TypesList.Find(identName) <> nil then
             tokenType := 4; // type

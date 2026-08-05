@@ -9,7 +9,7 @@ uses
     strings, CompilationMode, ParserContext, Token;
 
 const
-    NUM_OF_RESERVED_WORDS = 98;
+    NUM_OF_RESERVED_WORDS = 96;
 
 type
     TReservedWordKind = (
@@ -40,9 +40,8 @@ type
         rwAbsolute, rwAsm,
         rwConstructor,
         rwDestructor,
-        rwImplementation, rwInherited, rwInline, rwInterface,
+        rwImplementation, rwInherited, rwInterface,
         rwObject, rwOperator,
-        rwReintroduce,
         rwShl, rwShr, rwString,
         rwUnit, rwUses,
         rwXor,
@@ -94,9 +93,8 @@ const
         'absolute', 'asm',
         'constructor',
         'destructor',
-        'implementation', 'inherited', 'inline', 'interface',
+        'implementation', 'inherited', 'interface',
         'object', 'operator',
-        'reintroduce',
         'shl', 'shr', 'string',
         'unit', 'uses',
         'xor',
@@ -118,9 +116,8 @@ begin
         rwAbsolute, rwAsm,
         rwConstructor,
         rwDestructor,
-        rwImplementation, rwInherited, rwInline, rwInterface,
+        rwImplementation, rwInherited, rwInterface,
         rwObject, rwOperator,
-        rwReintroduce,
         rwShl, rwShr, rwString,
         rwUnit, rwUses,
         rwXor
@@ -255,7 +252,6 @@ begin
                         case ctx.Cursor[2] of
                             'h','H': maybe := rwInherited;
                             'i','I': maybe := rwInitialization;
-                            'l','L': maybe := rwInline;
                             't','T': maybe := rwInterface;
                         end;
                 's','S': if ctx.IsSeparator(ctx.Cursor[2]) then found := rwIs;
@@ -296,7 +292,6 @@ begin
                 'e','E':
                     case ctx.Cursor[2] of
                         'c','C': maybe := rwRecord;
-                        'i','I': maybe := rwReintroduce;
                         's','S': maybe := rwResourcestring;
                         'p','P': maybe := rwRepeat;
                     end;
