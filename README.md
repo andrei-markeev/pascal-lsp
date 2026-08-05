@@ -5,3 +5,28 @@ Pascal parser and language server for VSCode (potentially can be used with other
 ### Status
 
 Work in progress.
+
+### Supported features
+
+Code completion:
+
+<img src="vscode-extension/img/completion.jpg" />
+
+Diagnostics / syntax errors:
+
+<img src="vscode-extension/img/errors.jpg" />
+
+Hover hints:
+
+<img src="vscode-extension/img/hints.jpg" />
+
+Find all references:
+
+<img src="vscode-extension/img/find_all_references.jpg" />
+
+
+Also, intelligent syntax highlighting, "Go to definition", Outline, etc.
+
+### Settings
+
+<img src="vscode-extension/img/settings.jpg" />
