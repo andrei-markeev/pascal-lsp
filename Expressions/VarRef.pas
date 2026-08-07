@@ -204,15 +204,10 @@ begin
     end;
 end;
 
-procedure TVarRef.ParseInherited(ctx: TParserContext);
+procedure TVarRef.DetermineMethodTypes(ctx: TParserContext; out selfType, parentType: TTypeDef);
 var
     selfSym: TSymbol;
-    selfType, parentType: TTypeDef;
-    nextTokenKind: TTokenKind;
 begin
-    isSimple := false;
-    TReservedWord.Create(ctx, rwInherited, true);
-
     selfType := nil;
     parentType := nil;
     selfSym := FindSymbol('Self', ctx.Cursor);
@@ -226,6 +221,17 @@ begin
         else
             parentType := nil;
     end;
+end;
+
+procedure TVarRef.ParseInherited(ctx: TParserContext);
+var
+    selfType, parentType: TTypeDef;
+    nextTokenKind: TTokenKind;
+begin
+    isSimple := false;
+    TReservedWord.Create(ctx, rwInherited, true);
+
+    DetermineMethodTypes(ctx, selfType, parentType);
 
     nextTokenKind := DetermineNextTokenKind(ctx);
     if nextTokenKind.primitiveKind = pkIdentifier then

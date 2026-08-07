@@ -19,7 +19,8 @@ implementation
 uses
     classes, contnrs, CompilationMode, Symbols, TypeDefs, Parameters, RoutineTypeDef,
     ArrayTypeDef, DynamicArrayTypeDef, ClassTypeDef,
-    SystemUnit, ClassesUnit, ContnrsUnit, MathUnit, SysutilsUnit, StringsUnit, DosUnit;
+    SystemUnit, ClassesUnit, ContnrsUnit, MathUnit, SysutilsUnit, StringsUnit, DosUnit,
+    FpjsonUnit, JsonparserUnit;
 
 procedure InitFunctionTypes; forward;
 
@@ -71,6 +72,8 @@ var
     sysutilsMock: TSysutilsUnit;
     stringsMock: TStringsUnit;
     dosMock: TDosUnit;
+    fpjsonMock: TFpjsonUnit;
+    jsonparserMock: TJsonparserUnit;
 
 procedure RegisterSystemSymbols(ctx: TParserContext);
 begin
@@ -494,6 +497,8 @@ begin
         'sysutils': sysutilsMock.Load(ctx);
         'strings': stringsMock.Load(ctx);
         'dos': dosMock.Load(ctx);
+        'fpjson': fpjsonMock.Load(ctx);
+        'jsonparser': jsonparserMock.Load(ctx);
         'system': ;
     else
         Result := false;
@@ -508,6 +513,8 @@ begin
     sysutilsMock := TSysutilsUnit.Create;
     stringsMock := TStringsUnit.Create;
     dosMock := TDosUnit.Create;
+    fpjsonMock := TFpjsonUnit.Create;
+    jsonparserMock := TJsonparserUnit.Create;
 end;
 
 procedure FreeSystemUnits;
@@ -518,6 +525,8 @@ begin
     sysutilsMock.Free;
     stringsMock.Free;
     dosMock.Free;
+    fpjsonMock.Free;
+    jsonparserMock.Free;
 end;
 
 initialization

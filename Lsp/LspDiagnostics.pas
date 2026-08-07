@@ -6,7 +6,7 @@ unit LspDiagnostics;
 interface
 
 uses
-  sysutils, classes, fpjson, jsonparser,
+  sysutils, classes,
   ParserContext, Token, ReservedWord, ProgramFile, UnitFile,
   LspUtils, LspState;
 

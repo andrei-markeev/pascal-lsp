@@ -1,0 +1,17 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadJsonModeTest</SymbDecl><RW>;</RW>
+
+{$mode tp}
+
+<TUsesClause><RW>uses</RW>
+    <Ident>classes</Ident><RW>,</RW> <Ident>fpjson</Ident><RW>,</RW> <Ident>jsonparser</Ident><RW>;</RW></TUsesClause>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>strm</SymbDecl><RW>:</RW> <TypeSpec ERROR="Identifier has not been declared!"><Ident>TStream</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>jsonData</SymbDecl><RW>:</RW> <TypeSpec ERROR="Identifier has not been declared!"><Ident>TJSONData</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>parser</SymbDecl><RW>:</RW> <TypeSpec ERROR="Identifier has not been declared!"><Ident>TJSONParser</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>strm</SymbRef> <RW>:=</RW> <VarRef><Ident ERROR="Identifier has not been declared!">TStream</Ident><RW ERROR="Cannot apply '.' on TStream because it is not of a structured type (record, class or object)!">.</RW><Ident>Create</Ident></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>jsonData</SymbRef> <RW>:=</RW> <Factor><RW>nil</RW></Factor></Assignment><RW>;</RW>
+    <Assignment><SymbRef>parser</SymbRef> <RW>:=</RW> <Factor><RW>nil</RW></Factor></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
