@@ -6,10 +6,12 @@ unit SystemUnits;
 interface
 
 uses
-    ParserContext, TypeDef;
+    ParserContext, TypeDef, TypesUnit, ClassesUnit;
 
 var
     classType_TObject: TTypeDef;
+    typesMock: TTypesUnit;
+    classesMock: TClassesUnit;
 
 procedure RegisterSystemSymbols(ctx: TParserContext);
 function LoadSystemUnit(unitName: string; ctx: TParserContext): boolean;
@@ -19,7 +21,7 @@ implementation
 uses
     classes, contnrs, CompilationMode, Symbols, TypeDefs, Parameters, RoutineTypeDef,
     ArrayTypeDef, DynamicArrayTypeDef, ClassTypeDef,
-    SystemUnit, ClassesUnit, ContnrsUnit, MathUnit, SysutilsUnit, StringsUnit, DosUnit,
+    SystemUnit, ContnrsUnit, MathUnit, SysutilsUnit, StringsUnit, DosUnit,
     FpjsonUnit, JsonparserUnit, SsocketsUnit;
 
 procedure InitFunctionTypes; forward;
@@ -66,7 +68,6 @@ var
     procedureType_BlockRead_BlockWrite: TTypeDef;
     functionType_Eof_Eoln: TTypeDef;
 
-    classesMock: TClassesUnit;
     contnrsMock: TContnrsUnit;
     mathMock: TMathUnit;
     sysutilsMock: TSysutilsUnit;
@@ -492,7 +493,11 @@ begin
         InitFunctionTypes;
     Result := true;
     case LowerCase(unitName) of
-        'classes': classesMock.Load(ctx);
+        'types': typesMock.Load(ctx);
+        'classes': begin
+            typesMock.Load(ctx);
+            classesMock.Load(ctx);
+        end;
         'contnrs': contnrsMock.Load(ctx);
         'math': mathMock.Load(ctx);
         'sysutils': sysutilsMock.Load(ctx);
@@ -509,6 +514,7 @@ end;
 
 procedure InitSystemUnits;
 begin
+    typesMock := TTypesUnit.Create;
     classesMock := TClassesUnit.Create;
     contnrsMock := TContnrsUnit.Create;
     mathMock := TMathUnit.Create;
@@ -522,6 +528,7 @@ end;
 
 procedure FreeSystemUnits;
 begin
+    typesMock.Free;
     classesMock.Free;
     contnrsMock.Free;
     mathMock.Free;

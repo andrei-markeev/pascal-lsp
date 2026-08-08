@@ -11,17 +11,48 @@ uses
 type
     TClassesUnit = class(TSystemUnit)
     private
+        classType_TPersistent: TTypeDef;
+        classType_TComponent: TTypeDef;
         classType_TFPList: TTypeDef;
         classType_TStrings: TTypeDef;
         classType_TStringList: TTypeDef;
+        classType_TCustomMemoryStream: TTypeDef;
+        classType_TMemoryStream: TTypeDef;
+        classType_TStringStream: TTypeDef;
+
+        enumType_TSeekOrigin: TTypeDef;
+        memberTypeOfSeekOrigin: TTypeDef;
+        enumType_TAlignment: TTypeDef;
+        memberTypeOfAlignment: TTypeDef;
+        enumType_TListNotification: TTypeDef;
+        memberTypeOfListNotification: TTypeDef;
+        enumType_TListAssignOp: TTypeDef;
+        memberTypeOfListAssignOp: TTypeDef;
+        enumType_TOperation: TTypeDef;
+        memberTypeOfOperation: TTypeDef;
+        enumType_THelpType: TTypeDef;
+        memberTypeOfHelpType: TTypeDef;
+        enumType_TStreamSeekOrigin: TTypeDef;
+        memberTypeOfStreamSeekOrigin: TTypeDef;
+        enumType_TStringsSortStyle: TTypeDef;
+        memberTypeOfStringsSortStyle: TTypeDef;
+        enumType_TStringListSortStyle: TTypeDef;
+        memberTypeOfStringListSortStyle: TTypeDef;
+
         dynArrayOfPointerType: TTypeDef;
         dynArrayOfStringType: TTypeDef;
 
+        func_Create_TComponent: TTypeDef;
         func_Create_TFPList: TTypeDef;
         func_Create_TStrings: TTypeDef;
         func_Create_TStringList: TTypeDef;
         func_Create_TStream: TTypeDef;
         func_Create_THandleStream: TTypeDef;
+        func_Create_TFileStream: TTypeDef;
+        func_Create_TMemoryStream: TTypeDef;
+        func_Create_TStringStream: TTypeDef;
+        func_FindComponent: TTypeDef;
+        proc_Assign: TTypeDef;
 
         func_Pointer_LongInt: TTypeDef;
         func_ItemDirection_LongInt: TTypeDef;
@@ -54,6 +85,7 @@ type
     public
         classType_TStream: TTypeDef;
         classType_THandleStream: TTypeDef;
+        classType_TFileStream: TTypeDef;
         destructor Destroy; override;
         procedure Load(ctx: TParserContext); override;
     end;
@@ -61,26 +93,57 @@ type
 implementation
 
 uses
-    contnrs, Symbols, CompilationMode, Parameters, ClassTypeDef, DynamicArrayTypeDef, SystemUnits;
+    contnrs, Symbols, CompilationMode, Parameters, ClassTypeDef, DynamicArrayTypeDef, EnumTypeDef, EnumMemberTypeDef, SystemUnits;
 
 destructor TClassesUnit.Destroy;
 begin
     if loaded then
     begin
+        classType_TPersistent.Free;
+        classType_TComponent.Free;
         classType_TFPList.Free;
         classType_TStrings.Free;
         classType_TStringList.Free;
         classType_TStream.Free;
         classType_THandleStream.Free;
+        classType_TFileStream.Free;
+        classType_TCustomMemoryStream.Free;
+        classType_TMemoryStream.Free;
+        classType_TStringStream.Free;
+
+        enumType_TSeekOrigin.Free;
+        memberTypeOfSeekOrigin.Free;
+        enumType_TAlignment.Free;
+        memberTypeOfAlignment.Free;
+        enumType_TListNotification.Free;
+        memberTypeOfListNotification.Free;
+        enumType_TListAssignOp.Free;
+        memberTypeOfListAssignOp.Free;
+        enumType_TOperation.Free;
+        memberTypeOfOperation.Free;
+        enumType_THelpType.Free;
+        memberTypeOfHelpType.Free;
+        enumType_TStreamSeekOrigin.Free;
+        memberTypeOfStreamSeekOrigin.Free;
+        enumType_TStringsSortStyle.Free;
+        memberTypeOfStringsSortStyle.Free;
+        enumType_TStringListSortStyle.Free;
+        memberTypeOfStringListSortStyle.Free;
 
         dynArrayOfPointerType.Free;
         dynArrayOfStringType.Free;
 
+        func_Create_TComponent.Free;
         func_Create_TFPList.Free;
         func_Create_TStrings.Free;
         func_Create_TStringList.Free;
         func_Create_TStream.Free;
         func_Create_THandleStream.Free;
+        func_Create_TFileStream.Free;
+        func_Create_TMemoryStream.Free;
+        func_Create_TStringStream.Free;
+        func_FindComponent.Free;
+        proc_Assign.Free;
 
         func_Pointer_LongInt.Free;
         func_ItemDirection_LongInt.Free;
@@ -118,13 +181,91 @@ begin
     dynArrayOfPointerType := TDynamicArrayTypeDef.Create(nil, pointer64Type, 8);
     dynArrayOfStringType := TDynamicArrayTypeDef.Create(nil, ansiString64Type, 8);
 
+    // Enums
+    enumType_TSeekOrigin := TEnumTypeDef.Create(nil, nil);
+    TEnumTypeDef(enumType_TSeekOrigin).AddMember('soBeginning');
+    TEnumTypeDef(enumType_TSeekOrigin).AddMember('soCurrent');
+    TEnumTypeDef(enumType_TSeekOrigin).AddMember('soEnd');
+    memberTypeOfSeekOrigin := TEnumMemberTypeDef.Create(nil, enumType_TSeekOrigin, nil);
+
+    enumType_TAlignment := TEnumTypeDef.Create(nil, nil);
+    TEnumTypeDef(enumType_TAlignment).AddMember('taLeftJustify');
+    TEnumTypeDef(enumType_TAlignment).AddMember('taRightJustify');
+    TEnumTypeDef(enumType_TAlignment).AddMember('taCenter');
+    memberTypeOfAlignment := TEnumMemberTypeDef.Create(nil, enumType_TAlignment, nil);
+
+    enumType_TListNotification := TEnumTypeDef.Create(nil, nil);
+    TEnumTypeDef(enumType_TListNotification).AddMember('lnAdded');
+    TEnumTypeDef(enumType_TListNotification).AddMember('lnExtracted');
+    TEnumTypeDef(enumType_TListNotification).AddMember('lnDeleted');
+    memberTypeOfListNotification := TEnumMemberTypeDef.Create(nil, enumType_TListNotification, nil);
+
+    enumType_TListAssignOp := TEnumTypeDef.Create(nil, nil);
+    TEnumTypeDef(enumType_TListAssignOp).AddMember('laCopy');
+    TEnumTypeDef(enumType_TListAssignOp).AddMember('laAnd');
+    TEnumTypeDef(enumType_TListAssignOp).AddMember('laOr');
+    TEnumTypeDef(enumType_TListAssignOp).AddMember('laXor');
+    TEnumTypeDef(enumType_TListAssignOp).AddMember('laSrcUnique');
+    TEnumTypeDef(enumType_TListAssignOp).AddMember('laDstUnique');
+    memberTypeOfListAssignOp := TEnumMemberTypeDef.Create(nil, enumType_TListAssignOp, nil);
+
+    enumType_TOperation := TEnumTypeDef.Create(nil, nil);
+    TEnumTypeDef(enumType_TOperation).AddMember('opInsert');
+    TEnumTypeDef(enumType_TOperation).AddMember('opRemove');
+    memberTypeOfOperation := TEnumMemberTypeDef.Create(nil, enumType_TOperation, nil);
+
+    enumType_THelpType := TEnumTypeDef.Create(nil, nil);
+    TEnumTypeDef(enumType_THelpType).AddMember('htKeyword');
+    TEnumTypeDef(enumType_THelpType).AddMember('htContext');
+    memberTypeOfHelpType := TEnumMemberTypeDef.Create(nil, enumType_THelpType, nil);
+
+    enumType_TStreamSeekOrigin := TEnumTypeDef.Create(nil, nil);
+    TEnumTypeDef(enumType_TStreamSeekOrigin).AddMember('soFromBeginning');
+    TEnumTypeDef(enumType_TStreamSeekOrigin).AddMember('soFromCurrent');
+    TEnumTypeDef(enumType_TStreamSeekOrigin).AddMember('soFromEnd');
+    memberTypeOfStreamSeekOrigin := TEnumMemberTypeDef.Create(nil, enumType_TStreamSeekOrigin, nil);
+
+    enumType_TStringsSortStyle := TEnumTypeDef.Create(nil, nil);
+    TEnumTypeDef(enumType_TStringsSortStyle).AddMember('sssNone');
+    TEnumTypeDef(enumType_TStringsSortStyle).AddMember('sssUnSorted');
+    TEnumTypeDef(enumType_TStringsSortStyle).AddMember('sssSorted');
+    memberTypeOfStringsSortStyle := TEnumMemberTypeDef.Create(nil, enumType_TStringsSortStyle, nil);
+
+    enumType_TStringListSortStyle := TEnumTypeDef.Create(nil, nil);
+    TEnumTypeDef(enumType_TStringListSortStyle).AddMember('sslNone');
+    TEnumTypeDef(enumType_TStringListSortStyle).AddMember('sslAuto');
+    TEnumTypeDef(enumType_TStringListSortStyle).AddMember('sslUser');
+    memberTypeOfStringListSortStyle := TEnumMemberTypeDef.Create(nil, enumType_TStringListSortStyle, nil);
+
+    // TPersistent
+    classType_TPersistent := TClassTypeDef.Create;
+    TClassTypeDef(classType_TPersistent).parentClass := classType_TObject;
+    proc_Assign := CreateOneParamProcedureType('source', classType_TPersistent);
+    TClassTypeDef(classType_TPersistent).AddMember('Assign', proc_Assign);
+    TClassTypeDef(classType_TPersistent).AddMember('GetNamePath', func_Void_String);
+
+    // TComponent
+    classType_TComponent := TClassTypeDef.Create;
+    TClassTypeDef(classType_TComponent).parentClass := classType_TPersistent;
+    func_Create_TComponent := CreateOneParamFunctionType('aowner', classType_TComponent, classType_TComponent);
+    func_FindComponent := CreateOneParamFunctionType('aname', ansiString64Type, classType_TComponent);
+    TClassTypeDef(classType_TComponent).AddMember('Owner', classType_TComponent);
+    TClassTypeDef(classType_TComponent).AddMember('Name', ansiString64Type);
+    TClassTypeDef(classType_TComponent).AddMember('Tag', longintType);
+    TClassTypeDef(classType_TComponent).AddMember('ComponentCount', longintType);
+    TClassTypeDef(classType_TComponent).AddMember('Components', dynArrayOfPointerType);
+    TClassTypeDef(classType_TComponent).AddMember('Create', func_Create_TComponent);
+    TClassTypeDef(classType_TComponent).AddMember('Destroy', voidProcedureType);
+    TClassTypeDef(classType_TComponent).AddMember('Free', voidProcedureType);
+    TClassTypeDef(classType_TComponent).AddMember('FindComponent', func_FindComponent);
+
     // TFPList
     classType_TFPList := TClassTypeDef.Create;
     TClassTypeDef(classType_TFPList).parentClass := classType_TObject;
 
     // TStrings
     classType_TStrings := TClassTypeDef.Create;
-    TClassTypeDef(classType_TStrings).parentClass := classType_TObject;
+    TClassTypeDef(classType_TStrings).parentClass := classType_TPersistent;
 
     // TStringList
     classType_TStringList := TClassTypeDef.Create;
@@ -263,11 +404,11 @@ begin
     TClassTypeDef(classType_TStrings).AddMember('SetText', proc_String);
     TClassTypeDef(classType_TStrings).AddMember('Shift', func_Void_String);
 
-    TClassTypeDef(classType_TStringList).AddMember('Duplicates', longintType);
+    TClassTypeDef(classType_TStringList).AddMember('Duplicates', typesMock.enumType_TDuplicates);
     TClassTypeDef(classType_TStringList).AddMember('Sorted', booleanType);
     TClassTypeDef(classType_TStringList).AddMember('CaseSensitive', booleanType);
     TClassTypeDef(classType_TStringList).AddMember('OwnsObjects', booleanType);
-    TClassTypeDef(classType_TStringList).AddMember('SortStyle', longintType);
+    TClassTypeDef(classType_TStringList).AddMember('SortStyle', enumType_TStringsSortStyle);
 
     TClassTypeDef(classType_TStringList).AddMember('Create', func_Create_TStringList);
     TClassTypeDef(classType_TStringList).AddMember('Destroy', voidProcedureType);
@@ -295,18 +436,118 @@ begin
     TClassTypeDef(classType_THandleStream).AddMember('Create', func_Create_THandleStream);
     TClassTypeDef(classType_THandleStream).AddMember('Destroy', voidProcedureType);
     TClassTypeDef(classType_THandleStream).AddMember('Free', voidProcedureType);
+
+    // TFileStream
+    classType_TFileStream := TClassTypeDef.Create;
+    TClassTypeDef(classType_TFileStream).parentClass := classType_THandleStream;
+    func_Create_TFileStream := CreateTwoParamFunctionType('afilename', ansiString64Type, 'mode', wordType, classType_TFileStream);
+    TClassTypeDef(classType_TFileStream).AddMember('FileName', ansiString64Type);
+    TClassTypeDef(classType_TFileStream).AddMember('Create', func_Create_TFileStream);
+    TClassTypeDef(classType_TFileStream).AddMember('Destroy', voidProcedureType);
+    TClassTypeDef(classType_TFileStream).AddMember('Free', voidProcedureType);
+
+    // TCustomMemoryStream
+    classType_TCustomMemoryStream := TClassTypeDef.Create;
+    TClassTypeDef(classType_TCustomMemoryStream).parentClass := classType_TStream;
+    TClassTypeDef(classType_TCustomMemoryStream).AddMember('Memory', pointer64Type);
+    TClassTypeDef(classType_TCustomMemoryStream).AddMember('SaveToStream', proc_TStream);
+    TClassTypeDef(classType_TCustomMemoryStream).AddMember('SaveToFile', proc_String);
+
+    // TMemoryStream
+    classType_TMemoryStream := TClassTypeDef.Create;
+    TClassTypeDef(classType_TMemoryStream).parentClass := classType_TCustomMemoryStream;
+    func_Create_TMemoryStream := CreateFunctionType(TParameterList.Create, classType_TMemoryStream);
+    TClassTypeDef(classType_TMemoryStream).AddMember('Create', func_Create_TMemoryStream);
+    TClassTypeDef(classType_TMemoryStream).AddMember('Destroy', voidProcedureType);
+    TClassTypeDef(classType_TMemoryStream).AddMember('Free', voidProcedureType);
+    TClassTypeDef(classType_TMemoryStream).AddMember('Clear', voidProcedureType);
+    TClassTypeDef(classType_TMemoryStream).AddMember('LoadFromStream', proc_TStream);
+    TClassTypeDef(classType_TMemoryStream).AddMember('LoadFromFile', proc_String);
+    TClassTypeDef(classType_TMemoryStream).AddMember('SetSize', proc_LongInt);
+
+    // TStringStream
+    classType_TStringStream := TClassTypeDef.Create;
+    TClassTypeDef(classType_TStringStream).parentClass := classType_TStream;
+    func_Create_TStringStream := CreateOneParamFunctionType('astring', ansiString64Type, classType_TStringStream);
+    TClassTypeDef(classType_TStringStream).AddMember('Create', func_Create_TStringStream);
+    TClassTypeDef(classType_TStringStream).AddMember('Destroy', voidProcedureType);
+    TClassTypeDef(classType_TStringStream).AddMember('Free', voidProcedureType);
+    TClassTypeDef(classType_TStringStream).AddMember('DataString', ansiString64Type);
 end;
 
 procedure TClassesUnit.Load(ctx: TParserContext);
 begin
+    typesMock.Load(ctx);
     inherited Load(ctx);
     if ctx.mode >= cmFreePascal then
     begin
+        RegisterSymbolByName('TPersistent', nil, skTypeName, classType_TPersistent, ctx.Cursor);
+        RegisterSymbolByName('TComponent', nil, skTypeName, classType_TComponent, ctx.Cursor);
         RegisterSymbolByName('TFPList', nil, skTypeName, classType_TFPList, ctx.Cursor);
         RegisterSymbolByName('TStrings', nil, skTypeName, classType_TStrings, ctx.Cursor);
         RegisterSymbolByName('TStringList', nil, skTypeName, classType_TStringList, ctx.Cursor);
         RegisterSymbolByName('TStream', nil, skTypeName, classType_TStream, ctx.Cursor);
         RegisterSymbolByName('THandleStream', nil, skTypeName, classType_THandleStream, ctx.Cursor);
+        RegisterSymbolByName('TFileStream', nil, skTypeName, classType_TFileStream, ctx.Cursor);
+        RegisterSymbolByName('TCustomMemoryStream', nil, skTypeName, classType_TCustomMemoryStream, ctx.Cursor);
+        RegisterSymbolByName('TMemoryStream', nil, skTypeName, classType_TMemoryStream, ctx.Cursor);
+        RegisterSymbolByName('TStringStream', nil, skTypeName, classType_TStringStream, ctx.Cursor);
+
+        RegisterSymbolByName('TSeekOrigin', nil, skTypeName, enumType_TSeekOrigin, ctx.Cursor);
+        RegisterSymbolByName('soBeginning', nil, skConstant, memberTypeOfSeekOrigin, ctx.Cursor);
+        RegisterSymbolByName('soCurrent', nil, skConstant, memberTypeOfSeekOrigin, ctx.Cursor);
+        RegisterSymbolByName('soEnd', nil, skConstant, memberTypeOfSeekOrigin, ctx.Cursor);
+
+        RegisterSymbolByName('TAlignment', nil, skTypeName, enumType_TAlignment, ctx.Cursor);
+        RegisterSymbolByName('taLeftJustify', nil, skConstant, memberTypeOfAlignment, ctx.Cursor);
+        RegisterSymbolByName('taRightJustify', nil, skConstant, memberTypeOfAlignment, ctx.Cursor);
+        RegisterSymbolByName('taCenter', nil, skConstant, memberTypeOfAlignment, ctx.Cursor);
+
+        RegisterSymbolByName('TListNotification', nil, skTypeName, enumType_TListNotification, ctx.Cursor);
+        RegisterSymbolByName('lnAdded', nil, skConstant, memberTypeOfListNotification, ctx.Cursor);
+        RegisterSymbolByName('lnExtracted', nil, skConstant, memberTypeOfListNotification, ctx.Cursor);
+        RegisterSymbolByName('lnDeleted', nil, skConstant, memberTypeOfListNotification, ctx.Cursor);
+
+        RegisterSymbolByName('TListAssignOp', nil, skTypeName, enumType_TListAssignOp, ctx.Cursor);
+        RegisterSymbolByName('laCopy', nil, skConstant, memberTypeOfListAssignOp, ctx.Cursor);
+        RegisterSymbolByName('laAnd', nil, skConstant, memberTypeOfListAssignOp, ctx.Cursor);
+        RegisterSymbolByName('laOr', nil, skConstant, memberTypeOfListAssignOp, ctx.Cursor);
+        RegisterSymbolByName('laXor', nil, skConstant, memberTypeOfListAssignOp, ctx.Cursor);
+        RegisterSymbolByName('laSrcUnique', nil, skConstant, memberTypeOfListAssignOp, ctx.Cursor);
+        RegisterSymbolByName('laDstUnique', nil, skConstant, memberTypeOfListAssignOp, ctx.Cursor);
+
+        RegisterSymbolByName('TOperation', nil, skTypeName, enumType_TOperation, ctx.Cursor);
+        RegisterSymbolByName('opInsert', nil, skConstant, memberTypeOfOperation, ctx.Cursor);
+        RegisterSymbolByName('opRemove', nil, skConstant, memberTypeOfOperation, ctx.Cursor);
+
+        RegisterSymbolByName('THelpType', nil, skTypeName, enumType_THelpType, ctx.Cursor);
+        RegisterSymbolByName('htKeyword', nil, skConstant, memberTypeOfHelpType, ctx.Cursor);
+        RegisterSymbolByName('htContext', nil, skConstant, memberTypeOfHelpType, ctx.Cursor);
+
+        RegisterSymbolByName('TStreamSeekOrigin', nil, skTypeName, enumType_TStreamSeekOrigin, ctx.Cursor);
+        RegisterSymbolByName('soFromBeginning', nil, skConstant, memberTypeOfStreamSeekOrigin, ctx.Cursor);
+        RegisterSymbolByName('soFromCurrent', nil, skConstant, memberTypeOfStreamSeekOrigin, ctx.Cursor);
+        RegisterSymbolByName('soFromEnd', nil, skConstant, memberTypeOfStreamSeekOrigin, ctx.Cursor);
+
+        RegisterSymbolByName('TStringsSortStyle', nil, skTypeName, enumType_TStringsSortStyle, ctx.Cursor);
+        RegisterSymbolByName('sssNone', nil, skConstant, memberTypeOfStringsSortStyle, ctx.Cursor);
+        RegisterSymbolByName('sssUnSorted', nil, skConstant, memberTypeOfStringsSortStyle, ctx.Cursor);
+        RegisterSymbolByName('sssSorted', nil, skConstant, memberTypeOfStringsSortStyle, ctx.Cursor);
+
+        RegisterSymbolByName('TStringListSortStyle', nil, skTypeName, enumType_TStringListSortStyle, ctx.Cursor);
+        RegisterSymbolByName('sslNone', nil, skConstant, memberTypeOfStringListSortStyle, ctx.Cursor);
+        RegisterSymbolByName('sslAuto', nil, skConstant, memberTypeOfStringListSortStyle, ctx.Cursor);
+        RegisterSymbolByName('sslUser', nil, skConstant, memberTypeOfStringListSortStyle, ctx.Cursor);
+
+        RegisterSymbolByName('fmCreate', nil, skConstant, wordType, ctx.Cursor);
+        RegisterSymbolByName('fmOpenRead', nil, skConstant, wordType, ctx.Cursor);
+        RegisterSymbolByName('fmOpenWrite', nil, skConstant, wordType, ctx.Cursor);
+        RegisterSymbolByName('fmOpenReadWrite', nil, skConstant, wordType, ctx.Cursor);
+        RegisterSymbolByName('fmShareCompat', nil, skConstant, wordType, ctx.Cursor);
+        RegisterSymbolByName('fmShareExclusive', nil, skConstant, wordType, ctx.Cursor);
+        RegisterSymbolByName('fmShareDenyWrite', nil, skConstant, wordType, ctx.Cursor);
+        RegisterSymbolByName('fmShareDenyRead', nil, skConstant, wordType, ctx.Cursor);
+        RegisterSymbolByName('fmShareDenyNone', nil, skConstant, wordType, ctx.Cursor);
     end;
 end;
 

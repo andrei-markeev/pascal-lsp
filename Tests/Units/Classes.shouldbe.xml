@@ -3,13 +3,37 @@
 {$mode objfpc}
 {$longstrings on}
 
-<TUsesClause><RW>uses</RW> <Ident>classes</Ident><RW>;</RW></TUsesClause>
+<TUsesClause><RW>uses</RW> <Ident>types</Ident><RW>,</RW> <Ident>classes</Ident><RW>;</RW></TUsesClause>
 
 <VarSection><RW>var</RW>
     <VarDecl><SymbDecl>hs</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>THandleStream</SymbRef></TypeSpec></VarDecl><RW>;</RW>
-    <VarDecl><SymbDecl>h</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+    <VarDecl><SymbDecl>h</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>sl</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TStringList</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>d</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TDuplicates</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>sss</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TStringsSortStyle</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>ssl</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TStringListSortStyle</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>pt</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TPoint</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>fs</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TFileStream</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>ms</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TMemoryStream</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>
     <Assignment><SymbRef>hs</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>THandleStream</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef><RW>(</RW><Num>1</Num><RW>)</RW></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>h</SymbRef> <RW>:=</RW> <VarRef><SymbRef>hs</SymbRef><RW>.</RW><Ident>Handle</Ident></VarRef></Assignment><RW>;</RW>
     <Call><VarRef><SymbRef>hs</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call><RW>;</RW>
+
+    <Assignment><SymbRef>sl</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TStringList</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>sl</SymbRef><RW>.</RW><Ident>Duplicates</Ident></VarRef> <RW>:=</RW> <SymbRef>dupIgnore</SymbRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>d</SymbRef> <RW>:=</RW> <VarRef><SymbRef>sl</SymbRef><RW>.</RW><Ident>Duplicates</Ident></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>sss</SymbRef> <RW>:=</RW> <VarRef><SymbRef>sl</SymbRef><RW>.</RW><Ident>SortStyle</Ident></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>ssl</SymbRef> <RW>:=</RW> <SymbRef>sslAuto</SymbRef></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>sl</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call><RW>;</RW>
+
+    <Assignment><VarRef><SymbRef>pt</SymbRef><RW>.</RW><Ident>x</Ident></VarRef> <RW>:=</RW> <Num>10</Num></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>pt</SymbRef><RW>.</RW><Ident>y</Ident></VarRef> <RW>:=</RW> <Num>20</Num></Assignment><RW>;</RW>
+
+    <Assignment><SymbRef>fs</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TFileStream</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef><RW>(</RW><Str>'test.txt'</Str><RW>,</RW> <SymbRef>fmOpenRead</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>fs</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call><RW>;</RW>
+
+    <Assignment><SymbRef>ms</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TMemoryStream</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>ms</SymbRef><RW>.</RW><Ident>Clear</Ident></VarRef></Call><RW>;</RW>
+    <Call><VarRef><SymbRef>ms</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

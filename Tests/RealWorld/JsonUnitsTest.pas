@@ -19,10 +19,13 @@ var
     jsonArr: TJSONArray;
     parser: TJSONParser;
     valType: TJSONtype;
+    s: string;
 begin
     strm := TStream.Create;
     strm.Position := 0;
     strm.Free;
+
+    s := StringToJSONString('test');
 
     jsonObj := TJSONObject.Create;
     valType := jsonObj.JSONType;

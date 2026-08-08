@@ -18,11 +18,14 @@
     <VarDecl><SymbDecl>jsonObj</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TJSONObject</SymbRef></TypeSpec></VarDecl><RW>;</RW>
     <VarDecl><SymbDecl>jsonArr</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TJSONArray</SymbRef></TypeSpec></VarDecl><RW>;</RW>
     <VarDecl><SymbDecl>parser</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TJSONParser</SymbRef></TypeSpec></VarDecl><RW>;</RW>
-    <VarDecl><SymbDecl>valType</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TJSONtype</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+    <VarDecl><SymbDecl>valType</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TJSONtype</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>
     <Assignment><SymbRef>strm</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TStream</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
     <Assignment><VarRef><SymbRef>strm</SymbRef><RW>.</RW><Ident>Position</Ident></VarRef> <RW>:=</RW> <Num>0</Num></Assignment><RW>;</RW>
     <Call><VarRef><SymbRef>strm</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call><RW>;</RW>
+
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Call><SymbRef>StringToJSONString</SymbRef><RW>(</RW><Str>'test'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
 
     <Assignment><SymbRef>jsonObj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TJSONObject</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>valType</SymbRef> <RW>:=</RW> <VarRef><SymbRef>jsonObj</SymbRef><RW>.</RW><Ident>JSONType</Ident></VarRef></Assignment><RW>;</RW>

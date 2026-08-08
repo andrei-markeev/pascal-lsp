@@ -217,6 +217,7 @@ begin
         RegisterSymbolByName('TJSONArray', nil, skTypeName, classType_TJSONArray, ctx.Cursor);
         RegisterSymbolByName('TJSONObject', nil, skTypeName, classType_TJSONObject, ctx.Cursor);
         RegisterSymbolByName('TJSONEnum', nil, skTypeName, classType_TJSONEnum, ctx.Cursor);
+        RegisterSymbolByName('StringToJSONString', nil, skFunction, func_String_String, ctx.Cursor);
     end;
 end;
 
