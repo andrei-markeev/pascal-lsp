@@ -28,6 +28,72 @@ begin
     CreateTypeSpec := TTypeSpec.Create(ctx, [nil], typeDefToFill);
 end;
 
+function FindUnitMemberSymbol(unitSym: TSymbol; const memberName: shortstring; cursor: PChar): TSymbol;
+var
+    i: integer;
+begin
+    Result := FindSymbol(unitSym, memberName, cursor);
+    if (Result = nil) and (length(unitSym.children) > 0) then
+    begin
+        for i := 0 to length(unitSym.children) - 1 do
+            if LowerCase(unitSym.children[i].displayName) = LowerCase(memberName) then
+            begin
+                Result := unitSym.children[i];
+                break;
+            end;
+    end;
+    if Result = nil then
+        Result := FindSymbol(memberName, cursor);
+end;
+
+function ParseUnitQualifiedType(ctx: TParserContext; spec: TTypeSpec; unitSym: TSymbol; var typeDefToFill: TTypeDef): boolean;
+var
+    typeIdent: TIdentifier;
+    typeIdentName: shortstring;
+    typeSym: TSymbol;
+    found: pointer;
+begin
+    if not PeekReservedWord(ctx, rwDot) then
+    begin
+        spec.state := tsError;
+        spec.errorMessage := 'Type expected!';
+        ctx.MarkEndOfToken(spec);
+        exit(false);
+    end;
+
+    Result := true;
+    TReservedWord.Create(ctx, rwDot, true);
+    typeIdent := TIdentifier.Create(ctx, false);
+    typeIdentName := typeIdent.GetStr();
+    typeSym := FindUnitMemberSymbol(unitSym, typeIdentName, ctx.Cursor);
+
+    if (typeSym <> nil) and (typeSym.kind = skTypeName) then
+    begin
+        typeDefToFill := typeSym.typeDef;
+        typeSym.AddReference(typeIdent);
+        spec.state := tsCorrect;
+        ctx.MarkEndOfToken(spec);
+        exit;
+    end
+    else if typeSym = nil then
+    begin
+        found := TypesList.Find(LowerCase(typeIdentName));
+        if found <> nil then
+        begin
+            typeDefToFill := TTypeDef(found);
+            spec.state := tsCorrect;
+            ctx.MarkEndOfToken(spec);
+            exit;
+        end;
+    end;
+
+    typeIdent.state := tsError;
+    typeIdent.errorMessage := 'Type expected!';
+    spec.state := tsError;
+    spec.errorMessage := 'Type expected!';
+    ctx.MarkEndOfToken(spec);
+end;
+
 constructor TTypeSpec.Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef);
 var
     nextTokenKind: TTokenKind;
@@ -84,6 +150,13 @@ begin
                             symbol.AddReference(ident);
                             state := tsCorrect;
                             ctx.MarkEndOfToken(Self);
+                            exit;
+                        end;
+                    skUnitName:
+                        begin
+                            ident := TIdentifier.Create(ctx, false);
+                            symbol.AddReference(ident);
+                            ParseUnitQualifiedType(ctx, Self, symbol, typeDefToFill);
                             exit;
                         end;
                     skConstant:
@@ -224,6 +297,12 @@ begin
                 symbol.AddReference(ident);
                 state := tsCorrect;
                 ctx.MarkEndOfToken(Self);
+                exit;
+            end;
+        skUnitName:
+            begin
+                symbol.AddReference(ident);
+                ParseUnitQualifiedType(ctx, Self, symbol, typeDefToFill);
                 exit;
             end;
         skConstant:

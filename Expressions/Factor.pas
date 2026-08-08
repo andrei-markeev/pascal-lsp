@@ -44,6 +44,7 @@ constructor TFactor.Create(ctx: TParserContext; nextTokenKind: TTokenKind);
 var
     identName: shortstring;
     symbol: TSymbol;
+    isQualifiedAccess: boolean;
 begin
     ctx.Add(Self);
     tokenName := 'Factor';
@@ -75,7 +76,9 @@ begin
                 if factorToken <> nil then
                     typeDef := factorToken.typeDef;
 
-                if (symbol <> nil) and (symbol.kind = skUnitName) then
+                isQualifiedAccess := (factorToken is TVarRef) and not TVarRef(factorToken).isSimple;
+
+                if (symbol <> nil) and (symbol.kind = skUnitName) and not isQualifiedAccess then
                 begin
                     state := tsError;
                     errorMessage := 'Unit name cannot be used in expressions!';

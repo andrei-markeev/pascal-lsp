@@ -154,6 +154,18 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
+        <Filename Value="Expressions\Utils\MemberAccess.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Expressions\Utils\InheritedRef.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Expressions\Utils\TypecastRef.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
         <Filename Value="Scopes.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -219,7 +231,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="Declarations;Statements;Types;Types\TypeDefs;File;Expressions"/>
+      <OtherUnitFiles Value="Declarations;Statements;Types;Types\TypeDefs;File;Expressions;Expressions\Utils"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

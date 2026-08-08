@@ -1,0 +1,12 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadUnitNamespaced</SymbDecl><RW>;</RW>
+
+<TUsesClause><RW>uses</RW>
+    <Ident>SysUtils</Ident><RW>;</RW></TUsesClause>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>rec</SymbDecl><RW>:</RW> <TypeSpec ERROR="Type expected!"><SymbRef>SysUtils</SymbRef><RW>.</RW><Ident ERROR="Type expected!">NonExistentType</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>SysUtils</SymbRef><RW>.</RW><Ident ERROR="Identifier 'NonExistentFunction' was not found in unit 'SysUtils'!">NonExistentFunction</Ident></VarRef><RW>(</RW><Str>'HELLO'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

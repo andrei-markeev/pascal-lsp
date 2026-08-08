@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    sysutils, UnitFile, LspConfig;
+    sysutils, Symbols, PrimitiveTypeDef, TypeDef, UnitFile, LspConfig;
 
 function ReadFileToString(const FileName: string): string;
 var
@@ -105,7 +105,12 @@ begin
         ident := TIdentifier.Create(ctx, false);
         if (ident.state <> tsMissing) and (ident.len > 0) then
         begin
-            if not LoadSystemUnit(ident.GetStr, ctx) and not LoadAndParseUnit(ident.GetStr, ctx) then
+            if LoadSystemUnit(ident.GetStr, ctx) or LoadAndParseUnit(ident.GetStr, ctx) then
+            begin
+                if FindSymbol(ident.GetStr, ctx.Cursor) = nil then
+                    RegisterSymbolByName(ident.GetStr, nil, skUnitName, TPrimitiveTypeDef.Create(ctx, tkUnitName), ctx.Cursor);
+            end
+            else
             begin
                 ident.state := tsError;
                 ident.errorMessage := 'Cannot find unit ''' + ident.GetStr + '''!';

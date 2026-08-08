@@ -1,0 +1,14 @@
+<ProgramFile><RW>program</RW> <SymbDecl>UnitNamespaced</SymbDecl><RW>;</RW>
+
+<TUsesClause><RW>uses</RW>
+    <Ident>SysUtils</Ident><RW>;</RW></TUsesClause>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>rec</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>SysUtils</SymbRef><RW>.</RW><SymbRef>TSearchRec</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>SysUtils</SymbRef><RW>.</RW><SymbRef>LowerCase</SymbRef></VarRef><RW>(</RW><Str>'HELLO'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
+    <If><RW>if</RW> <Expression><VarRef><SymbRef>SysUtils</SymbRef><RW>.</RW><SymbRef>PathDelim</SymbRef></VarRef> <RW>=</RW> <Str>'/'</Str></Expression> <RW>then</RW>
+        <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>SysUtils</SymbRef><RW>.</RW><SymbRef>IntToStr</SymbRef></VarRef><RW>(</RW><Num>123</Num><RW>)</RW></Call></Assignment></If><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
