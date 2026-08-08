@@ -1,0 +1,53 @@
+<ProgramFile><RW>program</RW> <SymbDecl>SsocketsTest</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+{$longstrings on}
+
+<TUsesClause><RW>uses</RW> <Ident>sysutils</Ident><RW>,</RW> <Ident>classes</Ident><RW>,</RW> <Ident>ssockets</Ident><RW>;</RW></TUsesClause>
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TLspApp</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+    <Ident>public</Ident>
+        <ProcedureDecl><RW>procedure</RW> <SymbDecl>OnConnect</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>Sender</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TObject</SymbRef></TypeSpec></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>Data</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TSocketStream</SymbRef></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW></ProcedureDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Procedure><RW>procedure</RW> <SymbRef>TLspApp</SymbRef><RW>.</RW><SymbDecl>OnConnect</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>Sender</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TObject</SymbRef></TypeSpec></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>Data</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TSocketStream</SymbRef></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+    <If><RW>if</RW> <Expression><SymbRef>Data</SymbRef> <RW><></RW> <Factor><RW>nil</RW></Factor></Expression> <RW>then</RW>
+        <Call><VarRef><SymbRef>Data</SymbRef><RW>.</RW><Ident>Close</Ident></VarRef></Call></If><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>App</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TLspApp</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>Server</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TInetServer</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>SockStream</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TSocketStream</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>InetSock</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TInetSocket</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>UnixServer</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TUnixServer</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>UnixSock</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TUnixSocket</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>Err</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>ESocketError</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>H</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TSocketHandle</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>App</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TLspApp</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>Server</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TInetServer</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef><RW>(</RW><Num>8080</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>Server</SymbRef><RW>.</RW><Ident>OnConnect</Ident></VarRef> <RW>:=</RW> <Factor><RW>@</RW><Factor><VarRef><SymbRef>App</SymbRef><RW>.</RW><SymbRef>OnConnect</SymbRef></VarRef></Factor></Factor></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>Server</SymbRef><RW>.</RW><Ident>StartAccepting</Ident></VarRef></Call><RW>;</RW>
+    <Call><VarRef><SymbRef>Server</SymbRef><RW>.</RW><Ident>StopAccepting</Ident></VarRef></Call><RW>;</RW>
+    <Assignment><SymbRef>H</SymbRef> <RW>:=</RW> <VarRef><SymbRef>Server</SymbRef><RW>.</RW><Ident>Socket</Ident></VarRef></Assignment><RW>;</RW>
+
+    <Assignment><SymbRef>UnixServer</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TUnixServer</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef><RW>(</RW><Str>'/tmp/test.sock'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>UnixServer</SymbRef><RW>.</RW><Ident>StartAccepting</Ident></VarRef></Call><RW>;</RW>
+
+    <Assignment><SymbRef>SockStream</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>Server</SymbRef><RW>.</RW><Ident>Accept</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <If><RW>if</RW> <Expression><SymbRef>SockStream</SymbRef> <RW><></RW> <Factor><RW>nil</RW></Factor></Expression> <RW>then</RW>
+    <Block><RW>begin</RW>
+        <Assignment><SymbRef>H</SymbRef> <RW>:=</RW> <VarRef><SymbRef>SockStream</SymbRef><RW>.</RW><Ident>Handle</Ident></VarRef></Assignment><RW>;</RW>
+        <Call><VarRef><SymbRef>SockStream</SymbRef><RW>.</RW><Ident>Close</Ident></VarRef></Call><RW>;</RW>
+    <RW>end</RW></Block></If><RW>;</RW>
+
+    <Assignment><SymbRef>InetSock</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TInetSocket</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef><RW>(</RW><Str>'127.0.0.1'</Str><RW>,</RW> <Num>8080</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>UnixSock</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TUnixSocket</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef><RW>(</RW><Str>'/tmp/test.sock'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
+
+    <Call><VarRef><SymbRef>Server</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call><RW>;</RW>
+    <Call><VarRef><SymbRef>UnixServer</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call><RW>;</RW>
+    <Call><VarRef><SymbRef>App</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

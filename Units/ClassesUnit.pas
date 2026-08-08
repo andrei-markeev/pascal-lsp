@@ -14,7 +14,6 @@ type
         classType_TFPList: TTypeDef;
         classType_TStrings: TTypeDef;
         classType_TStringList: TTypeDef;
-        classType_TStream: TTypeDef;
         dynArrayOfPointerType: TTypeDef;
         dynArrayOfStringType: TTypeDef;
 
@@ -22,6 +21,7 @@ type
         func_Create_TStrings: TTypeDef;
         func_Create_TStringList: TTypeDef;
         func_Create_TStream: TTypeDef;
+        func_Create_THandleStream: TTypeDef;
 
         func_Pointer_LongInt: TTypeDef;
         func_ItemDirection_LongInt: TTypeDef;
@@ -52,6 +52,8 @@ type
     protected
         procedure InitTypes; override;
     public
+        classType_TStream: TTypeDef;
+        classType_THandleStream: TTypeDef;
         destructor Destroy; override;
         procedure Load(ctx: TParserContext); override;
     end;
@@ -69,6 +71,7 @@ begin
         classType_TStrings.Free;
         classType_TStringList.Free;
         classType_TStream.Free;
+        classType_THandleStream.Free;
 
         dynArrayOfPointerType.Free;
         dynArrayOfStringType.Free;
@@ -77,6 +80,7 @@ begin
         func_Create_TStrings.Free;
         func_Create_TStringList.Free;
         func_Create_TStream.Free;
+        func_Create_THandleStream.Free;
 
         func_Pointer_LongInt.Free;
         func_ItemDirection_LongInt.Free;
@@ -283,6 +287,14 @@ begin
     TClassTypeDef(classType_TStream).AddMember('ReadBuffer', proc_BufferLongInt);
     TClassTypeDef(classType_TStream).AddMember('WriteBuffer', proc_BufferLongInt);
     TClassTypeDef(classType_TStream).AddMember('CopyFrom', func_TStreamInt64_Int64);
+
+    classType_THandleStream := TClassTypeDef.Create;
+    TClassTypeDef(classType_THandleStream).parentClass := classType_TStream;
+    func_Create_THandleStream := CreateOneParamFunctionType('ahandle', longintType, classType_THandleStream);
+    TClassTypeDef(classType_THandleStream).AddMember('Handle', longintType);
+    TClassTypeDef(classType_THandleStream).AddMember('Create', func_Create_THandleStream);
+    TClassTypeDef(classType_THandleStream).AddMember('Destroy', voidProcedureType);
+    TClassTypeDef(classType_THandleStream).AddMember('Free', voidProcedureType);
 end;
 
 procedure TClassesUnit.Load(ctx: TParserContext);
@@ -294,6 +306,7 @@ begin
         RegisterSymbolByName('TStrings', nil, skTypeName, classType_TStrings, ctx.Cursor);
         RegisterSymbolByName('TStringList', nil, skTypeName, classType_TStringList, ctx.Cursor);
         RegisterSymbolByName('TStream', nil, skTypeName, classType_TStream, ctx.Cursor);
+        RegisterSymbolByName('THandleStream', nil, skTypeName, classType_THandleStream, ctx.Cursor);
     end;
 end;
 

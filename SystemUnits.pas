@@ -20,7 +20,7 @@ uses
     classes, contnrs, CompilationMode, Symbols, TypeDefs, Parameters, RoutineTypeDef,
     ArrayTypeDef, DynamicArrayTypeDef, ClassTypeDef,
     SystemUnit, ClassesUnit, ContnrsUnit, MathUnit, SysutilsUnit, StringsUnit, DosUnit,
-    FpjsonUnit, JsonparserUnit;
+    FpjsonUnit, JsonparserUnit, SsocketsUnit;
 
 procedure InitFunctionTypes; forward;
 
@@ -74,6 +74,7 @@ var
     dosMock: TDosUnit;
     fpjsonMock: TFpjsonUnit;
     jsonparserMock: TJsonparserUnit;
+    ssocketsMock: TSsocketsUnit;
 
 procedure RegisterSystemSymbols(ctx: TParserContext);
 begin
@@ -499,6 +500,7 @@ begin
         'dos': dosMock.Load(ctx);
         'fpjson': fpjsonMock.Load(ctx);
         'jsonparser': jsonparserMock.Load(ctx);
+        'ssockets': ssocketsMock.Load(ctx);
         'system': ;
     else
         Result := false;
@@ -515,6 +517,7 @@ begin
     dosMock := TDosUnit.Create;
     fpjsonMock := TFpjsonUnit.Create;
     jsonparserMock := TJsonparserUnit.Create;
+    ssocketsMock := TSsocketsUnit.Create;
 end;
 
 procedure FreeSystemUnits;
@@ -527,6 +530,7 @@ begin
     dosMock.Free;
     fpjsonMock.Free;
     jsonparserMock.Free;
+    ssocketsMock.Free;
 end;
 
 initialization

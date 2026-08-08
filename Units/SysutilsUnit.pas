@@ -13,6 +13,7 @@ type
     private
         functionType_String_String: TTypeDef;
         functionType_LongInt_String: TTypeDef;
+        functionType_String_LongInt: TTypeDef;
         typeReplaceFlag: TTypeDef;
         memberTypeOfReplaceFlag: TTypeDef;
         setTypeOfReplaceFlags: TTypeDef;
@@ -24,6 +25,7 @@ type
         functionType_FindNext: TTypeDef;
         procedureType_FindClose: TTypeDef;
         functionType_PChar_LongInt: TTypeDef;
+        functionType_StrToIntDef: TTypeDef;
     protected
         procedure InitTypes; override;
     public
@@ -42,6 +44,7 @@ begin
     begin
         functionType_String_String.Free;
         functionType_LongInt_String.Free;
+        functionType_String_LongInt.Free;
         typeReplaceFlag.Free;
         memberTypeOfReplaceFlag.Free;
         setTypeOfReplaceFlags.Free;
@@ -53,6 +56,7 @@ begin
         functionType_FindNext.Free;
         procedureType_FindClose.Free;
         functionType_PChar_LongInt.Free;
+        functionType_StrToIntDef.Free;
     end;
     inherited Destroy;
 end;
@@ -61,6 +65,7 @@ procedure TSysutilsUnit.InitTypes;
 begin
     functionType_String_String := CreateOneParamFunctionType('s', ansiString64Type, ansiString64Type);
     functionType_LongInt_String := CreateOneParamFunctionType('v', longintType, ansiString64Type);
+    functionType_String_LongInt := CreateOneParamFunctionType('s', ansiString64Type, longintType);
 
     typeReplaceFlag := TEnumTypeDef.Create(nil, nil);
     TEnumTypeDef(typeReplaceFlag).AddMember('rfReplaceAll');
@@ -102,6 +107,7 @@ begin
         CreateParam(ptkVar, 'f', recordType_TSearchRec)
     ]));
     functionType_PChar_LongInt := CreateOneParamFunctionType('p', pcharType, longintType);
+    functionType_StrToIntDef := CreateTwoParamFunctionType('s', ansiString64Type, 'default', longintType, longintType);
 end;
 
 procedure TSysutilsUnit.Load(ctx: TParserContext);
@@ -126,6 +132,11 @@ begin
         RegisterSymbolByName('ExtractFilePath', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('ExpandFileName', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('StrLen', nil, skFunction, functionType_PChar_LongInt, ctx.Cursor);
+        RegisterSymbolByName('StrToInt', nil, skFunction, functionType_String_LongInt, ctx.Cursor);
+        RegisterSymbolByName('StrToIntDef', nil, skFunction, functionType_StrToIntDef, ctx.Cursor);
+        RegisterSymbolByName('Trim', nil, skFunction, functionType_String_String, ctx.Cursor);
+        RegisterSymbolByName('TrimLeft', nil, skFunction, functionType_String_String, ctx.Cursor);
+        RegisterSymbolByName('TrimRight', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('PathDelim', nil, skConstant, charType, ctx.Cursor);
         RegisterSymbolByName('DriveDelim', nil, skConstant, charType, ctx.Cursor);
         RegisterSymbolByName('PathSep', nil, skConstant, charType, ctx.Cursor);

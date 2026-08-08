@@ -1,0 +1,19 @@
+<ProgramFile><RW>program</RW> <SymbDecl>SysUtils</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+{$longstrings on}
+
+<TUsesClause><RW>uses</RW> <Ident>sysutils</Ident><RW>;</RW></TUsesClause>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>,</RW> <SymbDecl>s2</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>n</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'  hello world  '</Str></Assignment><RW>;</RW>
+    <Assignment><SymbRef>s2</SymbRef> <RW>:=</RW> <Call><SymbRef>Trim</SymbRef><RW>(</RW><SymbRef>s</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>s2</SymbRef> <RW>:=</RW> <Call><SymbRef>TrimLeft</SymbRef><RW>(</RW><SymbRef>s</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>s2</SymbRef> <RW>:=</RW> <Call><SymbRef>TrimRight</SymbRef><RW>(</RW><SymbRef>s</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>n</SymbRef> <RW>:=</RW> <Call><SymbRef>StrToIntDef</SymbRef><RW>(</RW><Str>'123'</Str><RW>,</RW> <Num>0</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>n</SymbRef> <RW>:=</RW> <Call><SymbRef>StrToIntDef</SymbRef><RW>(</RW><Str>'invalid'</Str><RW>,</RW> <Num>42</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>n</SymbRef> <RW>:=</RW> <Call><SymbRef>StrToInt</SymbRef><RW>(</RW><Str>'456'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
