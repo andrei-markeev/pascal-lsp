@@ -22,7 +22,7 @@ type
 implementation
 
 uses
-    Scopes, TypeSpec, ParameterDecl, RoutineTypeDef;
+    CompilationMode, Scopes, TypeSpec, ParameterDecl, RoutineTypeDef;
 
 constructor TFunctionDecl.Create(ctx: TParserContext; functionRWKind: TReservedWordKind; parentSymbols: array of TSymbol);
 var
@@ -180,6 +180,7 @@ begin
             'override': methodModifiers.override := true; // TODO: not valid for objects
             'reintroduce': methodModifiers.reintroduce := true; // TODO: not valid for objects
             'virtual': methodModifiers.virtual := true; // TODO: in Turbo Pascal mode, can be followed by a number constant
+            'static': methodModifiers.static := true;
             // TODO: message
         else
             isMethodModifier := false;
@@ -229,6 +230,12 @@ begin
             ident.errorMessage := 'Method modifier ''' + s + ''' can only be used with class and object methods!';
         end;
 
+        if (s = 'static') and not (ctx.mode in [cmObjectFreePascal, cmDelphi]) then
+        begin
+            ident.state := tsError;
+            ident.errorMessage := '''static'' modifier is not supported in this compilation mode!';
+        end;
+
         if (length(parentSymbols) > 0) and (s = 'export') then
         begin
             ident.state := tsError;
@@ -236,6 +243,8 @@ begin
         end;
 
     until ctx.IsEOF;
+
+    routineTypeDef.isStatic := methodModifiers.static;
 
     if (nameIdent.state = tsCorrect) and (symbolKind = skDestructor) and not methodModifiers.override then
     begin

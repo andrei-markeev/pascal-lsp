@@ -10,6 +10,7 @@ type
         message: boolean; // TODO: link constant expression
         override: boolean;
         virtual: boolean;
+        static: boolean;
     end;
     TFunctionModifiers = record
         alias: string;

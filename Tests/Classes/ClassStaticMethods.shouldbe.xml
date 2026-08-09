@@ -1,0 +1,29 @@
+<ProgramFile><RW>program</RW> <SymbDecl>ClassStaticMethods</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TCalculator</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <RW>class</RW> <FunctionDecl><RW>function</RW> <SymbDecl>Add</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>a</SymbDecl><RW>,</RW> <SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW> <Ident>static</Ident><RW>;</RW></FunctionDecl>
+        <RW>class</RW> <ProcedureDecl><RW>procedure</RW> <SymbDecl>Reset</SymbDecl><RW>;</RW> <Ident>static</Ident><RW>;</RW></ProcedureDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<RW><Function>class</RW> <RW>function</RW> <SymbRef>TCalculator</SymbRef><RW>.</RW><SymbDecl>Add</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>a</SymbDecl><RW>,</RW> <SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW> <Ident>static</Ident><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>Result</SymbRef> <RW>:=</RW> <SimpleExpression><SymbRef>a</SymbRef> <RW>+</RW> <SymbRef>b</SymbRef></SimpleExpression></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<RW><Procedure>class</RW> <RW>procedure</RW> <SymbRef>TCalculator</SymbRef><RW>.</RW><SymbDecl>Reset</SymbDecl><RW>;</RW> <Ident>static</Ident><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>calc</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TCalculator</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>res</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>res</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TCalculator</SymbRef><RW>.</RW><SymbRef>Add</SymbRef></VarRef><RW>(</RW><Num>5</Num><RW>,</RW> <Num>10</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>TCalculator</SymbRef><RW>.</RW><SymbRef>Reset</SymbRef></VarRef></Call><RW>;</RW>
+
+    <Assignment><SymbRef>res</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>calc</SymbRef><RW>.</RW><SymbRef>Add</SymbRef></VarRef><RW>(</RW><Num>1</Num><RW>,</RW> <Num>2</Num><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>calc</SymbRef><RW>.</RW><SymbRef>Reset</SymbRef></VarRef></Call><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

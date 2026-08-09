@@ -22,7 +22,7 @@ type
 implementation
 
 uses
-    ReservedWord, Scopes, Symbols, Parameters, TypeSpec, ParameterDecl, Block, FunctionDecl, RoutineTypeDef;
+    CompilationMode, ReservedWord, Scopes, Symbols, Parameters, TypeSpec, ParameterDecl, Block, FunctionDecl, RoutineTypeDef;
 
 constructor TFunctionImpl.Create(ctx: TParserContext);
 var
@@ -49,6 +49,22 @@ begin
 
     ctx.SkipTrivia;
     start := ctx.Cursor;
+
+    if (ctx.tokensLen >= 2) and (ctx.Tokens[ctx.tokensLen - 2] is TReservedWord) then
+    begin
+        rw := TReservedWord(ctx.Tokens[ctx.tokensLen - 2]);
+        if (rw.kind = rwClass) and (rw.state = tsSkipped) then
+        begin
+            if ctx.mode in [cmObjectFreePascal, cmDelphi] then
+                rw.state := tsCorrect
+            else
+            begin
+                rw.state := tsError;
+                rw.errorMessage := 'Class methods are not supported in this compilation mode!';
+            end;
+            start := rw.start;
+        end;
+    end;
 
     nextReservedWordKind := DetermineReservedWord(ctx);
     if not (nextReservedWordKind in [rwFunction, rwProcedure, rwConstructor, rwDestructor]) then
@@ -205,6 +221,7 @@ begin
             'override': methodModifiers.override := true;
             'reintroduce': methodModifiers.reintroduce := true;
             'virtual': methodModifiers.virtual := true;
+            'static': methodModifiers.static := true;
         else
             isMethodModifier := false;
         end;
@@ -250,6 +267,12 @@ begin
         begin
             ident.state := tsError;
             ident.errorMessage := 'Method modifier ''' + s + ''' can only be used with class and object methods!';
+        end;
+
+        if (s = 'static') and not (ctx.mode in [cmObjectFreePascal, cmDelphi]) then
+        begin
+            ident.state := tsError;
+            ident.errorMessage := '''static'' modifier is not supported in this compilation mode!';
         end;
 
         if isMethod and (s = 'export') then
@@ -316,6 +339,12 @@ begin
     // TODO: modifiers
 
     // TODO: asm
+
+    if methodModifiers.static or ((symbolField <> nil) and (symbolField.typeDef <> nil) and (symbolField.typeDef is TRoutineTypeDef) and TRoutineTypeDef(symbolField.typeDef).isStatic) then
+    begin
+        routineTypeDef.isStatic := true;
+        selfType := nil;
+    end;
 
     if needsToAddChildSymbols and (symbolParent <> nil) then
         TBlock.Create(ctx, symbolParent.children, selfType, routineTypeDef.returnType, Self)

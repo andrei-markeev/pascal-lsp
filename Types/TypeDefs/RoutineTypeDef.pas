@@ -15,6 +15,7 @@ type
         returnType: TTypeDef;
         overloads: TFPList;
         rangeToken: TToken;
+        isStatic: boolean;
         constructor Create(ctx: TTypeDefTracker = nil; AKind: TTypeKind = tkProcedure; AParameters: Pointer = nil; AReturnType: TTypeDef = nil; AOverloads: TFPList = nil);
         destructor Destroy; override;
     end;

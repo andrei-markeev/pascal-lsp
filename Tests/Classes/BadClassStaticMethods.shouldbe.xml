@@ -1,0 +1,21 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadClassStaticMethods</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TBadCalc</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <RW>class</RW> <FunctionDecl><RW>function</RW> <SymbDecl>Foo</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW MISSING=";" /> <Ident>static</Ident><RW>;</RW></FunctionDecl>
+        <RW>class</RW> <ProcedureDecl><RW>procedure</RW> <SymbDecl>Bar</SymbDecl><RW>;</RW> <Ident>static</Ident><RW>;</RW></ProcedureDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<RW><Function>class</RW> <RW>function</RW> <SymbRef>TBadCalc</SymbRef><RW>.</RW><SymbDecl>Foo</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW> <Ident>static</Ident><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><Ident ERROR="Identifier has not been declared!">Self</Ident> <RW>:=</RW> <Factor><RW>nil</RW></Factor></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<RW><Procedure>class</RW> <RW>procedure</RW> <SymbRef>TBadCalc</SymbRef><RW>.</RW><SymbDecl>Bar</SymbDecl><RW>;</RW> <Ident>static</Ident><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

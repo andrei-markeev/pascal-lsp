@@ -244,8 +244,19 @@ begin
     visibility := vPublic;
     nextTokenKind := DetermineNextTokenKind(ctx);
 
-    while (nextTokenKind.primitiveKind = pkIdentifier) or (nextTokenKind.reservedWordKind in [rwProcedure, rwFunction, rwConstructor, rwDestructor]) do
+    while (nextTokenKind.primitiveKind = pkIdentifier) or (nextTokenKind.reservedWordKind in [rwClass, rwProcedure, rwFunction, rwConstructor, rwDestructor]) do
     begin
+        if nextTokenKind.reservedWordKind = rwClass then
+        begin
+            identToken := TReservedWord.Create(ctx, rwClass, true);
+            if not (ctx.mode in [cmObjectFreePascal, cmDelphi]) then
+            begin
+                identToken.state := tsError;
+                identToken.errorMessage := 'Class methods are not supported in this compilation mode!';
+            end;
+            nextTokenKind := DetermineNextTokenKind(ctx);
+        end;
+
         if nextTokenKind.primitiveKind = pkIdentifier then
         begin
             s := LowerCase(PeekIdentifier(ctx));
@@ -269,8 +280,6 @@ begin
                 end;
                 TReservedWord.Create(ctx, rwSemiColon, false);
             end;
-
-            // TODO: static modifier
         end
         else if nextTokenKind.reservedWordKind in [rwProcedure, rwFunction, rwConstructor, rwDestructor] then
         begin
