@@ -4,5 +4,10 @@
 <Block><RW>begin</RW>
 <RW>end</RW></Block><RW>;</RW></Procedure>
 
+{$mode iso}
+<Procedure><RW>procedure</RW> <SymbDecl>BadIsoProc</SymbDecl><RW>(</RW><ParameterDecl ERROR="Untyped parameters are not supported in this compilation mode!"><RW>const</RW> <SymbDecl>z</SymbDecl></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
 <Block><RW>begin</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

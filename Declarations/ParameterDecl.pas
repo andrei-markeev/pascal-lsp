@@ -128,6 +128,11 @@ begin
     end
     else if parameterKind in [ptkConst, ptkVar, ptkOut] then
     begin
+        if ctx.mode in [cmStandardPascal, cmExtendedPascal] then
+        begin
+            state := tsError;
+            errorMessage := 'Untyped parameters are not supported in this compilation mode!';
+        end;
         // Untyped parameter: keep modifier (const/var/out) and unknownType
     end
     else
