@@ -255,7 +255,7 @@ begin
     for i := 0 to ctx.tokensLen - 1 do
     begin
       cur := ctx.Tokens[i];
-      if cur.state in [tsError, tsMissing] then
+      if cur.state in [tsError, tsMissing, tsWarning] then
       begin
         if DiagCount > 0 then
           DiagnosticsJson := DiagnosticsJson + ',';
@@ -264,10 +264,14 @@ begin
           '"range":{' +
             '"start":{"line":' + IntToStr(cur.line) + ',"character":' + IntToStr(cur.position) + '},' +
             '"end":{"line":' + IntToStr(cur.line) + ',"character":' + IntToStr(cur.position + cur.len) + '}' +
-          '},' +
-          '"severity":1,';
+          '},';
 
-        if cur.state = tsError then
+        if cur.state = tsWarning then
+          DiagnosticsJson := DiagnosticsJson + '"severity":2,'
+        else
+          DiagnosticsJson := DiagnosticsJson + '"severity":1,';
+
+        if (cur.state = tsError) or (cur.state = tsWarning) then
         begin
           if cur.errorMessage <> '' then
             DiagnosticsJson := DiagnosticsJson + '"message":' + '"' + string(StringToJSONString(cur.errorMessage)) + '"'

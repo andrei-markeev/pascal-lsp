@@ -1,0 +1,16 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadSealedHeritage</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TSealedParent</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW> <Ident>sealed</Ident>
+        <VarDecl><SymbDecl>field1</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    // Inheriting from sealed class is not allowed
+    <TypeDecl><SymbDecl>TInvalidChild</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW><RW>(</RW><Ident ERROR="Cannot inherit from a sealed class!">TSealedParent</Ident><RW>)</RW>
+        <VarDecl><SymbDecl>field2</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

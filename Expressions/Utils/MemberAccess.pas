@@ -116,7 +116,7 @@ procedure ParseMemberDotAccess(ctx: TParserContext; ref: TVarRef; reservedWordTo
 var
     ident: TIdentifier;
     text: string;
-    curType: TTypeDef;
+    curType, targetType: TTypeDef;
     found: pointer;
 begin
     if (ref.typeDef = nil) or not (ref.typeDef.kind in [tkRecord, tkClass, tkObject]) then
@@ -133,6 +133,7 @@ begin
         exit;
 
     text := ident.GetStr();
+    targetType := ref.typeDef;
     found := FindMemberInType(ref.typeDef, text, curType);
 
     if found = nil then
@@ -150,6 +151,15 @@ begin
         ref.symbol := FindSymbol(TSymbol(curType.typeSymbol), text, ctx.Cursor);
         if ref.symbol <> nil then
             ref.symbol.AddReference(ident);
+    end;
+
+    if (targetType <> nil) and (targetType is TClassTypeDef) and TClassTypeDef(targetType).isAbstract and (ref.symbol <> nil) and (ref.symbol.kind = skConstructor) then
+    begin
+        ident.state := tsWarning;
+        if targetType.typeSymbol <> nil then
+            ident.errorMessage := 'Constructing instance of abstract class ''' + TSymbol(targetType.typeSymbol).displayName + '''!'
+        else
+            ident.errorMessage := 'Constructing instance of abstract class!';
     end;
 
     if (ref.typeDef <> nil) and not IsMemberAccessible(ctx, curType, ref.typeDef.visibility, ctx.Cursor, ref.symbol) then

@@ -6,7 +6,7 @@ unit Token;
 interface
 
 type
-    TTokenState = (tsCorrect, tsError, tsMissing, tsSkipped, tsEndOf, tsInvisible);
+    TTokenState = (tsCorrect, tsError, tsMissing, tsSkipped, tsEndOf, tsInvisible, tsWarning);
     TToken = class
     protected
         asString: string;

@@ -66,7 +66,43 @@ begin
 
     TReservedWord.Create(ctx, rwClass, true);
 
-    // TODO: abstract, sealed
+    while DetermineNextTokenKind(ctx).primitiveKind = pkIdentifier do
+    begin
+        s := LowerCase(PeekIdentifier(ctx));
+        if (s = 'abstract') or (s = 'sealed') then
+        begin
+            savedCursor := ctx.Cursor;
+            savedCursorBeforeTrivia := ctx.cursorBeforeTrivia;
+            savedTokensLen := ctx.tokensLen;
+
+            ident := TIdentifier.Create(ctx, false);
+            nextTokenKind := DetermineNextTokenKind(ctx);
+            ident.Free;
+
+            ctx.Cursor := savedCursor;
+            ctx.cursorBeforeTrivia := savedCursorBeforeTrivia;
+            ctx.tokensLen := savedTokensLen;
+
+            if nextTokenKind.reservedWordKind in [rwColon, rwComma] then
+                break;
+
+            ident := TIdentifier.Create(ctx, false);
+            if not (ctx.mode in [cmObjectFreePascal, cmDelphi]) then
+            begin
+                ident.state := tsError;
+                ident.errorMessage := 'Class modifiers are not supported in this compilation mode!';
+            end
+            else
+            begin
+                if s = 'abstract' then
+                    classTypeDef.isAbstract := true
+                else if s = 'sealed' then
+                    classTypeDef.isSealed := true;
+            end;
+        end
+        else
+            break;
+    end;
 
     classTypeDef.parentClass := nil;
     if PeekReservedWord(ctx, rwOpenParenthesis) then
@@ -146,6 +182,11 @@ begin
                         begin
                             ident.state := tsError;
                             ident.errorMessage := 'Circular inheritance is not allowed!';
+                        end
+                        else if (parentTypeDef is TClassTypeDef) and TClassTypeDef(parentTypeDef).isSealed then
+                        begin
+                            ident.state := tsError;
+                            ident.errorMessage := 'Cannot inherit from a sealed class!';
                         end
                         else
                         begin

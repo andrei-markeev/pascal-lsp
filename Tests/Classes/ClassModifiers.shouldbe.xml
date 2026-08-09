@@ -1,0 +1,30 @@
+<ProgramFile><RW>program</RW> <SymbDecl>ClassModifiers</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TAbstractBase</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW> <Ident>abstract</Ident>
+        <VarDecl><SymbDecl>val</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <ConstructorDecl><RW>constructor</RW> <SymbDecl>Create</SymbDecl><RW>;</RW></ConstructorDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    <TypeDecl><SymbDecl>TSealedChild</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW> <Ident>sealed</Ident> <RW>(</RW><SymbRef>TAbstractBase</SymbRef><RW>)</RW>
+        <VarDecl><SymbDecl>childVal</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    <TypeDecl><SymbDecl>TAbstractSealedClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW> <Ident>abstract</Ident> <Ident>sealed</Ident>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Constructor><RW>constructor</RW> <SymbRef>TAbstractBase</SymbRef><RW>.</RW><SymbDecl>Create</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>val</SymbRef> <RW>:=</RW> <Num>1</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Constructor>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>obj1</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TAbstractBase</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>obj2</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TSealedChild</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>obj1</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TAbstractBase</SymbRef><RW>.</RW><SymbRef WARNING="Constructing instance of abstract class 'TAbstractBase'!">Create</SymbRef></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>obj2</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TSealedChild</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef></Call></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

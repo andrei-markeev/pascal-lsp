@@ -194,7 +194,7 @@ begin
         continue;
       end;
       
-      if (curToken.len <= 0) or not (curToken.state in [tsCorrect, tsError, tsSkipped]) then
+      if (curToken.len <= 0) or not (curToken.state in [tsCorrect, tsError, tsWarning, tsSkipped]) then
         continue;
         
       tokenType := -1;

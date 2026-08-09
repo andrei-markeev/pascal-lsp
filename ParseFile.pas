@@ -50,6 +50,7 @@ begin
         if cur.state = tsMissing then inserts[j] := inserts[j] + '<' + cur.tokenName + ' MISSING="' + cur.GetStr + '" />'
         else if cur.state = tsSkipped then inserts[j] := inserts[j] + '<' + cur.tokenName + ' SKIPPED="true">'
         else if cur.state = tsError then inserts[j] := inserts[j] + '<' + cur.tokenName + ' ERROR="' + cur.errorMessage + '">'
+        else if cur.state = tsWarning then inserts[j] := inserts[j] + '<' + cur.tokenName + ' WARNING="' + cur.errorMessage + '">'
         else if cur.state = tsEndOf then inserts[j] := inserts[j] + '</' + cur.tokenName + '>'
         else inserts[j] := inserts[j] + '<' + cur.tokenName + '>';
 
