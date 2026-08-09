@@ -46,11 +46,7 @@ begin
             begin
                 childName := LowerCase(classSym.children[i].displayName);
                 if FindScope(start).symbolsList.Find(childName) = nil then
-                begin
-                    sym := RegisterSymbol(classSym.children[i].declaration, nil, classSym.children[i].kind, classSym.children[i].typeDef, start);
-                    sym.rangeToken := classSym.children[i].rangeToken;
-                    sym.implRangeToken := classSym.children[i].implRangeToken;
-                end;
+                    RegisterSymbol(classSym.children[i], start);
             end;
         end;
         if (curClass.kind = tkClass) and (curClass is TClassTypeDef) then
@@ -83,11 +79,7 @@ begin
         RegisterSymbolByName('Result', nil, skVariable, resultType, start);
 
     for i := 0 to length(childSymbols) - 1 do
-    begin
-        sym := RegisterSymbol(childSymbols[i].declaration, nil, childSymbols[i].kind, childSymbols[i].typeDef, start);
-        sym.rangeToken := childSymbols[i].rangeToken;
-        sym.implRangeToken := childSymbols[i].implRangeToken;
-    end;
+        RegisterSymbol(childSymbols[i], start);
 
     RegisterInheritedMembers(selfType, start);
 

@@ -250,7 +250,7 @@ begin
   P := LineCharToOffset(Content, TargetLine, TargetCharacter);
   if P <= 1 then exit;
 
-  idx := P - TargetIdent.len - 1;
+  idx := LineCharToOffset(Content, TargetLine, TargetIdent.position) - 1;
   while (idx >= 1) and (Content[idx] in [' ', #9]) do
     dec(idx);
 

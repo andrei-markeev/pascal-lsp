@@ -21,23 +21,23 @@
     <VarDecl><SymbDecl>valType</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TJSONtype</SymbRef></TypeSpec></VarDecl><RW>;</RW>
     <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>
-    <Assignment><SymbRef>strm</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TStream</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
-    <Assignment><VarRef><SymbRef>strm</SymbRef><RW>.</RW><Ident>Position</Ident></VarRef> <RW>:=</RW> <Num>0</Num></Assignment><RW>;</RW>
-    <Call><VarRef><SymbRef>strm</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call><RW>;</RW>
+    <Assignment><SymbRef>strm</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TStream</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>strm</SymbRef><RW>.</RW><SymbRef>Position</SymbRef></VarRef> <RW>:=</RW> <Num>0</Num></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>strm</SymbRef><RW>.</RW><SymbRef>Free</SymbRef></VarRef></Call><RW>;</RW>
 
     <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Call><SymbRef>StringToJSONString</SymbRef><RW>(</RW><Str>'test'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
 
-    <Assignment><SymbRef>jsonObj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TJSONObject</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
-    <Assignment><SymbRef>valType</SymbRef> <RW>:=</RW> <VarRef><SymbRef>jsonObj</SymbRef><RW>.</RW><Ident>JSONType</Ident></VarRef></Assignment><RW>;</RW>
-    <Assignment><SymbRef>jsonData</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>jsonObj</SymbRef><RW>.</RW><Ident>Find</Ident></VarRef><RW>(</RW><Str>'key'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
-    <Call><VarRef><SymbRef>jsonObj</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call><RW>;</RW>
+    <Assignment><SymbRef>jsonObj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TJSONObject</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>valType</SymbRef> <RW>:=</RW> <VarRef><SymbRef>jsonObj</SymbRef><RW>.</RW><SymbRef>JSONType</SymbRef></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>jsonData</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>jsonObj</SymbRef><RW>.</RW><SymbRef>Find</SymbRef></VarRef><RW>(</RW><Str>'key'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>jsonObj</SymbRef><RW>.</RW><SymbRef>Free</SymbRef></VarRef></Call><RW>;</RW>
 
-    <Assignment><SymbRef>jsonArr</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TJSONArray</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
-    <Call><VarRef><SymbRef>jsonArr</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call><RW>;</RW>
+    <Assignment><SymbRef>jsonArr</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TJSONArray</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef></Call></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>jsonArr</SymbRef><RW>.</RW><SymbRef>Free</SymbRef></VarRef></Call><RW>;</RW>
 
-    <Assignment><SymbRef>parser</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TJSONParser</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef><RW>(</RW><Str>'{"test": 1}'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
-    <Assignment><SymbRef>jsonData</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>parser</SymbRef><RW>.</RW><Ident>Parse</Ident></VarRef></Call></Assignment><RW>;</RW>
-    <Call><VarRef><SymbRef>parser</SymbRef><RW>.</RW><Ident>Free</Ident></VarRef></Call><RW>;</RW>
+    <Assignment><SymbRef>parser</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TJSONParser</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef><RW>(</RW><Str>'{"test": 1}'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>jsonData</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>parser</SymbRef><RW>.</RW><SymbRef>Parse</SymbRef></VarRef></Call></Assignment><RW>;</RW>
+    <Call><VarRef><SymbRef>parser</SymbRef><RW>.</RW><SymbRef>Free</SymbRef></VarRef></Call><RW>;</RW>
 <RW>end</RW></Block><RW>;</RW></Procedure>
 
 <RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

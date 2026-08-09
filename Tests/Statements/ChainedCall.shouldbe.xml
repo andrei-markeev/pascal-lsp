@@ -25,6 +25,6 @@
 <VarSection><RW>var</RW>
   <VarDecl><SymbDecl>Obj</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TMyClass</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>
-  <Assignment><SymbRef>Obj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TMyClass</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+  <Assignment><SymbRef>Obj</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TMyClass</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef></Call></Assignment><RW>;</RW>
   <Call><VarRef><Call><VarRef><SymbRef>Obj</SymbRef><RW>.</RW><SymbRef>GetHelper</SymbRef></VarRef><RW>(</RW><RW>)</RW></Call><RW>.</RW><SymbRef>DoSomething</SymbRef></VarRef></Call><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

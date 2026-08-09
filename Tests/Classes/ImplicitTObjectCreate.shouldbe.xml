@@ -11,5 +11,5 @@
 <VarSection><RW>var</RW>
     <VarDecl><SymbDecl>endOf</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TToken</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>
-    <Assignment><SymbRef>endOf</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TToken</SymbRef><RW>.</RW><Ident>Create</Ident></VarRef></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>endOf</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>TToken</SymbRef><RW>.</RW><SymbRef>Create</SymbRef></VarRef></Call></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

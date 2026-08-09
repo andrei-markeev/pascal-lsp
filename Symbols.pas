@@ -41,6 +41,7 @@ const
 
 function TryAddOverride(ident: TIdentifier; symbolType: TTypeDef; cursor: PChar; symbolParent: TSymbol = nil): TTryAddOverrideResult;
 function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
+function RegisterSymbol(existingSym: TSymbol; cursor: PChar): TSymbol;
 function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
 function FindSymbol(findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(parent: TSymbol; findName: shortstring; cursor: PChar): TSymbol;
@@ -52,10 +53,43 @@ function IsMemberAccessible(accessCtx: TParserContext; targetClass: TTypeDef; me
 implementation
 
 uses
-    sysutils, classes, Scopes, RoutineTypeDef, ClassTypeDef, ObjectTypeDef, PointerTypeDef;
+    sysutils, classes, Scopes, RoutineTypeDef, ClassTypeDef, ObjectTypeDef, PointerTypeDef, StructuredTypeDef;
 
 var
     lastId: longword = 0;
+
+// Helper for registering system/mock unit member symbols. Normal user-declared class/record member symbols are registered during AST parsing in ClassSpec/RecordSpec.
+procedure RegisterStructuredTypeMembers(typeSym: TSymbol; structType: TStructuredTypeDef; cursor: PChar);
+var
+    i: integer;
+    memberName: string;
+    memberType: TTypeDef;
+    memberKind: TSymbolKind;
+begin
+    if (typeSym = nil) or (structType = nil) then exit;
+    for i := 0 to structType.MemberCount - 1 do
+    begin
+        memberName := structType.GetMemberName(i);
+        if FindSymbol(typeSym, memberName, cursor) = nil then
+        begin
+            memberType := structType.GetMemberType(i);
+            memberKind := skVariable;
+            if (memberType <> nil) and (memberType.kind in [tkProcedure, tkFunction]) then
+            begin
+                if SameText(memberName, 'create') then
+                    memberKind := skConstructor
+                else if SameText(memberName, 'destroy') or SameText(memberName, 'free') then
+                    memberKind := skDestructor
+                else if memberType.kind = tkProcedure then
+                    memberKind := skProcedure
+                else
+                    memberKind := skFunction;
+            end;
+            RegisterSymbolByName(memberName, typeSym, memberKind, memberType, cursor);
+        end;
+    end;
+end;
+
 
 
 function TryAddOverride(ident: TIdentifier; symbolType: TTypeDef; cursor: PChar; symbolParent: TSymbol): TTryAddOverrideResult;
@@ -147,6 +181,17 @@ begin
 
 end;
 
+function RegisterSymbol(existingSym: TSymbol; cursor: PChar): TSymbol;
+begin
+    if existingSym = nil then exit(nil);
+    if existingSym.declaration <> nil then
+        Result := RegisterSymbol(existingSym.declaration, nil, existingSym.kind, existingSym.typeDef, cursor)
+    else
+        Result := RegisterSymbolByName(existingSym.displayName, nil, existingSym.kind, existingSym.typeDef, cursor);
+    Result.rangeToken := existingSym.rangeToken;
+    Result.implRangeToken := existingSym.implRangeToken;
+end;
+
 function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
 var
     parentChildrenCount: integer;
@@ -174,6 +219,9 @@ begin
             name := symbolName;
     end;
     FindScope(cursor).symbolsList.Add(LowerCase(RegisterSymbolByName.name), RegisterSymbolByName);
+
+    if (symbolKind = skTypeName) and (symbolType <> nil) and (symbolType is TStructuredTypeDef) then
+        RegisterStructuredTypeMembers(RegisterSymbolByName, TStructuredTypeDef(symbolType), cursor);
 end;
 
 function FindSymbol(findName: shortstring; cursor: PChar): TSymbol;
