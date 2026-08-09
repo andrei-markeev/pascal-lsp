@@ -1,0 +1,13 @@
+<ProgramFile><RW>program</RW> <SymbDecl>WindowsTest</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TUsesClause><RW>uses</RW> <Ident>windows</Ident><RW>;</RW></TUsesClause>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>hInput</SymbDecl><RW>,</RW> <SymbDecl>hOutput</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>THandle</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>hInput</SymbRef> <RW>:=</RW> <Call><SymbRef>GetStdHandle</SymbRef><RW>(</RW><SymbRef>STD_INPUT_HANDLE</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>hOutput</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>Windows</SymbRef><RW>.</RW><SymbRef>GetStdHandle</SymbRef></VarRef><RW>(</RW><SymbRef>STD_OUTPUT_HANDLE</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

@@ -6,7 +6,7 @@ unit SystemUnits;
 interface
 
 uses
-    ParserContext, TypeDef, TypesUnit, ClassesUnit;
+    ParserContext, TypeDef, TypesUnit, ClassesUnit, WindowsUnit;
 
 var
     classType_TObject: TTypeDef;
@@ -42,11 +42,14 @@ var
     procedureType_Unknown: TTypeDef;
     procedureType_Varargs: TTypeDef;
     procedureType_varUnknown_LongInt_Unknown: TTypeDef;
+    procedureType_constUnknown_varUnknown_LongInt: TTypeDef;
     functionType_String_String: TTypeDef;
     functionType_Unknown_LongInt_LongInt_Unknown: TTypeDef;
     functionType_DynArray_LongInt: TTypeDef;
     functionType_Array_LongInt: TTypeDef;
     functionType_TObject: TTypeDef;
+    functionType_String: TTypeDef;
+    functionType_String_Boolean: TTypeDef;
     procedureType_File: TTypeDef;
     procedureType_File_String: TTypeDef;
     procedureType_File_LongInt: TTypeDef;
@@ -76,6 +79,7 @@ var
     fpjsonMock: TFpjsonUnit;
     jsonparserMock: TJsonparserUnit;
     ssocketsMock: TSsocketsUnit;
+    windowsMock: TWindowsUnit;
 
 procedure RegisterSystemSymbols(ctx: TParserContext);
 begin
@@ -202,7 +206,7 @@ begin
         // TODO: Hi
         // TODO: Include
         // TODO: Lo
-        // TODO: Move
+        RegisterSymbolByName('Move', nil, skProcedure, procedureType_constUnknown_varUnknown_LongInt, ctx.Cursor);
         // TODO: Random
         // TODO: Randomize
         RegisterSymbolByName('SizeOf', nil, skFunction, functionType_Ordinal_LongInt, ctx.Cursor);
@@ -285,6 +289,7 @@ begin
         RegisterSymbolByName('LowerCase', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('SetLength', nil, skProcedure, procedureType_varOrdinal_LongInt, ctx.Cursor);
         RegisterSymbolByName('TObject', nil, skTypeName, classType_TObject, ctx.Cursor);
+        RegisterSymbolByName('THandle', nil, skTypeName, longintType, ctx.Cursor);
         RegisterSymbolByName('DirectorySeparator', nil, skConstant, charType, ctx.Cursor);
         RegisterSymbolByName('DriveSeparator', nil, skConstant, charType, ctx.Cursor);
         RegisterSymbolByName('PathSeparator', nil, skConstant, charType, ctx.Cursor);
@@ -364,11 +369,16 @@ begin
         TRoutineTypeDef(functionType_Length_FPC).overloads.Add(functionType_Array_LongInt);
     end;
 
+    functionType_String := CreateFunctionType(TParameterList.Create, ansiString64Type);
+    functionType_String_Boolean := CreateOneParamFunctionType('s', ansiString64Type, booleanType);
+
     classType_TObject := TClassTypeDef.Create;
     functionType_TObject := CreateFunctionType(TParameterList.Create, classType_TObject);
     TClassTypeDef(classType_TObject).AddMember('Create', functionType_TObject);
     TClassTypeDef(classType_TObject).AddMember('Destroy', voidProcedureType);
     TClassTypeDef(classType_TObject).AddMember('Free', voidProcedureType);
+    TClassTypeDef(classType_TObject).AddMember('ClassName', functionType_String);
+    TClassTypeDef(classType_TObject).AddMember('ClassNameIs', functionType_String_Boolean);
 
     procedureType_File := CreateProcedureType(TParameterList.Create([
         CreateParam(ptkVar, 'f', fileType)
@@ -442,6 +452,12 @@ begin
         CreateParam(ptkValue, 'v', unknownType)
     ]));
 
+    procedureType_constUnknown_varUnknown_LongInt := CreateProcedureType(TParameterList.Create([
+        CreateParam(ptkConst, 'source', unknownType),
+        CreateParam(ptkVar, 'dest', unknownType),
+        CreateParam(ptkValue, 'count', longintType)
+    ]));
+
 end;
 
 procedure FreeFunctionTypes;
@@ -462,12 +478,15 @@ begin
     procedureType_Void_Or_Unknown.Free;
     procedureType_Varargs.Free;
     procedureType_varUnknown_LongInt_Unknown.Free;
+    procedureType_constUnknown_varUnknown_LongInt.Free;
     functionType_String_String.Free;
     functionType_Unknown_LongInt_LongInt_Unknown.Free;
     functionType_Length_FPC.Free;
     functionType_DynArray_LongInt.Free;
     functionType_Array_LongInt.Free;
     functionType_TObject.Free;
+    functionType_String.Free;
+    functionType_String_Boolean.Free;
     classType_TObject.Free;
 
     procedureType_File.Free;
@@ -506,6 +525,7 @@ begin
         'fpjson': fpjsonMock.Load(ctx);
         'jsonparser': jsonparserMock.Load(ctx);
         'ssockets': ssocketsMock.Load(ctx);
+        'windows': windowsMock.Load(ctx);
         'system': ;
     else
         Result := false;
@@ -524,6 +544,7 @@ begin
     fpjsonMock := TFpjsonUnit.Create;
     jsonparserMock := TJsonparserUnit.Create;
     ssocketsMock := TSsocketsUnit.Create;
+    windowsMock := TWindowsUnit.Create;
 end;
 
 procedure FreeSystemUnits;
@@ -538,6 +559,7 @@ begin
     fpjsonMock.Free;
     jsonparserMock.Free;
     ssocketsMock.Free;
+    windowsMock.Free;
 end;
 
 initialization

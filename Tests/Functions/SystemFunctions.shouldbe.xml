@@ -30,4 +30,6 @@
     <Assignment><SymbRef>s2</SymbRef> <RW>:=</RW> <Call><SymbRef>GetCurrentDir</SymbRef></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Call><SymbRef>FileExists</SymbRef><RW>(</RW><Str>'test.pas'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
     <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Call><SymbRef>DirectoryExists</SymbRef><RW>(</RW><Str>'Tests'</Str><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>b</SymbRef> <RW>:=</RW> <Call><SymbRef>SameText</SymbRef><RW>(</RW><SymbRef>s</SymbRef><RW>,</RW> <SymbRef>s2</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Call><SymbRef>Move</SymbRef><RW>(</RW><VarRef><SymbRef>s</SymbRef><RW>[</RW><Num>1</Num><RW>]</RW></VarRef><RW>,</RW> <VarRef><SymbRef>s2</SymbRef><RW>[</RW><Num>1</Num><RW>]</RW></VarRef><RW>,</RW> <Num>5</Num><RW>)</RW></Call><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

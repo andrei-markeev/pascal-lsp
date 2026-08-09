@@ -20,6 +20,8 @@ type
         functionType_StringReplace: TTypeDef;
         functionType_String: TTypeDef;
         functionType_String_Boolean: TTypeDef;
+        functionType_String_String_Boolean: TTypeDef;
+        functionType_String_String_String: TTypeDef;
         recordType_TSearchRec: TTypeDef;
         functionType_FindFirst: TTypeDef;
         functionType_FindNext: TTypeDef;
@@ -51,6 +53,8 @@ begin
         functionType_StringReplace.Free;
         functionType_String.Free;
         functionType_String_Boolean.Free;
+        functionType_String_String_Boolean.Free;
+        functionType_String_String_String.Free;
         recordType_TSearchRec.Free;
         functionType_FindFirst.Free;
         functionType_FindNext.Free;
@@ -84,6 +88,8 @@ begin
 
     functionType_String := CreateFunctionType(TParameterList.Create, ansiString64Type);
     functionType_String_Boolean := CreateOneParamFunctionType('s', ansiString64Type, booleanType);
+    functionType_String_String_Boolean := CreateTwoParamFunctionType('s1', ansiString64Type, 's2', ansiString64Type, booleanType);
+    functionType_String_String_String := CreateTwoParamFunctionType('s1', ansiString64Type, 's2', ansiString64Type, ansiString64Type);
 
     recordType_TSearchRec := TRecordTypeDef.Create(nil);
     TRecordTypeDef(recordType_TSearchRec).AddMember('Time', longintType);
@@ -122,13 +128,16 @@ begin
 
         RegisterSymbolByName('LowerCase', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('IntToStr', nil, skFunction, functionType_LongInt_String, ctx.Cursor);
+        RegisterSymbolByName('SameText', nil, skFunction, functionType_String_String_Boolean, ctx.Cursor);
         RegisterSymbolByName('StringReplace', nil, skFunction, functionType_StringReplace, ctx.Cursor);
         RegisterSymbolByName('GetCurrentDir', nil, skFunction, functionType_String, ctx.Cursor);
         RegisterSymbolByName('FileExists', nil, skFunction, functionType_String_Boolean, ctx.Cursor);
         RegisterSymbolByName('DirectoryExists', nil, skFunction, functionType_String_Boolean, ctx.Cursor);
         RegisterSymbolByName('ExcludeTrailingPathDelimiter', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('IncludeTrailingPathDelimiter', nil, skFunction, functionType_String_String, ctx.Cursor);
+        RegisterSymbolByName('ChangeFileExt', nil, skFunction, functionType_String_String_String, ctx.Cursor);
         RegisterSymbolByName('ExtractFileExt', nil, skFunction, functionType_String_String, ctx.Cursor);
+        RegisterSymbolByName('ExtractFileName', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('ExtractFilePath', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('ExpandFileName', nil, skFunction, functionType_String_String, ctx.Cursor);
         RegisterSymbolByName('StrLen', nil, skFunction, functionType_PChar_LongInt, ctx.Cursor);

@@ -8,6 +8,7 @@ interface
 uses
   sysutils, classes, fpjson, jsonparser,
   ParserContext, Token, Identifier, Symbols, Scopes, ProgramFile,
+  InterfaceBlock, ImplementationBlock,
   LspUtils, LspState;
 
 procedure HandleDocumentSymbol(WriteStream: TStream; const Uri: string; Id: TJSONData);
@@ -120,9 +121,9 @@ begin
     for k := 0 to LastParserContext.tokensLen - 1 do
     begin
       curToken := LastParserContext.Tokens[k];
-      if curToken.ClassNameIs('TInterfaceBlock') then
+      if curToken is TInterfaceBlock then
         interfaceBlock := curToken
-      else if curToken.ClassNameIs('TImplementationBlock') then
+      else if curToken is TImplementationBlock then
         implementationBlock := curToken;
     end;
 

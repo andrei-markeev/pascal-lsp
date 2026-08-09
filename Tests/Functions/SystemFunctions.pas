@@ -30,4 +30,6 @@ begin
     s2 := GetCurrentDir;
     b := FileExists('test.pas');
     b := DirectoryExists('Tests');
+    b := SameText(s, s2);
+    Move(s[1], s2[1], 5);
 end.

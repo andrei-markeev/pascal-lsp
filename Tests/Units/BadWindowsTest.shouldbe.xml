@@ -1,0 +1,13 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadWindowsTest</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TUsesClause><RW>uses</RW> <Ident>windows</Ident><RW>;</RW></TUsesClause>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>h</SymbDecl><RW>:</RW> <TypeSpec ERROR="Identifier has not been declared!"><Ident>NonExistentType</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>h</SymbRef> <RW>:=</RW> <Call><SymbRef>GetStdHandle</SymbRef><RW>(</RW><Ident ERROR="Identifier has not been declared!">NonExistentConst</Ident><RW>)</RW></Call></Assignment><RW>;</RW>
+    <Assignment><SymbRef>h</SymbRef> <RW>:=</RW> <Call><VarRef><SymbRef>Windows</SymbRef><RW>.</RW><Ident ERROR="Identifier 'NonExistentFunc' was not found in unit 'Windows'!">NonExistentFunc</Ident></VarRef><RW>(</RW><RW>)</RW></Call></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

@@ -13,7 +13,9 @@ begin
     p := ExcludeTrailingPathDelimiter('C:\path\to\');
     p := IncludeTrailingPathDelimiter('C:\path\to');
     ext := ExtractFileExt(s);
+    ext := ChangeFileExt(s, '.bak');
     fp := ExtractFilePath(s);
+    fp := ExtractFileName(s);
     exp := ExpandFileName('relative/path.txt');
     c1 := PathDelim;
     c2 := DirectorySeparator;
