@@ -28,6 +28,12 @@
         "path": "./syntaxes/pascal.tmLanguage.json"
       }
     ],
+    "commands": [
+      {
+        "command": "pascalLsp.restart",
+        "title": "Pascal: Restart Language Server"
+      }
+    ],
     "configuration": {
       "type": "object",
       "title": "Pascal LSP Client Configuration",

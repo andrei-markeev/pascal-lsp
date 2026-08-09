@@ -6,9 +6,9 @@ import {
     ServerOptions
 } from 'vscode-languageclient/node';
 
-let client: LanguageClient;
+let client: LanguageClient | undefined;
 
-export function activate(context: vscode.ExtensionContext) {
+function createClient(context: vscode.ExtensionContext): LanguageClient {
     const config = vscode.workspace.getConfiguration('pascalLsp');
     let serverPath = config.get<string>('serverPath');
     
@@ -46,14 +46,37 @@ export function activate(context: vscode.ExtensionContext) {
         }
     };
 
-    client = new LanguageClient(
+    return new LanguageClient(
         'pascalLsp',
         'Pascal Language Server',
         serverOptions,
         clientOptions
     );
+}
 
+async function restartServer(context: vscode.ExtensionContext): Promise<void> {
+    if (client) {
+        await client.stop();
+        client = undefined;
+    }
+    client = createClient(context);
+    await client.start();
+}
+
+export function activate(context: vscode.ExtensionContext) {
+    client = createClient(context);
     client.start();
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('pascalLsp.restart', async () => {
+            try {
+                await restartServer(context);
+                vscode.window.showInformationMessage('Pascal Language Server restarted successfully.');
+            } catch (error) {
+                vscode.window.showErrorMessage(`Failed to restart Pascal Language Server: ${error}`);
+            }
+        })
+    );
 }
 
 export function deactivate(): Thenable<void> | undefined {
