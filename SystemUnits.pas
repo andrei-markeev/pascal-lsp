@@ -512,19 +512,19 @@ begin
         InitFunctionTypes;
     Result := true;
     case LowerCase(unitName) of
-        'types': typesMock.Load(ctx);
-        'classes': begin
+        'types', 'system.types': typesMock.Load(ctx);
+        'classes', 'system.classes': begin
             typesMock.Load(ctx);
             classesMock.Load(ctx);
         end;
-        'contnrs': contnrsMock.Load(ctx);
-        'math': mathMock.Load(ctx);
-        'sysutils': sysutilsMock.Load(ctx);
-        'strings': stringsMock.Load(ctx);
-        'dos': dosMock.Load(ctx);
-        'fpjson': fpjsonMock.Load(ctx);
-        'jsonparser': jsonparserMock.Load(ctx);
-        'ssockets': ssocketsMock.Load(ctx);
+        'contnrs', 'system.contnrs': contnrsMock.Load(ctx);
+        'math', 'system.math': mathMock.Load(ctx);
+        'sysutils', 'system.sysutils': sysutilsMock.Load(ctx);
+        'strings', 'system.strings': stringsMock.Load(ctx);
+        'dos', 'system.dos': dosMock.Load(ctx);
+        'fpjson', 'system.fpjson': fpjsonMock.Load(ctx);
+        'jsonparser', 'system.jsonparser': jsonparserMock.Load(ctx);
+        'ssockets', 'system.ssockets': ssocketsMock.Load(ctx);
         'windows': windowsMock.Load(ctx);
         'system': ;
     else

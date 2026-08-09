@@ -1,0 +1,8 @@
+{$mode tp}
+<UnitFile><RW>unit</RW> <SymbDecl>Bad</SymbDecl><RW ERROR="Namespaced units are not supported in this compilation mode!">.</RW><SymbDecl>TP</SymbDecl><RW ERROR="Namespaced units are not supported in this compilation mode!">.</RW><SymbDecl>NamespacedUnit</SymbDecl><RW>;</RW>
+
+<RW>interface</RW></InterfaceBlock>
+
+<InterfaceBlock><RW>implementation</RW>
+
+<ImplementationBlock><RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

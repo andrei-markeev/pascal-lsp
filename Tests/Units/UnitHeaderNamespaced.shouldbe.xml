@@ -1,0 +1,7 @@
+<UnitFile><RW>unit</RW> <SymbDecl>My</SymbDecl><RW>.</RW><SymbDecl>Namespace</SymbDecl><RW>.</RW><SymbDecl>TestUnit</SymbDecl><RW>;</RW>
+
+<RW>interface</RW></InterfaceBlock>
+
+<InterfaceBlock><RW>implementation</RW>
+
+<ImplementationBlock><RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

@@ -79,13 +79,13 @@ procedure ParseUnitDotAccess(ctx: TParserContext; ref: TVarRef);
 var
     ident: TIdentifier;
     text: string;
-    foundSym: TSymbol;
+    foundSym, unitSym: TSymbol;
     i: integer;
 begin
     ident := TIdentifier.Create(ctx, false);
     text := ident.GetStr();
     foundSym := FindSymbol(ref.symbol, text, ctx.Cursor);
-    if (foundSym = nil) and (length(ref.symbol.children) > 0) then
+    if (foundSym = nil) and (ref.symbol <> nil) and (length(ref.symbol.children) > 0) then
     begin
         for i := 0 to length(ref.symbol.children) - 1 do
             if LowerCase(ref.symbol.children[i].displayName) = LowerCase(text) then
@@ -97,6 +97,7 @@ begin
     if foundSym = nil then
         foundSym := FindSymbol(text, ctx.Cursor);
 
+    unitSym := ref.symbol;
     ref.symbol := foundSym;
     if ref.symbol <> nil then
     begin
@@ -106,7 +107,10 @@ begin
     else
     begin
         ident.state := tsError;
-        ident.errorMessage := 'Identifier ''' + text + ''' was not found in unit ''' + ref.firstIdent.GetStr() + '''!';
+        if unitSym <> nil then
+            ident.errorMessage := 'Identifier ''' + text + ''' was not found in unit ''' + unitSym.displayName + '''!'
+        else
+            ident.errorMessage := 'Identifier ''' + text + ''' was not found in unit!';
         ref.typeDef := unknownType;
     end;
     ref.isSimple := false;

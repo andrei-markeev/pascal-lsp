@@ -18,12 +18,16 @@ type
 implementation
 
 uses
-    Symbols, TypeDefs, TypeDef, PrimitiveTypeDef, ReservedWord, Identifier,
+    Token, CompilationMode, Symbols, TypeDefs, TypeDef, PrimitiveTypeDef, ReservedWord, Identifier,
     UsesClause, InterfaceBlock, ImplementationBlock;
 
 constructor TUnitFile.Create(ctx: TParserContext);
 var
-    ident: TIdentifier;
+    ident, segIdent: TIdentifier;
+    dotToken: TReservedWord;
+    unitNameStr: string;
+    parentSym, childSym, unitSym: TSymbol;
+    unitTypeDef: TTypeDef;
 begin
     tokenName := 'UnitFile';
     ctx.parseUnit := Self;
@@ -33,12 +37,35 @@ begin
     TReservedWord.Create(ctx, rwUnit, false);
 
     ident := TIdentifier.Create(ctx, false);
-    // TODO: namespaced units
-    typeDef := TPrimitiveTypeDef.Create(ctx, tkUnitName);
-    RegisterSymbol(ident, nil, skUnitName, typeDef, ctx.Cursor);
+    unitNameStr := ident.GetStr();
+    unitTypeDef := TPrimitiveTypeDef.Create(ctx, tkUnitName);
 
-    if LoadedUnits.Find(LowerCase(ident.GetStr)) = nil then
-        LoadedUnits.Add(LowerCase(ident.GetStr), ctx);
+    unitSym := FindSymbol(unitNameStr, ctx.Cursor);
+    if unitSym = nil then
+        unitSym := RegisterSymbol(ident, nil, skUnitName, unitTypeDef, ctx.Cursor);
+    parentSym := unitSym;
+
+    while PeekReservedWord(ctx, rwDot) do
+    begin
+        dotToken := TReservedWord.Create(ctx, rwDot, true);
+        if not (ctx.mode in [cmFreePascal, cmObjectFreePascal, cmDelphi]) then
+        begin
+            dotToken.state := tsError;
+            dotToken.errorMessage := 'Namespaced units are not supported in this compilation mode!';
+        end;
+        segIdent := TIdentifier.Create(ctx, false);
+        unitNameStr := unitNameStr + '.' + segIdent.GetStr();
+        childSym := FindSymbol(parentSym, segIdent.GetStr(), ctx.Cursor);
+        if childSym = nil then
+            childSym := RegisterSymbol(segIdent, parentSym, skUnitName, unitTypeDef, ctx.Cursor);
+        parentSym := childSym;
+        unitSym := childSym;
+    end;
+
+    typeDef := unitTypeDef;
+
+    if LoadedUnits.Find(LowerCase(unitNameStr)) = nil then
+        LoadedUnits.Add(LowerCase(unitNameStr), ctx);
 
     TReservedWord.Create(ctx, rwSemiColon, false);
 

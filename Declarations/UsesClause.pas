@@ -17,7 +17,7 @@ type
 implementation
 
 uses
-    sysutils, Symbols, PrimitiveTypeDef, TypeDef, UnitFile, LspConfig;
+    sysutils, CompilationMode, Symbols, PrimitiveTypeDef, TypeDef, UnitFile, LspConfig;
 
 function ReadFileToString(const FileName: string): string;
 var
@@ -93,7 +93,10 @@ end;
 constructor TUsesClause.Create(ctx: TParserContext);
 var
     nextReservedWord: TReservedWordKind;
-    ident: TIdentifier;
+    ident, segIdent: TIdentifier;
+    dotToken: TReservedWord;
+    unitNameStr: string;
+    parentSym, childSym: TSymbol;
 begin
     tokenName := 'TUsesClause';
     ctx.Add(Self);
@@ -105,15 +108,31 @@ begin
         ident := TIdentifier.Create(ctx, false);
         if (ident.state <> tsMissing) and (ident.len > 0) then
         begin
-            if LoadSystemUnit(ident.GetStr, ctx) or LoadAndParseUnit(ident.GetStr, ctx) then
+            unitNameStr := ident.GetStr();
+            parentSym := FindSymbol(ident.GetStr(), ctx.Cursor);
+            if parentSym = nil then
+                parentSym := RegisterSymbolByName(ident.GetStr(), nil, skUnitName, TPrimitiveTypeDef.Create(ctx, tkUnitName), ctx.Cursor);
+
+            while PeekReservedWord(ctx, rwDot) do
             begin
-                if FindSymbol(ident.GetStr, ctx.Cursor) = nil then
-                    RegisterSymbolByName(ident.GetStr, nil, skUnitName, TPrimitiveTypeDef.Create(ctx, tkUnitName), ctx.Cursor);
-            end
-            else
+                dotToken := TReservedWord.Create(ctx, rwDot, true);
+                if not (ctx.mode in [cmFreePascal, cmObjectFreePascal, cmDelphi]) then
+                begin
+                    dotToken.state := tsError;
+                    dotToken.errorMessage := 'Namespaced units are not supported in this compilation mode!';
+                end;
+                segIdent := TIdentifier.Create(ctx, false);
+                unitNameStr := unitNameStr + '.' + segIdent.GetStr();
+                childSym := FindSymbol(parentSym, segIdent.GetStr(), ctx.Cursor);
+                if childSym = nil then
+                    childSym := RegisterSymbolByName(segIdent.GetStr(), parentSym, skUnitName, TPrimitiveTypeDef.Create(ctx, tkUnitName), ctx.Cursor);
+                parentSym := childSym;
+            end;
+
+            if not LoadSystemUnit(unitNameStr, ctx) and not LoadAndParseUnit(unitNameStr, ctx) then
             begin
                 ident.state := tsError;
-                ident.errorMessage := 'Cannot find unit ''' + ident.GetStr + '''!';
+                ident.errorMessage := 'Cannot find unit ''' + unitNameStr + '''!';
             end;
         end;
         nextReservedWord := DetermineReservedWord(ctx);
