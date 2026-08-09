@@ -313,8 +313,6 @@ begin
         exit;
     end;
 
-    // TODO: result variable variable
-
     // TODO: modifiers
 
     // TODO: asm

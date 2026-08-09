@@ -1,0 +1,8 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadUntypedParams</SymbDecl><RW>;</RW>
+
+<Procedure><RW>procedure</RW> <SymbDecl>BadProc</SymbDecl><RW>(</RW><ParameterDecl ERROR="Specify a type or provide a modifier (either 'const' or 'var') to create an untyped parameter!"><SymbDecl>x</SymbDecl></ParameterDecl><RW>;</RW> <ParameterDecl><RW>const</RW> <SymbDecl>y</SymbDecl></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

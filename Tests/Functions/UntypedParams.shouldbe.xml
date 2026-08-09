@@ -1,0 +1,12 @@
+<ProgramFile><RW>program</RW> <SymbDecl>UntypedParams</SymbDecl><RW>;</RW>
+
+<Procedure><RW>procedure</RW> <SymbDecl>CustomMove</SymbDecl><RW>(</RW><ParameterDecl><RW>const</RW> <SymbDecl>Source</SymbDecl></ParameterDecl><RW>;</RW> <ParameterDecl><RW>var</RW> <SymbDecl>Dest</SymbDecl></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>Count</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>Dest</SymbRef> <RW>:=</RW> <SymbRef>Source</SymbRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>,</RW> <SymbDecl>d</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Call><SymbRef>CustomMove</SymbRef><RW>(</RW><SymbRef>s</SymbRef><RW>,</RW> <SymbRef>d</SymbRef><RW>,</RW> <Num>4</Num><RW>)</RW></Call><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

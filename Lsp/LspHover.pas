@@ -126,7 +126,7 @@ begin
         KindPrefix := '';
       end;
       ParamItem := KindPrefix + ParamList.items[i].name;
-      if ParamList.items[i].typeDef <> nil then
+      if (ParamList.items[i].typeDef <> nil) and (ParamList.items[i].typeDef <> unknownType) then
         ParamItem := ParamItem + ': ' + GetTypeDefDisplay(ParamList.items[i].typeDef);
       if ParamList.items[i].hasDefaultValue then
         ParamItem := ParamItem + ' = ...';

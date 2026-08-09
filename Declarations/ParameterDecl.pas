@@ -126,10 +126,9 @@ begin
             end;
         end;
     end
-    else if parameterKind in [ptkConst, ptkVar] then
+    else if parameterKind in [ptkConst, ptkVar, ptkOut] then
     begin
-        parameterKind := ptkUntyped;
-        // TODO: untyped parameters
+        // Untyped parameter: keep modifier (const/var/out) and unknownType
     end
     else
     begin
