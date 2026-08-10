@@ -110,6 +110,7 @@ var
     identName: shortstring;
     symbol: TSymbol;
     found: pointer;
+    packedRW: TReservedWord;
 begin
     ctx.SkipTrivia;
     ctx.Add(Self);
@@ -118,10 +119,21 @@ begin
 
     nextTokenKind := DetermineNextTokenKind(ctx);
 
+    if nextTokenKind.reservedWordKind = rwPacked then
+    begin
+        packedRW := TReservedWord.Create(ctx, rwPacked, true);
+        nextTokenKind := DetermineNextTokenKind(ctx);
+        if not (nextTokenKind.reservedWordKind in [rwRecord, rwSet, rwArray]) then
+        begin
+            packedRW.state := tsError;
+            packedRW.errorMessage := 'Expected record, set or array after packed';
+            nextTokenKind := DetermineNextTokenKind(ctx);
+        end;
+    end;
+
     case nextTokenKind.primitiveKind of
         pkNumber, pkString:
             begin
-                start := ctx.Cursor;
                 TRangeSpec.Create(ctx, nextTokenKind, typeDefToFill);
                 state := tsCorrect;
                 ctx.MarkEndOfToken(Self);
@@ -129,7 +141,6 @@ begin
             end;
         pkIdentifier:
             begin
-                start := ctx.Cursor;
                 identName := PeekIdentifier(ctx);
                 symbol := FindSymbol(identName, ctx.Cursor);
                 if symbol = nil then
@@ -190,7 +201,6 @@ begin
             case nextTokenKind.reservedWordKind of
                 rwClass:
                     begin
-                        start := ctx.Cursor;
                         TClassSpec.Create(ctx, parentSymbols, typeDefToFill);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
@@ -199,7 +209,6 @@ begin
                 rwObject: ; // TODO: implement ObjectSpec
                 rwRecord:
                     begin
-                        start := ctx.Cursor;
                         TRecordSpec.Create(ctx, parentSymbols, typeDefToFill);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
@@ -207,7 +216,6 @@ begin
                     end;
                 rwSet:
                     begin
-                        start := ctx.Cursor;
                         TSetSpec.Create(ctx, typeDefToFill);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
@@ -215,7 +223,6 @@ begin
                     end;
                 rwFile:
                     begin
-                        start := ctx.Cursor;
                         TFileSpec.Create(ctx, typeDefToFill);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
@@ -223,7 +230,6 @@ begin
                     end;
                 rwString:
                     begin
-                        start := ctx.Cursor;
                         TReservedWord.Create(ctx, rwString, true);
                         typeDefToFill := ansiString64Type;
                         state := tsCorrect;
@@ -232,7 +238,6 @@ begin
                     end;
                 rwArray:
                     begin
-                        start := ctx.Cursor;
                         TArraySpec.Create(ctx, typeDefToFill);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
@@ -240,7 +245,6 @@ begin
                     end;
                 rwHat:
                     begin
-                        start := ctx.Cursor;
                         TPointerSpec.Create(ctx, typeDefToFill);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
@@ -248,7 +252,6 @@ begin
                     end;
                 rwPlus, rwMinus:
                     begin
-                        start := ctx.Cursor;
                         TRangeSpec.Create(ctx, nextTokenKind, typeDefToFill);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
@@ -256,7 +259,6 @@ begin
                     end;
                 rwOpenParenthesis:
                     begin
-                        start := ctx.Cursor;
                         TEnumSpec.Create(ctx, typeDefToFill);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);

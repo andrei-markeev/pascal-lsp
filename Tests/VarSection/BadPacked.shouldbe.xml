@@ -1,0 +1,8 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadPacked</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>a</SymbDecl><RW>:</RW> <TypeSpec><RW ERROR="Expected record, set or array after packed">packed</RW> <Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><RW ERROR="Expected record, set or array after packed">packed</RW> <RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

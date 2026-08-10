@@ -1,0 +1,11 @@
+<ProgramFile><RW>program</RW> <SymbDecl>PackedTypes</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>a</SymbDecl><RW>:</RW> <TypeSpec><RW>packed</RW> <ArraySpec><RW>array</RW><RW>[</RW><TypeSpec><RangeSpec><Num>1</Num><RW>..</RW><Num>10</Num></RangeSpec></TypeSpec><RW>]</RW> <RW>of</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ArraySpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>r</SymbDecl><RW>:</RW> <TypeSpec><RW>packed</RW> <RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>x</SymbDecl><RW>,</RW> <SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>packed</RW> <SetSpec><RW>set</RW> <RW>of</RW> <TypeSpec><Ident>char</Ident></TypeSpec></SetSpec></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
