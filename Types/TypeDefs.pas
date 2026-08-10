@@ -65,12 +65,13 @@ procedure InitPredefinedTypes(mode: TCompilationMode);
 function GetEnumSpec(typeDef: TTypeDef): Pointer;
 function IsPChar(typeDef: TTypeDef): boolean;
 function TypesAreAssignable(ctx: TTypeDefTracker; left, right: TTypeDef; out errorMessage: string): boolean;
+function AreTypesEquivalent(t1, t2: TTypeDef): boolean;
 function HaveSameSignature(a, b: TTypeDef): boolean;
 
 implementation
 
 uses
-    Parameters, ParserContext;
+    sysutils, Symbols, Parameters, ParserContext;
 
 function IsPChar(typeDef: TTypeDef): boolean;
 begin
@@ -271,6 +272,20 @@ begin
         else
             errorMessage := 'types are not assignment-compatible!';
     end;
+end;
+
+function AreTypesEquivalent(t1, t2: TTypeDef): boolean;
+begin
+    if t1 = t2 then exit(true);
+    if (t1 = nil) or (t2 = nil) then exit(true);
+    if (t1 = unknownType) or (t2 = unknownType) then exit(true);
+    if t1.kind = t2.kind then
+    begin
+        if (t1.typeSymbol <> nil) and (t2.typeSymbol <> nil) then
+            exit(SameText(TSymbol(t1.typeSymbol).name, TSymbol(t2.typeSymbol).name));
+        exit(true);
+    end;
+    exit(false);
 end;
 
 function HaveSameSignature(a, b: TTypeDef): boolean;

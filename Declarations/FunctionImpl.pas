@@ -22,12 +22,12 @@ type
 implementation
 
 uses
-    CompilationMode, ReservedWord, Scopes, Symbols, Parameters, TypeSpec, ParameterDecl, Block, FunctionDecl, RoutineTypeDef;
+    CompilationMode, ReservedWord, Scopes, Symbols, Parameters, TypeSpec, ParameterDecl, Block, FunctionDecl, RoutineTypeDef, RoutineEquivalence;
 
 constructor TFunctionImpl.Create(ctx: TParserContext);
 var
     nextReservedWordKind: TReservedWordKind;
-    needsReturnType, needsToAddChildSymbols: boolean;
+    needsReturnType, needsToAddChildSymbols, hasOpenParenthesis: boolean;
     symbolKind: TSymbolKind;
     symbolParent, symbolField, symbol: TSymbol;
     paramDecl: TParameterDecl;
@@ -132,11 +132,6 @@ begin
                         nameIdent.state := tsError;
                         nameIdent.errorMessage := symbolParent.name + ' doesn''t have a field with name ' + s + '!';
                     end;
-                    // TODO: check that implementation is equivalent to declaration i.e. it has
-                    // 1. same kind (constructor/destructor/function/procedure)
-                    // 2. same parameter names and types
-                    // 3. same return type
-                    // 4. same modifiers
                 end;
 
                 selfType := symbolParent.typeDef;
@@ -160,9 +155,11 @@ begin
 
     params := TParameterList.Create;
 
+    hasOpenParenthesis := false;
     nextReservedWordKind := DetermineReservedWord(ctx);
     if nextReservedWordKind = rwOpenParenthesis then
     begin
+        hasOpenParenthesis := true;
         TReservedWord.Create(ctx, rwOpenParenthesis, true);
 
         hasMoreParams := false;
@@ -269,6 +266,12 @@ begin
             ident.errorMessage := 'Method modifier ''' + s + ''' can only be used with class and object methods!';
         end;
 
+        if isMethod and isMethodModifier and (s <> 'static') then
+        begin
+            ident.state := tsError;
+            ident.errorMessage := 'Method modifier ''' + s + ''' cannot be used in implementation!';
+        end;
+
         if (s = 'static') and not (ctx.mode in [cmObjectFreePascal, cmDelphi]) then
         begin
             ident.state := tsError;
@@ -295,6 +298,7 @@ begin
 
     if symbolField <> nil then
     begin
+        VerifyImplementationEquivalence(symbolField, symbolKind, routineTypeDef, hasOpenParenthesis, funcModifiers, methodModifiers, nameIdent);
         symbol := symbolField;
         symbol.implementationDecl := nameIdent;
         nameIdent.symbol := symbol;
@@ -316,6 +320,9 @@ begin
         else
         begin
             symbol := FindSymbol(nameIdent.GetStr(), ctx.Cursor);
+            if (symbol <> nil) and (symbol.rangeToken <> nil) and (symbol.rangeToken <> Self) then
+                VerifyImplementationEquivalence(symbol, symbolKind, routineTypeDef, hasOpenParenthesis, funcModifiers, methodModifiers, nameIdent);
+
             if symbol = nil then
             begin
                 symbol := RegisterSymbol(nameIdent, symbolParent, symbolKind, funcType, ctx.Cursor);

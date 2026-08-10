@@ -1,0 +1,37 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadMethodEquivalence</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TTestClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <ProcedureDecl><RW>procedure</RW> <SymbDecl>ProcKindMismatch</SymbDecl><RW>;</RW></ProcedureDecl>
+        <ProcedureDecl><RW>procedure</RW> <SymbDecl>ParamCountMismatch</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>a</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW></ProcedureDecl>
+        <ProcedureDecl><RW>procedure</RW> <SymbDecl>ParamNameMismatch</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW></ProcedureDecl>
+        <ProcedureDecl><RW>procedure</RW> <SymbDecl>ParamTypeMismatch</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW></ProcedureDecl>
+        <FunctionDecl><RW>function</RW> <SymbDecl>ReturnTypeMismatch</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW></FunctionDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Function><RW>function</RW> <SymbRef>TTestClass</SymbRef><RW>.</RW><SymbDecl ERROR="Header of subroutine differs from previous declaration!">ProcKindMismatch</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>Result</SymbRef> <RW>:=</RW> <Num>0</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Procedure><RW>procedure</RW> <SymbRef>TTestClass</SymbRef><RW>.</RW><SymbDecl ERROR="Header of subroutine differs from previous declaration!">ParamCountMismatch</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>a</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>b</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbRef>TTestClass</SymbRef><RW>.</RW><SymbDecl ERROR="Header of subroutine differs from previous declaration!">ParamNameMismatch</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbRef>TTestClass</SymbRef><RW>.</RW><SymbDecl ERROR="Header of subroutine differs from previous declaration!">ParamTypeMismatch</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Function><RW>function</RW> <SymbRef>TTestClass</SymbRef><RW>.</RW><SymbDecl ERROR="Header of subroutine differs from previous declaration!">ReturnTypeMismatch</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>Result</SymbRef> <RW>:=</RW> <Str>''</Str></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

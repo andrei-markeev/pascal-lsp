@@ -1,0 +1,26 @@
+<ProgramFile><RW>program</RW> <SymbDecl>MethodEquivalence</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TTestClass</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <ProcedureDecl><RW>procedure</RW> <SymbDecl>DoWork</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW></ProcedureDecl>
+        <FunctionDecl><RW>function</RW> <SymbDecl>Calculate</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>a</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW></FunctionDecl>
+        <ConstructorDecl><RW>constructor</RW> <SymbDecl>Create</SymbDecl><RW>;</RW></ConstructorDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Procedure><RW>procedure</RW> <SymbRef>TTestClass</SymbRef><RW>.</RW><SymbDecl>DoWork</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Function><RW>function</RW> <SymbRef>TTestClass</SymbRef><RW>.</RW><SymbDecl>Calculate</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>a</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></ParameterDecl><RW>)</RW><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>Result</SymbRef> <RW>:=</RW> <Num>42</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Function>
+
+<Constructor><RW>constructor</RW> <SymbRef>TTestClass</SymbRef><RW>.</RW><SymbDecl>Create</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Constructor>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

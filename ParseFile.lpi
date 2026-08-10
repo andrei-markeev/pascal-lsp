@@ -221,6 +221,10 @@
         <Filename Value="Declarations\TypeSection.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
+      <Unit>
+        <Filename Value="Declarations\Utils\RoutineEquivalence.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -231,7 +235,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="Declarations;Statements;Types;Types\TypeDefs;File;Expressions;Expressions\Utils"/>
+      <OtherUnitFiles Value="Declarations;Declarations\Utils;Statements;Types;Types\TypeDefs;File;Expressions;Expressions\Utils"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
