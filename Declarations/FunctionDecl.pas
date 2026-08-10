@@ -230,7 +230,7 @@ begin
             ident.errorMessage := 'Method modifier ''' + s + ''' can only be used with class and object methods!';
         end;
 
-        if (s = 'static') and not (ctx.mode in [cmObjectFreePascal, cmDelphi]) then
+        if (s = 'static') and not (mfStaticMethods in Features[ctx.mode]) then
         begin
             ident.state := tsError;
             ident.errorMessage := '''static'' modifier is not supported in this compilation mode!';

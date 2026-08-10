@@ -42,7 +42,7 @@ begin
     else
     begin
         typeDefToFill := fileType;
-        if ctx.mode = cmStandardPascal then
+        if not (mfUntypedFiles in Features[ctx.mode]) then
         begin
             state := tsError;
             errorMessage := 'Untyped file is not supported in Standard Pascal!';

@@ -68,12 +68,12 @@ begin
         if nextTokenKind.reservedWordKind = rwElse then
         begin
             fallbackRW := TReservedWord.Create(ctx, rwElse, true);
-            if ctx.mode = cmStandardPascal then
+            if not (mfCaseElseClause in Features[ctx.mode]) and not (mfCaseOtherwiseClause in Features[ctx.mode]) then
             begin
                 fallbackRW.state := tsError;
                 fallbackRW.errorMessage := 'Fallback block not supported in Standard Pascal (ISO 7185)';
             end
-            else if ctx.mode = cmExtendedPascal then
+            else if not (mfCaseElseClause in Features[ctx.mode]) and (mfCaseOtherwiseClause in Features[ctx.mode]) then
             begin
                 fallbackRW.state := tsError;
                 fallbackRW.errorMessage := 'Use ''otherwise'' instead of ''else'' in Extended Pascal (ISO 10206)';

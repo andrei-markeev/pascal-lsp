@@ -37,7 +37,7 @@ begin
     nextTokenKind := DetermineNextTokenKind(ctx);
     defaultValue := TConstValue.Create(ctx, nextTokenKind);
 
-    if not (ctx.mode in [cmDelphi, cmFreePascal, cmObjectFreePascal]) then
+    if not (mfDefaultVarValues in Features[ctx.mode]) then
     begin
         state := tsError;
         errorMessage := 'Default variable values are not supported in this compilation mode!';

@@ -29,7 +29,7 @@ begin
     start := ctx.Cursor;
     typeDef := unknownType;
 
-    if (ctx.mode >= cmTurboPascal) and (tokenKind.reservedWordKind = rwOpenParenthesis) then
+    if (mfParenthesizedConstExpr in Features[ctx.mode]) and (tokenKind.reservedWordKind = rwOpenParenthesis) then
     begin
         valueToken := TArrayLiteral.Create(ctx);
         if valueToken <> nil then

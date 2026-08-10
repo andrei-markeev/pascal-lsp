@@ -121,7 +121,7 @@ begin
             RegisterSymbolByName('Reset', nil, skProcedure, procedureType_Reset_Rewrite_Mac, ctx.Cursor);
             RegisterSymbolByName('Rewrite', nil, skProcedure, procedureType_Reset_Rewrite_Mac, ctx.Cursor);
         end
-        else if ctx.mode >= cmTurboPascal then
+        else if mfHexNumbers in Features[ctx.mode] then
         begin
             RegisterSymbolByName('Reset', nil, skProcedure, procedureType_Reset_Rewrite_TP, ctx.Cursor);
             RegisterSymbolByName('Rewrite', nil, skProcedure, procedureType_Reset_Rewrite_TP, ctx.Cursor);
@@ -138,14 +138,14 @@ begin
         RegisterSymbolByName('Input', nil, skVariable, textFileType, ctx.Cursor);
         RegisterSymbolByName('Output', nil, skVariable, textFileType, ctx.Cursor);
     end;
-    if (ctx.mode = cmMacPascal) or (ctx.mode >= cmTurboPascal) then
+    if mfHexNumbers in Features[ctx.mode] then
     begin
         RegisterSymbolByName('Seek', nil, skProcedure, procedureType_File_LongInt, ctx.Cursor);
         RegisterSymbolByName('FilePos', nil, skFunction, functionType_File_LongInt, ctx.Cursor);
         RegisterSymbolByName('IOResult', nil, skFunction, functionType_SmallInt, ctx.Cursor);
         RegisterSymbolByName('Close', nil, skProcedure, procedureType_File, ctx.Cursor);
     end;
-    if ctx.mode >= cmTurboPascal then
+    if mfHexNumbers in Features[ctx.mode] then
     begin
         // Flow control procedures
         RegisterSymbolByName('Break', nil, skProcedure, voidProcedureType, ctx.Cursor);
@@ -175,7 +175,7 @@ begin
         RegisterSymbolByName('Copy', nil, skFunction, functionType_Unknown_LongInt_LongInt_Unknown, ctx.Cursor);
         // TODO: Delete
         // TODO: Insert
-        if ctx.mode >= cmFreePascal then
+        if mfExtendedTypecasting in Features[ctx.mode] then
             RegisterSymbolByName('Length', nil, skFunction, functionType_Length_FPC, ctx.Cursor)
         else
             RegisterSymbolByName('Length', nil, skFunction, functionType_String_LongInt, ctx.Cursor);
@@ -276,12 +276,12 @@ begin
         RegisterSymbolByName('StackLimit', nil, skVariable, wordType, ctx.Cursor);
         RegisterSymbolByName('Test8087', nil, skVariable, byteType, ctx.Cursor);
     end;
-    if (ctx.mode = cmExtendedPascal) or (ctx.mode = cmTurboPascal) or (ctx.mode >= cmFreePascal) then
+    if mfCallAsVarRef in Features[ctx.mode] then
     begin
         RegisterSymbolByName('ParamCount', nil, skFunction, functionType_LongInt, ctx.Cursor);
         RegisterSymbolByName('ParamStr', nil, skFunction, functionType_LongInt_String, ctx.Cursor);
     end;
-    if ctx.mode >= cmFreePascal then
+    if mfExtendedTypecasting in Features[ctx.mode] then
     begin
         RegisterSymbolByName('AssignFile', nil, skProcedure, procedureType_File_String, ctx.Cursor);
         RegisterSymbolByName('CloseFile', nil, skProcedure, procedureType_File, ctx.Cursor);

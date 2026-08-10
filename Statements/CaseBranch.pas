@@ -32,7 +32,7 @@ begin
         pkString:
         begin
             stringTok := TStringToken.Create(ctx);
-            if ctx.mode < cmFreePascal then
+            if not (mfStringCaseLabels in Features[ctx.mode]) then
             begin
                 stringTok.state := tsError;
                 stringTok.errorMessage := 'String case labels not supported in this compilation mode';
@@ -61,7 +61,7 @@ begin
     if PeekReservedWord(ctx, rwRange) then
     begin
         rangeRW := TReservedWord.Create(ctx, rwRange, true);
-        if ctx.mode = cmStandardPascal then
+        if not (mfCaseRanges in Features[ctx.mode]) then
         begin
             rangeRW.state := tsError;
             rangeRW.errorMessage := '".." ranges in case statements not supported in Standard Pascal (ISO 7185)';
@@ -76,7 +76,7 @@ begin
         if PeekReservedWord(ctx, rwRange) then
         begin
             rangeRW := TReservedWord.Create(ctx, rwRange, true);
-            if ctx.mode = cmStandardPascal then
+            if not (mfCaseRanges in Features[ctx.mode]) then
             begin
                 rangeRW.state := tsError;
                 rangeRW.errorMessage := '".." ranges in case statements not supported in Standard Pascal (ISO 7185)';

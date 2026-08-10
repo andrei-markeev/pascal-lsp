@@ -45,13 +45,13 @@ begin
         begin
             inc(ctx.Cursor);
 
-            if (ctx.mode >= cmTurboPascal) and (ctx.Cursor[0] = '$') then
+            if (mfHexNumbers in Features[ctx.mode]) and (ctx.Cursor[0] = '$') then
             begin
                 inc(ctx.Cursor);
                 while ctx.Cursor[0] in ['0'..'9', 'a'..'f', 'A'..'F'] do
                     inc(ctx.Cursor);
             end
-            else if (ctx.mode >= cmFreePascal) and (ctx.Cursor[0] = '&') then
+            else if (mfOctalNumbers in Features[ctx.mode]) and (ctx.Cursor[0] = '&') then
             begin
                 inc(ctx.Cursor);
                 while ctx.Cursor[0] in ['0'..'7'] do

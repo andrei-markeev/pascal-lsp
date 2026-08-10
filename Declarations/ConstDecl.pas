@@ -51,7 +51,7 @@ begin
     AddAnchor(pkNumber);
     AddAnchor(pkString);
     AddAnchor(pkIdentifier);
-    if ctx.mode >= cmTurboPascal then
+    if mfParenthesizedConstExpr in Features[ctx.mode] then
         AddAnchor(rwOpenParenthesis);
     nextTokenKind := SkipUntilAnchor(ctx);
 
@@ -66,13 +66,13 @@ begin
     TReservedWord.Create(ctx, rwEquals, false);
     RemoveAnchor(rwEquals);
 
-    if ctx.mode >= cmTurboPascal then
+    if mfParenthesizedConstExpr in Features[ctx.mode] then
         AddAnchor(rwOpenParenthesis);
     nextTokenKind := SkipUntilAnchor(ctx);
     RemoveAnchor(pkNumber);
     RemoveAnchor(pkString);
     RemoveAnchor(pkIdentifier);
-    if ctx.mode >= cmTurboPascal then
+    if mfParenthesizedConstExpr in Features[ctx.mode] then
         RemoveAnchor(rwOpenParenthesis);
 
     value := TConstValue.Create(ctx, nextTokenKind);

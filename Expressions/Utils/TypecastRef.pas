@@ -44,12 +44,12 @@ begin
     targetIsOrdinal := targetType.kind in [tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum];
     sourceIsOrdinal := sourceType.kind in [tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum];
 
-    if ctx.mode in [cmFreePascal, cmObjectFreePascal, cmDelphi] then
+    if mfExtendedTypecasting in Features[ctx.mode] then
     begin
         if (targetIsOrdinal or targetIsPointer) and (sourceIsOrdinal or sourceIsPointer) then
             exit(true);
     end
-    else if ctx.mode in [cmTurboPascal, cmMacPascal] then
+    else if mfBasicTypecasting in Features[ctx.mode] then
     begin
         if targetIsOrdinal and sourceIsOrdinal then
             exit(true);

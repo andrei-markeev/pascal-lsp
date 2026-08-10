@@ -55,7 +55,7 @@ begin
         rw := TReservedWord(ctx.Tokens[ctx.tokensLen - 2]);
         if (rw.kind = rwClass) and (rw.state = tsSkipped) then
         begin
-            if ctx.mode in [cmObjectFreePascal, cmDelphi] then
+            if mfClassMethods in Features[ctx.mode] then
                 rw.state := tsCorrect
             else
             begin
@@ -272,7 +272,7 @@ begin
             ident.errorMessage := 'Method modifier ''' + s + ''' cannot be used in implementation!';
         end;
 
-        if (s = 'static') and not (ctx.mode in [cmObjectFreePascal, cmDelphi]) then
+        if (s = 'static') and not (mfStaticMethods in Features[ctx.mode]) then
         begin
             ident.state := tsError;
             ident.errorMessage := '''static'' modifier is not supported in this compilation mode!';

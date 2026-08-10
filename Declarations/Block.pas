@@ -75,7 +75,7 @@ begin
     if selfType <> nil then
         RegisterSymbolByName('Self', nil, skVariable, selfType, start);
 
-    if (resultType <> nil) and (ctx.mode >= cmObjectFreePascal) then
+    if (resultType <> nil) and (mfFunctionResultVariable in Features[ctx.mode]) then
         RegisterSymbolByName('Result', nil, skVariable, resultType, start);
 
     for i := 0 to length(childSymbols) - 1 do

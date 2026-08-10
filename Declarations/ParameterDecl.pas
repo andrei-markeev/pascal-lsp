@@ -119,7 +119,7 @@ begin
             TReservedWord.Create(ctx, rwEquals, true);
             nextTokenKind := DetermineNextTokenKind(ctx);
             TConstValue.Create(ctx, nextTokenKind);
-            if not (ctx.mode in [cmDelphi, cmFreePascal, cmObjectFreePascal]) then
+            if not (mfDefaultParamValues in Features[ctx.mode]) then
             begin
                 state := tsError;
                 errorMessage := 'Default parameter values are not supported in this compilation mode!';
@@ -128,7 +128,7 @@ begin
     end
     else if parameterKind in [ptkConst, ptkVar, ptkOut] then
     begin
-        if ctx.mode in [cmStandardPascal, cmExtendedPascal] then
+        if not (mfUntypedParams in Features[ctx.mode]) then
         begin
             state := tsError;
             errorMessage := 'Untyped parameters are not supported in this compilation mode!';

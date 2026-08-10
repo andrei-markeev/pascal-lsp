@@ -116,7 +116,7 @@ begin
             while PeekReservedWord(ctx, rwDot) do
             begin
                 dotToken := TReservedWord.Create(ctx, rwDot, true);
-                if not (ctx.mode in [cmFreePascal, cmObjectFreePascal, cmDelphi]) then
+                if not (mfNamespacedUnits in Features[ctx.mode]) then
                 begin
                     dotToken.state := tsError;
                     dotToken.errorMessage := 'Namespaced units are not supported in this compilation mode!';

@@ -87,7 +87,7 @@ begin
                 break;
 
             ident := TIdentifier.Create(ctx, false);
-            if not (ctx.mode in [cmObjectFreePascal, cmDelphi]) then
+            if not (mfClassModifiers in Features[ctx.mode]) then
             begin
                 ident.state := tsError;
                 ident.errorMessage := 'Class modifiers are not supported in this compilation mode!';
@@ -249,7 +249,7 @@ begin
         if nextTokenKind.reservedWordKind = rwClass then
         begin
             identToken := TReservedWord.Create(ctx, rwClass, true);
-            if not (ctx.mode in [cmObjectFreePascal, cmDelphi]) then
+            if not (mfClassMethods in Features[ctx.mode]) then
             begin
                 identToken.state := tsError;
                 identToken.errorMessage := 'Class methods are not supported in this compilation mode!';
@@ -263,7 +263,7 @@ begin
             case s of
                 'private': SetVisibility(ctx, vPrivate, visibility);
                 'public': SetVisibility(ctx, vPublic, visibility);
-                'protected': if ctx.mode >= cmObjectFreePascal then SetVisibility(ctx, vProtected, visibility);
+                'protected': if mfProtectedVisibility in Features[ctx.mode] then SetVisibility(ctx, vProtected, visibility);
             else
                 fieldDecl := TVarDecl.Create(ctx, parentSymbols);
                 for i := 0 to length(fieldDecl.idents) - 1 do

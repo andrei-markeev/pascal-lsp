@@ -123,9 +123,9 @@ begin
     start := ctx.Cursor;
     typeDef := smallintType;
 
-    if (ctx.mode >= cmTurboPascal) and (ctx.Cursor[0] = '$') then
+    if (mfHexNumbers in Features[ctx.mode]) and (ctx.Cursor[0] = '$') then
         ParseHexNumber(ctx)
-    else if (ctx.mode >= cmFreePascal) and (ctx.Cursor[0] = '&') then
+    else if (mfOctalNumbers in Features[ctx.mode]) and (ctx.Cursor[0] = '&') then
         ParseOctNumber(ctx)
     else
         ParseDecNumber(ctx);

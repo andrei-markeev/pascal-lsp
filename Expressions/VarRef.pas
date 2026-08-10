@@ -208,14 +208,14 @@ begin
         firstIdent := nil;
         symbol := nil;
         typeDef := baseRef.typeDef;
-        if (baseRef is TCall) and not (ctx.mode in [cmExtendedPascal, cmFreePascal, cmObjectFreePascal, cmDelphi]) then
+        if (baseRef is TCall) and not (mfCallAsVarRef in Features[ctx.mode]) then
         begin
             state := tsError;
             errorMessage := 'Cannot access members or index return value of a function call in this compiler mode!';
         end;
     end;
 
-    canBeTypecast := (ctx.mode >= cmTurboPascal) and (baseRef = nil);
+    canBeTypecast := (mfTypecastingSyntax in Features[ctx.mode]) and (baseRef = nil);
 
     nextReservedWord := DetermineReservedWord(ctx);
 

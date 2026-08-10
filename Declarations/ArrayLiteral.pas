@@ -34,7 +34,7 @@ begin
     typeDef := unknownType;
     state := tsCorrect;
 
-    if ctx.mode < cmTurboPascal then
+    if not (mfArrayLiterals in Features[ctx.mode]) then
     begin
         start := ctx.cursorBeforeTrivia;
         state := tsMissing;

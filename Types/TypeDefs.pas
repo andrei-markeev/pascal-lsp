@@ -170,7 +170,7 @@ begin
         exit;
     end;
 
-    isDelphiOrObjFpc := TParserContext(ctx).mode in [cmObjectFreePascal, cmDelphi];
+    isDelphiOrObjFpc := mfArrayConstructors in Features[TParserContext(ctx).mode];
 
     TypesAreAssignable := left.kind = right.kind;
     if (left.kind = tkUnknown) or (right.kind = tkUnknown) then

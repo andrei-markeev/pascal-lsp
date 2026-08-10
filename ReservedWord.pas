@@ -165,7 +165,7 @@ begin
             '+': found := rwPlus;
             '-': found := rwMinus;
             '*':
-                if (ctx.mode >= cmFreePascal) and (ctx.Cursor[1] = '*') then found := rwExponentiation
+                if (mfExponentiationOperator in Features[ctx.mode]) and (ctx.Cursor[1] = '*') then found := rwExponentiation
                 else found := rwMultiply;
             '/': found := rwDivide;
             '^': found := rwHat;
@@ -173,12 +173,12 @@ begin
             '<':
                 if ctx.Cursor[1] = '=' then found := rwLessOrEqual
                 else if ctx.Cursor[1] = '>' then found := rwNotEqual
-                else if (ctx.mode >= cmFreePascal) and (ctx.Cursor[1] = '<') then found := rwShl2
+                else if (mfShlShrOperators in Features[ctx.mode]) and (ctx.Cursor[1] = '<') then found := rwShl2
                 else found := rwLess;
             '>':
                 if ctx.Cursor[1] = '=' then found := rwMoreOrEqual
-                else if (ctx.mode >= cmFreePascal) and (ctx.Cursor[1] = '>') then found := rwShr2
-                else if (ctx.mode >= cmFreePascal) and (ctx.Cursor[1] = '<') then found := rwSymmetricDifference
+                else if (mfShlShrOperators in Features[ctx.mode]) and (ctx.Cursor[1] = '>') then found := rwShr2
+                else if (mfSymmetricDifference in Features[ctx.mode]) and (ctx.Cursor[1] = '<') then found := rwSymmetricDifference
                 else found := rwMore;
             '(': found := rwOpenParenthesis;
             ')': found := rwCloseParenthesis;
@@ -189,7 +189,7 @@ begin
                 else found := rwDot;
             ',': found := rwComma;
             ';': found := rwSemiColon;
-            '@': if ctx.mode >= cmTurboPascal then found := rwAt;
+            '@': if mfAtOperator in Features[ctx.mode] then found := rwAt;
         else
             found := rwInvalid;
         end;
@@ -330,13 +330,13 @@ begin
         'x','X': maybe := rwXor;
     end;
 
-    if (ctx.mode < cmTurboPascal) and IsTurboPascalReservedWord(maybe) then
+    if not (mfTurboPascalKeywords in Features[ctx.mode]) and IsTurboPascalReservedWord(maybe) then
         maybe := rwUnknown;
 
-    if (ctx.mode < cmObjectFreePascal) and IsObjectPascalReservedWord(maybe) then
+    if not (mfObjectPascalKeywords in Features[ctx.mode]) and IsObjectPascalReservedWord(maybe) then
         maybe := rwUnknown;
 
-    if IsExtendedPascalKeyword(maybe) and (ctx.mode <> cmExtendedPascal) and (ctx.mode < cmFreePascal) then
+    if not (mfExtendedPascalKeywords in Features[ctx.mode]) and IsExtendedPascalKeyword(maybe) then
         maybe := rwUnknown;
 
     if (maybe <> rwUnknown) and PeekReservedWord(ctx, ReservedWordStr[ord(maybe)]) then

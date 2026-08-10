@@ -83,7 +83,7 @@ begin
                     state := tsError;
                     errorMessage := 'Unit name cannot be used in expressions!';
                 end
-                else if (symbol <> nil) and (symbol.kind = skProcedure) and (ctx.mode <> cmMacPascal) then
+                else if (symbol <> nil) and (symbol.kind = skProcedure) and (mfProcInExprDisallowed in Features[ctx.mode]) then
                 begin
                     state := tsError;
                     errorMessage := 'Invalid call to ' + identName + ': procedure calls cannot be used in expressions because they don''t have a return value!';
@@ -129,7 +129,7 @@ begin
                 rwString:
                     begin
                         TReservedWord.Create(ctx, rwString, true);
-                        if (ctx.mode >= cmObjectFreePascal) or (ctx.mode >= cmFreePascal) then
+                        if mfAnsiStringDefault in Features[ctx.mode] then
                             typeDef := ansiString64Type
                         else
                             typeDef := shortstringType;

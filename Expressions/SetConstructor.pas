@@ -40,7 +40,7 @@ begin
 
     if nextReservedWord = rwCloseSquareBracket then
     begin
-        if ctx.mode in [cmObjectFreePascal, cmDelphi] then
+        if mfArrayConstructors in Features[ctx.mode] then
         begin
             tokenName := 'ArrayConstructor';
             typeDef := TDynamicArrayTypeDef.Create(ctx, unknownType, 1);
@@ -68,7 +68,7 @@ begin
     isSet := true;
     if (baseType = nil) or not (baseType.kind in [tkInteger, tkBoolean, tkChar, tkCharRange, tkEnum]) then
     begin
-        if ctx.mode in [cmObjectFreePascal, cmDelphi] then
+        if mfArrayConstructors in Features[ctx.mode] then
             isSet := false;
     end;
 
