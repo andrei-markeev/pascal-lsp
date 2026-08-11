@@ -53,10 +53,14 @@ begin
     AddAnchor(pkString);
     AddAnchor(pkIdentifier);
     AddAnchor(rwOpenParenthesis);
+    AddAnchor(rwOpenSquareBracket);
 
     nextTokenKind := SkipUntilAnchor(ctx);
 
-    while (nextTokenKind.reservedWordKind <> rwCloseParenthesis) and (nextTokenKind.primitiveKind <> pkUnknown) do
+    while (nextTokenKind.reservedWordKind <> rwCloseParenthesis) 
+        and not nextTokenKind.isEOF 
+        and ((nextTokenKind.primitiveKind <> pkUnknown) or (nextTokenKind.reservedWordKind <> rwUnknown)) 
+    do
     begin
         elemValue := TConstValue.Create(ctx, nextTokenKind);
         inc(elemCount);
@@ -87,6 +91,7 @@ begin
     RemoveAnchor(pkString);
     RemoveAnchor(pkIdentifier);
     RemoveAnchor(rwOpenParenthesis);
+    RemoveAnchor(rwOpenSquareBracket);
 
     nextRW := DetermineReservedWord(ctx);
     if nextRW = rwCloseParenthesis then

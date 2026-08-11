@@ -18,7 +18,7 @@ type
 implementation
 
 uses
-    CompilationMode, Symbols, TypeDefs, Token, Identifier, Number, StringToken, ReservedWord, ArrayLiteral;
+    CompilationMode, Symbols, TypeDefs, Token, Identifier, Number, StringToken, ReservedWord, ArrayLiteral, SetConstructor;
 
 constructor TConstValue.Create(ctx: TParserContext; tokenKind: TTokenKind);
 var
@@ -39,6 +39,12 @@ begin
     begin
         TReservedWord.Create(ctx, rwNil, true);
         typeDef := pointer64Type;
+    end
+    else if tokenKind.reservedWordKind = rwOpenSquareBracket then
+    begin
+        valueToken := TSetConstructor.Create(ctx);
+        if valueToken <> nil then
+            typeDef := valueToken.typeDef;
     end
     else
     case tokenKind.primitiveKind of

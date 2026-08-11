@@ -1,0 +1,13 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadEmptySetConstructor</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TCharSet</SymbDecl> <RW>=</RW> <TypeSpec><SetSpec><RW>set</RW> <RW>of</RW> <TypeSpec><Ident>char</Ident></TypeSpec></SetSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<ConstSection><RW>const</RW>
+    <ConstDecl><SymbDecl>BadSet</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TCharSet</SymbRef></TypeSpec> <RW>=</RW> <ConstValue><ArrayConstructor><RW>[</RW><Factor MISSING="" /><RW MISSING="]" /></ArrayConstructor></ConstValue></ConstDecl><RW>;</RW>
+    <ConstDecl><SymbDecl>GoodSet</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TCharSet</SymbRef></TypeSpec> <RW>=</RW> <ConstValue><ArrayConstructor><RW>[</RW><RW>]</RW></ArrayConstructor></ConstValue></ConstDecl><RW>;</RW></ConstSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

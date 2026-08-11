@@ -16,7 +16,6 @@ var
     contents: string;
     ctx: TParserContext;
     cur: TToken;
-    fileToken: TToken;
     inserts: array of string;
 begin
     WriteLn(fileName);
@@ -30,9 +29,9 @@ begin
     ctx := TParserContext.Create(fileName, contents);
 
     if PeekReservedWord(ctx, rwUnit) then
-        fileToken := TUnitFile.Create(ctx)
+        TUnitFile.Create(ctx)
     else
-        fileToken := TProgramFile.Create(ctx);
+        TProgramFile.Create(ctx);
 
     SetLength(inserts, len + 1);
     for i := 0 to len do

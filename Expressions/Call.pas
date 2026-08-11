@@ -17,7 +17,36 @@ type
 implementation
 
 uses
-    sysutils, classes, TypeDefs, Parameters, ReservedWord, Expression, RoutineTypeDef;
+    sysutils, classes, TypeDefs, Parameters, ReservedWord, Expression, RoutineTypeDef,
+    Identifier, VarRef, CompilationMode, Symbols;
+
+function IsExitRef(refToken: TTypedToken): boolean;
+begin
+    if refToken is TIdentifier then
+        exit(SameText(TIdentifier(refToken).name, 'Exit'))
+    else
+        exit(false);
+end;
+
+function IsProcedureRef(exprToken: TTypedToken; ctx: TParserContext): boolean;
+var
+    sym: TSymbol;
+begin
+    if exprToken = nil then exit(false);
+
+    if exprToken is TIdentifier then
+    begin
+        sym := FindSymbol(TIdentifier(exprToken).name, ctx.Cursor);
+        exit((sym <> nil) and (sym.kind = skProcedure));
+    end
+    else if exprToken is TVarRef then
+    begin
+        sym := TVarRef(exprToken).symbol;
+        exit((sym <> nil) and (sym.kind = skProcedure));
+    end;
+
+    exit(false);
+end;
 
 constructor TCall.Create(ctx: TParserContext; ref: TTypedToken);
 var
@@ -27,11 +56,13 @@ var
     n, match: integer;
     hasMoreParams, hasMatch: boolean;
     paramError: string;
+    isExitCall: boolean;
 begin    
     ctx.InsertBefore(ref, Self);
     tokenName := 'Call';
     start := ref.start;
     state := tsCorrect;
+    isExitCall := (mfExitProcName in Features[ctx.mode]) and IsExitRef(ref);
 
     match := -1;
     if (ref <> nil) and (ref.typeDef is TRoutineTypeDef) then
@@ -68,6 +99,12 @@ begin
         repeat
 
             expr := CreateExpression(ctx);
+
+            if isExitCall and (n = 0) and IsProcedureRef(expr, ctx) then
+            begin
+                expr.state := tsCorrect;
+                expr.errorMessage := '';
+            end;
 
             if params <> nil then
             begin

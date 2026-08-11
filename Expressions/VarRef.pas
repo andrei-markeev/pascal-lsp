@@ -215,7 +215,7 @@ begin
         end;
     end;
 
-    canBeTypecast := (mfTypecastingSyntax in Features[ctx.mode]) and (baseRef = nil);
+    canBeTypecast := (mfBasicTypecasting in Features[ctx.mode]) and (baseRef = nil);
 
     nextReservedWord := DetermineReservedWord(ctx);
 
@@ -226,7 +226,7 @@ begin
 
         case nextReservedWord of
             rwOpenParenthesis:
-                if not ParseTypecast(ctx, Self, isMaybeLeftHandSide) then
+                if (not canBeTypecast) or (not ParseTypecast(ctx, Self, isMaybeLeftHandSide)) then
                     break;
             rwOpenSquareBracket: ParseArrayAccess(ctx);
             rwHat: ParsePointerDereference(ctx);

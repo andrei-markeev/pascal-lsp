@@ -1,0 +1,18 @@
+{$mode objfpc}
+<UnitFile><RW>unit</RW> <SymbDecl>SetInParenthesizedConst</SymbDecl><RW>;</RW>
+
+<RW>interface</RW>
+
+<InterfaceBlock><TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TModeFeature</SymbDecl> <RW>=</RW> <TypeSpec><EnumSpec><RW>(</RW><SymbDecl>fA</SymbDecl><RW>,</RW> <SymbDecl>fB</SymbDecl><RW>)</RW></EnumSpec></TypeSpec></TypeDecl><RW>;</RW>
+    <TypeDecl><SymbDecl>TModeFeatures</SymbDecl> <RW>=</RW> <TypeSpec><SetSpec><RW>set</RW> <RW>of</RW> <TypeSpec><SymbRef>TModeFeature</SymbRef></TypeSpec></SetSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<ConstSection><RW>const</RW>
+    <ConstDecl><SymbDecl>Features</SymbDecl><RW>:</RW> <TypeSpec><ArraySpec><RW>array</RW><RW>[</RW><TypeSpec><RangeSpec><Num>1</Num><RW>..</RW><Num>2</Num></RangeSpec></TypeSpec><RW>]</RW> <RW>of</RW> <TypeSpec><SymbRef>TModeFeatures</SymbRef></TypeSpec></ArraySpec></TypeSpec> <RW>=</RW> <ConstValue><ArrayLiteral><RW>(</RW>
+        <ConstValue><ArrayConstructor><RW>[</RW><RW>]</RW></ArrayConstructor></ConstValue><RW>,</RW>
+        <ConstValue><SetConstructor><RW>[</RW><SymbRef>fA</SymbRef><RW>,</RW> <SymbRef>fB</SymbRef><RW>]</RW></SetConstructor></ConstValue>
+    <RW>)</RW></ArrayLiteral></ConstValue></ConstDecl><RW>;</RW></ConstSection></InterfaceBlock>
+
+<RW>implementation</RW>
+
+<ImplementationBlock><RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

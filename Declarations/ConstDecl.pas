@@ -51,6 +51,7 @@ begin
     AddAnchor(pkNumber);
     AddAnchor(pkString);
     AddAnchor(pkIdentifier);
+    AddAnchor(rwOpenSquareBracket);
     if mfParenthesizedConstExpr in Features[ctx.mode] then
         AddAnchor(rwOpenParenthesis);
     nextTokenKind := SkipUntilAnchor(ctx);
@@ -66,12 +67,11 @@ begin
     TReservedWord.Create(ctx, rwEquals, false);
     RemoveAnchor(rwEquals);
 
-    if mfParenthesizedConstExpr in Features[ctx.mode] then
-        AddAnchor(rwOpenParenthesis);
     nextTokenKind := SkipUntilAnchor(ctx);
     RemoveAnchor(pkNumber);
     RemoveAnchor(pkString);
     RemoveAnchor(pkIdentifier);
+    RemoveAnchor(rwOpenSquareBracket);
     if mfParenthesizedConstExpr in Features[ctx.mode] then
         RemoveAnchor(rwOpenParenthesis);
 

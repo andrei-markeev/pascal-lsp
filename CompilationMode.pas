@@ -5,7 +5,7 @@ unit CompilationMode;
 interface
 
 type
-    TCompilationMode = (cmStandardPascal, cmExtendedPascal, cmTurboPascal, cmMacPascal, cmFreePascal, cmObjectFreePascal, cmDelphi);
+    TCompilationMode = (cmStandardPascal, cmExtendedPascal, cmTurboPascal, cmMacPascal, cmFreePascal, cmObjectFreePascal, cmDelphi, cmUniversalPascal);
 
     TModeFeature = (
         mfHexNumbers,             // $123 hex numbers ($)
@@ -19,16 +19,19 @@ type
         mfUntypedParams,          // untyped parameters (var / const without type)
         mfNamespacedUnits,        // Unit.Subunit syntax
         mfDefaultVarValues,       // var x: integer = 5
-        mfProcInExprDisallowed,   // Procedure calls in expressions throw error (all except MacPascal)
+        mfExitProcName,           // Allow procedure name as argument in Exit() statement (MacPascal)
         mfAnsiStringDefault,      // 'string' keyword maps to ansiString (Delphi mode only)
         mfArrayConstructors,      // [...] array constructors / dynamic array constructors
-        mfExtendedTypecasting,    // Extended pointer <-> ordinal typecasting rules
         mfBasicTypecasting,       // Basic ordinal/pointer typecasting rules
+        mfExtendedTypecasting,    // Extended pointer <-> ordinal typecasting rules
         mfCallAsVarRef,           // Call syntax as variable reference (e.g. Func()[1])
-        mfTypecastingSyntax,      // TypeName(expr) syntax
-        mfTurboPascalKeywords,    // Turbo Pascal reserved words
-        mfObjectPascalKeywords,   // Object Pascal reserved words
-        mfExtendedPascalKeywords, // Extended Pascal reserved words
+        mfUSCDPascalKeywords,     // USCD Pascal reserved words: string, unit, uses, interface, implementation
+        mfTurboPascalKeywords,    // Turbo Pascal reserved words: absolute, asm, constructor, destructor, inherited, 
+                                  //   object, operator, shl, shr, xor
+        mfObjectPascalKeywords,   // Object Pascal reserved words: as, class, dispinterface, except, exports,
+                                  //   finalization, finally, initialization, is, library, on, out, property, raise,
+                                  //   resourcestring, threadvar, try
+        mfExtendedPascalKeywords, // Extended Pascal reserved words: otherwise
         mfStringCaseLabels,       // String labels in case statements
         mfCaseRanges,             // Range labels 1..5 in case branches
         mfCaseElseClause,         // 'else' clause in case statement (TP, FPC, ObjFPC, Delphi)
@@ -40,7 +43,12 @@ type
         mfShlShrOperators,        // << and >> operators (FPC, ObjFPC, Delphi)
         mfClassModifiers,         // sealed / abstract class modifiers
         mfProtectedVisibility,    // protected visibility specifier
-        mfUntypedFiles            // untyped 'file' type specification
+        mfUntypedFiles,           // untyped 'file' type specification
+        mfOptionalTypes,          // 'optional' types
+        mfPointerTo,              // 'pointer to' instead of '^' in type definitions
+        mfImplicitDereference,    // explicit dereference with '^' is banned
+        mfPartialRecords,         // 'partial' records (hiding private fields in implementation)
+        mfOberonMethodSyntax      // Oberon/Go-like method syntax e.g. `procedure (var self: TMyClass) Add(item: integer);`
     );
 
     TModeFeatures = set of TModeFeature;
@@ -48,41 +56,45 @@ type
 const
     Features: array[TCompilationMode] of TModeFeatures = (
         // cmStandardPascal
-        [mfBasicTypecasting],
+        [],
         
         // cmExtendedPascal
         [mfBasicTypecasting, mfCallAsVarRef, mfCaseRanges, mfCaseOtherwiseClause, mfExtendedPascalKeywords, mfUntypedFiles],
 
         // cmTurboPascal
-        [mfHexNumbers, mfArrayLiterals, mfParenthesizedConstExpr, mfUntypedParams, mfBasicTypecasting, mfTypecastingSyntax,
-         mfTurboPascalKeywords, mfCaseRanges, mfCaseElseClause, mfAtOperator, mfBitwiseOperators, mfUntypedFiles, mfProcInExprDisallowed],
+        [mfHexNumbers, mfArrayLiterals, mfParenthesizedConstExpr, mfUntypedParams, mfBasicTypecasting, mfUSCDPascalKeywords,
+         mfTurboPascalKeywords, mfCaseRanges, mfCaseElseClause, mfAtOperator, mfBitwiseOperators, mfUntypedFiles],
 
         // cmMacPascal
-        [mfHexNumbers, mfArrayLiterals, mfParenthesizedConstExpr, mfUntypedParams, mfBasicTypecasting, mfTypecastingSyntax,
-         mfTurboPascalKeywords, mfCaseRanges, mfCaseOtherwiseClause, mfAtOperator, mfUntypedFiles],
+        [mfHexNumbers, mfArrayLiterals, mfParenthesizedConstExpr, mfUntypedParams, mfBasicTypecasting, mfUSCDPascalKeywords,
+         mfTurboPascalKeywords, mfCaseRanges, mfCaseOtherwiseClause, mfAtOperator, mfUntypedFiles, mfExitProcName],
 
         // cmFreePascal
         [mfHexNumbers, mfOctalNumbers, mfArrayLiterals, mfParenthesizedConstExpr, mfDefaultParamValues, mfUntypedParams,
-         mfNamespacedUnits, mfDefaultVarValues, mfProcInExprDisallowed, mfExtendedTypecasting,
-         mfBasicTypecasting, mfCallAsVarRef, mfTypecastingSyntax, mfTurboPascalKeywords, mfExtendedPascalKeywords,
+         mfNamespacedUnits, mfDefaultVarValues, mfBasicTypecasting, mfExtendedTypecasting,
+         mfCallAsVarRef, mfUSCDPascalKeywords, mfTurboPascalKeywords, mfExtendedPascalKeywords,
          mfStringCaseLabels, mfCaseRanges, mfCaseElseClause, mfCaseOtherwiseClause, mfAtOperator, mfBitwiseOperators,
          mfExponentiationOperator, mfSymmetricDifference, mfShlShrOperators, mfUntypedFiles],
 
         // cmObjectFreePascal
         [mfHexNumbers, mfOctalNumbers, mfArrayLiterals, mfFunctionResultVariable, mfParenthesizedConstExpr, mfStaticMethods,
-         mfClassMethods, mfDefaultParamValues, mfUntypedParams, mfNamespacedUnits, mfDefaultVarValues, mfProcInExprDisallowed,
+         mfClassMethods, mfDefaultParamValues, mfUntypedParams, mfNamespacedUnits, mfDefaultVarValues,
          mfArrayConstructors, mfExtendedTypecasting, mfBasicTypecasting, mfCallAsVarRef,
-         mfTypecastingSyntax, mfTurboPascalKeywords, mfObjectPascalKeywords, mfExtendedPascalKeywords, mfStringCaseLabels,
+         mfUSCDPascalKeywords, mfTurboPascalKeywords, mfObjectPascalKeywords, mfExtendedPascalKeywords, mfStringCaseLabels,
          mfCaseRanges, mfCaseElseClause, mfCaseOtherwiseClause, mfAtOperator, mfBitwiseOperators, mfExponentiationOperator,
          mfSymmetricDifference, mfShlShrOperators, mfClassModifiers, mfProtectedVisibility, mfUntypedFiles],
 
         // cmDelphi
         [mfHexNumbers, mfArrayLiterals, mfFunctionResultVariable, mfParenthesizedConstExpr, mfStaticMethods,
-         mfClassMethods, mfDefaultParamValues, mfUntypedParams, mfNamespacedUnits, mfDefaultVarValues, mfProcInExprDisallowed,
+         mfClassMethods, mfDefaultParamValues, mfUntypedParams, mfNamespacedUnits, mfDefaultVarValues,
          mfAnsiStringDefault, mfArrayConstructors, mfExtendedTypecasting, mfBasicTypecasting, mfCallAsVarRef,
-         mfTypecastingSyntax, mfTurboPascalKeywords, mfObjectPascalKeywords, mfExtendedPascalKeywords, mfStringCaseLabels,
+         mfUSCDPascalKeywords, mfTurboPascalKeywords, mfObjectPascalKeywords, mfExtendedPascalKeywords, mfStringCaseLabels,
          mfCaseRanges, mfCaseElseClause, mfCaseOtherwiseClause, mfAtOperator, mfBitwiseOperators, mfExponentiationOperator,
-         mfSymmetricDifference, mfShlShrOperators, mfClassModifiers, mfProtectedVisibility, mfUntypedFiles]
+         mfSymmetricDifference, mfShlShrOperators, mfClassModifiers, mfProtectedVisibility, mfUntypedFiles],
+
+        // cmUniversalPascal
+        [mfBasicTypecasting, mfUSCDPascalKeywords, mfCaseElseClause, mfCallAsVarRef, mfOptionalTypes, mfPointerTo,
+         mfImplicitDereference, mfPartialRecords, mfOberonMethodSyntax]
     );
 
 implementation

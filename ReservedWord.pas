@@ -110,6 +110,14 @@ const
 
 implementation
 
+function IsUSCDPascalReservedWord(rwKind: TReservedWordKind): boolean; inline;
+begin
+    IsUSCDPascalReservedWord := rwKind in [
+        rwUnit, rwUses, rwImplementation, rwInterface,
+        rwString
+    ];
+end;
+
 function IsTurboPascalReservedWord(rwKind: TReservedWordKind): boolean; inline;
 begin
     IsTurboPascalReservedWord := rwKind in [
@@ -329,6 +337,9 @@ begin
             end;
         'x','X': maybe := rwXor;
     end;
+
+    if not (mfUSCDPascalKeywords in Features[ctx.mode]) and IsUSCDPascalReservedWord(maybe) then
+        maybe := rwUnknown;
 
     if not (mfTurboPascalKeywords in Features[ctx.mode]) and IsTurboPascalReservedWord(maybe) then
         maybe := rwUnknown;

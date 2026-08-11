@@ -83,7 +83,7 @@ begin
                     state := tsError;
                     errorMessage := 'Unit name cannot be used in expressions!';
                 end
-                else if (symbol <> nil) and (symbol.kind = skProcedure) and (mfProcInExprDisallowed in Features[ctx.mode]) then
+                else if (symbol <> nil) and (symbol.kind = skProcedure) then
                 begin
                     state := tsError;
                     errorMessage := 'Invalid call to ' + identName + ': procedure calls cannot be used in expressions because they don''t have a return value!';

@@ -1,0 +1,22 @@
+<ProgramFile><RW>program</RW> <SymbDecl>EmptySetConstructor</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TCharSet</SymbDecl> <RW>=</RW> <TypeSpec><SetSpec><RW>set</RW> <RW>of</RW> <TypeSpec><Ident>char</Ident></TypeSpec></SetSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<ConstSection><RW>const</RW>
+    <ConstDecl><SymbDecl>EmptyConstSet</SymbDecl> <RW>=</RW> <ConstValue><ArrayConstructor><RW>[</RW><RW>]</RW></ArrayConstructor></ConstValue></ConstDecl><RW>;</RW>
+    <ConstDecl><SymbDecl>TypedEmptySet</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TCharSet</SymbRef></TypeSpec> <RW>=</RW> <ConstValue><ArrayConstructor><RW>[</RW><RW>]</RW></ArrayConstructor></ConstValue></ConstDecl><RW>;</RW></ConstSection>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>globalSet</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TCharSet</SymbRef></TypeSpec> <RW>=</RW> <ConstValue><ArrayConstructor><RW>[</RW><RW>]</RW></ArrayConstructor></ConstValue></VarDecl><RW>;</RW></VarSection>
+
+<Procedure><RW>procedure</RW> <SymbDecl>Test</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TCharSet</SymbRef></TypeSpec> <RW>=</RW> <ConstValue><ArrayConstructor><RW>[</RW><RW>]</RW></ArrayConstructor></ConstValue></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <ArrayConstructor><RW>[</RW><RW>]</RW></ArrayConstructor></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>globalSet</SymbRef> <RW>:=</RW> <ArrayConstructor><RW>[</RW><RW>]</RW></ArrayConstructor></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
