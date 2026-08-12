@@ -3,12 +3,12 @@
 {$mode universalpascal}
 
 <TypeSection><RW>type</RW>
-    <TypeDecl><SymbDecl>PBad</SymbDecl> <RW>=</RW> <TypeSpec><PointerSpec ERROR="Use "pointer to" instead of "^""><RW ERROR="Use "pointer to" instead of "^"">^</RW><TypeSpec><Ident>integer</Ident></TypeSpec></PointerSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+    <TypeDecl><SymbDecl>PBad</SymbDecl> <RW>=</RW> <TypeSpec><PointerSpec ERROR="Use "pointer to" instead of "^""><RW>^</RW><TypeSpec><Ident>integer</Ident></TypeSpec></PointerSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
 
 <VarSection><RW>var</RW>
     <VarDecl><SymbDecl>p</SymbDecl><RW>:</RW> <TypeSpec><PointerSpec><RW>pointer</RW> <RW>to</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></PointerSpec></TypeSpec></VarDecl><RW>;</RW>
     <VarDecl><SymbDecl>val</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
 
 <Block><RW>begin</RW>
-    <Assignment><SymbRef>val</SymbRef> <RW>:=</RW> <VarRef><SymbRef>p</SymbRef><RW>^</RW></VarRef></Assignment><RW>;</RW>
+    <Assignment ERROR="Invalid assignment: expected integer or assignment-compatible, but found pointer!"><SymbRef>val</SymbRef> <RW>:=</RW> <VarRef ERROR="Explicit dereference "^" is not allowed in this compilation mode"><SymbRef>p</SymbRef><RW ERROR="Explicit dereference "^" is not allowed in this compilation mode">^</RW></VarRef></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

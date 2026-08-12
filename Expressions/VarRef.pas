@@ -59,7 +59,7 @@ begin
 
     if mfImplicitDereference in Features[ctx.mode] then
     begin
-        while (typeDef <> nil) and (typeDef is TPointerTypeDef) and TPointerTypeDef(typeDef).isTyped and (TPointerTypeDef(typeDef).pointerToType <> nil) do
+        while (typeDef <> nil) and (typeDef is TPointerTypeDef) and TPointerTypeDef(typeDef).isTyped and (TPointerTypeDef(typeDef).pointerToType <> nil) and not IsPChar(typeDef) do
             typeDef := TPointerTypeDef(typeDef).pointerToType;
     end;
 
