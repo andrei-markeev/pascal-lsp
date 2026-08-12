@@ -65,14 +65,14 @@ begin
         if (typeSym <> nil) and (typeSym.kind = skUnitName) then
         begin
             curUnitSym := typeSym;
-            typeSym.AddReference(typeIdent);
+            typeSym.AddReference(typeIdent, true);
             continue;
         end;
 
         if (typeSym <> nil) and (typeSym.kind = skTypeName) then
         begin
             typeDefToFill := typeSym.typeDef;
-            typeSym.AddReference(typeIdent);
+            typeSym.AddReference(typeIdent, true);
             spec.state := tsCorrect;
             ctx.MarkEndOfToken(spec);
             exit;

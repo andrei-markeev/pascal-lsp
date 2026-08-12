@@ -7,7 +7,7 @@
     <Ident>GoodPartialRecord</Ident><RW>;</RW></TUsesClause><InterfaceBlock>
 
 <VarSection><RW>var</RW>
-    <VarDecl ERROR="Partial record cannot be instantiated outside of the defining unit!"><SymbDecl>r</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TMyPartialRecord</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection></InterfaceBlock>
+    <VarDecl ERROR="Partial record cannot be instantiated outside of the defining unit!"><SymbDecl>r</SymbDecl><RW>:</RW> <TypeSpec><SymbRef ERROR="Symbol 'TMyPartialRecord' must be unit name-qualified outside of the defining unit!">TMyPartialRecord</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection></InterfaceBlock>
 
 <RW>implementation</RW>
 

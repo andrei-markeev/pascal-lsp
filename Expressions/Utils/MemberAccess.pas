@@ -101,7 +101,7 @@ begin
     ref.symbol := foundSym;
     if ref.symbol <> nil then
     begin
-        ref.symbol.AddReference(ident);
+        ref.symbol.AddReference(ident, true);
         ref.typeDef := ref.symbol.typeDef;
     end
     else

@@ -1,0 +1,14 @@
+<ProgramFile><RW>program</RW> <SymbDecl>UniversalUnitQualified</SymbDecl><RW>;</RW>
+
+{$mode universalpascal}
+
+<TUsesClause><RW>uses</RW>
+    <Ident>DepUnit</Ident><RW>;</RW></TUsesClause>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>myVar</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>myVar</SymbRef> <RW>:=</RW> <Num>10</Num></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>DepUnit</SymbRef><RW>.</RW><SymbRef>DepVar</SymbRef></VarRef> <RW>:=</RW> <Num>42</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

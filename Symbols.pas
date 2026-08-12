@@ -27,7 +27,7 @@ type
         isParameter: boolean;
         constructor Create;
         destructor Destroy; override;
-        procedure AddReference(ident: TIdentifier);
+        procedure AddReference(ident: TIdentifier; isUnitQualified: boolean = false);
         function GetCurrentReturnType(ctx: TParserContext): TTypeDef;
     end;
 
@@ -53,7 +53,7 @@ function IsMemberAccessible(accessCtx: TParserContext; targetClass: TTypeDef; me
 implementation
 
 uses
-    sysutils, classes, Scopes, RoutineTypeDef, ClassTypeDef, ObjectTypeDef, PointerTypeDef, StructuredTypeDef;
+    sysutils, classes, CompilationMode, Scopes, RoutineTypeDef, ClassTypeDef, ObjectTypeDef, PointerTypeDef, StructuredTypeDef;
 
 var
     lastId: longword = 0;
@@ -266,9 +266,10 @@ begin
     SetLength(children, 0);
 end;
 
-procedure TSymbol.AddReference(ident: TIdentifier);
+procedure TSymbol.AddReference(ident: TIdentifier; isUnitQualified: boolean);
 var
     l: integer;
+    useCtx, declCtx: TParserContext;
 begin
     l := length(references);
     SetLength(references, l + 1);
@@ -277,6 +278,23 @@ begin
     ident.name := name;
     ident.typeDef := typeDef;
     ident.tokenName := 'SymbRef';
+
+    if (kind <> skUnitName)
+        and not isUnitQualified
+        and (ident <> nil)
+        and (declaration <> nil)
+        and ((parent = nil) or (parent.kind <> skTypeName)) then
+    begin
+        useCtx := FindContextForCursor(ident.start);
+        declCtx := FindContextForCursor(declaration.start);
+        if (useCtx <> nil)
+            and (mfRequireUnitQualified in Features[useCtx.mode])
+            and (declCtx <> useCtx) then
+        begin
+            ident.state := tsError;
+            ident.errorMessage := 'Symbol ''' + displayName + ''' must be unit name-qualified outside of the defining unit!';
+        end;
+    end;
 end;
 
 function TSymbol.GetCurrentReturnType(ctx: TParserContext): TTypeDef;

@@ -49,7 +49,8 @@ type
         mfImplicitDereference,    // implicit dereference on array indexing or member access
         mfNoExplicitDereference,  // explicit dereference with '^' is banned
         mfPartialRecords,         // 'partial' records (hiding private fields in implementation)
-        mfOberonMethodSyntax      // Oberon/Go-like method syntax e.g. `procedure (var self: TMyClass) Add(item: integer);`
+        mfOberonMethodSyntax,     // Oberon/Go-like method syntax e.g. `procedure (var self: TMyClass) Add(item: integer);`
+        mfRequireUnitQualified    // Symbols must always be unit name-qualified outside of the defining unit
     );
 
     TModeFeatures = set of TModeFeature;
@@ -96,8 +97,8 @@ const
          mfImplicitDereference],
 
         // cmUniversalPascal
-        [mfBasicTypecasting, mfUSCDPascalKeywords, mfCaseElseClause, mfCallAsVarRef, mfOptionalTypes, mfPointerTo,
-         mfImplicitDereference, mfNoExplicitDereference, mfPartialRecords, mfOberonMethodSyntax]
+        [mfBasicTypecasting, mfUSCDPascalKeywords, mfTurboPascalKeywords, mfCaseElseClause, mfCallAsVarRef, mfOptionalTypes, mfPointerTo,
+         mfImplicitDereference, mfNoExplicitDereference, mfPartialRecords, mfOberonMethodSyntax, mfRequireUnitQualified]
     );
 
 implementation
