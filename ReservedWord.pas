@@ -9,7 +9,7 @@ uses
     strings, CompilationMode, ParserContext, Token;
 
 const
-    NUM_OF_RESERVED_WORDS = 98;
+    NUM_OF_RESERVED_WORDS = 99;
 
 type
     TReservedWordKind = (
@@ -49,7 +49,7 @@ type
         rwAs, rwClass, rwDispinterface, rwExcept, rwExports, rwFinalization, rwFinally, rwInitialization,
         rwIs, rwLibrary, rwOn, rwOut, rwProperty, rwRaise, rwResourcestring, rwThreadvar, rwTry,
         { universal pascal reserved words }
-        rwPointer, rwPartial,
+        rwPointer, rwPartial, rwOptional,
         { special symbols }
         rwAssign, rwPlus, rwMinus, rwMultiply, rwExponentiation, rwDivide, rwHat,
         rwEquals, rwNotEqual, rwLess, rwMore, rwLessOrEqual, rwMoreOrEqual,
@@ -59,7 +59,7 @@ type
 
 const
     RW_FIRST_KEYWORD = rwAnd;
-    RW_LAST_KEYWORD = rwPartial;
+    RW_LAST_KEYWORD = rwOptional;
 
 type
     TReservedWord = class(TToken)
@@ -111,7 +111,7 @@ const
         'as', 'class', 'dispinterface', 'except', 'exports', 'finalization', 'finally', 'initialization',
         'is', 'library', 'on', 'out', 'property', 'raise', 'resourcestring', 'threadvar', 'try',
         { universal pascal reserved words }
-        'pointer', 'partial',
+        'pointer', 'partial', 'optional',
         { special symbols }
         ':=', '+', '-', '*', '**', '/', '^',
         '=', '<>', '<', '>', '<=', '>=',
@@ -295,7 +295,11 @@ begin
             case ctx.Cursor[1] of
                 'f','F': if ctx.IsSeparator(ctx.Cursor[2]) then found := rwOf;
                 'n','N': if ctx.IsSeparator(ctx.Cursor[2]) then found := rwOn;
-                'p','P': maybe := rwOperator;
+                'p','P':
+                    if (ctx.Cursor[2] in ['t','T']) and (ctx.Cursor[3] in ['i','I']) and (ctx.Cursor[4] in ['o','O']) and (ctx.Cursor[5] in ['n','N']) and (ctx.Cursor[6] in ['a','A']) and (ctx.Cursor[7] in ['l','L']) then
+                        maybe := rwOptional
+                    else
+                        maybe := rwOperator;
                 'r','R': if ctx.IsSeparator(ctx.Cursor[2]) then found := rwOr;
                 't','T': maybe := rwOtherwise;
                 'u','U': maybe := rwOut;
@@ -377,6 +381,9 @@ begin
         maybe := rwUnknown;
 
     if not (mfPartialRecords in Features[ctx.mode]) and (maybe = rwPartial) then
+        maybe := rwUnknown;
+
+    if not (mfOptionalTypes in Features[ctx.mode]) and (maybe = rwOptional) then
         maybe := rwUnknown;
 
     if (maybe <> rwUnknown) and PeekReservedWord(ctx, ReservedWordStr[ord(maybe)]) then

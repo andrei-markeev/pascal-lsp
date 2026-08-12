@@ -122,10 +122,12 @@ begin
     partialRW := nil;
     packedRW := nil;
 
-    while nextTokenKind.reservedWordKind in [rwPartial, rwPacked] do
+    while nextTokenKind.reservedWordKind in [rwPartial, rwPacked, rwOptional] do
     begin
         if nextTokenKind.reservedWordKind = rwPartial then
             partialRW := TReservedWord.Create(ctx, rwPartial, true)
+        else if nextTokenKind.reservedWordKind = rwOptional then
+            TReservedWord.Create(ctx, rwOptional, true)
         else
             packedRW := TReservedWord.Create(ctx, rwPacked, true);
         nextTokenKind := DetermineNextTokenKind(ctx);
