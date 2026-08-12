@@ -9,7 +9,7 @@ uses
     strings, CompilationMode, ParserContext, Token;
 
 const
-    NUM_OF_RESERVED_WORDS = 97;
+    NUM_OF_RESERVED_WORDS = 98;
 
 type
     TReservedWordKind = (
@@ -49,13 +49,19 @@ type
         rwAs, rwClass, rwDispinterface, rwExcept, rwExports, rwFinalization, rwFinally, rwInitialization,
         rwIs, rwLibrary, rwOn, rwOut, rwProperty, rwRaise, rwResourcestring, rwThreadvar, rwTry,
         { universal pascal reserved words }
-        rwPointer,
+        rwPointer, rwPartial,
         { special symbols }
         rwAssign, rwPlus, rwMinus, rwMultiply, rwExponentiation, rwDivide, rwHat,
         rwEquals, rwNotEqual, rwLess, rwMore, rwLessOrEqual, rwMoreOrEqual,
         rwOpenParenthesis, rwCloseParenthesis, rwOpenSquareBracket, rwCloseSquareBracket,
         rwDot, rwComma, rwColon, rwSemiColon, rwRange, rwAt, rwShl2, rwShr2, rwSymmetricDifference
     );
+
+const
+    RW_FIRST_KEYWORD = rwAnd;
+    RW_LAST_KEYWORD = rwPartial;
+
+type
     TReservedWord = class(TToken)
     public
         kind: TReservedWordKind;
@@ -65,6 +71,7 @@ type
 function DetermineReservedWord(ctx: TParserContext): TReservedWordKind;
 function PeekReservedWord(ctx: TParserContext; kind: TReservedWordKind): boolean;
 function PeekReservedWord(ctx: TParserContext; expected: string): boolean; inline;
+function IsKeyword(rwKind: TReservedWordKind): boolean; inline;
 
 const
     ReservedWordStr: array [0..NUM_OF_RESERVED_WORDS - 1] of shortstring = (
@@ -104,7 +111,7 @@ const
         'as', 'class', 'dispinterface', 'except', 'exports', 'finalization', 'finally', 'initialization',
         'is', 'library', 'on', 'out', 'property', 'raise', 'resourcestring', 'threadvar', 'try',
         { universal pascal reserved words }
-        'pointer',
+        'pointer', 'partial',
         { special symbols }
         ':=', '+', '-', '*', '**', '/', '^',
         '=', '<>', '<', '>', '<=', '>=',
@@ -147,6 +154,11 @@ begin
         rwAs, rwClass, rwDispinterface, rwExcept, rwExports, rwFinalization, rwFinally, rwInitialization,
         rwIs, rwLibrary, rwOn, rwOut, rwProperty, rwRaise, rwResourcestring, rwThreadvar, rwTry
     ];
+end;
+
+function IsKeyword(rwKind: TReservedWordKind): boolean; inline;
+begin
+    IsKeyword := rwKind in [RW_FIRST_KEYWORD..RW_LAST_KEYWORD];
 end;
 
 function PeekReservedWord(ctx: TParserContext; expected: string): boolean; inline;
@@ -290,7 +302,11 @@ begin
             end;
         'p','P':
             case ctx.Cursor[1] of
-                'a','A': maybe := rwPacked;
+                'a','A':
+                    if (ctx.Cursor[2] in ['r','R']) and (ctx.Cursor[3] in ['t','T']) and (ctx.Cursor[4] in ['i','I']) and (ctx.Cursor[5] in ['a','A']) and (ctx.Cursor[6] in ['l','L']) then
+                        maybe := rwPartial
+                    else
+                        maybe := rwPacked;
                 'o','O':
                     if (ctx.Cursor[2] in ['i','I']) and (ctx.Cursor[3] in ['n','N']) and (ctx.Cursor[4] in ['t','T']) and (ctx.Cursor[5] in ['e','E']) and (ctx.Cursor[6] in ['r','R']) then
                         maybe := rwPointer;
@@ -358,6 +374,9 @@ begin
         maybe := rwUnknown;
 
     if not (mfPointerTo in Features[ctx.mode]) and (maybe = rwPointer) then
+        maybe := rwUnknown;
+
+    if not (mfPartialRecords in Features[ctx.mode]) and (maybe = rwPartial) then
         maybe := rwUnknown;
 
     if (maybe <> rwUnknown) and PeekReservedWord(ctx, ReservedWordStr[ord(maybe)]) then

@@ -1,0 +1,14 @@
+{$mode universalpascal}
+<UnitFile><RW>unit</RW> <SymbDecl>BadPartialRecordInstantiation</SymbDecl><RW>;</RW>
+
+<RW>interface</RW>
+
+<TUsesClause><RW>uses</RW>
+    <Ident>GoodPartialRecord</Ident><RW>;</RW></TUsesClause><InterfaceBlock>
+
+<VarSection><RW>var</RW>
+    <VarDecl ERROR="Partial record cannot be instantiated outside of the defining unit!"><SymbDecl>r</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TMyPartialRecord</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection></InterfaceBlock>
+
+<RW>implementation</RW>
+
+<ImplementationBlock><RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

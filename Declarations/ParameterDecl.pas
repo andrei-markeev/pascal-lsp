@@ -20,7 +20,7 @@ type
 implementation
 
 uses
-    CompilationMode, TypeDefs, ReservedWord, TypeSpec, ConstValue;
+    CompilationMode, TypeDefs, ReservedWord, TypeSpec, ConstValue, RecordTypeDef;
 
 constructor TParameterDecl.Create(ctx: TParserContext);
 var
@@ -112,6 +112,8 @@ begin
         TTypeSpec.Create(ctx, symbols, typeDef);
         for i := 0 to l - 1 do
             symbols[i].typeDef := typeDef;
+
+        CheckPartialRecordInstantiation(ctx, typeDef, Self);
 
         if PeekReservedWord(ctx, rwEquals) then
         begin

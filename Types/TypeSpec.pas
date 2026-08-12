@@ -110,7 +110,7 @@ var
     identName: shortstring;
     symbol: TSymbol;
     found: pointer;
-    packedRW, pointerRW: TReservedWord;
+    packedRW, pointerRW, partialRW: TReservedWord;
 begin
     ctx.SkipTrivia;
     ctx.Add(Self);
@@ -119,16 +119,28 @@ begin
 
     nextTokenKind := DetermineNextTokenKind(ctx);
 
-    if nextTokenKind.reservedWordKind = rwPacked then
+    partialRW := nil;
+    packedRW := nil;
+
+    while nextTokenKind.reservedWordKind in [rwPartial, rwPacked] do
     begin
-        packedRW := TReservedWord.Create(ctx, rwPacked, true);
+        if nextTokenKind.reservedWordKind = rwPartial then
+            partialRW := TReservedWord.Create(ctx, rwPartial, true)
+        else
+            packedRW := TReservedWord.Create(ctx, rwPacked, true);
         nextTokenKind := DetermineNextTokenKind(ctx);
-        if not (nextTokenKind.reservedWordKind in [rwRecord, rwSet, rwArray]) then
-        begin
-            packedRW.state := tsError;
-            packedRW.errorMessage := 'Expected record, set or array after packed';
-            nextTokenKind := DetermineNextTokenKind(ctx);
-        end;
+    end;
+
+    if (partialRW <> nil) and (nextTokenKind.reservedWordKind <> rwRecord) then
+    begin
+        partialRW.state := tsError;
+        partialRW.errorMessage := 'Expected record after partial';
+    end;
+
+    if (packedRW <> nil) and not (nextTokenKind.reservedWordKind in [rwRecord, rwSet, rwArray]) then
+    begin
+        packedRW.state := tsError;
+        packedRW.errorMessage := 'Expected record, set or array after packed';
     end;
 
     case nextTokenKind.primitiveKind of
@@ -209,7 +221,7 @@ begin
                 rwObject: ; // TODO: implement ObjectSpec
                 rwRecord:
                     begin
-                        TRecordSpec.Create(ctx, parentSymbols, typeDefToFill);
+                        TRecordSpec.Create(ctx, parentSymbols, typeDefToFill, partialRW <> nil);
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
                         exit;

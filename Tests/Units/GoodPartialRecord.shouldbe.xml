@@ -1,0 +1,26 @@
+{$mode universalpascal}
+<UnitFile><RW>unit</RW> <SymbDecl>GoodPartialRecord</SymbDecl><RW>;</RW>
+
+<RW>interface</RW>
+
+<InterfaceBlock><TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TMyPartialRecord</SymbDecl> <RW>=</RW> <TypeSpec><RW>partial</RW> <RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection></InterfaceBlock>
+
+<RW>implementation</RW>
+
+<ImplementationBlock><TypeSection><RW>type</RW>
+    <TypeDecl><SymbRef>TMyPartialRecord</SymbRef> <RW>=</RW> <TypeSpec><RW>partial</RW> <RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Procedure><RW>procedure</RW> <SymbDecl>Test</SymbDecl><RW>;</RW>
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>r</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TMyPartialRecord</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><VarRef><SymbRef>r</SymbRef><RW>.</RW><SymbRef>x</SymbRef></VarRef> <RW>:=</RW> <Num>10</Num></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>r</SymbRef><RW>.</RW><SymbRef>y</SymbRef></VarRef> <RW>:=</RW> <Str>'hello'</Str></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

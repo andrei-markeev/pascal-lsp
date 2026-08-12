@@ -203,7 +203,7 @@ begin
       
       if tName = 'RW' then
       begin
-        if (TReservedWord(curToken).kind >= rwAnd) and (TReservedWord(curToken).kind <= rwTry) then
+        if IsKeyword(TReservedWord(curToken).kind) then
         begin
           tokenType := 10; // keyword
         end

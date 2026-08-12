@@ -1,0 +1,18 @@
+{$mode universalpascal}
+<UnitFile><RW>unit</RW> <SymbDecl>BadPartialRecordDuplicateField</SymbDecl><RW>;</RW>
+
+<RW>interface</RW>
+
+<InterfaceBlock><TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TMyPartialRecord</SymbDecl> <RW>=</RW> <TypeSpec><RW>partial</RW> <RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection></InterfaceBlock>
+
+<RW>implementation</RW>
+
+<ImplementationBlock><TypeSection><RW>type</RW>
+    <TypeDecl><SymbRef>TMyPartialRecord</SymbRef> <RW>=</RW> <TypeSpec><RW>partial</RW> <RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl ERROR="Field 'x' already defined in record!">x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

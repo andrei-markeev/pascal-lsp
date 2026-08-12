@@ -11,7 +11,7 @@ uses
 type
     TRecordSpec = class(TTypedToken)
     public
-        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef);
+        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef; isPartial: boolean = false);
     end;
 
 implementation
@@ -40,9 +40,17 @@ begin
             fieldDecl := TVarDecl.Create(ctx, parentSymbols);
             for i := 0 to length(fieldDecl.idents) - 1 do
             begin
-                recTypeDef.AddMember(fieldDecl.idents[i].GetStr(), fieldDecl.varType);
-                if fieldDecl.varType <> nil then
-                    inc(recTypeDef.size, fieldDecl.varType.size);
+                if recTypeDef.FindMember(fieldDecl.idents[i].GetStr()) <> nil then
+                begin
+                    fieldDecl.idents[i].state := tsError;
+                    fieldDecl.idents[i].errorMessage := 'Field ''' + fieldDecl.idents[i].GetStr() + ''' already defined in record!';
+                end
+                else
+                begin
+                    recTypeDef.AddMember(fieldDecl.idents[i].GetStr(), fieldDecl.varType);
+                    if fieldDecl.varType <> nil then
+                        inc(recTypeDef.size, fieldDecl.varType.size);
+                end;
             end;
             nextTokenKind := DetermineNextTokenKind(ctx);
             if nextTokenKind.reservedWordKind in [endKind, rwEnd] then
@@ -71,9 +79,17 @@ begin
                         tagSymbols[p] := RegisterSymbol(tagIdent, parentSymbols[p], skVariable, tagType, ctx.Cursor);
                     
                     TTypeSpec.Create(ctx, tagSymbols, tagType);
-                    recTypeDef.AddMember(tagIdent.GetStr(), tagType);
-                    if tagType <> nil then
-                        inc(recTypeDef.size, tagType.size);
+                    if recTypeDef.FindMember(tagIdent.GetStr()) <> nil then
+                    begin
+                        tagIdent.state := tsError;
+                        tagIdent.errorMessage := 'Field ''' + tagIdent.GetStr() + ''' already defined in record!';
+                    end
+                    else
+                    begin
+                        recTypeDef.AddMember(tagIdent.GetStr(), tagType);
+                        if tagType <> nil then
+                            inc(recTypeDef.size, tagType.size);
+                    end;
                 end
                 else
                 begin
@@ -141,14 +157,26 @@ begin
     end;
 end;
 
-constructor TRecordSpec.Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef);
+constructor TRecordSpec.Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef; isPartial: boolean);
+var
+    recTypeDef: TRecordTypeDef;
 begin
     ctx.Add(Self);
     tokenName := 'RecordSpec';
     start := ctx.Cursor;
     state := tsCorrect;
 
-    typeDefToFill := TRecordTypeDef.Create(ctx);
+    if (typeDefToFill <> nil) and (typeDefToFill.kind = tkRecord) and TRecordTypeDef(typeDefToFill).isPartial then
+    begin
+        recTypeDef := TRecordTypeDef(typeDefToFill);
+    end
+    else
+    begin
+        typeDefToFill := TRecordTypeDef.Create(ctx);
+        recTypeDef := TRecordTypeDef(typeDefToFill);
+        recTypeDef.isPartial := isPartial;
+        recTypeDef.definingUnit := ctx.parseUnit;
+    end;
 
     TReservedWord.Create(ctx, rwRecord, true);
 

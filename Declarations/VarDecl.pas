@@ -22,7 +22,7 @@ type
 implementation
 
 uses
-    CompilationMode;
+    CompilationMode, RecordTypeDef;
 
 procedure TVarDecl.ParseDefaultValue(ctx: TParserContext);
 var
@@ -106,6 +106,8 @@ begin
     for p := 0 to length(parentSymbols) - 1 do
         for i := 0 to l - 1 do
             symbols[i + p * l].typeDef := varType;
+
+    CheckPartialRecordInstantiation(ctx, varType, Self);
 
     ParseDefaultValue(ctx);
 
