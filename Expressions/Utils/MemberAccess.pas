@@ -14,7 +14,7 @@ procedure ParseDotAccess(ctx: TParserContext; ref: TVarRef);
 implementation
 
 uses
-    sysutils, Token, Identifier, TypeDefs, Symbols, ClassTypeDef, RecordTypeDef, ObjectTypeDef;
+    sysutils, CompilationMode, Token, Identifier, TypeDefs, Symbols, ClassTypeDef, RecordTypeDef, ObjectTypeDef, PointerTypeDef;
 
 function FindMemberInType(targetType: TTypeDef; const memberName: string; out declaringType: TTypeDef): pointer;
 var
@@ -123,6 +123,12 @@ var
     curType, targetType: TTypeDef;
     found: pointer;
 begin
+    if mfImplicitDereference in Features[ctx.mode] then
+    begin
+        while (ref.typeDef <> nil) and (ref.typeDef is TPointerTypeDef) and TPointerTypeDef(ref.typeDef).isTyped and (TPointerTypeDef(ref.typeDef).pointerToType <> nil) do
+            ref.typeDef := TPointerTypeDef(ref.typeDef).pointerToType;
+    end;
+
     if (ref.typeDef = nil) or not (ref.typeDef.kind in [tkRecord, tkClass, tkObject]) then
     begin
         SetString(text, ref.start, ctx.Cursor - ref.start - 1);

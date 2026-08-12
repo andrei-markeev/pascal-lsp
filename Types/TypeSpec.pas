@@ -20,7 +20,7 @@ function CreateTypeSpec(ctx: TParserContext; var typeDefToFill: TTypeDef): TType
 implementation
 
 uses
-    Anchors, ReservedWord,
+    CompilationMode, Anchors, ReservedWord,
     EnumSpec, RangeSpec, ArraySpec, SetSpec, RecordSpec, ClassSpec, PointerSpec, FileSpec;
 
 function CreateTypeSpec(ctx: TParserContext; var typeDefToFill: TTypeDef): TTypeSpec;
@@ -110,7 +110,7 @@ var
     identName: shortstring;
     symbol: TSymbol;
     found: pointer;
-    packedRW: TReservedWord;
+    packedRW, pointerRW: TReservedWord;
 begin
     ctx.SkipTrivia;
     ctx.Add(Self);
@@ -242,6 +242,24 @@ begin
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
                         exit;
+                    end;
+                rwPointer:
+                    begin
+                        pointerRW := TReservedWord.Create(ctx, rwPointer, true);
+                        if PeekReservedWord(ctx, rwTo) then
+                        begin
+                            TPointerSpec.Create(ctx, pointerRW, typeDefToFill);
+                            state := tsCorrect;
+                            ctx.MarkEndOfToken(Self);
+                            exit;
+                        end
+                        else
+                        begin
+                            typeDefToFill := pointer64Type;
+                            state := tsCorrect;
+                            ctx.MarkEndOfToken(Self);
+                            exit;
+                        end;
                     end;
                 rwHat:
                     begin

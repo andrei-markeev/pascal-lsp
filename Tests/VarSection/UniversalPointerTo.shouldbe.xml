@@ -1,0 +1,23 @@
+<ProgramFile><RW>program</RW> <SymbDecl>UniversalPointerTo</SymbDecl><RW>;</RW>
+
+{$mode universalpascal}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>PInteger</SymbDecl> <RW>=</RW> <TypeSpec><PointerSpec><RW>pointer</RW> <RW>to</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></PointerSpec></TypeSpec></TypeDecl><RW>;</RW>
+    <TypeDecl><SymbDecl>TIntArray</SymbDecl> <RW>=</RW> <TypeSpec><ArraySpec><RW>array</RW><RW>[</RW><TypeSpec><RangeSpec><Num>1</Num><RW>..</RW><Num>10</Num></RangeSpec></TypeSpec><RW>]</RW> <RW>of</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ArraySpec></TypeSpec></TypeDecl><RW>;</RW>
+    <TypeDecl><SymbDecl>PIntArray</SymbDecl> <RW>=</RW> <TypeSpec><PointerSpec><RW>pointer</RW> <RW>to</RW> <TypeSpec><SymbRef>TIntArray</SymbRef></TypeSpec></PointerSpec></TypeSpec></TypeDecl><RW>;</RW>
+    <TypeDecl><SymbDecl>TNode</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>value</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>next</SymbDecl><RW>:</RW> <TypeSpec><PointerSpec><RW>pointer</RW> <RW>to</RW> <TypeSpec><SymbRef>TNode</SymbRef></TypeSpec></PointerSpec></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>pArr</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>PIntArray</SymbRef></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>pNode</SymbDecl><RW>:</RW> <TypeSpec><PointerSpec><RW>pointer</RW> <RW>to</RW> <TypeSpec><SymbRef>TNode</SymbRef></TypeSpec></PointerSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>val</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>val</SymbRef> <RW>:=</RW> <VarRef><SymbRef>pArr</SymbRef><RW>[</RW><Num>1</Num><RW>]</RW></VarRef></Assignment><RW>;</RW>
+    <Assignment><SymbRef>val</SymbRef> <RW>:=</RW> <VarRef><SymbRef>pNode</SymbRef><RW>.</RW><SymbRef>value</SymbRef></VarRef></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>pNode</SymbRef><RW>.</RW><SymbRef>value</SymbRef></VarRef> <RW>:=</RW> <Num>10</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

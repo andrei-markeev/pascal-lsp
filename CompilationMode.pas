@@ -46,7 +46,8 @@ type
         mfUntypedFiles,           // untyped 'file' type specification
         mfOptionalTypes,          // 'optional' types
         mfPointerTo,              // 'pointer to' instead of '^' in type definitions
-        mfImplicitDereference,    // explicit dereference with '^' is banned
+        mfImplicitDereference,    // implicit dereference on array indexing or member access
+        mfNoExplicitDereference,  // explicit dereference with '^' is banned
         mfPartialRecords,         // 'partial' records (hiding private fields in implementation)
         mfOberonMethodSyntax      // Oberon/Go-like method syntax e.g. `procedure (var self: TMyClass) Add(item: integer);`
     );
@@ -82,7 +83,8 @@ const
          mfArrayConstructors, mfExtendedTypecasting, mfBasicTypecasting, mfCallAsVarRef,
          mfUSCDPascalKeywords, mfTurboPascalKeywords, mfObjectPascalKeywords, mfExtendedPascalKeywords, mfStringCaseLabels,
          mfCaseRanges, mfCaseElseClause, mfCaseOtherwiseClause, mfAtOperator, mfBitwiseOperators, mfExponentiationOperator,
-         mfSymmetricDifference, mfShlShrOperators, mfClassModifiers, mfProtectedVisibility, mfUntypedFiles],
+         mfSymmetricDifference, mfShlShrOperators, mfClassModifiers, mfProtectedVisibility, mfUntypedFiles,
+         mfImplicitDereference],
 
         // cmDelphi
         [mfHexNumbers, mfArrayLiterals, mfFunctionResultVariable, mfParenthesizedConstExpr, mfStaticMethods,
@@ -90,11 +92,12 @@ const
          mfAnsiStringDefault, mfArrayConstructors, mfExtendedTypecasting, mfBasicTypecasting, mfCallAsVarRef,
          mfUSCDPascalKeywords, mfTurboPascalKeywords, mfObjectPascalKeywords, mfExtendedPascalKeywords, mfStringCaseLabels,
          mfCaseRanges, mfCaseElseClause, mfCaseOtherwiseClause, mfAtOperator, mfBitwiseOperators, mfExponentiationOperator,
-         mfSymmetricDifference, mfShlShrOperators, mfClassModifiers, mfProtectedVisibility, mfUntypedFiles],
+         mfSymmetricDifference, mfShlShrOperators, mfClassModifiers, mfProtectedVisibility, mfUntypedFiles, 
+         mfImplicitDereference],
 
         // cmUniversalPascal
         [mfBasicTypecasting, mfUSCDPascalKeywords, mfCaseElseClause, mfCallAsVarRef, mfOptionalTypes, mfPointerTo,
-         mfImplicitDereference, mfPartialRecords, mfOberonMethodSyntax]
+         mfImplicitDereference, mfNoExplicitDereference, mfPartialRecords, mfOberonMethodSyntax]
     );
 
 implementation

@@ -9,7 +9,7 @@ uses
     strings, CompilationMode, ParserContext, Token;
 
 const
-    NUM_OF_RESERVED_WORDS = 96;
+    NUM_OF_RESERVED_WORDS = 97;
 
 type
     TReservedWordKind = (
@@ -23,10 +23,10 @@ type
         rwFile, rwFor, rwFunction,
         rwGoto,
         rwIf, rwIn,
-        rwLabel,
+        rwLabel, 
         rwMod,
         rwNil, rwNot,
-        rwOf, rwOr,
+        rwOf, rwOr, 
         rwPacked, rwProcedure, rwProgram,
         rwRecord, rwRepeat,
         rwSet,
@@ -48,6 +48,8 @@ type
         { object pascal reserved words }
         rwAs, rwClass, rwDispinterface, rwExcept, rwExports, rwFinalization, rwFinally, rwInitialization,
         rwIs, rwLibrary, rwOn, rwOut, rwProperty, rwRaise, rwResourcestring, rwThreadvar, rwTry,
+        { universal pascal reserved words }
+        rwPointer,
         { special symbols }
         rwAssign, rwPlus, rwMinus, rwMultiply, rwExponentiation, rwDivide, rwHat,
         rwEquals, rwNotEqual, rwLess, rwMore, rwLessOrEqual, rwMoreOrEqual,
@@ -101,6 +103,8 @@ const
         { object pascal reserved words }
         'as', 'class', 'dispinterface', 'except', 'exports', 'finalization', 'finally', 'initialization',
         'is', 'library', 'on', 'out', 'property', 'raise', 'resourcestring', 'threadvar', 'try',
+        { universal pascal reserved words }
+        'pointer',
         { special symbols }
         ':=', '+', '-', '*', '**', '/', '^',
         '=', '<>', '<', '>', '<=', '>=',
@@ -287,6 +291,9 @@ begin
         'p','P':
             case ctx.Cursor[1] of
                 'a','A': maybe := rwPacked;
+                'o','O':
+                    if (ctx.Cursor[2] in ['i','I']) and (ctx.Cursor[3] in ['n','N']) and (ctx.Cursor[4] in ['t','T']) and (ctx.Cursor[5] in ['e','E']) and (ctx.Cursor[6] in ['r','R']) then
+                        maybe := rwPointer;
                 'r','R': if ctx.Cursor[2] in ['o','O'] then
                     case ctx.Cursor[3] of
                         'c','C': maybe := rwProcedure;
@@ -348,6 +355,9 @@ begin
         maybe := rwUnknown;
 
     if not (mfExtendedPascalKeywords in Features[ctx.mode]) and IsExtendedPascalKeyword(maybe) then
+        maybe := rwUnknown;
+
+    if not (mfPointerTo in Features[ctx.mode]) and (maybe = rwPointer) then
         maybe := rwUnknown;
 
     if (maybe <> rwUnknown) and PeekReservedWord(ctx, ReservedWordStr[ord(maybe)]) then

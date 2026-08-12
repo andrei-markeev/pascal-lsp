@@ -57,6 +57,12 @@ var
 begin
     reservedWordToken := TReservedWord.Create(ctx, rwOpenSquareBracket, true);
 
+    if mfImplicitDereference in Features[ctx.mode] then
+    begin
+        while (typeDef <> nil) and (typeDef is TPointerTypeDef) and TPointerTypeDef(typeDef).isTyped and (TPointerTypeDef(typeDef).pointerToType <> nil) do
+            typeDef := TPointerTypeDef(typeDef).pointerToType;
+    end;
+
     if (typeDef <> nil) and (typeDef.kind = tkClass) then
     begin
         curType := typeDef;
@@ -120,7 +126,18 @@ end;
 procedure TVarRef.ParsePointerDereference(ctx: TParserContext);
 var
     text: string;
+    hatRW: TReservedWord;
 begin
+    if mfNoExplicitDereference in Features[ctx.mode] then
+    begin
+        hatRW := TReservedWord.Create(ctx, rwHat, true);
+        hatRW.state := tsError;
+        hatRW.errorMessage := 'Explicit dereference "^" is not allowed in this compilation mode';
+        state := tsError;
+        errorMessage := 'Explicit dereference "^" is not allowed in this compilation mode';
+        isSimple := false;
+        exit;
+    end;
     if (typeDef = nil) or (typeDef.kind <> tkPointer) then
     begin
         state := tsError;

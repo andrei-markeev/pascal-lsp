@@ -148,7 +148,9 @@ begin
                     else if (strlicomp(Cursor, PChar('objfpc'), 6) = 0) and (Cursor[6] in [' ',#9,'}']) then
                         mode := cmObjectFreePascal
                     else if (strlicomp(Cursor, PChar('delphi'), 6) = 0) and (Cursor[6] in [' ',#9,'}']) then
-                        mode := cmDelphi;
+                        mode := cmDelphi
+                    else if (strlicomp(Cursor, PChar('universalpascal'), 15) = 0) and (Cursor[15] in [' ',#9,'}']) then
+                        mode := cmUniversalPascal;
 
                     InitPredefinedTypes(mode);
                 end;
