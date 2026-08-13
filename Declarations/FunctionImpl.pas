@@ -16,13 +16,14 @@ type
         funcType: TTypeDef;
         selfType: TTypeDef;
         returnType: TTypeDef;
+        isOberonMethod: boolean;
         constructor Create(ctx: TParserContext);
     end;
 
 implementation
 
 uses
-    CompilationMode, ReservedWord, Scopes, Symbols, Parameters, TypeSpec, ParameterDecl, Block, FunctionDecl, RoutineTypeDef, RoutineEquivalence;
+    CompilationMode, ReservedWord, Scopes, Symbols, Parameters, TypeSpec, ParameterDecl, Block, FunctionDecl, RoutineTypeDef, RoutineEquivalence, StructuredTypeDef, PointerTypeDef;
 
 constructor TFunctionImpl.Create(ctx: TParserContext);
 var
@@ -43,6 +44,7 @@ var
     isMethodModifier, isFunctionModifier: boolean;
     ident: TIdentifier;
     isMethod: boolean;
+    receiverTypeDef: TTypeDef;
 begin
     ctx.Add(Self);
     tokenName := 'Function';
@@ -106,14 +108,44 @@ begin
             end;
     end;
 
-    selfType := nil;
-    symbolField := nil;
+    params := TParameterList.Create;
 
-    nameIdent := TIdentifier.Create(ctx, false);
-    typeIdent := nil;
-    needsToAddChildSymbols := false;
-    symbolParent := FindSymbol(nameIdent);
-    if (symbolParent <> nil) and (symbolParent.kind = skTypeName) then
+    selfType := nil;
+    symbolParent := nil;
+    symbolField := nil;
+    isOberonMethod := false;
+    if (mfOberonMethodSyntax in Features[ctx.mode]) and PeekReservedWord(ctx, rwOpenParenthesis) then
+    begin
+        isOberonMethod := true;
+        TReservedWord.Create(ctx, rwOpenParenthesis, true);
+        paramDecl := TParameterDecl.Create(ctx);
+        TReservedWord.Create(ctx, rwCloseParenthesis, false);
+
+        if paramDecl.typeDef <> nil then
+        begin
+            receiverTypeDef := paramDecl.typeDef;
+            if (receiverTypeDef is TPointerTypeDef) and (TPointerTypeDef(receiverTypeDef).pointerToType <> nil) then
+                receiverTypeDef := TPointerTypeDef(receiverTypeDef).pointerToType;
+            if receiverTypeDef.typeSymbol <> nil then
+                symbolParent := TSymbol(receiverTypeDef.typeSymbol);
+        end;
+
+        nameIdent := TIdentifier.Create(ctx, false);
+        if (symbolParent <> nil) and (nameIdent.state = tsCorrect) then
+        begin
+            SetString(s, nameIdent.start, nameIdent.len);
+            symbolField := FindSymbol(symbolParent, s, ctx.Cursor);
+        end;
+    end
+    else
+    begin
+        nameIdent := TIdentifier.Create(ctx, false);
+        typeIdent := nil;
+        needsToAddChildSymbols := false;
+        symbolParent := FindSymbol(nameIdent);
+    end;
+
+    if not isOberonMethod and (symbolParent <> nil) and (symbolParent.kind = skTypeName) then
     begin
         typeIdent := nameIdent;
         symbolParent.AddReference(typeIdent);
@@ -152,8 +184,6 @@ begin
             typeIdent.errorMessage := 'Previously declared type identifier is used as a ' + LowerCase(tokenName) + ' name!';
         end;
     end;
-
-    params := TParameterList.Create;
 
     hasOpenParenthesis := false;
     nextReservedWordKind := DetermineReservedWord(ctx);
@@ -334,6 +364,12 @@ begin
             if not funcModifiers.forward then
                 symbol.implRangeToken := Self;
         end;
+    end;
+
+    if isOberonMethod and (symbolParent <> nil) and (symbolParent.typeDef <> nil) and (symbolParent.typeDef is TStructuredTypeDef) then
+    begin
+        if TStructuredTypeDef(symbolParent.typeDef).FindMember(nameIdent.GetStr()) = nil then
+            TStructuredTypeDef(symbolParent.typeDef).AddMember(nameIdent.GetStr(), funcType);
     end;
 
     if funcModifiers.forward then

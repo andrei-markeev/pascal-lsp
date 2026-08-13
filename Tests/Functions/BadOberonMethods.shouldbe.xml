@@ -1,0 +1,21 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadOberonMethods</SymbDecl><RW>;</RW>
+{$mode universalpascal}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TPoint</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<Procedure><RW>procedure</RW> <RW>(</RW><ParameterDecl><RW>var</RW> <SymbDecl>self</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TPoint</SymbRef></TypeSpec></ParameterDecl><RW>)</RW> <Ident>Move</Ident><RW>(</RW><ParameterDecl><SymbDecl>dx</SymbDecl><RW>,</RW> <SymbDecl>dy</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><VarRef><SymbRef>self</SymbRef><RW>.</RW><SymbRef>x</SymbRef></VarRef> <RW>:=</RW> <SimpleExpression><VarRef><SymbRef>self</SymbRef><RW>.</RW><SymbRef>x</SymbRef></VarRef> <RW>+</RW> <SymbRef>dx</SymbRef></SimpleExpression></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>self</SymbRef><RW>.</RW><SymbRef>y</SymbRef></VarRef> <RW>:=</RW> <SimpleExpression><VarRef><SymbRef>self</SymbRef><RW>.</RW><SymbRef>y</SymbRef></VarRef> <RW>+</RW> <SymbRef>dy</SymbRef></SimpleExpression></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>pt</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TPoint</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Call ERROR="Expected 2 parameters, but got 1"><VarRef><SymbRef>pt</SymbRef><RW>.</RW><Ident>Move</Ident></VarRef><RW>(</RW><Num>10</Num><RW>)</RW></Call><RW>;</RW>
+    <Call><VarRef><SymbRef>pt</SymbRef><RW>.</RW><Ident ERROR="Field or method with the name 'NonExistingMethod' was not found!">NonExistingMethod</Ident></VarRef><RW>(</RW><Num>10</Num><RW>)</RW></Call><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

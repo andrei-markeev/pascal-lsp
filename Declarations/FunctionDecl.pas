@@ -16,13 +16,14 @@ type
         returnType: TTypeDef;
         funcModifiers: TFunctionModifiers;
         methodModifiers: TMethodModifiers;
+        isOberonMethod: boolean;
         constructor Create(ctx: TParserContext; functionRWKind: TReservedWordKind; parentSymbols: array of TSymbol);
     end;
 
 implementation
 
 uses
-    CompilationMode, Scopes, TypeSpec, ParameterDecl, RoutineTypeDef;
+    CompilationMode, Scopes, TypeSpec, ParameterDecl, RoutineTypeDef, StructuredTypeDef, PointerTypeDef;
 
 constructor TFunctionDecl.Create(ctx: TParserContext; functionRWKind: TReservedWordKind; parentSymbols: array of TSymbol);
 var
@@ -38,8 +39,9 @@ var
     hasMoreParams: boolean;
     isMethodModifier, isFunctionModifier: boolean;
     overrideResult: TTryAddOverrideResult;
-    symbol, firstParent: TSymbol;
+    symbol, firstParent, oberonReceiver: TSymbol;
     routineTypeDef: TRoutineTypeDef;
+    receiverTypeDef: TTypeDef;
 begin
     ctx.Add(Self);
     tokenName := 'FunctionDecl';
@@ -86,6 +88,28 @@ begin
             end;
     end;
 
+    params := TParameterList.Create;
+
+    isOberonMethod := false;
+    oberonReceiver := nil;
+    if (mfOberonMethodSyntax in Features[ctx.mode]) and PeekReservedWord(ctx, rwOpenParenthesis) then
+    begin
+        isOberonMethod := true;
+
+        TReservedWord.Create(ctx, rwOpenParenthesis, true);
+        paramDecl := TParameterDecl.Create(ctx);
+        TReservedWord.Create(ctx, rwCloseParenthesis, false);
+
+        if paramDecl.typeDef <> nil then
+        begin
+            receiverTypeDef := paramDecl.typeDef;
+            if (receiverTypeDef is TPointerTypeDef) and (TPointerTypeDef(receiverTypeDef).pointerToType <> nil) then
+                receiverTypeDef := TPointerTypeDef(receiverTypeDef).pointerToType;
+            if receiverTypeDef.typeSymbol <> nil then
+                oberonReceiver := TSymbol(receiverTypeDef.typeSymbol);
+        end;
+    end;
+
     nameIdent := TIdentifier.Create(ctx, false);
 
     SetString(s, nameIdent.start, nameIdent.len);
@@ -94,8 +118,6 @@ begin
         nameIdent.state := tsError;
         nameIdent.errorMessage := 'Destructor must be called ''Destroy''!';
     end;
-
-    params := TParameterList.Create;
 
     nextReservedWordKind := DetermineReservedWord(ctx);
     if nextReservedWordKind = rwOpenParenthesis then
@@ -132,8 +154,8 @@ begin
 
     routineTypeDef.parameters := params;
 
-    firstParent := nil;
-    if length(parentSymbols) > 0 then
+    firstParent := oberonReceiver;
+    if (firstParent = nil) and (length(parentSymbols) > 0) then
         firstParent := parentSymbols[0];
 
     returnType := unknownType;
@@ -155,7 +177,17 @@ begin
     end
     else if overrideResult <> ovAdded then
     begin
-        if length(parentSymbols) = 0 then
+        if oberonReceiver <> nil then
+        begin
+            symbol := RegisterSymbol(nameIdent, oberonReceiver, symbolKind, funcType, ctx.Cursor);
+            symbol.rangeToken := Self;
+            if (oberonReceiver.typeDef <> nil) and (oberonReceiver.typeDef is TStructuredTypeDef) then
+            begin
+                if TStructuredTypeDef(oberonReceiver.typeDef).FindMember(nameIdent.GetStr()) = nil then
+                    TStructuredTypeDef(oberonReceiver.typeDef).AddMember(nameIdent.GetStr(), funcType);
+            end;
+        end
+        else if length(parentSymbols) = 0 then
         begin
             symbol := RegisterSymbol(nameIdent, nil, symbolKind, funcType, ctx.Cursor);
             symbol.rangeToken := Self;
@@ -224,7 +256,7 @@ begin
         ident := TIdentifier.Create(ctx, false);
         TReservedWord.Create(ctx, rwSemiColon, false);
 
-        if (length(parentSymbols) = 0) and isMethodModifier then
+        if (length(parentSymbols) = 0) and (oberonReceiver = nil) and isMethodModifier then
         begin
             ident.state := tsError;
             ident.errorMessage := 'Method modifier ''' + s + ''' can only be used with class and object methods!';
@@ -236,7 +268,7 @@ begin
             ident.errorMessage := '''static'' modifier is not supported in this compilation mode!';
         end;
 
-        if (length(parentSymbols) > 0) and (s = 'export') then
+        if ((length(parentSymbols) > 0) or (oberonReceiver <> nil)) and (s = 'export') then
         begin
             ident.state := tsError;
             ident.errorMessage := 'Methods cannot be exported!';
