@@ -1,0 +1,17 @@
+<UnitFile><RW>unit</RW> <SymbDecl>BadStringSpecTypes</SymbDecl><RW>;</RW>
+
+<RW>interface</RW>
+
+<InterfaceBlock><TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TBadReceiver</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>selfTypeName</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW><RW>[</RW><ConstValue><Num>32</Num></ConstValue><RW MISSING="]" /></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>nextField</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>badStr</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW><RW>[</RW><ConstValue><Num>10</Num></ConstValue><RW MISSING="]" /></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>validStr</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW><RW>[</RW><ConstValue><Num>20</Num></ConstValue><RW>]</RW></TypeSpec></VarDecl><RW>;</RW></VarSection></InterfaceBlock>
+
+<RW>implementation</RW>
+
+<ImplementationBlock><RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

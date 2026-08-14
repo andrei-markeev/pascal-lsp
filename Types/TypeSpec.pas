@@ -11,8 +11,7 @@ uses
 type
     TTypeSpec = class(TToken)
     public
-        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef); overload;
-        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef; ident: TIdentifier); overload;
+        constructor Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef; ident: TIdentifier = nil);
     end;
 
 function CreateTypeSpec(ctx: TParserContext; var typeDefToFill: TTypeDef): TTypeSpec;
@@ -20,7 +19,7 @@ function CreateTypeSpec(ctx: TParserContext; var typeDefToFill: TTypeDef): TType
 implementation
 
 uses
-    CompilationMode, Anchors, ReservedWord,
+    CompilationMode, Anchors, ReservedWord, ConstValue,
     EnumSpec, RangeSpec, ArraySpec, SetSpec, RecordSpec, ClassSpec, PointerSpec, FileSpec;
 
 function CreateTypeSpec(ctx: TParserContext; var typeDefToFill: TTypeDef): TTypeSpec;
@@ -103,18 +102,107 @@ begin
     Result := false;
 end;
 
-constructor TTypeSpec.Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef);
+procedure ParseIdentifierTypeSpec(ctx: TParserContext; spec: TTypeSpec; var typeDefToFill: TTypeDef; ident: TIdentifier; const identName: shortstring; nextTokenKind: TTokenKind);
 var
-    nextTokenKind: TTokenKind;
-    ident: TIdentifier;
-    identName: shortstring;
     symbol: TSymbol;
     found: pointer;
+begin
+    symbol := FindSymbol(identName, spec.start);
+    if symbol = nil then
+    begin
+        found := TypesList.Find(LowerCase(identName));
+        if found = nil then
+        begin
+            if ident = nil then
+                ident := TIdentifier.Create(ctx, false);
+            spec.state := tsError;
+            spec.errorMessage := 'Identifier has not been declared!';
+            ctx.MarkEndOfToken(spec);
+            exit;
+        end;
+
+        typeDefToFill := TTypeDef(found);
+        if ident = nil then
+            ident := TIdentifier.Create(ctx, false);
+        if (typeDefToFill = shortstringType) and PeekReservedWord(ctx, rwOpenSquareBracket) then
+        begin
+            TReservedWord.Create(ctx, rwOpenSquareBracket, true);
+            TConstValue.Create(ctx, DetermineNextTokenKind(ctx));
+            TReservedWord.Create(ctx, rwCloseSquareBracket, false);
+        end;
+        spec.state := tsCorrect;
+        ctx.MarkEndOfToken(spec);
+        exit;
+    end;
+
+    case symbol.kind of
+        skTypeName:
+            begin
+                typeDefToFill := symbol.typeDef;
+                if ident = nil then
+                    ident := TIdentifier.Create(ctx, false);
+                symbol.AddReference(ident);
+                if (typeDefToFill = shortstringType) and PeekReservedWord(ctx, rwOpenSquareBracket) then
+                begin
+                    TReservedWord.Create(ctx, rwOpenSquareBracket, true);
+                    TConstValue.Create(ctx, DetermineNextTokenKind(ctx));
+                    TReservedWord.Create(ctx, rwCloseSquareBracket, false);
+                end;
+                spec.state := tsCorrect;
+                ctx.MarkEndOfToken(spec);
+                exit;
+            end;
+        skUnitName:
+            begin
+                if ident = nil then
+                    ident := TIdentifier.Create(ctx, false);
+                symbol.AddReference(ident);
+                ParseUnitQualifiedType(ctx, spec, symbol, typeDefToFill);
+                exit;
+            end;
+        skConstant:
+            begin
+                if ident = nil then
+                begin
+                    TRangeSpec.Create(ctx, nextTokenKind, typeDefToFill);
+                    spec.state := tsCorrect;
+                end
+                else
+                begin
+                    spec.state := tsError;
+                    spec.errorMessage := 'Type expected!';
+                end;
+                ctx.MarkEndOfToken(spec);
+                exit;
+            end;
+    end;
+
+    if ident = nil then
+        ident := TIdentifier.Create(ctx, false);
+    symbol.AddReference(ident);
+    spec.state := tsError;
+    spec.errorMessage := 'Type expected!';
+    ctx.MarkEndOfToken(spec);
+end;
+
+constructor TTypeSpec.Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef; ident: TIdentifier = nil);
+var
+    nextTokenKind: TTokenKind;
+    identName: shortstring;
     packedRW, pointerRW, partialRW: TReservedWord;
 begin
+    tokenName := 'TypeSpec';
+
+    if ident <> nil then
+    begin
+        ctx.InsertBefore(ident, Self);
+        start := ident.start;
+        ParseIdentifierTypeSpec(ctx, Self, typeDefToFill, ident, ident.GetStr(), Default(TTokenKind));
+        exit;
+    end;
+
     ctx.SkipTrivia;
     ctx.Add(Self);
-    tokenName := 'TypeSpec';
     start := ctx.Cursor;
 
     nextTokenKind := DetermineNextTokenKind(ctx);
@@ -156,60 +244,8 @@ begin
         pkIdentifier:
             begin
                 identName := PeekIdentifier(ctx);
-                symbol := FindSymbol(identName, ctx.Cursor);
-                if symbol = nil then
-                begin
-                    found := TypesList.Find(LowerCase(identName));
-                    if found = nil then
-                    begin
-                        TIdentifier.Create(ctx, false);
-                        state := tsError;
-                        errorMessage := 'Identifier has not been declared!';
-                        ctx.MarkEndOfToken(Self);
-                        exit;
-                    end;
-
-                    typeDefToFill := TTypeDef(found);
-                    TIdentifier.Create(ctx, false);
-                    state := tsCorrect;
-                    ctx.MarkEndOfToken(Self);
-                    exit;
-                end;
-
-                case symbol.kind of
-                    skTypeName:
-                        begin
-                            typeDefToFill := symbol.typeDef;
-                            ident := TIdentifier.Create(ctx, false);
-                            symbol.AddReference(ident);
-                            state := tsCorrect;
-                            ctx.MarkEndOfToken(Self);
-                            exit;
-                        end;
-                    skUnitName:
-                        begin
-                            ident := TIdentifier.Create(ctx, false);
-                            symbol.AddReference(ident);
-                            ParseUnitQualifiedType(ctx, Self, symbol, typeDefToFill);
-                            exit;
-                        end;
-                    skConstant:
-                        begin
-                            start := ctx.Cursor;
-                            TRangeSpec.Create(ctx, nextTokenKind, typeDefToFill);
-                            state := tsCorrect;
-                            ctx.MarkEndOfToken(Self);
-                            exit;
-                        end;
-                end;
-
-                ident := TIdentifier.Create(ctx, false);
-                symbol.AddReference(ident);
-                state := tsError;
-                errorMessage := 'Type expected!';
-                ctx.MarkEndOfToken(Self);
+                ParseIdentifierTypeSpec(ctx, Self, typeDefToFill, nil, identName, nextTokenKind);
                 exit;
-
             end;
         pkUnknown:
             case nextTokenKind.reservedWordKind of
@@ -245,7 +281,19 @@ begin
                 rwString:
                     begin
                         TReservedWord.Create(ctx, rwString, true);
-                        typeDefToFill := ansiString64Type;
+                        if mfAnsiStringDefault in Features[ctx.mode] then
+                            typeDefToFill := ansiString64Type
+                        else
+                            typeDefToFill := shortstringType;
+
+                        if PeekReservedWord(ctx, rwOpenSquareBracket) then
+                        begin
+                            TReservedWord.Create(ctx, rwOpenSquareBracket, true);
+                            TConstValue.Create(ctx, DetermineNextTokenKind(ctx));
+                            TReservedWord.Create(ctx, rwCloseSquareBracket, false);
+                            typeDefToFill := shortstringType;
+                        end;
+
                         state := tsCorrect;
                         ctx.MarkEndOfToken(Self);
                         exit;
@@ -302,65 +350,6 @@ begin
     state := tsMissing;
     start := ctx.GetCursorBeforeTrivia;
     len := 0;
-end;
-
-constructor TTypeSpec.Create(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef; ident: TIdentifier);
-var
-    identName: shortstring;
-    symbol: TSymbol;
-    found: pointer;
-begin
-    ctx.InsertBefore(ident, Self);
-    tokenName := 'TypeSpec';
-    start := ident.start;
-
-    identName := ident.GetStr();
-    symbol := FindSymbol(identName, ident.start);
-    if symbol = nil then
-    begin
-        found := TypesList.Find(LowerCase(identName));
-        if found = nil then
-        begin
-            state := tsError;
-            errorMessage := 'Identifier has not been declared!';
-            ctx.MarkEndOfToken(Self);
-            exit;
-        end;
-
-        typeDefToFill := TTypeDef(found);
-        state := tsCorrect;
-        ctx.MarkEndOfToken(Self);
-        exit;
-    end;
-
-    case symbol.kind of
-        skTypeName:
-            begin
-                typeDefToFill := symbol.typeDef;
-                symbol.AddReference(ident);
-                state := tsCorrect;
-                ctx.MarkEndOfToken(Self);
-                exit;
-            end;
-        skUnitName:
-            begin
-                symbol.AddReference(ident);
-                ParseUnitQualifiedType(ctx, Self, symbol, typeDefToFill);
-                exit;
-            end;
-        skConstant:
-            begin
-                state := tsError;
-                errorMessage := 'Type expected!';
-                ctx.MarkEndOfToken(Self);
-                exit;
-            end;
-    end;
-
-    symbol.AddReference(ident);
-    state := tsError;
-    errorMessage := 'Type expected!';
-    ctx.MarkEndOfToken(Self);
 end;
 
 end.
