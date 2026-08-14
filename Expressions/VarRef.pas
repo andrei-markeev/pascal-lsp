@@ -27,7 +27,7 @@ implementation
 uses
     sysutils, CompilationMode, Token, Expression, Call,
     PointerTypeDef, ArrayTypeDef, DynamicArrayTypeDef, ClassTypeDef,
-    TypeDefs, ReservedWord, InheritedRef, MemberAccess, TypecastRef;
+    TypeDefs, ReservedWord, InheritedRef, MemberAccess, TypecastRef, TranspileRegister;
 
 function CreateVarRef(ctx: TParserContext; baseRef: TTypedToken = nil; isMaybeLeftHandSide: boolean = false): TTypedToken;
 var
@@ -60,7 +60,10 @@ begin
     if mfImplicitDereference in Features[ctx.mode] then
     begin
         while (typeDef <> nil) and (typeDef is TPointerTypeDef) and TPointerTypeDef(typeDef).isTyped and (TPointerTypeDef(typeDef).pointerToType <> nil) and not IsPChar(typeDef) do
+        begin
             typeDef := TPointerTypeDef(typeDef).pointerToType;
+            RegisterImplicitDeref(reservedWordToken.start);
+        end;
     end;
 
     if (typeDef <> nil) and (typeDef.kind = tkClass) then

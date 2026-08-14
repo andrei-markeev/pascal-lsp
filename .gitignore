@@ -9,3 +9,4 @@ TokenTemplate.pas
 .DS_Store
 node_modules
 vscode-extension/out
+out/

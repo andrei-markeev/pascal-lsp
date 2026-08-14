@@ -23,7 +23,7 @@ type
 implementation
 
 uses
-    CompilationMode, ReservedWord, Scopes, Symbols, Parameters, TypeSpec, ParameterDecl, Block, FunctionDecl, RoutineTypeDef, RoutineEquivalence, StructuredTypeDef, PointerTypeDef;
+    CompilationMode, ReservedWord, Scopes, Symbols, Parameters, TypeSpec, ParameterDecl, Block, FunctionDecl, RoutineTypeDef, RoutineEquivalence, StructuredTypeDef, PointerTypeDef, TranspileRegister;
 
 constructor TFunctionImpl.Create(ctx: TParserContext);
 var
@@ -34,9 +34,9 @@ var
     paramDecl: TParameterDecl;
     params: TParameterList;
     i: integer;
-    rw: TReservedWord;
+    rw, openParenTok, closeParenTok: TReservedWord;
     hasMoreParams: boolean;
-    s: string;
+    s, selfTypeName: string;
     overrideResult: TTryAddOverrideResult;
     routineTypeDef: TRoutineTypeDef;
     funcModifiers: TFunctionModifiers;
@@ -117,18 +117,24 @@ begin
     if (mfOberonMethodSyntax in Features[ctx.mode]) and PeekReservedWord(ctx, rwOpenParenthesis) then
     begin
         isOberonMethod := true;
-        TReservedWord.Create(ctx, rwOpenParenthesis, true);
+        openParenTok := TReservedWord.Create(ctx, rwOpenParenthesis, true);
         paramDecl := TParameterDecl.Create(ctx);
-        TReservedWord.Create(ctx, rwCloseParenthesis, false);
+        closeParenTok := TReservedWord.Create(ctx, rwCloseParenthesis, false);
 
+        selfTypeName := '';
         if paramDecl.typeDef <> nil then
         begin
             receiverTypeDef := paramDecl.typeDef;
             if (receiverTypeDef is TPointerTypeDef) and (TPointerTypeDef(receiverTypeDef).pointerToType <> nil) then
                 receiverTypeDef := TPointerTypeDef(receiverTypeDef).pointerToType;
             if receiverTypeDef.typeSymbol <> nil then
+            begin
                 symbolParent := TSymbol(receiverTypeDef.typeSymbol);
+                selfTypeName := symbolParent.name;
+            end;
         end;
+
+        RegisterOberonReceiver(Self, openParenTok.start, (closeParenTok.start + closeParenTok.len) - openParenTok.start, selfTypeName);
 
         nameIdent := TIdentifier.Create(ctx, false);
         if (symbolParent <> nil) and (nameIdent.state = tsCorrect) then

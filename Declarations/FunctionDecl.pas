@@ -23,7 +23,7 @@ type
 implementation
 
 uses
-    CompilationMode, Scopes, TypeSpec, ParameterDecl, RoutineTypeDef, StructuredTypeDef, PointerTypeDef;
+    CompilationMode, Scopes, TypeSpec, ParameterDecl, RoutineTypeDef, StructuredTypeDef, PointerTypeDef, TranspileRegister;
 
 constructor TFunctionDecl.Create(ctx: TParserContext; functionRWKind: TReservedWordKind; parentSymbols: array of TSymbol);
 var
@@ -33,8 +33,8 @@ var
     paramDecl: TParameterDecl;
     params: TParameterList;
     i, p: integer;
-    s: string;
-    rw: TReservedWord;
+    s, selfTypeName: string;
+    rw, openParenTok, closeParenTok: TReservedWord;
     ident: TIdentifier;
     hasMoreParams: boolean;
     isMethodModifier, isFunctionModifier: boolean;
@@ -96,18 +96,24 @@ begin
     begin
         isOberonMethod := true;
 
-        TReservedWord.Create(ctx, rwOpenParenthesis, true);
+        openParenTok := TReservedWord.Create(ctx, rwOpenParenthesis, true);
         paramDecl := TParameterDecl.Create(ctx);
-        TReservedWord.Create(ctx, rwCloseParenthesis, false);
+        closeParenTok := TReservedWord.Create(ctx, rwCloseParenthesis, false);
 
+        selfTypeName := '';
         if paramDecl.typeDef <> nil then
         begin
             receiverTypeDef := paramDecl.typeDef;
             if (receiverTypeDef is TPointerTypeDef) and (TPointerTypeDef(receiverTypeDef).pointerToType <> nil) then
                 receiverTypeDef := TPointerTypeDef(receiverTypeDef).pointerToType;
             if receiverTypeDef.typeSymbol <> nil then
+            begin
                 oberonReceiver := TSymbol(receiverTypeDef.typeSymbol);
+                selfTypeName := oberonReceiver.name;
+            end;
         end;
+
+        RegisterOberonReceiver(Self, openParenTok.start, (closeParenTok.start + closeParenTok.len) - openParenTok.start, selfTypeName);
     end;
 
     nameIdent := TIdentifier.Create(ctx, false);
