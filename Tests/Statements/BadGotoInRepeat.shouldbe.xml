@@ -1,0 +1,6 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadGotoInRepeat</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+  <Repeat><RW>repeat</RW><RW MISSING=";" />
+    <RW SKIPPED="true">goto</RW> <Num SKIPPED="true">96</Num><RW SKIPPED="true">;</RW>
+  <RW>until</RW> <SymbRef>false</SymbRef></Repeat><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

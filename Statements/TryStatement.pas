@@ -23,6 +23,7 @@ constructor TTryStatement.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
     dummyTypeDef: TTypeDef;
+    prevCursor: PChar;
 begin
     ctx.Add(Self);
     tokenName := 'TryStatement';
@@ -55,6 +56,7 @@ begin
           or (nextTokenKind.primitiveKind = pkIdentifier)
     do
     begin
+        prevCursor := ctx.Cursor;
         CreateStatement(ctx);
         AddAnchor(rwSemiColon);
         nextTokenKind := SkipUntilAnchor(ctx);
@@ -65,6 +67,7 @@ begin
             TReservedWord.Create(ctx, rwSemiColon, false);
 
         nextTokenKind := SkipUntilAnchor(ctx);
+        EnsureCursorAdvanced(ctx, prevCursor, nextTokenKind);
     end;
 
     if PeekReservedWord(ctx, rwFinally) then
@@ -75,6 +78,7 @@ begin
               or (nextTokenKind.primitiveKind = pkIdentifier)
         do
         begin
+            prevCursor := ctx.Cursor;
             CreateStatement(ctx);
             AddAnchor(rwSemiColon);
             nextTokenKind := SkipUntilAnchor(ctx);
@@ -85,6 +89,7 @@ begin
                 TReservedWord.Create(ctx, rwSemiColon, false);
 
             nextTokenKind := SkipUntilAnchor(ctx);
+            EnsureCursorAdvanced(ctx, prevCursor, nextTokenKind);
         end;
     end
     else if PeekReservedWord(ctx, rwExcept) then
@@ -95,6 +100,7 @@ begin
               or (nextTokenKind.primitiveKind = pkIdentifier)
         do
         begin
+            prevCursor := ctx.Cursor;
             if PeekReservedWord(ctx, rwOn) then
             begin
                 TReservedWord.Create(ctx, rwOn, false);
@@ -124,6 +130,7 @@ begin
                 TReservedWord.Create(ctx, rwSemiColon, false);
 
             nextTokenKind := SkipUntilAnchor(ctx);
+            EnsureCursorAdvanced(ctx, prevCursor, nextTokenKind);
         end;
     end;
 

@@ -22,6 +22,7 @@ uses
 constructor TImplementationBlock.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
+    prevCursor: PChar;
 begin
     tokenName := 'ImplementationBlock';
     ctx.Add(Self);
@@ -43,6 +44,7 @@ begin
     nextTokenKind := SkipUntilAnchor(ctx);
     while nextTokenKind.reservedWordKind in [rwConst, rwType, rwVar, rwProcedure, rwFunction, rwConstructor, rwDestructor] do
     begin
+        prevCursor := ctx.Cursor;
         case nextTokenKind.reservedWordKind of
             rwConst: TConstSection.Create(ctx);
             rwType: TTypeSection.Create(ctx);
@@ -50,6 +52,7 @@ begin
             rwProcedure, rwFunction, rwConstructor, rwDestructor: TFunctionImpl.Create(ctx);
         end;
         nextTokenKind := SkipUntilAnchor(ctx);
+        EnsureCursorAdvanced(ctx, prevCursor, nextTokenKind);
     end;
 
     RemoveAnchor(rwConst);

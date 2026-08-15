@@ -23,6 +23,7 @@ constructor TRepeatStatement.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
     expr: TTypedToken;
+    prevCursor: PChar;
 begin
     ctx.Add(Self);
     tokenName := 'Repeat';
@@ -54,6 +55,7 @@ begin
           or (nextTokenKind.primitiveKind = pkIdentifier)
     do
     begin
+        prevCursor := ctx.Cursor;
         CreateStatement(ctx);
         AddAnchor(rwSemiColon);
         nextTokenKind := SkipUntilAnchor(ctx);
@@ -64,6 +66,7 @@ begin
             TReservedWord.Create(ctx, rwSemiColon, false);
 
         nextTokenKind := SkipUntilAnchor(ctx);
+        EnsureCursorAdvanced(ctx, prevCursor, nextTokenKind);
     end;
 
     RemoveAnchor(rwUntil);

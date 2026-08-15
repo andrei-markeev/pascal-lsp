@@ -22,6 +22,7 @@ uses
 constructor TInterfaceBlock.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
+    prevCursor: PChar;
 begin
     tokenName := 'InterfaceBlock';
     ctx.Add(Self);
@@ -39,6 +40,7 @@ begin
     nextTokenKind := SkipUntilAnchor(ctx);
     while nextTokenKind.reservedWordKind in [rwConst, rwType, rwVar, rwProcedure, rwFunction] do
     begin
+        prevCursor := ctx.Cursor;
         case nextTokenKind.reservedWordKind of
             rwConst: TConstSection.Create(ctx);
             rwType: TTypeSection.Create(ctx);
@@ -46,6 +48,7 @@ begin
             rwProcedure, rwFunction: TFunctionDecl.Create(ctx, nextTokenKind.reservedWordKind, [nil]);
         end;
         nextTokenKind := SkipUntilAnchor(ctx);
+        EnsureCursorAdvanced(ctx, prevCursor, nextTokenKind);
     end;
 
     RemoveAnchor(rwConst);

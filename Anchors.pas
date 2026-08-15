@@ -25,6 +25,7 @@ procedure RemoveAnchor(kind: TPrimitiveKind);
 procedure RemoveAnchor(kind: TReservedWordKind);
 function DetermineNextTokenKind(ctx: TParserContext): TTokenKind;
 function SkipUntilAnchor(ctx: TParserContext): TTokenKind;
+procedure EnsureCursorAdvanced(ctx: TParserContext; prevCursor: PChar; var nextTokenKind: TTokenKind);
 
 implementation
 
@@ -115,6 +116,21 @@ begin
         end;
     until ctx.IsEOF;
 
+end;
+
+procedure EnsureCursorAdvanced(ctx: TParserContext; prevCursor: PChar; var nextTokenKind: TTokenKind);
+begin
+    if ctx.Cursor = prevCursor then
+    begin
+        if ctx.Cursor[0] <> #0 then
+        begin
+            if nextTokenKind.reservedWordKind <> rwUnknown then
+                TReservedWord.Create(ctx, nextTokenKind.reservedWordKind, true).state := tsSkipped
+            else
+                inc(ctx.Cursor);
+        end;
+        nextTokenKind := SkipUntilAnchor(ctx);
+    end;
 end;
 
 end.

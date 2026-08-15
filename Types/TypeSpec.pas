@@ -102,7 +102,7 @@ begin
     Result := false;
 end;
 
-procedure ParseIdentifierTypeSpec(ctx: TParserContext; spec: TTypeSpec; var typeDefToFill: TTypeDef; ident: TIdentifier; const identName: shortstring; nextTokenKind: TTokenKind);
+procedure ParseIdentifierTypeSpec(ctx: TParserContext; spec: TTypeSpec; var typeDefToFill: TTypeDef; ident: TIdentifier; const identName: shortstring);
 var
     symbol: TSymbol;
     found: pointer;
@@ -164,7 +164,7 @@ begin
             begin
                 if ident = nil then
                 begin
-                    TRangeSpec.Create(ctx, nextTokenKind, typeDefToFill);
+                    TRangeSpec.Create(ctx, DetermineNextTokenKind(ctx), typeDefToFill);
                     spec.state := tsCorrect;
                 end
                 else
@@ -197,7 +197,7 @@ begin
     begin
         ctx.InsertBefore(ident, Self);
         start := ident.start;
-        ParseIdentifierTypeSpec(ctx, Self, typeDefToFill, ident, ident.GetStr(), Default(TTokenKind));
+        ParseIdentifierTypeSpec(ctx, Self, typeDefToFill, ident, ident.GetStr());
         exit;
     end;
 
@@ -244,7 +244,7 @@ begin
         pkIdentifier:
             begin
                 identName := PeekIdentifier(ctx);
-                ParseIdentifierTypeSpec(ctx, Self, typeDefToFill, nil, identName, nextTokenKind);
+                ParseIdentifierTypeSpec(ctx, Self, typeDefToFill, nil, identName);
                 exit;
             end;
         pkUnknown:

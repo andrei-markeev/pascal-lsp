@@ -29,6 +29,7 @@ end;
 constructor TCompoundStatement.Create(ctx: TParserContext; beginRW: TReservedWordKind);
 var
     nextTokenKind: TTokenKind;
+    prevCursor: PChar;
 begin
     tokenName := 'Block';
     ctx.Add(Self);
@@ -57,6 +58,7 @@ begin
           or (nextTokenKind.primitiveKind = pkIdentifier)
     do
     begin
+        prevCursor := ctx.Cursor;
         CreateStatement(ctx);
         AddAnchor(rwSemiColon);
         nextTokenKind := SkipUntilAnchor(ctx);
@@ -67,6 +69,7 @@ begin
             TReservedWord.Create(ctx, rwSemiColon, false);
 
         nextTokenKind := SkipUntilAnchor(ctx);
+        EnsureCursorAdvanced(ctx, prevCursor, nextTokenKind);
     end;
 
     RemoveAnchor(rwEnd);

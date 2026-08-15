@@ -23,6 +23,7 @@ constructor TCaseStatement.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
     fallbackRW: TReservedWord;
+    prevCursor: PChar;
 begin
     ctx.Add(Self);
     tokenName := 'Case';
@@ -49,6 +50,7 @@ begin
     nextTokenKind := SkipUntilAnchor(ctx);
     while (nextTokenKind.primitiveKind in [pkNumber, pkString, pkIdentifier]) do
     begin
+        prevCursor := ctx.Cursor;
         TCaseBranch.Create(ctx);
         AddAnchor(rwSemiColon);
         nextTokenKind := SkipUntilAnchor(ctx);
@@ -58,6 +60,7 @@ begin
         else if not (nextTokenKind.reservedWordKind in [rwEnd, rwUntil, rwElse, rwOtherwise, rwExcept, rwFinally, rwInitialization, rwFinalization]) then
             TReservedWord.Create(ctx, rwSemiColon, false);
         nextTokenKind := SkipUntilAnchor(ctx);
+        EnsureCursorAdvanced(ctx, prevCursor, nextTokenKind);
     end;
 
     RemoveAnchor(pkNumber);
@@ -97,6 +100,7 @@ begin
               or (nextTokenKind.primitiveKind = pkIdentifier)
         do
         begin
+            prevCursor := ctx.Cursor;
             CreateStatement(ctx);
             AddAnchor(rwSemiColon);
             nextTokenKind := SkipUntilAnchor(ctx);
@@ -106,6 +110,7 @@ begin
             else if not (nextTokenKind.reservedWordKind in [rwEnd, rwUntil, rwElse, rwOtherwise, rwExcept, rwFinally, rwInitialization, rwFinalization]) then
                 TReservedWord.Create(ctx, rwSemiColon, false);
             nextTokenKind := SkipUntilAnchor(ctx);
+            EnsureCursorAdvanced(ctx, prevCursor, nextTokenKind);
         end;
 
         RemoveAnchor(rwWith);
