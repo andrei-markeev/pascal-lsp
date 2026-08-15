@@ -13,6 +13,11 @@ begin
     self.y := self.y + dy;
 end;
 
+procedure (var X: TPoint) TestImplicit;
+begin
+    y := 10;
+end;
+
 var
     pt: TPoint;
 begin

@@ -13,6 +13,11 @@
     <Assignment><VarRef><SymbRef>self</SymbRef><RW>.</RW><SymbRef>y</SymbRef></VarRef> <RW>:=</RW> <SimpleExpression><VarRef><SymbRef>self</SymbRef><RW>.</RW><SymbRef>y</SymbRef></VarRef> <RW>+</RW> <SymbRef>dy</SymbRef></SimpleExpression></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>;</RW></Procedure>
 
+<Procedure><RW>procedure</RW> <RW>(</RW><ParameterDecl><RW>var</RW> <SymbDecl>X</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TPoint</SymbRef></TypeSpec></ParameterDecl><RW>)</RW> <SymbDecl>TestImplicit</SymbDecl><RW>;</RW>
+<Block><RW>begin</RW>
+    <Assignment><Ident ERROR="Identifier has not been declared!">y</Ident> <RW>:=</RW> <Num>10</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
 <VarSection><RW>var</RW>
     <VarDecl><SymbDecl>pt</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TPoint</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
 <Block><RW>begin</RW>

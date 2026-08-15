@@ -114,6 +114,7 @@ begin
     symbolParent := nil;
     symbolField := nil;
     isOberonMethod := false;
+    needsToAddChildSymbols := false;
     if (mfOberonMethodSyntax in Features[ctx.mode]) and PeekReservedWord(ctx, rwOpenParenthesis) then
     begin
         isOberonMethod := true;
@@ -147,7 +148,6 @@ begin
     begin
         nameIdent := TIdentifier.Create(ctx, false);
         typeIdent := nil;
-        needsToAddChildSymbols := false;
         symbolParent := FindSymbol(nameIdent);
     end;
 
