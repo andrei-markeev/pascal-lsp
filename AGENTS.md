@@ -7,9 +7,10 @@ This document provides a high-level guide to the codebase architecture, design p
 - **OO Recursive Descent / In-Token Parsing**: Parsing logic is directly embedded in the constructor of `TToken` subclasses (e.g., `ProgramFile.pas`, `UnitFile.pas`, `Block.pas`, `VarDecl.pas`). Instantiating a token parses its corresponding structure from the `TParserContext` by advancing the cursor, skipping trivia (comments, spaces), and appending the token or its children to the context's global token list.
 - **Compatible with Large Codebases**: We should be extremely careful with performance and memory consumption on the hot path. Choose data structures that are fast, preferably O(1). Tokens, symbols and other structures that scale linearly with amount of code in the codebase, should be extremely thin: every byte matters if we're working with a codebase of millions of lines of code.
 
-## 2. Error Recovery & Safety Guidelines
+## 2. Handling parse errors and ambiguity
 - **Landmark Anchors**: To prevent syntax errors from causing cascading failures, the parser uses a synchronization recovery mechanism. Landmarked keywords (like `rwConst`, `rwVar`, `rwBegin`, `rwSemiColon`) are registered as active anchors.
 - **Resynchronization (Anchors)**: If parsing fails or hits an invalid construct, it calls `SkipUntilAnchor` in `Anchors.pas` to skip invalid tokens (wrapping them in tags with `SKIPPED="true"`) until it matches an active anchor, gracefully recovering and continuing.
+- **Don't Lookahead**: Instead of looking ahead or parsing two possible code paths in parallel in the event of ambiguity, parse common tokens greedily and then retrofit them with TParserContext.InsertBefore when ambiguity is resolved.
 - **Missing Elements**: When an expected keyword, identifier, or symbol is missing but non-fatal, instantiate it with `state := tsMissing` and set its position before any skipped trivia (using `ctx.GetCursorBeforeTrivia` or similar). This outputs a `<TokenName MISSING="..." />` node in the XML. Do not consume subsequent valid tokens as missing ones.
 
 ## 3. Scopes and Symbols
@@ -33,6 +34,7 @@ This document provides a high-level guide to the codebase architecture, design p
 - **Snapshot Diffing**: Each syntax test in the `Tests` directory consists of a `.pas` source file and a `.shouldbe.xml` expected output file. Running the test runner compiles the parser, generates the `.out.xml` files, and compares them against the expected `.shouldbe.xml` snapshots using `git diff --no-index`. Any variance in structure, scope resolution, or errors shows up as a failed diff.
 - **Failure / Recovery Testing**: Every new parser feature MUST include both a successful parsing test case (e.g. `Heritage.pas`) and a dedicated error recovery test case (e.g. `BadHeritage.pas`) containing syntax errors, missing elements, and unexpected tokens to verify correct recovery without cascading errors.
 - **Use runtests.sh**: use `bash runtests.sh` for compiling and running tests (it does both).
+- **Assume passing tests**: when starting the task, don't run tests to verify the baseline. Assume that when task is started, tests are passing.
 
 ---
 ### Key Files:
