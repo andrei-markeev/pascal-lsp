@@ -170,6 +170,10 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
+        <Filename Value="BranchTracker.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
         <Filename Value="Declarations\Block.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
