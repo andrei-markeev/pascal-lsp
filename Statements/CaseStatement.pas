@@ -17,13 +17,34 @@ type
 implementation
 
 uses
-    CompilationMode, Expression, CaseBranch, Statement;
+    CompilationMode, Expression, CaseBranch, Statement, BranchTracker, Symbols, VarRef, TypedToken, Identifier;
+
+procedure ExtractCaseSelector(exprToken: TTypedToken; out baseSym: TSymbol; out tagSym: TSymbol);
+var
+    ref: TVarRef;
+begin
+    baseSym := nil;
+    tagSym := nil;
+
+    if exprToken is TVarRef then
+    begin
+        ref := TVarRef(exprToken);
+        tagSym := ref.symbol;
+        if (ref.firstIdent <> nil) and (ref.firstIdent.symbol <> nil) then
+            baseSym := TSymbol(ref.firstIdent.symbol)
+        else
+            baseSym := ref.symbol;
+    end;
+end;
 
 constructor TCaseStatement.Create(ctx: TParserContext);
 var
     nextTokenKind: TTokenKind;
     fallbackRW: TReservedWord;
     prevCursor: PChar;
+    caseExpr: TTypedToken;
+    baseSym: TSymbol;
+    tagSym: TSymbol;
 begin
     ctx.Add(Self);
     tokenName := 'Case';
@@ -37,7 +58,10 @@ begin
     end;
     start := ctx.Cursor;
     TReservedWord.Create(ctx, rwCase, true);
-    CreateExpression(ctx);
+    caseExpr := CreateExpression(ctx);
+    ExtractCaseSelector(caseExpr, baseSym, tagSym);
+    PushCaseStatement(baseSym, tagSym);
+
     TReservedWord.Create(ctx, rwOf, false);
 
     AddAnchor(rwEnd);
@@ -129,6 +153,7 @@ begin
     RemoveAnchor(rwOtherwise);
     RemoveAnchor(pkIdentifier);
 
+    PopCaseStatement;
     TReservedWord.Create(ctx, rwEnd, false);
     ctx.MarkEndOfToken(Self);
 end;

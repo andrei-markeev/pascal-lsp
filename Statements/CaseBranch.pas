@@ -19,7 +19,7 @@ procedure ParseCaseConstant(ctx: TParserContext);
 implementation
 
 uses
-    CompilationMode, Number, StringToken, Identifier, Statement;
+    CompilationMode, Number, StringToken, Identifier, Statement, BranchTracker;
 
 procedure ParseCaseConstant(ctx: TParserContext);
 var
@@ -51,28 +51,23 @@ end;
 constructor TCaseBranch.Create(ctx: TParserContext);
 var
     rangeRW: TReservedWord;
+    cursor1, cursor2, cursor3: PChar;
 begin
     ctx.Add(Self);
     tokenName := 'CaseBranch';
     start := ctx.Cursor;
 
-    ParseCaseConstant(ctx);
+    ClearCurrentBranchLabels;
 
-    if PeekReservedWord(ctx, rwRange) then
-    begin
-        rangeRW := TReservedWord.Create(ctx, rwRange, true);
-        if not (mfCaseRanges in Features[ctx.mode]) then
-        begin
-            rangeRW.state := tsError;
-            rangeRW.errorMessage := '".." ranges in case statements not supported in Standard Pascal (ISO 7185)';
-        end;
-        ParseCaseConstant(ctx);
-    end;
+    repeat
+        if (ctx.Cursor > start) and PeekReservedWord(ctx, rwComma) then
+            TReservedWord.Create(ctx, rwComma, true);
 
-    while PeekReservedWord(ctx, rwComma) do
-    begin
-        TReservedWord.Create(ctx, rwComma, true);
+        ctx.SkipTrivia;
+        cursor1 := ctx.Cursor;
         ParseCaseConstant(ctx);
+        cursor2 := ctx.Cursor;
+
         if PeekReservedWord(ctx, rwRange) then
         begin
             rangeRW := TReservedWord.Create(ctx, rwRange, true);
@@ -81,9 +76,15 @@ begin
                 rangeRW.state := tsError;
                 rangeRW.errorMessage := '".." ranges in case statements not supported in Standard Pascal (ISO 7185)';
             end;
+            ctx.SkipTrivia;
+            cursor3 := ctx.Cursor;
             ParseCaseConstant(ctx);
-        end;
-    end;
+            AddRangeLabel(cursor1, cursor2 - cursor1, cursor3, ctx.Cursor - cursor3);
+        end
+        else
+            AddSingleLabel(cursor1, cursor2 - cursor1);
+
+    until not PeekReservedWord(ctx, rwComma);
 
     TReservedWord.Create(ctx, rwColon, false);
     CreateStatement(ctx);

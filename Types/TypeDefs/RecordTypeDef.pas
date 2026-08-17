@@ -6,15 +6,25 @@ unit RecordTypeDef;
 interface
 
 uses
-    TypeDef, StructuredTypeDef;
+    TypeDef, StructuredTypeDef, BranchTracker;
 
 type
+    TVariantFieldInfo = record
+        fieldSymbol: TObject;
+        tagSymbol: TObject;
+        labels: TCaseLabelArray;
+    end;
+
     TRecordTypeDef = class(TStructuredTypeDef)
+    private
+        variantFields: array of TVariantFieldInfo;
     public
         isPartial: boolean;
         definingUnit: TObject;
         constructor Create(ctx: TTypeDefTracker = nil);
         destructor Destroy; override;
+        procedure AddVariantFieldInfo(fieldSymbol: TObject; tagSymbol: TObject; const labels: TCaseLabelArray);
+        function IsVariantField(fieldSymbol: TObject; out tagSymbol: TObject; out labels: TCaseLabelArray): boolean;
     end;
 
 function CheckPartialRecordInstantiation(ctx: TObject; typeDef: TTypeDef; token: TObject): boolean;
@@ -22,18 +32,52 @@ function CheckPartialRecordInstantiation(ctx: TObject; typeDef: TTypeDef; token:
 implementation
 
 uses
-    ParserContext, Token, ArrayTypeDef, DynamicArrayTypeDef;
+    sysutils, ParserContext, Token, ArrayTypeDef, DynamicArrayTypeDef, Symbols;
 
 constructor TRecordTypeDef.Create(ctx: TTypeDefTracker);
 begin
     inherited Create(ctx, tkRecord);
     isPartial := false;
     definingUnit := nil;
+    SetLength(variantFields, 0);
 end;
 
 destructor TRecordTypeDef.Destroy;
 begin
+    SetLength(variantFields, 0);
     inherited Destroy;
+end;
+
+procedure TRecordTypeDef.AddVariantFieldInfo(fieldSymbol: TObject; tagSymbol: TObject; const labels: TCaseLabelArray);
+var
+    idx: integer;
+begin
+    idx := Length(variantFields);
+    SetLength(variantFields, idx + 1);
+    variantFields[idx].fieldSymbol := fieldSymbol;
+    variantFields[idx].tagSymbol := tagSymbol;
+    variantFields[idx].labels := labels;
+end;
+
+function TRecordTypeDef.IsVariantField(fieldSymbol: TObject; out tagSymbol: TObject; out labels: TCaseLabelArray): boolean;
+var
+    i: integer;
+begin
+    tagSymbol := nil;
+    SetLength(labels, 0);
+    if fieldSymbol <> nil then
+    begin
+        for i := 0 to Length(variantFields) - 1 do
+        begin
+            if variantFields[i].fieldSymbol = fieldSymbol then
+            begin
+                tagSymbol := variantFields[i].tagSymbol;
+                labels := variantFields[i].labels;
+                exit(true);
+            end;
+        end;
+    end;
+    Result := false;
 end;
 
 function GetBaseTypeDef(typeDef: TTypeDef): TTypeDef;

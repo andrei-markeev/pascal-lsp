@@ -17,19 +17,22 @@ type
 implementation
 
 uses
-    Anchors, Token, ReservedWord, VarDecl, Identifier, Number, StringToken, TypeSpec, CompilationMode, CaseBranch, RecordTypeDef;
+    Anchors, Token, ReservedWord, VarDecl, Identifier, Number, StringToken, TypeSpec, CompilationMode, CaseBranch, RecordTypeDef, BranchTracker;
 
-procedure ParseFields(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef; endKind: TReservedWordKind);
+procedure ParseFields(ctx: TParserContext; parentSymbols: array of TSymbol; var typeDefToFill: TTypeDef; endKind: TReservedWordKind; activeTagSymbol: TSymbol = nil; const activeLabels: TCaseLabelArray = nil);
 var
-    i, p: integer;
+    i, p, l: integer;
+    cursor1, cursor2, cursor3: PChar;
     fieldDecl: TVarDecl;
     nextTokenKind: TTokenKind;
     tagIdent: TIdentifier;
     tagType: TTypeDef;
     tagSymbols: array of TSymbol;
     dummySymbols: array of TSymbol;
-    rangeRW: TReservedWord;
+    rangeRW, caseRW: TReservedWord;
     recTypeDef: TRecordTypeDef;
+    currentTagSymbol: TSymbol;
+    branchLabels: TCaseLabelArray;
 begin
     recTypeDef := TRecordTypeDef(typeDefToFill);
     nextTokenKind := DetermineNextTokenKind(ctx);
@@ -48,6 +51,8 @@ begin
                 else
                 begin
                     recTypeDef.AddMember(fieldDecl.idents[i].GetStr(), fieldDecl.varType);
+                    if activeTagSymbol <> nil then
+                        recTypeDef.AddVariantFieldInfo(TSymbol(fieldDecl.idents[i].symbol), activeTagSymbol, activeLabels);
                     if fieldDecl.varType <> nil then
                         inc(recTypeDef.size, fieldDecl.varType.size);
                 end;
@@ -63,7 +68,8 @@ begin
         end
         else if nextTokenKind.reservedWordKind = rwCase then
         begin
-            TReservedWord.Create(ctx, rwCase, true);
+            caseRW := TReservedWord.Create(ctx, rwCase, true);
+            currentTagSymbol := nil;
             
             tagType := unknownType;
             nextTokenKind := DetermineNextTokenKind(ctx);
@@ -77,6 +83,8 @@ begin
                     SetLength(tagSymbols, length(parentSymbols));
                     for p := 0 to length(parentSymbols) - 1 do
                         tagSymbols[p] := RegisterSymbol(tagIdent, parentSymbols[p], skVariable, tagType, ctx.Cursor);
+                    if length(tagSymbols) > 0 then
+                        currentTagSymbol := tagSymbols[0];
                     
                     TTypeSpec.Create(ctx, tagSymbols, tagType);
                     if recTypeDef.FindMember(tagIdent.GetStr()) <> nil then
@@ -95,12 +103,22 @@ begin
                 begin
                     SetLength(dummySymbols, 0);
                     TTypeSpec.Create(ctx, dummySymbols, tagType, tagIdent);
+                    if mfStrictVariantRecords in Features[ctx.mode] then
+                    begin
+                        caseRW.state := tsError;
+                        caseRW.errorMessage := 'Anonymous variant tag is not allowed! Please use "case <field>: <Type> of".';
+                    end;
                 end;
             end
             else
             begin
                 SetLength(dummySymbols, 0);
                 TTypeSpec.Create(ctx, dummySymbols, tagType);
+                if mfStrictVariantRecords in Features[ctx.mode] then
+                begin
+                    caseRW.state := tsError;
+                    caseRW.errorMessage := 'Anonymous variant tag is not allowed! Please use "case <field>: <Type> of".';
+                end;
             end;
             
             TReservedWord.Create(ctx, rwOf, false);
@@ -108,38 +126,41 @@ begin
             nextTokenKind := DetermineNextTokenKind(ctx);
             while (nextTokenKind.primitiveKind in [pkNumber, pkString, pkIdentifier]) or (nextTokenKind.reservedWordKind = rwMinus) do
             begin
-                ParseCaseConstant(ctx);
-                if PeekReservedWord(ctx, rwRange) then
-                begin
-                    rangeRW := TReservedWord.Create(ctx, rwRange, true);
-                    if not (mfCaseRanges in Features[ctx.mode]) then
-                    begin
-                        rangeRW.state := tsError;
-                        rangeRW.errorMessage := '".." ranges in case statements not supported in Standard Pascal (ISO 7185)';
-                    end;
+                SetLength(branchLabels, 0);
+                repeat
+                    if (Length(branchLabels) > 0) and PeekReservedWord(ctx, rwComma) then
+                        TReservedWord.Create(ctx, rwComma, true);
+
+                    ctx.SkipTrivia;
+                    cursor1 := ctx.Cursor;
                     ParseCaseConstant(ctx);
-                end;
-                
-                while PeekReservedWord(ctx, rwComma) do
-                begin
-                    TReservedWord.Create(ctx, rwComma, true);
-                    ParseCaseConstant(ctx);
+                    cursor2 := ctx.Cursor;
+
+                    l := Length(branchLabels);
+                    SetLength(branchLabels, l + 1);
+
                     if PeekReservedWord(ctx, rwRange) then
                     begin
                         rangeRW := TReservedWord.Create(ctx, rwRange, true);
                         if not (mfCaseRanges in Features[ctx.mode]) then
                         begin
                             rangeRW.state := tsError;
-                            rangeRW.errorMessage := '".." ranges in case statements not supported in Standard Pascal (ISO 7185)';
+                            rangeRW.errorMessage := '".." ranges in case statements not supported in this compilation mode.';
                         end;
+                        ctx.SkipTrivia;
+                        cursor3 := ctx.Cursor;
                         ParseCaseConstant(ctx);
-                    end;
-                end;
+                        branchLabels[l] := CreateRangeLabel(cursor1, cursor2 - cursor1, cursor3, ctx.Cursor - cursor3);
+                    end
+                    else
+                        branchLabels[l] := CreateSingleLabel(cursor1, cursor2 - cursor1);
+
+                until not PeekReservedWord(ctx, rwComma);
                 
                 TReservedWord.Create(ctx, rwColon, false);
                 TReservedWord.Create(ctx, rwOpenParenthesis, false);
                 
-                ParseFields(ctx, parentSymbols, typeDefToFill, rwCloseParenthesis);
+                ParseFields(ctx, parentSymbols, typeDefToFill, rwCloseParenthesis, currentTagSymbol, branchLabels);
                 
                 TReservedWord.Create(ctx, rwCloseParenthesis, false);
                 

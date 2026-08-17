@@ -1,0 +1,32 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadStrictVariantRecords</SymbDecl><RW>;</RW>
+
+{$mode universalpascal}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TBadNode</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <RW ERROR="Anonymous variant tag is not allowed! Please use "case <field>: <Type> of".">case</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>of</RW>
+            <Num>1</Num><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <Num>2</Num><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>real</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW>
+
+    <TypeDecl><SymbDecl>TNode</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <RW>case</RW> <SymbDecl>tag</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>of</RW>
+            <Num>1</Num><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <Num>2</Num><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>real</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>n1</SymbDecl><RW>,</RW> <SymbDecl>n2</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TNode</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><VarRef><SymbRef>n1</SymbRef><RW>.</RW><SymbRef ERROR="Variant field 'x' cannot be accessed here!">x</SymbRef></VarRef> <RW>:=</RW> <Num>10</Num></Assignment><RW>;</RW>
+
+    <Case><RW>case</RW> <VarRef><SymbRef>n1</SymbRef><RW>.</RW><SymbRef>tag</SymbRef></VarRef> <RW>of</RW>
+        <CaseBranch><Num>1</Num><RW>:</RW> <Assignment><VarRef><SymbRef>n1</SymbRef><RW>.</RW><SymbRef ERROR="Variant field 'y' cannot be accessed here!">y</SymbRef></VarRef> <RW>:=</RW> <Num>2.5</Num></Assignment></CaseBranch><RW>;</RW>
+        <CaseBranch><Num>2</Num><RW>:</RW> <Assignment><VarRef><SymbRef>n1</SymbRef><RW>.</RW><SymbRef ERROR="Variant field 'x' cannot be accessed here!">x</SymbRef></VarRef> <RW>:=</RW> <Num>5</Num></Assignment></CaseBranch><RW>;</RW>
+    <RW>end</RW></Case><RW>;</RW>
+
+    <Case><RW>case</RW> <VarRef><SymbRef>n2</SymbRef><RW>.</RW><SymbRef>tag</SymbRef></VarRef> <RW>of</RW>
+        <CaseBranch><Num>1</Num><RW>:</RW> <Assignment><VarRef><SymbRef>n1</SymbRef><RW>.</RW><SymbRef ERROR="Variant field 'x' cannot be accessed here!">x</SymbRef></VarRef> <RW>:=</RW> <Num>10</Num></Assignment></CaseBranch><RW>;</RW>
+    <RW>end</RW></Case><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

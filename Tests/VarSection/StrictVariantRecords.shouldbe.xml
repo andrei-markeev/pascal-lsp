@@ -1,0 +1,20 @@
+<ProgramFile><RW>program</RW> <SymbDecl>StrictVariantRecords</SymbDecl><RW>;</RW>
+
+{$mode universalpascal}
+
+<TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TNode</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <RW>case</RW> <SymbDecl>tag</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec> <RW>of</RW>
+            <Num>1</Num><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+            <Num>2</Num><RW>:</RW> <RW>(</RW><VarDecl><SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>real</Ident></TypeSpec></VarDecl><RW>)</RW><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>n</SymbDecl><RW>:</RW> <TypeSpec><SymbRef>TNode</SymbRef></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Case><RW>case</RW> <VarRef><SymbRef>n</SymbRef><RW>.</RW><SymbRef>tag</SymbRef></VarRef> <RW>of</RW>
+        <CaseBranch><Num>1</Num><RW>:</RW> <Assignment><VarRef><SymbRef>n</SymbRef><RW>.</RW><SymbRef>x</SymbRef></VarRef> <RW>:=</RW> <Num>10</Num></Assignment></CaseBranch><RW>;</RW>
+        <CaseBranch><Num>2</Num><RW>:</RW> <Assignment><VarRef><SymbRef>n</SymbRef><RW>.</RW><SymbRef>y</SymbRef></VarRef> <RW>:=</RW> <Num>2.5</Num></Assignment></CaseBranch><RW>;</RW>
+    <RW>end</RW></Case><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

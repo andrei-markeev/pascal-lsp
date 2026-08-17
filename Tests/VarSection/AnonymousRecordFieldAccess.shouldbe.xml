@@ -1,0 +1,14 @@
+<ProgramFile><RW>program</RW> <SymbDecl>AnonymousRecordFieldAccess</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>rec</SymbDecl><RW>:</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <VarDecl><SymbDecl>sub</SymbDecl><RW>:</RW> <TypeSpec><RecordSpec><RW>record</RW>
+            <VarDecl><SymbDecl>y</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+        <RW>end</RW></RecordSpec></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><VarRef><SymbRef>rec</SymbRef><RW>.</RW><SymbRef>x</SymbRef></VarRef> <RW>:=</RW> <Num>10</Num></Assignment><RW>;</RW>
+    <Assignment><VarRef><SymbRef>rec</SymbRef><RW>.</RW><SymbRef>sub</SymbRef><RW>.</RW><SymbRef>y</SymbRef></VarRef> <RW>:=</RW> <Num>20</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

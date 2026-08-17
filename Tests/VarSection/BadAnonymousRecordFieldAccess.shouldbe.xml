@@ -1,0 +1,10 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadAnonymousRecordFieldAccess</SymbDecl><RW>;</RW>
+
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>rec</SymbDecl><RW>:</RW> <TypeSpec><RecordSpec><RW>record</RW>
+        <VarDecl><SymbDecl>x</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW>
+    <RW>end</RW></RecordSpec></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+    <Assignment><VarRef><SymbRef>rec</SymbRef><RW>.</RW><Ident ERROR="Field or method with the name 'invalidField' was not found!">invalidField</Ident></VarRef> <RW>:=</RW> <Num>10</Num></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

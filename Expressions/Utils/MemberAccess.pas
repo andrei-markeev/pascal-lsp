@@ -14,7 +14,7 @@ procedure ParseDotAccess(ctx: TParserContext; ref: TVarRef);
 implementation
 
 uses
-    sysutils, CompilationMode, Token, Identifier, TypeDefs, Symbols, ClassTypeDef, RecordTypeDef, ObjectTypeDef, PointerTypeDef, TranspileRegister;
+    sysutils, CompilationMode, Token, Identifier, TypeDefs, Symbols, ClassTypeDef, RecordTypeDef, ObjectTypeDef, PointerTypeDef, TranspileRegister, BranchTracker;
 
 function FindMemberInType(targetType: TTypeDef; const memberName: string; out declaringType: TTypeDef): pointer;
 var
@@ -122,6 +122,9 @@ var
     text: string;
     curType, targetType: TTypeDef;
     found: pointer;
+    varTagSym: TObject;
+    varLabels: TCaseLabelArray;
+    baseSym, parentSym: TSymbol;
 begin
     if mfImplicitDereference in Features[ctx.mode] then
     begin
@@ -159,11 +162,37 @@ begin
 
     ref.typeDef := TTypeDef(found);
 
-    if (curType <> nil) and (curType.typeSymbol <> nil) then
+    if curType <> nil then
     begin
-        ref.symbol := FindSymbol(TSymbol(curType.typeSymbol), text, ctx.Cursor);
+        if (ref.firstIdent <> nil) and (ref.firstIdent.symbol <> nil) then
+            baseSym := TSymbol(ref.firstIdent.symbol)
+        else
+            baseSym := ref.symbol;
+
+        if curType.typeSymbol <> nil then
+            parentSym := TSymbol(curType.typeSymbol)
+        else
+            parentSym := ref.symbol;
+
+        if parentSym <> nil then
+            ref.symbol := FindSymbol(parentSym, text, ctx.Cursor)
+        else
+            ref.symbol := nil;
+
         if ref.symbol <> nil then
             ref.symbol.AddReference(ident);
+
+        if (curType is TRecordTypeDef) and (mfStrictVariantRecords in Features[ctx.mode]) then
+        begin
+            if TRecordTypeDef(curType).IsVariantField(ref.symbol, varTagSym, varLabels) then
+            begin
+                if not IsVariantFieldAccessAllowed(baseSym, varTagSym, varLabels) then
+                begin
+                    ident.state := tsError;
+                    ident.errorMessage := 'Variant field ''' + text + ''' cannot be accessed here!';
+                end;
+            end;
+        end;
     end;
 
     if (targetType <> nil) and (targetType is TClassTypeDef) and TClassTypeDef(targetType).isAbstract and (ref.symbol <> nil) and (ref.symbol.kind = skConstructor) then
