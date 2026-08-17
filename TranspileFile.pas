@@ -33,6 +33,7 @@ var
     receiverLen: integer;
     selfTypeName: string;
     nameIdent: TIdentifier;
+    diagKind, diagMsg: string;
 begin
     ResetScopes;
     TypesList.Clear;
@@ -54,6 +55,44 @@ begin
         TUnitFile.Create(ctx)
     else
         TProgramFile.Create(ctx);
+
+    for i := 0 to ctx.tokensLen - 1 do
+    begin
+        cur := ctx.Tokens[i];
+        if (cur <> nil) and (cur.state in [tsError, tsMissing, tsWarning, tsSkipped]) then
+        begin
+            if cur.state = tsWarning then
+                diagKind := 'Warning: '
+            else
+                diagKind := 'Error: ';
+
+            if (cur.state = tsError) or (cur.state = tsWarning) then
+            begin
+                if cur.errorMessage <> '' then
+                    diagMsg := cur.errorMessage
+                else
+                    diagMsg := 'Syntax error in ' + cur.tokenName;
+            end
+            else if cur.state = tsMissing then
+            begin
+                if cur.GetStr() <> '' then
+                    diagMsg := 'Missing ''' + cur.GetStr() + ''''
+                else
+                    diagMsg := 'Missing ' + cur.tokenName;
+            end
+            else
+            begin
+                if cur.errorMessage <> '' then
+                    diagMsg := cur.errorMessage
+                else if cur.GetStr() <> '' then
+                    diagMsg := 'Unexpected ''' + cur.GetStr() + ''''
+                else
+                    diagMsg := 'Unexpected ' + cur.tokenName;
+            end;
+
+            WriteLn(fileName, '(', cur.line + 1, ',', cur.position + 1, ') ', diagKind, diagMsg);
+        end;
+    end;
 
     SetLength(skips, len + 1);
     SetLength(inserts, len + 1);
