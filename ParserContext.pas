@@ -25,6 +25,7 @@ type
         Cursor: PChar;
         parseUnit: TToken;
         mode: TCompilationMode;
+        features: TModeFeatures;
         filePath: string;
         isDependency: boolean;
         constructor Create(AFilePath: string; AFileContents: string);
@@ -74,6 +75,7 @@ begin
     line := 0;
     lineStart := Cursor;
     mode := cmFreePascal;
+    features := CompilationMode.Features[mode];
     InitPredefinedTypes(mode);
     RegisterSystemSymbols(Self);
     if ActiveContexts <> nil then
@@ -127,32 +129,62 @@ begin
             until Cursor[0] in [#10, #13, #0]
         else if Cursor[0] = '{' then
         begin
-            if (Cursor[1] = '$') and (strlicomp(Cursor, PChar('{$mode'), 6) = 0) then
+            if Cursor[1] = '$' then
             begin
-                inc(Cursor, 6);
-                if Cursor[0] in [#9, ' '] then
+                if strlicomp(Cursor, PChar('{$mode'), 6) = 0 then
                 begin
+                    inc(Cursor, 6);
+                    if Cursor[0] in [#9, ' '] then
+                    begin
+                        while Cursor[0] in [#9, ' '] do
+                            inc(Cursor);
+
+                        if (strlicomp(Cursor, PChar('iso'), 3) = 0) and (Cursor[3] in [' ',#9,'}']) then
+                            mode := cmStandardPascal
+                        else if (strlicomp(Cursor, PChar('extpas'), 6) = 0) and (Cursor[6] in [' ',#9,'}']) then
+                            mode := cmExtendedPascal
+                        else if (strlicomp(Cursor, PChar('tp'), 2) = 0) and (Cursor[2] in [' ',#9,'}']) then
+                            mode := cmTurboPascal
+                        else if (strlicomp(Cursor, PChar('macpas'), 6) = 0) and (Cursor[6] in [' ',#9,'}']) then
+                            mode := cmMacPascal
+                        else if (strlicomp(Cursor, PChar('fpc'), 3) = 0) and (Cursor[3] in [' ',#9,'}']) then
+                            mode := cmFreePascal
+                        else if (strlicomp(Cursor, PChar('objfpc'), 6) = 0) and (Cursor[6] in [' ',#9,'}']) then
+                            mode := cmObjectFreePascal
+                        else if (strlicomp(Cursor, PChar('delphi'), 6) = 0) and (Cursor[6] in [' ',#9,'}']) then
+                            mode := cmDelphi
+                        else if (strlicomp(Cursor, PChar('universalpascal'), 15) = 0) and (Cursor[15] in [' ',#9,'}']) then
+                            mode := cmUniversalPascal;
+
+                        features := CompilationMode.Features[mode];
+                        InitPredefinedTypes(mode);
+                    end;
+                end
+                else if strlicomp(Cursor, PChar('{$longstrings'), 13) = 0 then
+                begin
+                    inc(Cursor, 13);
                     while Cursor[0] in [#9, ' '] do
                         inc(Cursor);
 
-                    if (strlicomp(Cursor, PChar('iso'), 3) = 0) and (Cursor[3] in [' ',#9,'}']) then
-                        mode := cmStandardPascal
-                    else if (strlicomp(Cursor, PChar('extpas'), 6) = 0) and (Cursor[6] in [' ',#9,'}']) then
-                        mode := cmExtendedPascal
-                    else if (strlicomp(Cursor, PChar('tp'), 2) = 0) and (Cursor[2] in [' ',#9,'}']) then
-                        mode := cmTurboPascal
-                    else if (strlicomp(Cursor, PChar('macpas'), 6) = 0) and (Cursor[6] in [' ',#9,'}']) then
-                        mode := cmMacPascal
-                    else if (strlicomp(Cursor, PChar('fpc'), 3) = 0) and (Cursor[3] in [' ',#9,'}']) then
-                        mode := cmFreePascal
-                    else if (strlicomp(Cursor, PChar('objfpc'), 6) = 0) and (Cursor[6] in [' ',#9,'}']) then
-                        mode := cmObjectFreePascal
-                    else if (strlicomp(Cursor, PChar('delphi'), 6) = 0) and (Cursor[6] in [' ',#9,'}']) then
-                        mode := cmDelphi
-                    else if (strlicomp(Cursor, PChar('universalpascal'), 15) = 0) and (Cursor[15] in [' ',#9,'}']) then
-                        mode := cmUniversalPascal;
+                    if (strlicomp(Cursor, PChar('on'), 2) = 0) and (Cursor[2] in [' ', #9, '}', #13, #10, #0]) then
+                        Include(features, mfAnsiStringDefault)
+                    else if Cursor[0] = '+' then
+                        Include(features, mfAnsiStringDefault)
+                    else if (strlicomp(Cursor, PChar('off'), 3) = 0) and (Cursor[3] in [' ', #9, '}', #13, #10, #0]) then
+                        Exclude(features, mfAnsiStringDefault)
+                    else if Cursor[0] = '-' then
+                        Exclude(features, mfAnsiStringDefault);
+                end
+                else if (UpCase(Cursor[2]) = 'H') and not (Cursor[3] in ['a'..'z', 'A'..'Z', '0'..'9', '_']) then
+                begin
+                    inc(Cursor, 3);
+                    while Cursor[0] in [#9, ' '] do
+                        inc(Cursor);
 
-                    InitPredefinedTypes(mode);
+                    if Cursor[0] = '+' then
+                        Include(features, mfAnsiStringDefault)
+                    else if Cursor[0] = '-' then
+                        Exclude(features, mfAnsiStringDefault);
                 end;
             end;
             repeat

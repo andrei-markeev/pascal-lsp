@@ -281,7 +281,7 @@ begin
                 rwString:
                     begin
                         TReservedWord.Create(ctx, rwString, true);
-                        if mfAnsiStringDefault in Features[ctx.mode] then
+                        if mfAnsiStringDefault in ctx.features then
                             typeDefToFill := ansiString64Type
                         else
                             typeDefToFill := shortstringType;

@@ -1,0 +1,20 @@
+<ProgramFile><RW>program</RW> <SymbDecl>LongStringsDirective</SymbDecl><RW>;</RW>
+
+{$longstrings on}
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>s1</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+{$H-}
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>s2</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+{$H+}
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>s3</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+{$longstrings off}
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>s4</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>

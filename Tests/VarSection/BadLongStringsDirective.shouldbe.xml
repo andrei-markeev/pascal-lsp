@@ -1,0 +1,12 @@
+<ProgramFile><RW>program</RW> <SymbDecl>BadLongStringsDirective</SymbDecl><RW>;</RW>
+
+{$longstrings invalid}
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>s1</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+{$Hxyz}
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>s2</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>.</RW></ProgramFile>
