@@ -1,0 +1,26 @@
+<UnitFile><RW>unit</RW> <SymbDecl>OverloadParamScope</SymbDecl><RW>;</RW>
+
+{$mode objfpc}
+
+<RW>interface</RW>
+
+<InterfaceBlock><TypeSection><RW>type</RW>
+    <TypeDecl><SymbDecl>TTestObj</SymbDecl> <RW>=</RW> <TypeSpec><ClassSpec><RW>class</RW>
+        <ConstructorDecl><RW>constructor</RW> <SymbDecl>Create</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>val</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW> <Ident>overload</Ident><RW>;</RW></ConstructorDecl>
+        <ConstructorDecl><RW>constructor</RW> <SymbRef>Create</SymbRef><RW>(</RW><ParameterDecl><SymbDecl>val</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>name</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW> <Ident>overload</Ident><RW>;</RW></ConstructorDecl>
+    <RW>end</RW></ClassSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection></InterfaceBlock>
+
+<RW>implementation</RW>
+
+<ImplementationBlock><Constructor><RW>constructor</RW> <SymbRef>TTestObj</SymbRef><RW>.</RW><SymbDecl>Create</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>val</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Constructor>
+
+<Constructor><RW>constructor</RW> <SymbRef>TTestObj</SymbRef><RW>.</RW><SymbDecl>Create</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>val</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>;</RW> <ParameterDecl><SymbDecl>name</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <SymbRef>name</SymbRef></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Constructor>
+
+<RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

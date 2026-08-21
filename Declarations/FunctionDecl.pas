@@ -211,7 +211,11 @@ begin
                 symbol := RegisterSymbol(nameIdent, parentSymbols[p], symbolKind, funcType, ctx.Cursor);
                 symbol.rangeToken := Self;
             end;
-    end;
+    end
+    else if firstParent <> nil then
+        symbol := FindSymbol(firstParent, nameIdent.GetStr(), ctx.Cursor)
+    else
+        symbol := FindSymbol(nameIdent.GetStr(), ctx.Cursor);
 
     if (symbol <> nil) and (length(allParamSymbols) > 0) then
     begin
