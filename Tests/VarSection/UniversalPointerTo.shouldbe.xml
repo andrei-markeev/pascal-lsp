@@ -3,7 +3,6 @@
 {$mode universalpascal}
 
 <TypeSection><RW>type</RW>
-    <TypeDecl><SymbDecl>PInteger</SymbDecl> <RW>=</RW> <TypeSpec><PointerSpec><RW>pointer</RW> <RW>to</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></PointerSpec></TypeSpec></TypeDecl><RW>;</RW>
     <TypeDecl><SymbDecl>TIntArray</SymbDecl> <RW>=</RW> <TypeSpec><ArraySpec><RW>array</RW><RW>[</RW><TypeSpec><RangeSpec><Num>1</Num><RW>..</RW><Num>10</Num></RangeSpec></TypeSpec><RW>]</RW> <RW>of</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ArraySpec></TypeSpec></TypeDecl><RW>;</RW>
     <TypeDecl><SymbDecl>PIntArray</SymbDecl> <RW>=</RW> <TypeSpec><PointerSpec><RW>pointer</RW> <RW>to</RW> <TypeSpec><SymbRef>TIntArray</SymbRef></TypeSpec></PointerSpec></TypeSpec></TypeDecl><RW>;</RW>
     <TypeDecl><SymbDecl>TNode</SymbDecl> <RW>=</RW> <TypeSpec><RecordSpec><RW>record</RW>

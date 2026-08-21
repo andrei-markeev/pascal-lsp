@@ -6,7 +6,7 @@
     <TypeDecl><SymbDecl>PBad</SymbDecl> <RW>=</RW> <TypeSpec><PointerSpec ERROR="Use "pointer to" instead of "^""><RW>^</RW><TypeSpec><Ident>integer</Ident></TypeSpec></PointerSpec></TypeSpec></TypeDecl><RW>;</RW></TypeSection>
 
 <VarSection><RW>var</RW>
-    <VarDecl><SymbDecl>p</SymbDecl><RW>:</RW> <TypeSpec><PointerSpec><RW>pointer</RW> <RW>to</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></PointerSpec></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>p</SymbDecl><RW>:</RW> <TypeSpec><PointerSpec ERROR="Pointers can only be created to arrays and records"><RW>pointer</RW> <RW>to</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></PointerSpec></TypeSpec></VarDecl><RW>;</RW>
     <VarDecl><SymbDecl>val</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
 
 <Block><RW>begin</RW>

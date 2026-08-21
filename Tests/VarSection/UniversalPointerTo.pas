@@ -3,7 +3,6 @@ program UniversalPointerTo;
 {$mode universalpascal}
 
 type
-    PInteger = pointer to integer;
     TIntArray = array[1..10] of integer;
     PIntArray = pointer to TIntArray;
     TNode = record
