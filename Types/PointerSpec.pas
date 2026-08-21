@@ -43,6 +43,12 @@ begin
     CreateTypeSpec(ctx, targetType);
     ptrTypeDef.pointerToType := targetType;
 
+    if (state <> tsError) and (mfNoExplicitDereference in Features[ctx.mode]) and (targetType <> nil) and (targetType <> unknownType) and not (targetType.kind in [tkArray, tkDynamicArray, tkRecord]) then
+    begin
+        state := tsError;
+        errorMessage := 'Pointers can only be created to arrays and records';
+    end;
+
     if state <> tsError then
         state := tsCorrect;
     ctx.MarkEndOfToken(Self);
@@ -66,7 +72,14 @@ begin
     CreateTypeSpec(ctx, targetType);
     ptrTypeDef.pointerToType := targetType;
 
-    state := tsCorrect;
+    if (mfNoExplicitDereference in Features[ctx.mode]) and (targetType <> nil) and (targetType <> unknownType) and not (targetType.kind in [tkArray, tkDynamicArray, tkRecord]) then
+    begin
+        state := tsError;
+        errorMessage := 'Pointers can only be created to arrays and records';
+    end
+    else
+        state := tsCorrect;
+
     ctx.MarkEndOfToken(Self);
 end;
 
