@@ -44,7 +44,7 @@ begin
         errorMessage := 'Left side of assignment must be a variable!';
     end;
 
-    if (symbol <> nil) and (symbol.kind in [skConstant, skTypedConstant]) then
+    if (symbol <> nil) and (symbol.kind in [skConstant, skTypedConstant, skConstParameter]) then
     begin
         state := tsError;
         errorMessage := 'Cannot modify a constant!';

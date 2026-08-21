@@ -6,10 +6,10 @@ unit Symbols;
 interface
 
 uses
-    math, contnrs, Token, Identifier, TypeDefs, TypeDef, ParserContext;
+    math, contnrs, Token, Identifier, TypeDefs, TypeDef, ParserContext, Scopes;
 
 type
-    TSymbolKind = (skUnknown, skConstant, skTypedConstant, skTypeName, skVariable, skProcedure, skFunction, skConstructor, skDestructor, skUnitName);
+    TSymbolKind = (skUnknown, skConstant, skTypedConstant, skTypeName, skVariable, skProcedure, skFunction, skConstructor, skDestructor, skUnitName, skParameter, skConstParameter);
     TSymbol = class
     public
         kind: TSymbolKind;
@@ -34,15 +34,15 @@ type
     TTryAddOverrideResult = (ovNotApplicable, ovNotFound, ovExactDuplicate, ovAdded);
 
 const
-    NUM_OF_SYMBOL_KINDS = 7;
+    NUM_OF_SYMBOL_KINDS = 9;
     SymbolKindStr: array [0..NUM_OF_SYMBOL_KINDS-1] of shortstring = (
-        '', 'constant', 'typed constant', 'type', 'variable', 'procedure', 'function'
+        '', 'constant', 'typed constant', 'type', 'variable', 'procedure', 'function', 'parameter', 'const parameter'
     );
 
 function TryAddOverride(ident: TIdentifier; symbolType: TTypeDef; cursor: PChar; symbolParent: TSymbol = nil): TTryAddOverrideResult;
-function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
-function RegisterSymbol(existingSym: TSymbol; cursor: PChar): TSymbol;
-function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
+function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar; registerInScope: boolean = true): TSymbol;
+function ImportSymbol(existingSym: TSymbol; cursor: PChar): TSymbol;
+function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar; registerInScope: boolean = true): TSymbol;
 function FindSymbol(findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(parent: TSymbol; findName: shortstring; cursor: PChar): TSymbol;
 function FindSymbol(ident: TIdentifier): TSymbol;
@@ -53,7 +53,7 @@ function IsMemberAccessible(accessCtx: TParserContext; targetClass: TTypeDef; me
 implementation
 
 uses
-    sysutils, classes, CompilationMode, Scopes, RoutineTypeDef, ClassTypeDef, ObjectTypeDef, PointerTypeDef, StructuredTypeDef;
+    sysutils, classes, CompilationMode, RoutineTypeDef, ClassTypeDef, ObjectTypeDef, PointerTypeDef, StructuredTypeDef;
 
 var
     lastId: longword = 0;
@@ -154,7 +154,7 @@ begin
     TryAddOverride := ovAdded;
 end;
 
-function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
+function RegisterSymbol(declaredAt: TIdentifier; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar; registerInScope: boolean = true): TSymbol;
 var
     symbolName: shortstring;
 begin
@@ -166,7 +166,7 @@ begin
     else
         SetString(symbolName, declaredAt.start, Min(255, declaredAt.len));
 
-    RegisterSymbol := RegisterSymbolByName(symbolName, symbolParent, symbolKind, symbolType, cursor);
+    RegisterSymbol := RegisterSymbolByName(symbolName, symbolParent, symbolKind, symbolType, cursor, registerInScope);
 
     with RegisterSymbol do
     begin
@@ -181,26 +181,28 @@ begin
 
 end;
 
-function RegisterSymbol(existingSym: TSymbol; cursor: PChar): TSymbol;
+function ImportSymbol(existingSym: TSymbol; cursor: PChar): TSymbol;
 begin
     if existingSym = nil then exit(nil);
-    if existingSym.declaration <> nil then
-        Result := RegisterSymbol(existingSym.declaration, nil, existingSym.kind, existingSym.typeDef, cursor)
-    else
-        Result := RegisterSymbolByName(existingSym.displayName, nil, existingSym.kind, existingSym.typeDef, cursor);
+
+    Result := RegisterSymbolByName(existingSym.displayName, nil, existingSym.kind, existingSym.typeDef, cursor);
+    Result.declaration := existingSym.declaration;
+    Result.isParameter := existingSym.isParameter;
     Result.rangeToken := existingSym.rangeToken;
     Result.implRangeToken := existingSym.implRangeToken;
 end;
 
-function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar): TSymbol;
+function RegisterSymbolByName(symbolName: string; symbolParent: TSymbol; symbolKind: TSymbolKind; symbolType: TTypeDef; cursor: PChar; registerInScope: boolean = true): TSymbol;
 var
     parentChildrenCount: integer;
+    scope: TScope;
 begin
 
     RegisterSymbolByName := TSymbol.Create;
     with RegisterSymbolByName do
     begin
         typeDef := symbolType;
+        isParameter := symbolKind in [skParameter, skConstParameter];
         if (symbolKind = skTypeName) and (symbolType <> nil) and (symbolType <> unknownType) then
             symbolType.typeSymbol := RegisterSymbolByName;
         uniquePrefix := IntToStr(lastId) + '.';
@@ -218,7 +220,10 @@ begin
         else
             name := symbolName;
     end;
-    FindScope(cursor).symbolsList.Add(LowerCase(RegisterSymbolByName.name), RegisterSymbolByName);
+
+    scope := FindScope(cursor);
+    if registerInScope then
+        scope.symbolsList.Add(LowerCase(RegisterSymbolByName.name), RegisterSymbolByName);
 
     if (symbolKind = skTypeName) and (symbolType <> nil) and (symbolType is TStructuredTypeDef) then
         RegisterStructuredTypeMembers(RegisterSymbolByName, TStructuredTypeDef(symbolType), cursor);

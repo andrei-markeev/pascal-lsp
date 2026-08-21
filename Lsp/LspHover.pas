@@ -167,7 +167,7 @@ function GetSymbolHoverText(Sym: TSymbol; out LabelText: string): string;
 begin
   LabelText := '';
   case Sym.kind of
-    skVariable:
+    skVariable, skParameter:
       begin
         if Sym.isParameter then
         begin
@@ -182,8 +182,10 @@ begin
         else
           Result := 'var ' + string(Sym.displayName) + ': ' + GetTypeDefDisplay(Sym.typeDef) + ';';
       end;
-    skConstant, skTypedConstant:
+    skConstant, skTypedConstant, skConstParameter:
       begin
+        if Sym.isParameter then
+          LabelText := '*(parameter)*';
         if Sym.typeDef <> nil then
           Result := 'const ' + string(Sym.displayName) + ': ' + GetTypeDefDisplay(Sym.typeDef) + ';'
         else

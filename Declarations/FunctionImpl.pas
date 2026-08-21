@@ -31,9 +31,10 @@ var
     needsReturnType, needsToAddChildSymbols, hasOpenParenthesis: boolean;
     symbolKind: TSymbolKind;
     symbolParent, symbolField, symbol: TSymbol;
+    allParamSymbols, blockChildSymbols: array of TSymbol;
     paramDecl: TParameterDecl;
     params: TParameterList;
-    i: integer;
+    i, p: integer;
     rw, openParenTok, closeParenTok: TReservedWord;
     hasMoreParams: boolean;
     s, selfTypeName: string;
@@ -46,6 +47,9 @@ var
     isMethod: boolean;
     receiverTypeDef: TTypeDef;
 begin
+    symbol := nil;
+    SetLength(allParamSymbols, 0);
+    SetLength(blockChildSymbols, 0);
     ctx.Add(Self);
     tokenName := 'Function';
 
@@ -120,6 +124,10 @@ begin
         isOberonMethod := true;
         openParenTok := TReservedWord.Create(ctx, rwOpenParenthesis, true);
         paramDecl := TParameterDecl.Create(ctx);
+        p := length(allParamSymbols);
+        SetLength(allParamSymbols, p + length(paramDecl.symbols));
+        for i := 0 to length(paramDecl.symbols) - 1 do
+            allParamSymbols[p + i] := paramDecl.symbols[i];
         closeParenTok := TReservedWord.Create(ctx, rwCloseParenthesis, false);
 
         selfTypeName := '';
@@ -201,6 +209,10 @@ begin
         hasMoreParams := false;
         repeat
             paramDecl := TParameterDecl.Create(ctx);
+            p := length(allParamSymbols);
+            SetLength(allParamSymbols, p + length(paramDecl.symbols));
+            for i := 0 to length(paramDecl.symbols) - 1 do
+                allParamSymbols[p + i] := paramDecl.symbols[i];
             for i := 0 to length(paramDecl.idents) - 1 do
             begin
                 SetString(s, paramDecl.idents[i].start, paramDecl.idents[i].len);
@@ -372,6 +384,17 @@ begin
         end;
     end;
 
+    if (symbolField = nil) and (symbol <> nil) and (length(allParamSymbols) > 0) then
+    begin
+        p := length(symbol.children);
+        SetLength(symbol.children, p + length(allParamSymbols));
+        for i := 0 to length(allParamSymbols) - 1 do
+        begin
+            allParamSymbols[i].parent := symbol;
+            symbol.children[p + i] := allParamSymbols[i];
+        end;
+    end;
+
     if isOberonMethod and (symbolParent <> nil) and (symbolParent.typeDef <> nil) and (symbolParent.typeDef is TStructuredTypeDef) then
     begin
         if TStructuredTypeDef(symbolParent.typeDef).FindMember(nameIdent.GetStr()) = nil then
@@ -395,10 +418,33 @@ begin
         selfType := nil;
     end;
 
+    p := 0;
     if needsToAddChildSymbols and (symbolParent <> nil) then
-        TBlock.Create(ctx, symbolParent.children, selfType, routineTypeDef.returnType, Self)
-    else
-        TBlock.Create(ctx, [], selfType, routineTypeDef.returnType, Self);
+        inc(p, length(symbolParent.children));
+    if symbol <> nil then
+        inc(p, length(symbol.children));
+
+    SetLength(blockChildSymbols, p);
+    p := 0;
+    if needsToAddChildSymbols and (symbolParent <> nil) then
+    begin
+        for i := 0 to length(symbolParent.children) - 1 do
+        begin
+            blockChildSymbols[p] := symbolParent.children[i];
+            inc(p);
+        end;
+    end;
+
+    if symbol <> nil then
+    begin
+        for i := 0 to length(symbol.children) - 1 do
+        begin
+            blockChildSymbols[p] := symbol.children[i];
+            inc(p);
+        end;
+    end;
+
+    TBlock.Create(ctx, blockChildSymbols, selfType, routineTypeDef.returnType, Self);
 
     TReservedWord.Create(ctx, rwSemiColon, false);
 

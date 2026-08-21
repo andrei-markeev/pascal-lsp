@@ -1,0 +1,23 @@
+<UnitFile><RW>unit</RW> <SymbDecl>ParamScopeShadowing</SymbDecl><RW>;</RW>
+
+<RW>interface</RW>
+
+<InterfaceBlock><ProcedureDecl><RW>procedure</RW> <SymbDecl>Helper</SymbDecl><RW>(</RW><ParameterDecl><SymbDecl>pos</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW></ProcedureDecl></InterfaceBlock>
+
+<RW>implementation</RW>
+
+<ImplementationBlock><Procedure><RW>procedure</RW> <SymbRef>Helper</SymbRef><RW>(</RW><ParameterDecl><SymbDecl>pos</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></ParameterDecl><RW>)</RW><RW>;</RW>
+<Block><RW>begin</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<Procedure><RW>procedure</RW> <SymbDecl>TestCall</SymbDecl><RW>;</RW>
+<VarSection><RW>var</RW>
+    <VarDecl><SymbDecl>s</SymbDecl><RW>,</RW> <SymbDecl>sub</SymbDecl><RW>:</RW> <TypeSpec><RW>string</RW></TypeSpec></VarDecl><RW>;</RW>
+    <VarDecl><SymbDecl>idx</SymbDecl><RW>:</RW> <TypeSpec><Ident>integer</Ident></TypeSpec></VarDecl><RW>;</RW></VarSection>
+<Block><RW>begin</RW>
+    <Assignment><SymbRef>s</SymbRef> <RW>:=</RW> <Str>'hello'</Str></Assignment><RW>;</RW>
+    <Assignment><SymbRef>sub</SymbRef> <RW>:=</RW> <Str>'ell'</Str></Assignment><RW>;</RW>
+    <Assignment><SymbRef>idx</SymbRef> <RW>:=</RW> <Call><SymbRef>Pos</SymbRef><RW>(</RW><SymbRef>sub</SymbRef><RW>,</RW> <SymbRef>s</SymbRef><RW>)</RW></Call></Assignment><RW>;</RW>
+<RW>end</RW></Block><RW>;</RW></Procedure>
+
+<RW>end</RW></ImplementationBlock><RW>.</RW></UnitFile>

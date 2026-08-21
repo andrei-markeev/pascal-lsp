@@ -25,7 +25,6 @@ var
     classSym: TSymbol;
     childName: shortstring;
     i: integer;
-    sym: TSymbol;
 begin
     if selfType = nil then
         exit;
@@ -46,7 +45,7 @@ begin
             begin
                 childName := LowerCase(classSym.children[i].displayName);
                 if FindScope(start).symbolsList.Find(childName) = nil then
-                    RegisterSymbol(classSym.children[i], start);
+                    ImportSymbol(classSym.children[i], start);
             end;
         end;
         if (curClass.kind = tkClass) and (curClass is TClassTypeDef) then
@@ -62,7 +61,6 @@ constructor TBlock.Create(ctx: TParserContext; childSymbols: array of TSymbol; s
 var
     nextTokenKind: TTokenKind;
     i: integer;
-    sym: TSymbol;
     prevCursor: PChar;
 begin
     tokenName := 'Block';
@@ -80,7 +78,7 @@ begin
         RegisterSymbolByName('Result', nil, skVariable, resultType, start);
 
     for i := 0 to length(childSymbols) - 1 do
-        RegisterSymbol(childSymbols[i], start);
+        ImportSymbol(childSymbols[i], start);
 
     RegisterInheritedMembers(selfType, start);
 

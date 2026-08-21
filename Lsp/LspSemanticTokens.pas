@@ -248,18 +248,22 @@ begin
                 else
                   tokenType := 4; // type
               end;
-            skConstant, skTypedConstant:
+            skConstant, skTypedConstant, skConstParameter:
               begin
-                tokenType := 6; // variable
-                tokenModifiers := tokenModifiers or 4; // readonly
+                if sym.isParameter then
+                begin
+                  tokenType := 5; // parameter
+                  tokenModifiers := tokenModifiers or 4; // readonly
+                end
+                else
+                begin
+                  tokenType := 6; // variable
+                  tokenModifiers := tokenModifiers or 4; // readonly
+                end;
               end;
-            skVariable:
+            skVariable, skParameter:
               begin
-                for i := parentsCount - 1 downto 0 do
-                  if parentsStack[i] = 'ParameterDecl' then
-                    isParam := true;
-                    
-                if isParam then
+                if sym.isParameter then
                   tokenType := 5 // parameter
                 else if (sym.parent <> nil) and (sym.parent.kind = skTypeName) then
                   tokenType := 7 // property

@@ -40,9 +40,12 @@ var
     isMethodModifier, isFunctionModifier: boolean;
     overrideResult: TTryAddOverrideResult;
     symbol, firstParent, oberonReceiver: TSymbol;
+    allParamSymbols: array of TSymbol;
     routineTypeDef: TRoutineTypeDef;
     receiverTypeDef: TTypeDef;
 begin
+    symbol := nil;
+    SetLength(allParamSymbols, 0);
     ctx.Add(Self);
     tokenName := 'FunctionDecl';
 
@@ -133,6 +136,10 @@ begin
         hasMoreParams := false;
         repeat
             paramDecl := TParameterDecl.Create(ctx);
+            p := length(allParamSymbols);
+            SetLength(allParamSymbols, p + length(paramDecl.symbols));
+            for i := 0 to length(paramDecl.symbols) - 1 do
+                allParamSymbols[p + i] := paramDecl.symbols[i];
             for i := 0 to length(paramDecl.idents) - 1 do
             begin
                 SetString(s, paramDecl.idents[i].start, paramDecl.idents[i].len);
@@ -204,6 +211,17 @@ begin
                 symbol := RegisterSymbol(nameIdent, parentSymbols[p], symbolKind, funcType, ctx.Cursor);
                 symbol.rangeToken := Self;
             end;
+    end;
+
+    if (symbol <> nil) and (length(allParamSymbols) > 0) then
+    begin
+        p := length(symbol.children);
+        SetLength(symbol.children, p + length(allParamSymbols));
+        for i := 0 to length(allParamSymbols) - 1 do
+        begin
+            allParamSymbols[i].parent := symbol;
+            symbol.children[p + i] := allParamSymbols[i];
+        end;
     end;
 
     TReservedWord.Create(ctx, rwSemiColon, false);

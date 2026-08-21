@@ -53,8 +53,8 @@ begin
   case symbol.kind of
     skUnitName: symbolKindVal := 4; // Package
     skTypeName: symbolKindVal := 5; // Class
-    skConstant, skTypedConstant: symbolKindVal := 14; // Constant
-    skVariable: symbolKindVal := 13; // Variable
+    skConstant, skTypedConstant, skConstParameter: symbolKindVal := 14; // Constant
+    skVariable, skParameter: symbolKindVal := 13; // Variable
     skProcedure, skFunction:
       begin
         if symbol.parent <> nil then

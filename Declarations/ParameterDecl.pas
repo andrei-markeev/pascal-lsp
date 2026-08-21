@@ -14,6 +14,7 @@ type
         parameterKind: TParameterKind;
         idents: array of TIdentifier;
         hasDefaultValue: boolean;
+        symbols: array of TSymbol;
         constructor Create(ctx: TParserContext);
     end;
 
@@ -28,7 +29,6 @@ var
     i, l: integer;
     hasMoreMembers: boolean;
     symbolKind: TSymbolKind;
-    symbols: array of TSymbol;
 begin
     tokenName := 'ParameterDecl';
     ctx.Add(Self);
@@ -88,18 +88,15 @@ begin
     RemoveAnchor(rwSemiColon);
     RemoveAnchor(rwCloseParenthesis);
 
-    symbolKind := skVariable;
     if parameterKind = ptkConst then
-        if nextTokenKind.reservedWordKind = rwColon then
-            symbolKind := skTypedConstant
-        else
-            symbolKind := skConstant;
+        symbolKind := skConstParameter
+    else
+        symbolKind := skParameter;
 
     SetLength(symbols, l);
     for i := 0 to l - 1 do
     begin
-        symbols[i] := RegisterSymbol(idents[i], nil, symbolKind, typeDef, ctx.Cursor);
-        symbols[i].isParameter := true;
+        symbols[i] := RegisterSymbol(idents[i], nil, symbolKind, typeDef, ctx.Cursor, false);
     end;
 
     if nextTokenKind.reservedWordKind = rwColon then
