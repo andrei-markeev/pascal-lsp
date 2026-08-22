@@ -19,4 +19,5 @@
     <Assignment><SymbRef>val</SymbRef> <RW>:=</RW> <VarRef><SymbRef>pArr</SymbRef><RW>[</RW><Num>1</Num><RW>]</RW></VarRef></Assignment><RW>;</RW>
     <Assignment><SymbRef>val</SymbRef> <RW>:=</RW> <VarRef><SymbRef>pNode</SymbRef><RW>.</RW><SymbRef>value</SymbRef></VarRef></Assignment><RW>;</RW>
     <Assignment><VarRef><SymbRef>pNode</SymbRef><RW>.</RW><SymbRef>value</SymbRef></VarRef> <RW>:=</RW> <Num>10</Num></Assignment><RW>;</RW>
+    <Assignment><SymbRef>pNode</SymbRef> <RW>:=</RW> <Factor><RW>@</RW><Factor><VarRef ERROR="Explicit dereference "^" is not allowed in this compilation mode"><SymbRef>pNode</SymbRef><RW ERROR="Explicit dereference "^" is not allowed in this compilation mode">^</RW></VarRef></Factor></Factor></Assignment><RW>;</RW>
 <RW>end</RW></Block><RW>.</RW></ProgramFile>

@@ -180,6 +180,7 @@ var
     maybe, found: TReservedWordKind;
 begin
     ctx.SkipTrivia;
+    found := rwInvalid;
     if not (ctx.Cursor[0] in ['A'..'Z','a'..'z']) then
     begin
         case ctx.Cursor[0] of
@@ -213,7 +214,7 @@ begin
                 else found := rwDot;
             ',': found := rwComma;
             ';': found := rwSemiColon;
-            '@': if mfAtOperator in Features[ctx.mode] then found := rwAt;
+            '@': if mfAtOperator in Features[ctx.mode] then found := rwAt else found := rwInvalid;
         else
             found := rwInvalid;
         end;

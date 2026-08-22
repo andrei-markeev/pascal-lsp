@@ -19,4 +19,5 @@ begin
     val := pArr[1];
     val := pNode.value;
     pNode.value := 10;
+    pNode := @pNode^;
 end.
